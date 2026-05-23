@@ -69,20 +69,20 @@ export default function Territorios({
               }
             >
               <img
-                src={territorios[id].imagem}
+                src={territorios[id as keyof typeof territorios].imagem}
                 alt=""
                 className="territorios-thumb"
               />
 
               <span>
                 <b>
-                  {territorios[id].nome}
+                  {territorios[id as keyof typeof territorios].nome}
                 </b>
 
                 <br />
 
                 <small className="territorios-palavra">
-                  {territorios[id].palavra}
+                  {territorios[id as keyof typeof territorios].palavra}
                 </small>
               </span>
 

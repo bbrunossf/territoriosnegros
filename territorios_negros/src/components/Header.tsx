@@ -11,7 +11,11 @@
 import LOGO from "../assets/logo.png";
 // const LOGO = "/mnt/data/assinatura - logo - AFS sem fundo(1).png";
 
-export default function Header({ setTela }) {
+type Props = {
+  setTela: (tela: string) => void;
+};
+
+export default function Header({ setTela }: Props) {
   return (
     <header className="header">
       <button

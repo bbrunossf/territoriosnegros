@@ -4,6 +4,7 @@ import PageTitle from "../components/PageTitle";
 
 const { territorios } = dados;
 
+
 type Props = {
   roteiro: any;
   setIndice: (indice: number) => void;
@@ -33,7 +34,7 @@ export default function Percurso({
             }}
           >
             <img
-              src={territorios[id].imagem}
+              src={territorios[id as keyof typeof territorios].imagem}
               alt=""
               className="percurso-thumb"
             />
@@ -41,13 +42,13 @@ export default function Percurso({
             <span>
               <b>
                 {i + 1}.{" "}
-                {territorios[id].nome}
+                {territorios[id as keyof typeof territorios].nome}
               </b>
 
               <br />
 
               <small className="percurso-palavra">
-                {territorios[id].palavra}
+                {territorios[id as keyof typeof territorios].palavra}
               </small>
             </span>
 

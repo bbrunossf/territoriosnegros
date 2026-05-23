@@ -44,15 +44,19 @@ export default function App() {
     return roteiros.find((r) => r.id === rotaId) || roteiros[0];
   }, [rotaId]);
 
-  const territorio = territorios[roteiro.pontos[indice]];
+  //const territorio = territorios[roteiro.pontos[indice]];
+  const territorio =
+    territorios[
+      roteiro.pontos[indice] as keyof typeof territorios
+    ];
 
-  const irParaRota = (id) => {
+  const irParaRota = (id: string) => {
     setRotaId(id);
     setIndice(0);
     setTela("percurso");
   };
 
-  const abrirTerritorio = (id) => {
+  const abrirTerritorio = (id: string) => {
     setRotaId("todos");
     setIndice(ordemTerritoriosVisual.indexOf(id));
     setTela("territorio");
