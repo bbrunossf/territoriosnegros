@@ -1,7 +1,8 @@
 //Prototipo App Territorios Negros Corrigido
 
 import  dados from "./data/dados.json";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
+import { supabase } from './lib/supabase';
 
 import "./App.css";
 import Header from "./components/Header";
