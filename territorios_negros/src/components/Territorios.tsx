@@ -1,10 +1,9 @@
 //Territorios.tsx
-import dados from "../data/dados.json";
-
 import PageTitle from "../components/PageTitle";
 import SectionHeader from "../components/SectionHeader";
+import type { TerritoriosMap } from "../data/types";
 
-const { territorios } = dados;
+
 
 const grupos = [
   {
@@ -44,10 +43,12 @@ const grupos = [
 
 type Props = {
   abrirTerritorio: (id: string) => void;
+  territorios: TerritoriosMap;
 };
 
 export default function Territorios({
   abrirTerritorio,
+  territorios,
 }: Props) {
   return (
     <>
@@ -60,37 +61,28 @@ export default function Territorios({
         <section key={g.titulo}>
           <SectionHeader title={g.titulo} />
 
-          {g.ids.map((id) => (
-            <button
-              key={id}
-              className="territorios-item"
-              onClick={() =>
-                abrirTerritorio(id)
-              }
-            >
-              <img
-                src={territorios[id as keyof typeof territorios].imagem}
-                alt=""
-                className="territorios-thumb"
-              />
+          {g.ids.map((id) => {
+            const t = territorios[id];
+            if (!t) return null;
 
-              <span>
-                <b>
-                  {territorios[id as keyof typeof territorios].nome}
-                </b>
+            return (
+              <button
+                key={id}
+                className="territorios-item"
+                onClick={() => abrirTerritorio(id)}
+              >
+                <img src={t.imagem} alt="" className="territorios-thumb" />
 
-                <br />
+                <span>
+                  <b>{t.nome}</b>
+                  <br />
+                  <small className="territorios-palavra">{t.palavra}</small>
+                </span>
 
-                <small className="territorios-palavra">
-                  {territorios[id as keyof typeof territorios].palavra}
-                </small>
-              </span>
-
-              <b className="territorios-arrow">
-                ›
-              </b>
-            </button>
-          ))}
+                <b className="territorios-arrow">›</b>
+              </button>
+            );
+          })}
         </section>
       ))}
     </>

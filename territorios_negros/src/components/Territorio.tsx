@@ -6,9 +6,10 @@ import Topic from "../components/Topic";
 
 import { calcularIdade } from "../utils/data";
 import { foto } from "../utils/imagens";
+import type { Territorio as TerritorioType } from "../data/types";
 
 type Props = {
-  territorio: any;
+  territorio: TerritorioType;
   indice: number;
   total: number;
   proximo: () => void;

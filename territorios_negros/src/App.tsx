@@ -2,7 +2,8 @@
 
 import  dados from "./data/dados.json";
 import { useMemo, useState, useEffect } from "react";
-import { supabase } from './lib/supabase';
+import { fetchTerritorios } from "./data/territorios";
+import type { TerritoriosMap } from "./data/types";
 
 import "./App.css";
 import Header from "./components/Header";
@@ -30,7 +31,6 @@ import Territorio from "./components/Territorio";
 
 const {
   roteiros,
-  territorios,
   ordemTerritoriosVisual,
 } = dados;
 
@@ -39,17 +39,27 @@ export default function App() {
   const [tela, setTela] = useState("home");
   const [rotaId, setRotaId] = useState("rota1");
   const [indice, setIndice] = useState(0);
+  const [territorios, setTerritorios] = useState<TerritoriosMap>({});
+  const [carregando, setCarregando] = useState(true);
+
+  useEffect(() => {
+     fetchTerritorios()
+       .then(setTerritorios)
+       .catch((err) => {
+         console.error("Erro ao carregar territórios do Supabase:", err);
+       })
+       .finally(() => setCarregando(false));
+   }, []);
 
   const roteiro = useMemo(() => {
-    if (rotaId === "todos") return { nome: "Territórios", subtitulo: "Consulta individual", pontos: ordemTerritoriosVisual };
+    if (rotaId === "todos")
+      return {
+        nome: "Territórios", subtitulo: "Consulta individual", pontos: ordemTerritoriosVisual
+      };
     return roteiros.find((r) => r.id === rotaId) || roteiros[0];
   }, [rotaId]);
 
-  //const territorio = territorios[roteiro.pontos[indice]];
-  const territorio =
-    territorios[
-      roteiro.pontos[indice] as keyof typeof territorios
-    ];
+  const territorio = territorios[roteiro.pontos[indice]]
 
   const irParaRota = (id: string) => {
     setRotaId(id);
@@ -73,41 +83,57 @@ export default function App() {
     else setTela("percurso");
   };
 
-  return (
-    <div className="app">
-      <div className="phone">
-        {tela !== "home" && <Header setTela={setTela} />}
+  if (carregando) {
+     return (
+       <div className="app">
+         <div className="phone">
+           <main className="content" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+             <p>Carregando territórios...</p>
+           </main>
+         </div>
+       </div>
+     );
+   }
 
-        <main className={tela === "home" ? "main-home" : "content"}>
-          {tela === "home" && <Home setTela={setTela} />}
-          {tela === "intro" && <Intro setTela={setTela} />}
-          {tela === "conceito" && <Conceito setTela={setTela} />}
-          {tela === "sobre" && <Sobre />}
-          {tela === "roteiros" && <Roteiros irParaRota={irParaRota} />}
-          {tela === "territorios" && (
-            <Territorios abrirTerritorio={abrirTerritorio} />
-          )}
-          {tela === "percurso" && (
-            <Percurso
-              roteiro={roteiro}
-              setIndice={setIndice}
-              setTela={setTela}
-            />
-          )}
-          {tela === "territorio" && (
-            <Territorio
-              territorio={territorio}
-              indice={indice}
-              total={roteiro.pontos.length}
-              proximo={proximo}
-              voltar={voltar}
-            />
-          )}
-          {tela === "fim" && <Fim setTela={setTela} />}
-        </main>
+   return (
+     <div className="app">
+       <div className="phone">
+         {tela !== "home" && <Header setTela={setTela} />}
 
-        <BottomNav setTela={setTela} />
-      </div>
-    </div>
-  );
+         <main className={tela === "home" ? "main-home" : "content"}>
+           {tela === "home" && <Home setTela={setTela} />}
+           {tela === "intro" && <Intro setTela={setTela} />}
+           {tela === "conceito" && <Conceito setTela={setTela} />}
+           {tela === "sobre" && <Sobre />}
+           {tela === "roteiros" && <Roteiros irParaRota={irParaRota} />}
+           {tela === "territorios" && (
+             <Territorios
+               abrirTerritorio={abrirTerritorio}
+               territorios={territorios}
+             />
+           )}
+           {tela === "percurso" && (
+             <Percurso
+               roteiro={roteiro}
+               territorios={territorios}
+               setIndice={setIndice}
+               setTela={setTela}
+             />
+           )}
+           {tela === "territorio" && territorio && (
+             <Territorio
+               territorio={territorio}
+               indice={indice}
+               total={roteiro.pontos.length}
+               proximo={proximo}
+               voltar={voltar}
+             />
+           )}
+           {tela === "fim" && <Fim setTela={setTela} />}
+         </main>
+
+         <BottomNav setTela={setTela} />
+       </div>
+     </div>
+   );
 }
