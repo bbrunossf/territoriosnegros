@@ -1,66 +1,18 @@
+import { Link } from "react-router-dom";
 
-type Props = {
-  setTela: (tela: string) => void;
-};
+// type Props = {
+//   setTela: (tela: string) => void;
+// };
 
-export default function BottomNav({
-  setTela,
-}: Props) {
+export default function BottomNav() {
   return (
     <nav className="bottom-nav">
-      <button
-        className="bottom-nav-btn"
-        onClick={() => setTela("home")}
-      >
-        ⌂
-        <br />
-        Início
-      </button>
-
-      <button
-        className="bottom-nav-btn"
-        onClick={() => setTela("intro")}
-      >
-        ⟲
-        <br />
-        Antes
-      </button>
-
-      <button
-        className="bottom-nav-btn"
-        onClick={() => setTela("conceito")}
-      >
-        ◎
-        <br />
-        Conceito
-      </button>
-
-      <button
-        className="bottom-nav-btn"
-        onClick={() => setTela("roteiros")}
-      >
-        ▱
-        <br />
-        Rotas
-      </button>
-
-      <button
-        className="bottom-nav-btn"
-        onClick={() => setTela("territorios")}
-      >
-        ●
-        <br />
-        Territ.
-      </button>
-
-      <button
-        className="bottom-nav-btn"
-        onClick={() => setTela("sobre")}
-      >
-        ⓘ
-        <br />
-        Sobre
-      </button>
-    </nav>
-  );
-}
+         <Link to="/" className="bottom-nav-btn">⌂<br />Início</Link>
+         <Link to="/intro" className="bottom-nav-btn">⟲<br />Antes</Link>
+         <Link to="/conceito" className="bottom-nav-btn">◎<br />Conceito</Link>
+         <Link to="/roteiros" className="bottom-nav-btn">▱<br />Rotas</Link>
+         <Link to="/territorios" className="bottom-nav-btn">●<br />Territ.</Link>
+         <Link to="/sobre" className="bottom-nav-btn">ⓘ<br />Sobre</Link>
+       </nav>
+     );
+   }

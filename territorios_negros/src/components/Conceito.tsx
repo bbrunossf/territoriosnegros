@@ -1,17 +1,13 @@
-
+import { Link } from "react-router-dom";
 import LINKS from "../data/links.json";
 
 import Info from "../components/Info";
 import Topic from "../components/Topic";
 import PageTitle from "../components/PageTitle";
 
-type Props = {
-  setTela: (tela: string) => void;
-};
 
-export default function Conceito({
-  setTela,
-}: Props) {
+
+export default function Conceito() {
   return (
     <>
       <PageTitle
@@ -111,12 +107,9 @@ export default function Conceito({
         </a>
       </Info>
 
-      <button
-        className="btn conceito-btn"
-        onClick={() => setTela("roteiros")}
-      >
+      <Link to="/roteiros" className="btn conceito-btn">
         Ir para os roteiros
-      </button>
+      </Link>
     </>
   );
 }

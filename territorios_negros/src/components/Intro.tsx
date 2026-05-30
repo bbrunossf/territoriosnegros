@@ -1,15 +1,13 @@
-
+import { Link } from "react-router-dom";
 
 import Info from "../components/Info";
 import Topic from "../components/Topic";
 import Numbered from "../components/Numbered";
 import PageTitle from "../components/PageTitle";
 
-type Props = {
-  setTela: (tela: string) => void;
-};
 
-export default function Intro({ setTela }: Props) {
+
+export default function Intro() {
   return (
     <>
       <PageTitle title="Antes de caminhar" />
@@ -53,19 +51,13 @@ export default function Intro({ setTela }: Props) {
       </Topic>
 
       <div className="intro-actions">
-        <button
-          className="btn"
-          onClick={() => setTela("conceito")}
-        >
+        <Link to="/conceito" className="btn">
           Ir para base teórica
-        </button>
+        </Link>
 
-        <button
-          className="outline"
-          onClick={() => setTela("roteiros")}
-        >
+        <Link to="/roteiros" className="outline">
           Ir direto para os roteiros
-        </button>
+        </Link>
       </div>
     </>
   );

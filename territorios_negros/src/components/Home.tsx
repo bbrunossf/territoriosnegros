@@ -1,14 +1,12 @@
+import { Link } from "react-router-dom";
 
 import LOGO from "../assets/logo.png";
 import CAPA_INICIAL from "../assets/capa-inicial.jpg";
 
 import { formatarDataAcesso } from "../utils/data";
 
-type Props = {
-  setTela: (tela: string) => void;
-};
 
-export default function Home({ setTela }: Props) {
+export default function Home() {
   return (
     <section
       className="home"
@@ -29,13 +27,10 @@ export default function Home({ setTela }: Props) {
       </div>
 
       <div className="home-bottom">
-        <button
-          className="btn home-start-btn"
-          onClick={() => setTela("intro")}
-        >
+        <Link to="/Intro" className="home-start-btn">
           Iniciar a leitura da cidade de Vitória - ES a partir
           dos territórios negros
-        </button>
+        </Link>
 
         <p className="home-date">
           Acesso em {formatarDataAcesso()}
