@@ -27,7 +27,7 @@ export default function Home() {
       </div>
 
       <div className="home-bottom">
-        <Link to="/Intro" className="home-start-btn">
+        <Link to="/Intro" className="btn home-start-btn">
           Iniciar a leitura da cidade de Vitória - ES a partir
           dos territórios negros
         </Link>

@@ -1,11 +1,10 @@
+import { Link } from "react-router-dom";
 import Info from "../components/Info";
 import PageTitle from "../components/PageTitle";
 
-type Props = {
-  setTela: (tela: string) => void;
-};
 
-export default function Fim({ setTela }: Props) {
+
+export default function Fim() {
   return (
     <div className="fim">
       <PageTitle title="Fim do percurso" />
@@ -16,12 +15,9 @@ export default function Fim({ setTela }: Props) {
         Continue observando.
       </Info>
 
-      <button
-        className="btn fim-btn"
-        onClick={() => setTela("roteiros")}
-      >
+      <Link to="/roteiros" className="btn fim-btn">
         Escolher outro roteiro
-      </button>
+      </Link>
     </div>
   );
 }

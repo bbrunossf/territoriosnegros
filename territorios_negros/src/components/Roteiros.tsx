@@ -1,17 +1,13 @@
-
+import { useNavigate } from "react-router-dom";
 import dados from "../data/dados.json";
-
 import PageTitle from "../components/PageTitle";
 
 const { roteiros } = dados;
 
-type Props = {
-  irParaRota: (id: string) => void;
-};
 
-export default function Roteiros({
-  irParaRota,
-}: Props) {
+export default function Roteiros() {
+  const navigate = useNavigate();
+
   return (
     <>
       <PageTitle
@@ -20,75 +16,41 @@ export default function Roteiros({
       />
 
       {roteiros.map((r) => {
-        const experiencias = Array.isArray(
-          r.experiencia
-        )
-          ? r.experiencia
-          : [];
+        const experiencias = Array.isArray(r.experiencia) ? r.experiencia : [];
 
         return (
-          <article
-            key={r.id}
-            className="roteiro-card"
-          >
+          <article key={r.id} className="roteiro-card">
             <div className="roteiro-header">
               <div>
-                <b className="roteiro-title">
-                  {r.nome}
-                </b>
-
-                <p className="roteiro-subtitle">
-                  {r.subtitulo}
-                </p>
+                <b className="roteiro-title">{r.nome}</b>
+                <p className="roteiro-subtitle">{r.subtitulo}</p>
               </div>
-
-              <span className="roteiro-level">
-                {r.nivel}
-              </span>
+              <span className="roteiro-level">{r.nivel}</span>
             </div>
 
             <div className="roteiro-section">
-              <b>
-                O que você vai vivenciar:
-              </b>
-
+              <b>O que você vai vivenciar:</b>
               <ul className="roteiro-list">
-                {experiencias.map(
-                  (
-                    item: string,
-                    i: number
-                  ) => (
-                    <li
-                      key={`${r.id}-experiencia-${i}`}
-                    >
-                      {item}
-                    </li>
-                  )
-                )}
+                {experiencias.map((item: string, i: number) => (
+                  <li key={`${r.id}-experiencia-${i}`}>{item}</li>
+                ))}
               </ul>
             </div>
 
             <div className="roteiro-section">
               <b>Acessibilidade:</b>
-
               <p className="roteiro-text">
-                {r.acessibilidade ||
-                  "Informação de acessibilidade em revisão."}
+                {r.acessibilidade || "Informação de acessibilidade em revisão."}
               </p>
             </div>
 
             <div className="roteiro-count">
-              <b>
-                Quantidade de territórios:
-              </b>{" "}
-              {r.pontos.length}
+              <b>Quantidade de territórios:</b> {r.pontos.length}
             </div>
 
             <button
               className="btn roteiro-btn"
-              onClick={() =>
-                irParaRota(r.id)
-              }
+              onClick={() => navigate(`/percurso/${r.id}`)}
             >
               Iniciar percurso
             </button>

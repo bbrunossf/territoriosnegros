@@ -1,19 +1,20 @@
+import { useParams, useNavigate } from "react-router-dom";
+import { useTerritorios } from "../context/TerritoriosContext";
+import dados from "../data/dados.json";
+
 import PageTitle from "../components/PageTitle";
-import type { TerritoriosMap } from "../data/types";
+//import type { TerritoriosMap } from "../data/types";
 
-type Props = {
-  roteiro: any;
-  territorios: TerritoriosMap;
-  setIndice: (indice: number) => void;
-  setTela: (tela: string) => void;
-};
+const { roteiros } = dados;
 
-export default function Percurso({
-  roteiro,
-  territorios,
-  setIndice,
-  setTela,
-}: Props) {
+export default function Percurso() {
+  const { rotaId } = useParams<{ rotaId: string }>();
+  const navigate = useNavigate();
+  const { territorios } = useTerritorios();
+  const roteiro = roteiros.find((r) => r.id === rotaId) || roteiros[0];
+
+  if (!roteiro) return <p>Rota não encontrada.</p>;
+
   return (
     <>
       <PageTitle
@@ -27,13 +28,10 @@ export default function Percurso({
 
              return (
                <button
-                 key={id}
-                 className="percurso-item"
-                 onClick={() => {
-                   setIndice(i);
-                   setTela("territorio");
-                 }}
-               >
+                  key={id}
+                  className="percurso-item"
+                  onClick={() => navigate(`/percurso/${rotaId}/${i}`)}
+                >
                  <img src={t.imagem} alt="" className="percurso-thumb" />
 
                  <span>

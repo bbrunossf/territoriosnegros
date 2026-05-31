@@ -1,7 +1,10 @@
 //Territorios.tsx
+import { useNavigate } from "react-router-dom";
+import { useTerritorios } from "../context/TerritoriosContext";
+
 import PageTitle from "../components/PageTitle";
 import SectionHeader from "../components/SectionHeader";
-import type { TerritoriosMap } from "../data/types";
+//import type { TerritoriosMap } from "../data/types";
 
 
 
@@ -41,15 +44,12 @@ const grupos = [
   },
 ];
 
-type Props = {
-  abrirTerritorio: (id: string) => void;
-  territorios: TerritoriosMap;
-};
 
-export default function Territorios({
-  abrirTerritorio,
-  territorios,
-}: Props) {
+
+export default function Territorios() {
+  const navigate = useNavigate();
+  const { territorios } = useTerritorios();
+
   return (
     <>
       <PageTitle
@@ -69,7 +69,7 @@ export default function Territorios({
               <button
                 key={id}
                 className="territorios-item"
-                onClick={() => abrirTerritorio(id)}
+                onClick={() => navigate(`/territorio/${id}`)}
               >
                 <img src={t.imagem} alt="" className="territorios-thumb" />
 
