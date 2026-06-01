@@ -9,6 +9,27 @@ a, a:visited, a:hover, a:active {
 }
 
 
+
+/* ── Territorio: barra fixa no topo ── */
+.territorio-topbar {
+  position: sticky;
+  top: 64px;                      /* altura do Header (.header) */
+  z-index: 5;
+  background: #f7efdf;
+
+  /* compensa o padding de .content para o fundo encostar nas bordas */
+  margin-left: -22px;
+  margin-right: -22px;
+  padding-left: 22px;
+  padding-right: 22px;
+  padding-bottom: 6px;
+
+  /* separador visual sutil entre a barra fixa e o conteúdo scrollável */
+  border-bottom: 1px solid rgba(159, 111, 42, 0.15);
+}
+
+
+
 /* ── Admin: grid do formulário ── */
 .admin-form-grid {
   display: grid;

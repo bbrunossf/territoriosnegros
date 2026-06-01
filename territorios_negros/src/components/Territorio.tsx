@@ -65,35 +65,30 @@ export default function Territorio() {
 
   return (
       <>
-        <p className="territorio-counter">
-        Território
-        {/*{indice + 1} de {total}*/}
-        </p>
+        <div className="territorio-topbar">
+          <p className="territorio-counter">
+            Território {indice + 1} de {roteiro.pontos.length}
+          </p>
 
-        <h1 className="page-title">
-          {territorio.nome}
-        </h1>
+          <h1 className="page-title">
+            {territorio.nome}
+          </h1>
 
-        <p className="page-subtitle">
-          {territorio.local}
-        </p>
+          <p className="page-subtitle">
+            {territorio.local}
+          </p>
 
-        <div className="page-line" />
+          <div className="page-line" />
 
-        <div className="territorio-actions">
-          <button
-            className="outline"
-            onClick={voltar}
-          >
-            ← Voltar
-          </button>
+          <div className="territorio-actions">
+            <button className="outline" onClick={voltar}>
+              ← Voltar
+            </button>
 
-          <button
-            className="btn"
-            onClick={proximo}
-          >
-            Próximo →
-          </button>
+            <button className="btn" onClick={proximo}>
+              Próximo →
+            </button>
+          </div>
         </div>
 
         {territorio.video ? (
