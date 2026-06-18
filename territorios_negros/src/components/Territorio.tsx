@@ -8,7 +8,7 @@ import dados from "../data/dados.json";
 import Numbered from "../components/Numbered";
 import Topic from "../components/Topic";
 
-import { calcularIdade } from "../utils/data";
+//import { calcularIdade } from "../utils/data";
 // import { foto } from "../utils/imagens";
 //import type { Territorio as TerritorioType } from "../data/types";
 
