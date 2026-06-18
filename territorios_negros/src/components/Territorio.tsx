@@ -5,7 +5,7 @@ import Numbered from "../components/Numbered";
 import Topic from "../components/Topic";
 
 import { calcularIdade } from "../utils/data";
-import { foto } from "../utils/imagens";
+// import { foto } from "../utils/imagens";
 import type { Territorio as TerritorioType } from "../data/types";
 
 type Props = {
@@ -60,7 +60,9 @@ export default function Territorio({
       {territorio.video ? (
         <video
           controls
-          poster={foto(territorio.imagem)}
+          // poster={foto(territorio.imagem)}
+          poster={territorio.imagem}
+
           className="territorio-media"
         >
           <source
@@ -72,7 +74,7 @@ export default function Territorio({
         </video>
       ) : (
         <img
-          src={foto(territorio.imagem)}
+          src={territorio.imagem}
           alt={territorio.nome}
           className="territorio-media"
         />
