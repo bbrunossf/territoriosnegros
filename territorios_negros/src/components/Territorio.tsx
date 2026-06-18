@@ -9,7 +9,8 @@ import Numbered from "../components/Numbered";
 import Topic from "../components/Topic";
 
 import { calcularIdade } from "../utils/data";
-import { foto } from "../utils/imagens";
+// import { foto } from "../utils/imagens";
+import type { Territorio as TerritorioType } from "../data/types";
 
 
 
@@ -91,31 +92,27 @@ export default function Territorio() {
           </div>
         </div>
 
-        {territorio.video ? (
-          <video
-            controls
-            poster={foto(territorio.imagem)}
-            className="territorio-media"
-          >
-            <source
-              src={territorio.video}
-              type="video/mp4"
-            />
+      {territorio.video ? (
+        <video
+          controls
+          // poster={foto(territorio.imagem)}
+          poster={territorio.imagem}
 
-            Seu navegador não suporta vídeo.
-          </video>
-        ) : (
-          <img
-            src={foto(territorio.imagem)}
-            alt={territorio.nome}
-            className="territorio-media"
+          className="territorio-media"
+        >
+          <source
+            src={territorio.video}
+            type="video/mp4"
           />
-        )}
-
-        <InfoRapida
-          territorio={territorio}
-          idade={idade}
+          Seu navegador não suporta vídeo.
+        </video>
+      ) : (
+        <img
+          src={territorio.imagem}
+          alt={territorio.nome}
+          className="territorio-media"
         />
+      )}
 
         <Topic
           icon="✦"
