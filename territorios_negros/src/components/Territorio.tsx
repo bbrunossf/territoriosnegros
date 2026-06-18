@@ -3,14 +3,14 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useTerritorios } from "../context/TerritoriosContext";
 import dados from "../data/dados.json";
 
-import InfoRapida from "../components/InfoRapida";
+//import InfoRapida from "../components/InfoRapida";
 // import Info from "../components/Info";
 import Numbered from "../components/Numbered";
 import Topic from "../components/Topic";
 
 import { calcularIdade } from "../utils/data";
 // import { foto } from "../utils/imagens";
-import type { Territorio as TerritorioType } from "../data/types";
+//import type { Territorio as TerritorioType } from "../data/types";
 
 
 
@@ -37,7 +37,7 @@ export default function Territorio() {
   const territorio = territorios[roteiro.pontos[indice]];
   if (!territorio) return <p>Território não encontrado.</p>;
 
-  const idade = calcularIdade(territorio.ano);
+  //const idade = calcularIdade(territorio.ano);
 
   const proximo = () => {
     if (indice < roteiro.pontos.length - 1) {
