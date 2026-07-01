@@ -13,7 +13,13 @@ import {
 } from "react-router-dom";
 
 import Login from "./routes/login";
-import Admin from "./routes/admin";
+//import Admin from "./routes/admin";
+
+import AdminLayout from "./components/AdminLayout";
+import TerritoriosAdmin from "./components/TerritoriosAdmin";
+import RoteirosAdmin from "./components/RoteirosAdmin";
+import { Navigate } from "react-router-dom";
+
 
 import Home from "./components/Home";
 import Intro from "./components/Intro";
@@ -44,7 +50,11 @@ createRoot(document.getElementById('root')!).render(
             </Route>
 
             <Route path="/login" element={<Login />} />
-            <Route path="/admin" element={<ProtectedRoute><Admin /> </ProtectedRoute>}/>
+            <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
+              <Route index element={<Navigate to="/admin/territorios" replace />} />
+              <Route path="territorios" element={<TerritoriosAdmin />} />
+              <Route path="roteiros" element={<RoteirosAdmin />} />
+            </Route>
           </Routes>
       </TerritoriosProvider>
       </BrowserRouter>

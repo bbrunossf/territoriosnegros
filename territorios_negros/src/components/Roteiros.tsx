@@ -1,12 +1,14 @@
 import { useNavigate } from "react-router-dom";
-import dados from "../data/dados.json";
+//import dados from "../data/dados.json";
 import PageTitle from "../components/PageTitle";
+import { useTerritorios } from "../context/TerritoriosContext";
 
-const { roteiros } = dados;
+//const { roteiros } = dados;
 
 
 export default function Roteiros() {
   const navigate = useNavigate();
+  const { roteiros } = useTerritorios();
 
   return (
     <>
@@ -45,7 +47,7 @@ export default function Roteiros() {
             </div>
 
             <div className="roteiro-count">
-              <b>Quantidade de territórios:</b> {r.pontos.length}
+              <b>Quantidade de territórios:</b> {r.pontos?.length ?? 0}
             </div>
 
             <button

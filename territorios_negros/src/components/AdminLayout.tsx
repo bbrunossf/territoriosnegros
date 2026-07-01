@@ -1,20 +1,12 @@
-import '../styles.css';
-import type { ReactNode } from "react";
-import { useNavigate } from "react-router-dom";
+import "../styles.css";
+import { Outlet, Link, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 
-type Props = {
-  children: ReactNode;
-};
-
-export default function AdminLayout({
-  children,
-}: Props) {
+export default function AdminLayout() {
   const navigate = useNavigate();
 
   async function sair() {
     await supabase.auth.signOut();
-
     navigate("/login");
   }
 
@@ -23,9 +15,13 @@ export default function AdminLayout({
       <aside className="admin-sidebar">
         <h2>Painel</h2>
 
-        <button>
+        <Link to="/admin/territorios" className="admin-sidebar-btn">
           Territórios
-        </button>
+        </Link>
+
+        <Link to="/admin/roteiros" className="admin-sidebar-btn">
+          Roteiros
+        </Link>
 
         <button onClick={sair}>
           Sair
@@ -33,7 +29,7 @@ export default function AdminLayout({
       </aside>
 
       <main className="admin-content">
-        {children}
+        <Outlet />
       </main>
     </div>
   );

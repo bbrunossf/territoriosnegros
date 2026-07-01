@@ -1,7 +1,7 @@
 //Territorio.tsx
 import { useParams, useNavigate } from "react-router-dom";
 import { useTerritorios } from "../context/TerritoriosContext";
-import dados from "../data/dados.json";
+//import dados from "../data/dados.json";
 
 import InfoRapida from "../components/InfoRapida";
 // import Info from "../components/Info";
@@ -14,13 +14,13 @@ import { calcularIdade } from "../utils/data";
 
 
 
-const { roteiros, ordemTerritoriosVisual } = dados;
+//const { roteiros, ordemTerritoriosVisual } = dados;
 
 
 export default function Territorio() {
   const { rotaId, indice: indiceStr, id } = useParams();
   const navigate = useNavigate();
-  const { territorios } = useTerritorios();
+  const { territorios, roteiros, ordemTerritoriosVisual } = useTerritorios();
 
 
   // Determina o contexto: veio de uma rota ou de "todos"?

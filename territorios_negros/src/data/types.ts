@@ -26,5 +26,16 @@ export interface Territorio {
   idadeCamadas?: IdadeCamada[];
 }
 
+export interface Roteiro {
+  id: string;
+  nome: string;
+  nivel: string;
+  subtitulo: string;
+  acessibilidade: string;
+  experiencia: string[];
+  pontos: string[];
+}
+
+
 /** Territórios indexados pelo ID (mesmo formato do JSON original) */
 export type TerritoriosMap = Record<string, Territorio>;

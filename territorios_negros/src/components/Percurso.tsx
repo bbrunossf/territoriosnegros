@@ -1,16 +1,16 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useTerritorios } from "../context/TerritoriosContext";
-import dados from "../data/dados.json";
+//import dados from "../data/dados.json";
 
 import PageTitle from "../components/PageTitle";
 //import type { TerritoriosMap } from "../data/types";
 
-const { roteiros } = dados;
+//const { roteiros } = dados;
 
 export default function Percurso() {
   const { rotaId } = useParams<{ rotaId: string }>();
   const navigate = useNavigate();
-  const { territorios } = useTerritorios();
+  const { territorios, roteiros } = useTerritorios();
   const roteiro = roteiros.find((r) => r.id === rotaId) || roteiros[0];
 
   if (!roteiro) return <p>Rota não encontrada.</p>;

@@ -989,3 +989,18 @@ a, a:visited, a:hover, a:active {
   margin-right: 8px;
   flex-shrink: 0;
 }
+
+.admin-sidebar-btn {
+  display: block;
+  padding: 10px;
+  border: 0;
+  border-radius: 10px;
+  cursor: pointer;
+  color: white;
+  text-decoration: none;
+  font-family: Georgia, serif;
+}
+
+.admin-sidebar-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}

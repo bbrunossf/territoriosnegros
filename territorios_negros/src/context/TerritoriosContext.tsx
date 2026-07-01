@@ -1,27 +1,50 @@
 // src/context/TerritoriosContext.tsx
+
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
 import { fetchTerritorios } from "../data/territorios";
-import type { TerritoriosMap } from "../data/types";
+import { fetchRoteiros, fetchOrdemTerritoriosVisual } from "../data/roteiros";
+import type { TerritoriosMap, Roteiro } from "../data/types";
 
-interface TerritoriosContextType {
+interface DadosContextType {
   territorios: TerritoriosMap;
+  roteiros: Roteiro[];
+  ordemTerritoriosVisual: string[];
   carregando: boolean;
 }
 
-const Ctx = createContext<TerritoriosContextType>({ territorios: {}, carregando: true });
+const Ctx = createContext<DadosContextType>({
+  territorios: {},
+  roteiros: [],
+  ordemTerritoriosVisual: [],
+  carregando: true,
+});
 
 export function TerritoriosProvider({ children }: { children: ReactNode }) {
   const [territorios, setTerritorios] = useState<TerritoriosMap>({});
+  const [roteiros, setRoteiros] = useState<Roteiro[]>([]);
+  const [ordem, setOrdem] = useState<string[]>([]);
   const [carregando, setCarregando] = useState(true);
 
   useEffect(() => {
-    fetchTerritorios()
-      .then(setTerritorios)
+    Promise.all([
+      fetchTerritorios(),
+      fetchRoteiros(),
+      fetchOrdemTerritoriosVisual(),
+    ])
+      .then(([t, r, o]) => {
+        setTerritorios(t);
+        setRoteiros(r);
+        setOrdem(o);
+      })
       .catch(console.error)
       .finally(() => setCarregando(false));
   }, []);
 
-  return <Ctx.Provider value={{ territorios, carregando }}>{children}</Ctx.Provider>;
+  return (
+    <Ctx.Provider value={{ territorios, roteiros, ordemTerritoriosVisual: ordem, carregando }}>
+      {children}
+    </Ctx.Provider>
+  );
 }
 
 export function useTerritorios() {
