@@ -33,6 +33,7 @@ import Roteiros from "./components/Roteiros";
 import Percurso from "./components/Percurso";
 import Territorios from "./components/Territorios";
 import Territorio from "./components/Territorio";
+import ProximoEvento from "./components/ProximoEvento";
 import Fim from "./components/Fim";
 
 createRoot(document.getElementById('root')!).render(
@@ -53,6 +54,7 @@ createRoot(document.getElementById('root')!).render(
               <Route path="percurso/:rotaId/:indice" element={<Territorio />} />
               <Route path="territorios" element={<Territorios />} />
               <Route path="territorio/:id" element={<Territorio />} />
+              <Route path="evento" element={<ProximoEvento />} />
               <Route path="fim" element={<Fim />} />
             </Route>
 

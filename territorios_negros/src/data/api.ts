@@ -425,6 +425,8 @@ export function normalizarProximoTour(valor: unknown): ProximoTour | null {
     texto: typeof v.texto === "string" ? v.texto : "",
     data: typeof v.data === "string" ? v.data : "",
     hora: typeof v.hora === "string" ? v.hora : "",
+    local: typeof v.local === "string" ? v.local : "",
+    info: typeof v.info === "string" ? v.info : "",
     inscricaoUrl:
       typeof v.inscricao_url === "string"
         ? v.inscricao_url

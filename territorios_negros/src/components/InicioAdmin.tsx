@@ -13,6 +13,8 @@ export default function InicioAdmin() {
   const [texto, setTexto] = useState("");
   const [data, setData] = useState("");
   const [hora, setHora] = useState("");
+  const [local, setLocal] = useState("");
+  const [info, setInfo] = useState("");
   const [inscricao, setInscricao] = useState("");
   const [inscricaoGeral, setInscricaoGeral] = useState("");
 
@@ -33,6 +35,8 @@ export default function InicioAdmin() {
       setTexto(tour?.texto ?? "");
       setData(tour?.data ?? "");
       setHora(tour?.hora ?? "");
+      setLocal(tour?.local ?? "");
+      setInfo(tour?.info ?? "");
       setInscricao(tour?.inscricaoUrl ?? "");
       setInscricaoGeral(
         typeof config.inscricao_url === "string" ? config.inscricao_url : ""
@@ -55,6 +59,8 @@ export default function InicioAdmin() {
         texto,
         data,
         hora,
+        local,
+        info,
         inscricao_url: inscricao,
       });
 
@@ -73,8 +79,10 @@ export default function InicioAdmin() {
       <h1>Página inicial</h1>
 
       <p className="admin-ajuda">
-        Este aviso aparece na tela de abertura do app, acima do botão de iniciar.
-        Enquanto estiver desmarcado, nada aparece para os visitantes.
+        Na tela de abertura aparece a faixa <b>“Próximo evento disponível”</b> com o
+        título do evento. Quem tocar no título vê a página do evento — com data, local,
+        as informações abaixo e o botão da ficha de inscrição. Enquanto estiver
+        desmarcado, nada aparece para os visitantes.
       </p>
 
       {ok && <p className="admin-ok">{ok}</p>}
@@ -94,7 +102,7 @@ export default function InicioAdmin() {
 
         <input
           type="text"
-          placeholder="Mensagem (ex: Próximo tour)"
+          placeholder="Título do evento (ex: CAMINHOS DA MEMÓRIA, IDENTIDADE E INCLUSÃO)"
           value={texto}
           onChange={(e) => setTexto(e.target.value)}
         />
@@ -121,10 +129,33 @@ export default function InicioAdmin() {
 
         <input
           type="text"
-          placeholder="Link da ficha de inscrição"
+          placeholder="Local do evento (ex: Centro de Vitória - ES)"
+          value={local}
+          onChange={(e) => setLocal(e.target.value)}
+        />
+
+        <textarea
+          placeholder={
+            "Informações sobre o tour (uma linha por parágrafo)\n" +
+            "ex: Ponto de encontro, duração, o que levar, acessibilidade..."
+          }
+          value={info}
+          onChange={(e) => setInfo(e.target.value)}
+          rows={7}
+        />
+
+        <input
+          type="text"
+          placeholder="Link da ficha de inscrição / página do evento (Google Docs)"
           value={inscricao}
           onChange={(e) => setInscricao(e.target.value)}
         />
+
+        <small className="admin-ajuda">
+          Este link é o botão “Abrir a ficha de inscrição” na página do evento. Pode ser
+          a página do Google Docs com as informações ou direto o formulário — ele abre
+          em outra guia.
+        </small>
 
         <h2>Ficha de inscrição geral</h2>
 

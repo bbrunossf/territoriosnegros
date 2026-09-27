@@ -1186,6 +1186,90 @@ a, a:visited, a:hover, a:active {
   color: #1b100c;
 }
 
+/* faixa "Próximo evento disponível" e título clicável */
+.home-tour-selo {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.1px;
+  text-transform: uppercase;
+  color: #7b522a;
+  margin-bottom: 6px;
+}
+
+.home-tour-link {
+  display: block;
+  text-decoration: underline;
+  text-decoration-color: rgba(197, 139, 42, 0.75);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+
+.home-tour-local {
+  margin-top: 4px;
+  font-size: 14px;
+  color: #563827;
+}
+
+.home-tour-mais {
+  display: block;
+  margin-top: 8px;
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: #6a452b;
+  opacity: 0.9;
+}
+
+/* ── Página do próximo evento ── */
+.evento-selo {
+  font-size: 12.5px;
+  font-weight: 800;
+  letter-spacing: 1.1px;
+  text-transform: uppercase;
+  color: #7b522a;
+  margin-bottom: 6px;
+}
+
+.evento-dados {
+  margin-top: 10px;
+}
+
+.evento-dado {
+  font-size: 15px;
+  color: #3f2717;
+  line-height: 1.5;
+}
+
+.evento-info {
+  margin-top: 16px;
+}
+
+.evento-info p {
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: #2b1a11;
+  margin-bottom: 12px;
+}
+
+.evento-btn {
+  display: block;
+  text-align: center;
+  margin-top: 18px;
+}
+
+.evento-ajuda {
+  margin-top: 8px;
+  font-size: 12.5px;
+  text-align: center;
+  color: #6a452b;
+}
+
+.evento-voltar {
+  margin-top: 22px;
+  font-size: 13.5px;
+  text-align: center;
+}
+
 .home-tour-data {
   margin-top: 4px;
   font-size: 15px;

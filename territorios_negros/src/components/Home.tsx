@@ -24,9 +24,12 @@ export default function Home() {
       <div className="home-bottom">
         {proximoTour && (
           <div className="home-tour">
-            <p className="home-tour-titulo">
+            <p className="home-tour-selo">Próximo evento disponível</p>
+
+            {/* o título é o caminho para as informações do tour e a inscrição */}
+            <Link to="/evento" className="home-tour-titulo home-tour-link">
               {proximoTour.texto || "Próximo tour"}
-            </p>
+            </Link>
 
             {(proximoTour.data || proximoTour.hora) && (
               <p className="home-tour-data">
@@ -34,6 +37,14 @@ export default function Home() {
                 {proximoTour.hora ? ` às ${proximoTour.hora}` : ""}
               </p>
             )}
+
+            {proximoTour.local && (
+              <p className="home-tour-local">{proximoTour.local}</p>
+            )}
+
+            <Link to="/evento" className="home-tour-mais">
+              toque no título para ver as informações do tour e a ficha de inscrição ›
+            </Link>
 
             {inscricao && (
               <a

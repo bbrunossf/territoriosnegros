@@ -84,12 +84,16 @@ export interface Mensagem {
   criadoEm: string;
 }
 
-/** Aviso de próximo tour mostrado na tela inicial */
+/** Aviso do próximo evento mostrado na tela inicial */
 export interface ProximoTour {
   ativo: boolean;
   texto: string;
   data: string;
   hora: string;
+  /** local do evento (ex: Centro de Vitória - ES) */
+  local: string;
+  /** informações sobre o tour (um parágrafo por linha) */
+  info: string;
   inscricaoUrl: string;
 }
 
