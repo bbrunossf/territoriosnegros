@@ -20,6 +20,7 @@ import TerritoriosAdmin from "./components/TerritoriosAdmin";
 import RoteirosAdmin from "./components/RoteirosAdmin";
 import CategoriasAdmin from "./components/CategoriasAdmin";
 import InicioAdmin from "./components/InicioAdmin";
+import VitoriaAdmin from "./components/VitoriaAdmin";
 import MensagensAdmin from "./components/MensagensAdmin";
 import { Navigate } from "react-router-dom";
 
@@ -65,6 +66,7 @@ createRoot(document.getElementById('root')!).render(
               <Route path="roteiros" element={<RoteirosAdmin />} />
               <Route path="categorias" element={<CategoriasAdmin />} />
               <Route path="inicio" element={<InicioAdmin />} />
+              <Route path="vitoria" element={<VitoriaAdmin />} />
               <Route path="mensagens" element={<MensagensAdmin />} />
             </Route>
           </Routes>

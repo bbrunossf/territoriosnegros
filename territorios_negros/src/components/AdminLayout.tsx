@@ -31,6 +31,10 @@ export default function AdminLayout() {
           Página inicial
         </Link>
 
+        <Link to="/admin/vitoria" className="admin-sidebar-btn">
+          Vitória
+        </Link>
+
         <Link to="/admin/mensagens" className="admin-sidebar-btn">
           Mensagens
         </Link>

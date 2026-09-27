@@ -1614,6 +1614,42 @@ a, a:visited, a:hover, a:active {
   border-radius: 12px;
 }
 
+/* blocos de conteúdo (painel da página Vitória) */
+.admin-bloco {
+  border: 1px solid #e5d2a8;
+  background: #fffdf8;
+  border-radius: 12px;
+  padding: 10px;
+  margin-bottom: 12px;
+  display: grid;
+  gap: 8px;
+}
+
+.admin-bloco-topo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.admin-bloco-topo input[type="text"] {
+  flex: 1 1 200px;
+  min-width: 120px;
+}
+
+.admin-bloco-num {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #7b522a;
+}
+
+.admin-bloco-icone {
+  flex: 0 0 64px !important;
+  text-align: center;
+}
+
 .admin-logo-preview {
   display: flex;
   align-items: center;
