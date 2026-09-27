@@ -2,6 +2,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useTerritorios } from "../context/useTerritorios";
 import { pontosVisiveis } from "../utils/catalogo";
 
+import FotoAmpliavel from "../components/FotoAmpliavel";
+
 export default function Percurso() {
   const { rotaId } = useParams<{ rotaId: string }>();
   const navigate = useNavigate();
@@ -91,16 +93,19 @@ export default function Percurso() {
           {roteiro.mapas.length > 0 && (
             <div className="territorio-galeria">
               {roteiro.mapas.map((mapa, i) => (
-                <figure key={`${mapa.url}-${i}`} className="territorio-foto">
-                  <img
-                    src={mapa.url}
-                    alt={mapa.legenda || `Mapa ${i + 1} de ${roteiro.nome}`}
-                  />
-                  {mapa.legenda && <figcaption>{mapa.legenda}</figcaption>}
-                </figure>
+                <FotoAmpliavel
+                  key={`${mapa.url}-${i}`}
+                  url={mapa.url}
+                  alt={mapa.legenda || `Mapa ${i + 1} de ${roteiro.nome}`}
+                  legenda={mapa.legenda}
+                />
               ))}
             </div>
           )}
+
+          <p className="foto-ajuda">
+            Clique numa imagem para ampliar (zoom no app ou abrir em nova guia).
+          </p>
         </>
       )}
 

@@ -1531,6 +1531,84 @@ a, a:visited, a:hover, a:active {
   flex-wrap: wrap;
 }
 
+/* imagem clicável: amplia em tela cheia (mapas, pranchas, documentos) */
+.foto-botao {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+}
+
+.foto-dica {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  background: rgba(9, 5, 4, 0.72);
+  color: #f7efdf;
+  font-size: 12px;
+  letter-spacing: 0.4px;
+  padding: 3px 9px;
+  border-radius: 999px;
+}
+
+.foto-ajuda {
+  font-size: 13px;
+  opacity: 0.72;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.foto-zoom {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: rgba(9, 5, 4, 0.96);
+  overflow: auto;
+  padding: 8px 8px 16px;
+}
+
+.foto-zoom-barra {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 6px 0 10px;
+  background: rgba(9, 5, 4, 0.92);
+}
+
+.foto-zoom-barra .outline {
+  color: #f7efdf;
+  border-color: #c79b52;
+  background: rgba(255, 249, 239, 0.08);
+}
+
+.foto-zoom-nivel {
+  color: #f7efdf;
+  font-size: 13px;
+  min-width: 48px;
+  text-align: center;
+}
+
+.foto-zoom-area {
+  display: grid;
+  place-items: start center;
+  width: 100%;
+}
+
+.foto-zoom-area img {
+  display: block;
+  height: auto;
+  border-radius: 10px;
+  background: #000;
+}
+
 .admin-logo-preview img {
   width: 140px;
   max-height: 140px;

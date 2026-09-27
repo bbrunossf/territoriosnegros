@@ -6,6 +6,7 @@ import { pontosVisiveis } from "../utils/catalogo";
 import InfoRapida from "../components/InfoRapida";
 import Numbered from "../components/Numbered";
 import Topic from "../components/Topic";
+import FotoAmpliavel from "../components/FotoAmpliavel";
 
 import { calcularIdade } from "../utils/data";
 
@@ -166,10 +167,12 @@ export default function Territorio() {
           >
             <div className="territorio-galeria">
               {fotosApoio.map((foto, i) => (
-                <figure key={`${foto.url}-${i}`} className="territorio-foto">
-                  <img src={foto.url} alt={foto.legenda || territorio.nome} />
-                  {foto.legenda && <figcaption>{foto.legenda}</figcaption>}
-                </figure>
+                <FotoAmpliavel
+                  key={`${foto.url}-${i}`}
+                  url={foto.url}
+                  alt={foto.legenda || territorio.nome}
+                  legenda={foto.legenda}
+                />
               ))}
             </div>
           </Topic>
