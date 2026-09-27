@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 type Props = {
   url: string;
@@ -7,26 +7,64 @@ type Props = {
   className?: string;
 };
 
+/** altura reservada para a barra de controles dentro do overlay */
+const ALTURA_BARRA = 78;
+const ZOOM_MIN = 0.1;
+const ZOOM_MAX = 4;
+
 /**
  * Foto/mapa que abre ampliado ao clicar.
  *
  * O app roda numa coluna estreita (430px) por causa do celular; no computador
  * isso deixa mapas e imagens densas ilegíveis. Ao clicar, a imagem abre sobre a
- * tela inteira (ocupa toda a largura do navegador), com Zoom + / − dentro do app
- * e um atalho para abrir o arquivo original em nova guia.
+ * tela inteira com Zoom + / − (de 10% a 400%), botão "caber na tela" para ver o
+ * mapa inteiro de uma vez, e atalho para abrir o arquivo original em nova guia.
  */
 export default function FotoAmpliavel({ url, alt, legenda, className }: Props) {
   const [aberto, setAberto] = useState(false);
   const [zoom, setZoom] = useState(1);
+  const [ajustado, setAjustado] = useState(false);
+  const [imagemCarregada, setImagemCarregada] = useState(false);
+
+  const areaRef = useRef<HTMLDivElement | null>(null);
+  const imgRef = useRef<HTMLImageElement | null>(null);
+
+  /** menor zoom em que a imagem inteira cabe na tela (nunca aumenta) */
+  const zoomParaCaber = useCallback(() => {
+    const img = imgRef.current;
+    const area = areaRef.current;
+    if (!img || !area) return 1;
+
+    const largura = img.naturalWidth;
+    const altura = img.naturalHeight;
+    const larguraArea = area.clientWidth;
+    if (!largura || !altura || !larguraArea) return 1;
+
+    const alturaDisponivel = Math.max(120, window.innerHeight - ALTURA_BARRA);
+    const porAltura = (alturaDisponivel * largura) / (larguraArea * altura);
+
+    return Math.min(1, Math.max(ZOOM_MIN, Math.round(porAltura * 100) / 100));
+  }, []);
+
+  function fechar() {
+    setAberto(false);
+    setZoom(1);
+    setAjustado(false);
+    setImagemCarregada(false);
+  }
+
+  function abrir() {
+    setZoom(1);
+    setAjustado(false);
+    setImagemCarregada(false);
+    setAberto(true);
+  }
 
   useEffect(() => {
     if (!aberto) return;
 
     const aoTeclar = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setAberto(false);
-        setZoom(1);
-      }
+      if (e.key === "Escape") fechar();
     };
 
     const overflowAnterior = document.body.style.overflow;
@@ -39,10 +77,29 @@ export default function FotoAmpliavel({ url, alt, legenda, className }: Props) {
     };
   }, [aberto]);
 
-  function fechar() {
-    setAberto(false);
-    setZoom(1);
+  // ao carregar, se a imagem não couber toda na tela, já abre mostrando inteira
+  function aoCarregarImagem() {
+    setImagemCarregada(true);
+
+    if (ajustado) return;
+    setAjustado(true);
+
+    const z = zoomParaCaber();
+    if (z < 1) setZoom(z);
   }
+
+  /** recalcula o encaixe quando a janela gira/muda de tamanho */
+  useEffect(() => {
+    if (!aberto) return;
+
+    const aoRedimensionar = () => {
+      const z = zoomParaCaber();
+      if (z < 1) setZoom(z);
+    };
+
+    window.addEventListener("resize", aoRedimensionar);
+    return () => window.removeEventListener("resize", aoRedimensionar);
+  }, [aberto, zoomParaCaber]);
 
   return (
     <>
@@ -50,7 +107,7 @@ export default function FotoAmpliavel({ url, alt, legenda, className }: Props) {
         <button
           type="button"
           className="foto-botao"
-          onClick={() => setAberto(true)}
+          onClick={abrir}
           title="Clique para ampliar"
         >
           <img src={url} alt={alt} />
@@ -66,7 +123,9 @@ export default function FotoAmpliavel({ url, alt, legenda, className }: Props) {
             <button
               type="button"
               className="outline"
-              onClick={() => setZoom((z) => Math.max(1, Math.round((z - 0.25) * 100) / 100))}
+              onClick={() =>
+                setZoom((z) => Math.max(ZOOM_MIN, Math.round((z / 1.25) * 100) / 100))
+              }
               title="Diminuir"
               aria-label="Diminuir zoom"
             >
@@ -78,11 +137,22 @@ export default function FotoAmpliavel({ url, alt, legenda, className }: Props) {
             <button
               type="button"
               className="outline"
-              onClick={() => setZoom((z) => Math.min(4, Math.round((z + 0.25) * 100) / 100))}
+              onClick={() =>
+                setZoom((z) => Math.min(ZOOM_MAX, Math.round(z * 1.25 * 100) / 100))
+              }
               title="Aumentar"
               aria-label="Aumentar zoom"
             >
               +
+            </button>
+
+            <button
+              type="button"
+              className="outline"
+              onClick={() => setZoom(zoomParaCaber())}
+              title="Ver a imagem inteira na tela"
+            >
+              caber na tela
             </button>
 
             <a className="outline" href={url} target="_blank" rel="noreferrer">
@@ -94,11 +164,14 @@ export default function FotoAmpliavel({ url, alt, legenda, className }: Props) {
             </button>
           </div>
 
-          <div className="foto-zoom-area">
+          <div className="foto-zoom-area" ref={areaRef}>
             <img
+              ref={imgRef}
               src={url}
               alt={alt}
-              style={{ width: `${zoom * 100}%` }}
+              onLoad={aoCarregarImagem}
+              onError={() => setImagemCarregada(true)}
+              style={{ width: `${zoom * 100}%`, opacity: imagemCarregada ? 1 : 0 }}
               onClick={(e) => e.stopPropagation()}
             />
           </div>
