@@ -8,9 +8,13 @@ import { useTerritorios } from "../context/useTerritorios";
  * Chega-se a ela tocando no título do evento na tela inicial.
  */
 export default function ProximoEvento() {
-  const { proximoTour, inscricaoUrl } = useTerritorios();
+  const { proximoTour, roteiros, inscricaoUrl } = useTerritorios();
 
   const inscricao = proximoTour?.inscricaoUrl || inscricaoUrl;
+
+  // logo: a própria do evento; se não houver, a da rota vinculada
+  const rota = roteiros.find((r) => r.id === proximoTour?.rotaId);
+  const logo = proximoTour?.logo || rota?.logo || "";
   const paragrafos = (proximoTour?.info ?? "")
     .split(/\n+/)
     .map((p) => p.trim())
@@ -37,6 +41,14 @@ export default function ProximoEvento() {
       <p className="evento-selo">Próximo evento disponível</p>
 
       <h1 className="page-title">{proximoTour.texto || "Próximo tour"}</h1>
+
+      {logo && (
+        <img
+          src={logo}
+          alt={`Logo ${proximoTour.texto || "do evento"}`}
+          className="percurso-logo"
+        />
+      )}
 
       <div className="evento-dados">
         {(proximoTour.data || proximoTour.hora) && (
@@ -85,6 +97,12 @@ export default function ProximoEvento() {
       ) : (
         <p className="admin-ajuda">
           A ficha de inscrição ainda não está disponível.
+        </p>
+      )}
+
+      {rota && (
+        <p className="evento-percurso">
+          <Link to={`/percurso/${rota.id}`}>ver o percurso completo desta rota ›</Link>
         </p>
       )}
 

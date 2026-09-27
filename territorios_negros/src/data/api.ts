@@ -296,7 +296,7 @@ export async function excluirMensagem(id: string): Promise<void> {
 export async function uploadFoto(
   id: string,
   file: File,
-  pasta: "territorios" | "roteiros" = "territorios"
+  pasta: "territorios" | "roteiros" | "eventos" = "territorios"
 ): Promise<string> {
   const extensao = file.name.split(".").pop() ?? "jpg";
   const nomeArquivo = `${id}-${Date.now()}-${Math.random()
@@ -427,6 +427,8 @@ export function normalizarProximoTour(valor: unknown): ProximoTour | null {
     hora: typeof v.hora === "string" ? v.hora : "",
     local: typeof v.local === "string" ? v.local : "",
     info: typeof v.info === "string" ? v.info : "",
+    rotaId: typeof v.rota_id === "string" ? v.rota_id : "",
+    logo: typeof v.logo === "string" ? v.logo : "",
     inscricaoUrl:
       typeof v.inscricao_url === "string"
         ? v.inscricao_url

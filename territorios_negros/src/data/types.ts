@@ -94,6 +94,10 @@ export interface ProximoTour {
   local: string;
   /** informações sobre o tour (um parágrafo por linha) */
   info: string;
+  /** rota do evento: a logo dela é usada quando o evento não tem logo própria */
+  rotaId: string;
+  /** logo própria do evento (opcional) */
+  logo: string;
   inscricaoUrl: string;
 }
 

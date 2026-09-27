@@ -1264,6 +1264,12 @@ a, a:visited, a:hover, a:active {
   color: #6a452b;
 }
 
+.evento-percurso {
+  margin-top: 18px;
+  font-size: 14px;
+  text-align: center;
+}
+
 .evento-voltar {
   margin-top: 22px;
   font-size: 13.5px;

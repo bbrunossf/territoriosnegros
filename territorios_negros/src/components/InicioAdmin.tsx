@@ -2,12 +2,12 @@
 import "../styles.css";
 
 import { useEffect, useState } from "react";
-import { normalizarProximoTour, salvarConfig } from "../data/api";
+import { normalizarProximoTour, salvarConfig, uploadFoto } from "../data/api";
 import { useTerritorios } from "../context/useTerritorios";
 import { formatarDataHoraBR } from "../utils/data";
 
 export default function InicioAdmin() {
-  const { config, recarregar } = useTerritorios();
+  const { config, roteiros, recarregar } = useTerritorios();
 
   const [ativo, setAtivo] = useState(false);
   const [texto, setTexto] = useState("");
@@ -15,6 +15,8 @@ export default function InicioAdmin() {
   const [hora, setHora] = useState("");
   const [local, setLocal] = useState("");
   const [info, setInfo] = useState("");
+  const [rotaId, setRotaId] = useState("");
+  const [logo, setLogo] = useState("");
   const [inscricao, setInscricao] = useState("");
   const [inscricaoGeral, setInscricaoGeral] = useState("");
 
@@ -37,6 +39,8 @@ export default function InicioAdmin() {
       setHora(tour?.hora ?? "");
       setLocal(tour?.local ?? "");
       setInfo(tour?.info ?? "");
+      setRotaId(tour?.rotaId ?? "");
+      setLogo(tour?.logo ?? "");
       setInscricao(tour?.inscricaoUrl ?? "");
       setInscricaoGeral(
         typeof config.inscricao_url === "string" ? config.inscricao_url : ""
@@ -47,6 +51,22 @@ export default function InicioAdmin() {
       ativo = false;
     };
   }, [config]);
+
+  async function enviarLogo(file: File | null) {
+    if (!file) return;
+
+    setOk("");
+    setErro("");
+
+    try {
+      const url = await uploadFoto("evento", file, "eventos");
+      setLogo(url);
+      setOk('Logo enviada. Clique em "Salvar" para publicar.');
+    } catch (e) {
+      console.error(e);
+      setErro(e instanceof Error ? e.message : "Falha ao enviar a logo.");
+    }
+  }
 
   async function salvar(e: React.FormEvent) {
     e.preventDefault();
@@ -61,6 +81,8 @@ export default function InicioAdmin() {
         hora,
         local,
         info,
+        rota_id: rotaId,
+        logo,
         inscricao_url: inscricao,
       });
 
@@ -127,6 +149,18 @@ export default function InicioAdmin() {
           </label>
         </div>
 
+        <label className="admin-campo">
+          Rota do evento (a logo dessa rota aparece na página do evento)
+          <select value={rotaId} onChange={(e) => setRotaId(e.target.value)}>
+            <option value="">— nenhuma —</option>
+            {roteiros.map((r) => (
+              <option key={r.id} value={r.id}>
+                {r.nome}
+              </option>
+            ))}
+          </select>
+        </label>
+
         <input
           type="text"
           placeholder="Local do evento (ex: Centro de Vitória - ES)"
@@ -156,6 +190,44 @@ export default function InicioAdmin() {
           a página do Google Docs com as informações ou direto o formulário — ele abre
           em outra guia.
         </small>
+
+        <div className="admin-fotos">
+          <b>Logo do evento (opcional)</b>
+
+          <p className="admin-ajuda">
+            Se você não enviar uma logo própria, o app usa a logo da rota escolhida
+            acima — a mesma que já aparece em Rotas/Percursos. Publica ao clicar em{" "}
+            <b>Salvar</b>.
+          </p>
+
+          {logo && (
+            <div className="admin-logo-preview">
+              <img src={logo} alt="" />
+              <button
+                type="button"
+                className="outline"
+                onClick={() => {
+                  setLogo("");
+                  setOk('Logo marcada para remoção. Clique em "Salvar" para publicar.');
+                }}
+              >
+                Remover logo
+              </button>
+            </div>
+          )}
+
+          <div className="admin-form-upload">
+            <label>{logo ? "Trocar a logo:" : "Enviar a logo:"}</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                enviarLogo(e.target.files?.[0] ?? null);
+                e.target.value = "";
+              }}
+            />
+          </div>
+        </div>
 
         <h2>Ficha de inscrição geral</h2>
 
