@@ -1105,6 +1105,41 @@ a, a:visited, a:hover, a:active {
   color: #7b522a;
 }
 
+/* formulário de contato: ajuda, campo-armadilha e pergunta de confirmação */
+.form-ajuda {
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: #6b5237;
+  margin: -6px 0 0;
+}
+
+.contato-armadilha {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.contato-desafio {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.contato-desafio label {
+  font-size: 15px;
+  color: #563827;
+  flex: 1 1 200px;
+}
+
+.contato-desafio input {
+  flex: 0 0 110px;
+  width: 110px;
+}
+
 .form-erro {
   color: #6b2d2d;
   font-size: 15px;
