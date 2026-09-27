@@ -1,4 +1,9 @@
 // RoteirosAdmin.tsx
+//
+// Regra de gravação (igual à de Territórios):
+//  • botões da TABELA (habilitar/desabilitar, excluir) gravam na hora;
+//  • edição (textos, ordem de visitação, logo e mapas) só vale depois de
+//    clicar em "Salvar alterações".
 import "../styles.css";
 
 import { useCallback, useEffect, useState } from "react";
@@ -8,8 +13,9 @@ import {
   fetchRoteiros,
   fetchTerritorios,
   salvarRoteiro,
+  uploadFoto,
 } from "../data/api";
-import type { Roteiro, Territorio, TerritoriosMap } from "../data/types";
+import type { FotoTerritorio, Roteiro, Territorio, TerritoriosMap } from "../data/types";
 import { gerarSlug } from "../utils/catalogo";
 import { formatarDataHoraBR } from "../utils/data";
 
@@ -24,6 +30,17 @@ function textoParaArray(txt: string): string[] {
     .split("\n")
     .map((s) => s.trim())
     .filter(Boolean);
+}
+
+/** dica quando a coluna nova ainda não existe no banco */
+function explicarErro(mensagem: string): string {
+  if (/column .* does not exist/i.test(mensagem)) {
+    return (
+      `${mensagem} — a coluna nova ainda não existe no banco: falta rodar ` +
+      `supabase/migrations/20260927_roteiros_logo_mapas.sql no SQL Editor do Supabase.`
+    );
+  }
+  return mensagem;
 }
 
 // ── Estado inicial do formulário ─────────────────────────────
@@ -48,10 +65,13 @@ export default function RoteirosAdmin() {
   const [editando, setEditando] = useState<string | null>(null);
 
   const [form, setForm] = useState(FORM_VAZIO);
-  // ordem de visitação (ids), editada como lista
   const [pontos, setPontos] = useState<string[]>([]);
   const [novoPonto, setNovoPonto] = useState("");
 
+  const [logoAtual, setLogoAtual] = useState("");
+  const [mapas, setMapas] = useState<FotoTerritorio[]>([]);
+
+  const [pendente, setPendente] = useState(false);
   const [salvando, setSalvando] = useState(false);
   const [ok, setOk] = useState("");
   const [erro, setErro] = useState("");
@@ -95,6 +115,7 @@ export default function RoteirosAdmin() {
 
   function setCampo(campo: string, valor: string | boolean) {
     setForm((prev) => ({ ...prev, [campo]: valor }));
+    setPendente(true);
   }
 
   function preencherForm(r: Roteiro) {
@@ -110,7 +131,10 @@ export default function RoteirosAdmin() {
       inscricaoUrl: r.inscricaoUrl ?? "",
     });
     setPontos(r.pontos ?? []);
+    setLogoAtual(r.logo ?? "");
+    setMapas(r.mapas ?? []);
     setEditando(r.id);
+    setPendente(false);
     setOk("");
     setErro("");
   }
@@ -118,14 +142,18 @@ export default function RoteirosAdmin() {
   function limparForm() {
     setForm(FORM_VAZIO);
     setPontos([]);
+    setLogoAtual("");
+    setMapas([]);
     setEditando(null);
+    setPendente(false);
   }
 
-  // ── Lista de pontos (ordem de visitação) ────────────────
+  // ── Ordem de visitação ──────────────────────────────────
 
   function adicionarPonto(id: string) {
     if (!id || pontos.includes(id)) return;
     setPontos([...pontos, id]);
+    setPendente(true);
   }
 
   function moverPonto(indice: number, delta: number) {
@@ -135,10 +163,80 @@ export default function RoteirosAdmin() {
     const lista = [...pontos];
     [lista[indice], lista[destino]] = [lista[destino], lista[indice]];
     setPontos(lista);
+    setPendente(true);
   }
 
   function removerPonto(indice: number) {
     setPontos(pontos.filter((_, i) => i !== indice));
+    setPendente(true);
+  }
+
+  // ── Logo e mapas (upload imediato no storage, publica no Salvar) ──
+
+  async function enviarLogo(file: File | null) {
+    if (!file) return;
+    if (!editando) {
+      setErro("Salve a rota primeiro para enviar a logo.");
+      return;
+    }
+
+    setErro("");
+    setOk("");
+
+    try {
+      const url = await uploadFoto(editando, file, "roteiros");
+      setLogoAtual(url);
+      setPendente(true);
+      setOk('Logo enviada. Clique em "Salvar alterações" para publicar.');
+    } catch (e) {
+      console.error(e);
+      setErro(e instanceof Error ? e.message : "Falha ao enviar a logo.");
+    }
+  }
+
+  async function adicionarMapas(files: FileList | null) {
+    if (!files || !editando) return;
+
+    setErro("");
+    setOk("");
+
+    try {
+      const novas: FotoTerritorio[] = [];
+
+      for (const file of Array.from(files)) {
+        const url = await uploadFoto(editando, file, "roteiros");
+        novas.push({ url, legenda: "" });
+      }
+
+      setMapas([...mapas, ...novas]);
+      setPendente(true);
+      setOk(
+        `${novas.length} mapa(s) enviado(s). Clique em "Salvar alterações" para publicar.`
+      );
+    } catch (e) {
+      console.error(e);
+      setErro(e instanceof Error ? e.message : "Falha ao enviar o mapa.");
+    }
+  }
+
+  function moverMapa(indice: number, delta: number) {
+    const destino = indice + delta;
+    if (destino < 0 || destino >= mapas.length) return;
+
+    const lista = [...mapas];
+    [lista[indice], lista[destino]] = [lista[destino], lista[indice]];
+    setMapas(lista);
+    setPendente(true);
+  }
+
+  function alterarLegendaMapa(indice: number, legenda: string) {
+    setMapas(mapas.map((m, i) => (i === indice ? { ...m, legenda } : m)));
+    setPendente(true);
+  }
+
+  function removerMapa(indice: number) {
+    setMapas(mapas.filter((_, i) => i !== indice));
+    setPendente(true);
   }
 
   // ── Salvar ──────────────────────────────────────────────
@@ -163,21 +261,58 @@ export default function RoteirosAdmin() {
         ordem: Number(form.ordem) || 0,
         mapa_url: form.mapaUrl || null,
         inscricao_url: form.inscricaoUrl || null,
+        logo: logoAtual || null,
+        mapas,
         pontos,
       };
 
-      await salvarRoteiro(editando, { ...(editando ? {} : { id }), ...payload });
+      const corpo = { ...(editando ? {} : { id }), ...payload };
+
+      try {
+        await salvarRoteiro(editando, corpo);
+      } catch (e) {
+        const mensagem = e instanceof Error ? e.message : "";
+
+        // janela de transição: se a coluna nova ainda não existe no banco,
+        // grava o resto da rota em vez de perder a edição inteira
+        if (/column .* does not exist/i.test(mensagem)) {
+          const semArquivos: Record<string, unknown> = { ...corpo };
+          const tinhaLogo = !!semArquivos.logo;
+          delete semArquivos.logo;
+          delete semArquivos.mapas;
+
+          await salvarRoteiro(editando, semArquivos);
+
+          setEditando(id);
+          setPendente(false);
+          await carregar();
+          setErro(
+            `A rota foi salva, mas a logo e os mapas não: a coluna nova ainda não ` +
+              `existe no banco. Falta rodar ` +
+              `supabase/migrations/20260927_roteiros_logo_mapas.sql no SQL Editor do ` +
+              `Supabase (logo atual: ${tinhaLogo ? "sim" : "não"}).`
+          );
+          return;
+        }
+
+        throw e;
+      }
 
       setEditando(id);
+      setPendente(false);
       await carregar();
-      setOk(`Salvo em ${formatarDataHoraBR(new Date().toISOString())}.`);
+      setOk(`Alterações publicadas em ${formatarDataHoraBR(new Date().toISOString())}.`);
     } catch (e) {
       console.error(e);
-      setErro(e instanceof Error ? e.message : "Falha ao salvar.");
+      setErro(
+        e instanceof Error ? explicarErro(e.message) : "Falha ao salvar."
+      );
     } finally {
       setSalvando(false);
     }
   }
+
+  // ── Ações instantâneas (tabela) ─────────────────────────
 
   async function alternarAtivo(id: string, ativo: boolean) {
     setErro("");
@@ -186,11 +321,15 @@ export default function RoteirosAdmin() {
     try {
       await atualizarRoteiro(id, { ativo });
       if (editando === id) setForm((prev) => ({ ...prev, ativo }));
-      setOk(ativo ? "Rota habilitada para os visitantes." : "Rota desabilitada.");
+      setOk(
+        ativo
+          ? "Rota habilitada para os visitantes (gravado)."
+          : "Rota desabilitada para os visitantes (gravado)."
+      );
       await carregar();
     } catch (e) {
       console.error(e);
-      setErro(e instanceof Error ? e.message : "Falha ao alterar a visibilidade.");
+      setErro(e instanceof Error ? explicarErro(e.message) : "Falha ao alterar a visibilidade.");
     }
   }
 
@@ -207,7 +346,7 @@ export default function RoteirosAdmin() {
       setOk("Rota excluída.");
     } catch (e) {
       console.error(e);
-      setErro(e instanceof Error ? e.message : "Falha ao excluir.");
+      setErro(e instanceof Error ? explicarErro(e.message) : "Falha ao excluir.");
     }
   }
 
@@ -223,8 +362,9 @@ export default function RoteirosAdmin() {
       <h1>Rotas</h1>
 
       <p className="admin-ajuda">
-        Quando estiver guiando, deixe habilitada apenas a rota do dia — as outras
-        desaparecem para os visitantes. A ordem da lista abaixo é a ordem de visitação.
+        Quando estiver guiando, deixe habilitada apenas a rota do dia. A ordem da lista
+        abaixo é a ordem de visitação. Logo e mapas só são publicados ao clicar em{" "}
+        <b>Salvar alterações</b>; os botões da tabela gravam na hora.
       </p>
 
       {ok && <p className="admin-ok">{ok}</p>}
@@ -232,7 +372,10 @@ export default function RoteirosAdmin() {
 
       {/* ─── Formulário (criar / editar) ─── */}
       <form className="admin-form" onSubmit={salvar}>
-        <h2>{estaEditando ? `Editando: ${form.nome} (${editando})` : "Nova rota"}</h2>
+        <h2>
+          {estaEditando ? `Editando: ${form.nome} (${editando})` : "Nova rota"}
+          {pendente && <span className="admin-pendente"> · alterações não salvas</span>}
+        </h2>
 
         <div className="admin-form-grid">
           <input
@@ -295,9 +438,9 @@ export default function RoteirosAdmin() {
           onChange={(e) => setCampo("mapaUrl", e.target.value)}
         />
         <small className="admin-ajuda">
-          No Google My Maps: crie o mapa com o traçado do percurso, clique em
-          Compartilhar → “Qualquer pessoa com o link” → copie o link e cole aqui. Ele
-          aparece embutido na tela da rota.
+          No Google My Maps: crie o mapa com o traçado, clique em Compartilhar →
+          “Qualquer pessoa com o link” → copie o link e cole aqui. Ele aparece embutido
+          na tela da rota, antes das suas imagens de mapa.
         </small>
 
         <input
@@ -306,6 +449,119 @@ export default function RoteirosAdmin() {
           value={form.inscricaoUrl}
           onChange={(e) => setCampo("inscricaoUrl", e.target.value)}
         />
+
+        {/* ─── Logo da rota ─── */}
+        <div className="admin-fotos">
+          <b>Logo da rota / do evento</b>
+
+          {!estaEditando ? (
+            <p className="admin-ajuda">
+              Salve a rota primeiro. Depois de salva, este bloco libera o envio da logo.
+            </p>
+          ) : (
+            <>
+              <p className="admin-ajuda">
+                Aparece na tela da rota (topo) e na lista de rotas. Publica ao clicar em{" "}
+                <b>Salvar alterações</b>.
+              </p>
+
+              {logoAtual && (
+                <div className="admin-logo-preview">
+                  <img src={logoAtual} alt="" />
+                  <button
+                    type="button"
+                    className="outline"
+                    onClick={() => {
+                      setLogoAtual("");
+                      setPendente(true);
+                      setOk('Logo marcada para remoção. Clique em "Salvar alterações".');
+                    }}
+                  >
+                    Remover logo
+                  </button>
+                </div>
+              )}
+
+              <div className="admin-form-upload">
+                <label>{logoAtual ? "Trocar a logo:" : "Enviar a logo:"}</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    enviarLogo(e.target.files?.[0] ?? null);
+                    e.target.value = "";
+                  }}
+                />
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* ─── Mapas do percurso ─── */}
+        <div className="admin-fotos">
+          <b>Imagens de mapa do percurso</b>
+
+          {!estaEditando ? (
+            <p className="admin-ajuda">
+              Salve a rota primeiro. Depois de salva, este bloco libera o envio das
+              imagens de mapa que você produziu.
+            </p>
+          ) : (
+            <>
+              <p className="admin-ajuda">
+                Podem ser vários mapas (o antigo, o atual, recortes etc.). A ordem aqui é
+                a ordem em que aparecem no app. Publica ao clicar em{" "}
+                <b>Salvar alterações</b>.
+              </p>
+
+              <div className="admin-form-upload">
+                <label>Adicionar mapas (pode escolher vários):</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={(e) => {
+                    adicionarMapas(e.target.files);
+                    e.target.value = "";
+                  }}
+                />
+              </div>
+
+              {mapas.length === 0 && (
+                <p className="admin-ajuda">Nenhum mapa cadastrado ainda.</p>
+              )}
+
+              <div className="admin-galeria">
+                {mapas.map((mapa, i) => (
+                  <div key={`${mapa.url}-${i}`} className="admin-galeria-item">
+                    <span className="admin-galeria-apoio">mapa {i + 1}</span>
+
+                    <img src={mapa.url} alt="" />
+
+                    <input
+                      type="text"
+                      placeholder="Legenda do mapa"
+                      value={mapa.legenda ?? ""}
+                      onChange={(e) => alterarLegendaMapa(i, e.target.value)}
+                    />
+
+                    <div className="admin-galeria-acoes">
+                      <button type="button" className="outline" onClick={() => moverMapa(i, -1)}>
+                        ↑
+                      </button>
+                      <button type="button" className="outline" onClick={() => moverMapa(i, 1)}>
+                        ↓
+                      </button>
+                      <button type="button" className="outline" onClick={() => removerMapa(i)}>
+                        Remover
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
 
         {/* ─── Ordem de visitação ─── */}
         <div className="admin-pontos">
@@ -367,11 +623,23 @@ export default function RoteirosAdmin() {
 
         <div className="admin-form-botoes">
           <button type="submit" className="btn" disabled={salvando}>
-            {salvando ? "Salvando..." : estaEditando ? "Salvar alterações" : "Criar rota"}
+            {salvando ? "Salvando..." : "Salvar alterações"}
           </button>
+
           {estaEditando && (
-            <button type="button" className="outline" onClick={limparForm}>
-              Fechar / limpar
+            <button
+              type="button"
+              className="outline"
+              onClick={() => {
+                if (
+                  !pendente ||
+                  window.confirm("Descartar as alterações não salvas desta rota?")
+                ) {
+                  limparForm();
+                }
+              }}
+            >
+              Fechar / descartar
             </button>
           )}
         </div>
@@ -384,8 +652,9 @@ export default function RoteirosAdmin() {
             <th>Nome</th>
             <th>Nível</th>
             <th>Territórios</th>
-            <th>Mapa</th>
-            <th>Visível</th>
+            <th>Logo</th>
+            <th>Mapas</th>
+            <th>Visível (grava na hora)</th>
             <th>Ações</th>
           </tr>
         </thead>
@@ -400,7 +669,8 @@ export default function RoteirosAdmin() {
               </td>
               <td>{r.nivel}</td>
               <td>{r.pontos?.length ?? 0}</td>
-              <td>{r.mapaUrl ? "sim" : "não"}</td>
+              <td>{r.logo ? "sim" : "não"}</td>
+              <td>{r.mapas?.length ?? 0}</td>
               <td>
                 <button
                   className={r.ativo === false ? "outline" : "btn"}
@@ -410,7 +680,20 @@ export default function RoteirosAdmin() {
                 </button>
               </td>
               <td className="admin-acoes">
-                <button className="outline" onClick={() => preencherForm(r)} title="Editar">
+                <button
+                  className="outline"
+                  onClick={() => {
+                    if (
+                      !pendente ||
+                      window.confirm(
+                        "Você tem alterações não salvas em outra rota. Abrir esta e descartar?"
+                      )
+                    ) {
+                      preencherForm(r);
+                    }
+                  }}
+                  title="Editar"
+                >
                   ✏️
                 </button>
                 <button className="outline" onClick={() => excluir(r.id, r.nome)} title="Excluir">
@@ -422,7 +705,7 @@ export default function RoteirosAdmin() {
 
           {roteiros.length === 0 && (
             <tr>
-              <td colSpan={6} style={{ textAlign: "center", padding: 24 }}>
+              <td colSpan={7} style={{ textAlign: "center", padding: 24 }}>
                 Nenhuma rota cadastrada.
               </td>
             </tr>

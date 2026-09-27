@@ -293,12 +293,16 @@ export async function excluirMensagem(id: string): Promise<void> {
 
 // ─────────────────────────────────────────────────── FOTOS (storage)
 
-export async function uploadFoto(territorioId: string, file: File): Promise<string> {
+export async function uploadFoto(
+  id: string,
+  file: File,
+  pasta: "territorios" | "roteiros" = "territorios"
+): Promise<string> {
   const extensao = file.name.split(".").pop() ?? "jpg";
-  const nomeArquivo = `${territorioId}-${Date.now()}-${Math.random()
+  const nomeArquivo = `${id}-${Date.now()}-${Math.random()
     .toString(36)
     .slice(2, 7)}.${extensao}`;
-  const caminho = `territorios/${nomeArquivo}`;
+  const caminho = `${pasta}/${nomeArquivo}`;
 
   const { error } = await supabase.storage.from(BUCKET).upload(caminho, file, {
     upsert: false,
@@ -377,6 +381,8 @@ interface RawRoteiro {
   ativo?: boolean | null;
   ordem?: number | null;
   mapa_url?: string | null;
+  logo?: string | null;
+  mapas?: FotoTerritorio[] | null;
   inscricao_url?: string | null;
 }
 
@@ -392,6 +398,8 @@ function mapRoteiro(raw: RawRoteiro): Roteiro {
     ativo: raw.ativo !== false,
     ordem: raw.ordem ?? 0,
     mapaUrl: raw.mapa_url ?? null,
+    logo: raw.logo ?? null,
+    mapas: Array.isArray(raw.mapas) ? raw.mapas : [],
     inscricaoUrl: raw.inscricao_url ?? null,
   };
 }

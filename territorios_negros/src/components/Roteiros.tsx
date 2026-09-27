@@ -19,6 +19,14 @@ export default function Roteiros() {
 
         return (
           <article key={r.id} className="roteiro-card">
+            {r.logo && (
+              <img
+                src={r.logo}
+                alt={`Logo ${r.nome}`}
+                className="roteiro-logo"
+              />
+            )}
+
             <div className="roteiro-header">
               <div>
                 <b className="roteiro-title">{r.nome}</b>

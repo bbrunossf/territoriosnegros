@@ -1507,3 +1507,37 @@ a, a:visited, a:hover, a:active {
   padding: 18px;
 }
 
+/* ── 8. Rota: logo do evento e mapas do percurso ── */
+.roteiro-logo {
+  display: block;
+  width: 100%;
+  max-width: 260px;
+  margin: 0 auto 12px;
+  border-radius: 12px;
+}
+
+.percurso-logo {
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  margin: 6px auto 4px;
+  border-radius: 14px;
+}
+
+.admin-logo-preview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.admin-logo-preview img {
+  width: 140px;
+  max-height: 140px;
+  object-fit: contain;
+  background: #fdf8f0;
+  border: 1px solid #e5d2a8;
+  border-radius: 12px;
+  padding: 6px;
+}
+

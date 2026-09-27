@@ -56,6 +56,10 @@ export interface Roteiro {
   ordem: number;
   /** link do mapa do percurso (Google My Maps etc.) exibido embutido na rota */
   mapaUrl: string | null;
+  /** logo própria do evento/rota */
+  logo: string | null;
+  /** imagens de mapa produzidas pela autoria */
+  mapas: FotoTerritorio[];
   /** ficha de inscrição desta rota */
   inscricaoUrl: string | null;
 }

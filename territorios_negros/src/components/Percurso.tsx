@@ -24,6 +24,14 @@ export default function Percurso() {
         subtitle={roteiro.subtitulo}
       />
 
+      {roteiro.logo && (
+        <img
+          src={roteiro.logo}
+          alt={`Logo ${roteiro.nome}`}
+          className="percurso-logo"
+        />
+      )}
+
       {roteiro.mapaUrl && (
         <>
           <h3 className="section-header">Mapa do percurso</h3>
@@ -46,6 +54,21 @@ export default function Percurso() {
           >
             Abrir mapa em tela cheia
           </a>
+        </>
+      )}
+
+      {roteiro.mapas.length > 0 && (
+        <>
+          <h3 className="section-header">Mapas do percurso</h3>
+
+          <div className="territorio-galeria">
+            {roteiro.mapas.map((mapa, i) => (
+              <figure key={`${mapa.url}-${i}`} className="territorio-foto">
+                <img src={mapa.url} alt={mapa.legenda || `Mapa ${i + 1} de ${roteiro.nome}`} />
+                {mapa.legenda && <figcaption>{mapa.legenda}</figcaption>}
+              </figure>
+            ))}
+          </div>
         </>
       )}
 
