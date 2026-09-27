@@ -58,13 +58,15 @@ export default function Home() {
           dos territórios negros
         </Link>
 
-        <p className="home-date">
-          Acesso em {formatarDataAcesso()}
-        </p>
+        <div className="home-creditos">
+          <p className="home-date">
+            Acesso em {formatarDataAcesso()}
+          </p>
 
-        <p className="home-autoria">
-          Aingrid Fabiane de Souza — Licenciada em Geografia (UFES)
-        </p>
+          <p className="home-autoria">
+            Aingrid Fabiane de Souza — Licenciada em Geografia (UFES)
+          </p>
+        </div>
       </div>
     </section>
   );

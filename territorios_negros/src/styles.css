@@ -1171,6 +1171,15 @@ a, a:visited, a:hover, a:active {
   font-size: 12px;
 }
 
+/* data de acesso e autoria sobre a capa: painel discreto para não sumir no fundo */
+.home-creditos {
+  background: rgba(9, 5, 4, 0.42);
+  border: 1px solid rgba(197, 139, 42, 0.35);
+  border-radius: 12px;
+  padding: 8px 12px;
+  backdrop-filter: blur(4px);
+}
+
 .home-autoria {
   text-align: center;
   font-size: 12px;
