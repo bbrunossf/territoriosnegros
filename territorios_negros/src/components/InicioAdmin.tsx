@@ -103,8 +103,9 @@ export default function InicioAdmin() {
       <p className="admin-ajuda">
         Na tela de abertura aparece a faixa <b>“Próximo evento disponível”</b> com o
         título do evento. Quem tocar no título vê a página do evento — com data, local,
-        as informações abaixo e o botão da ficha de inscrição. Enquanto estiver
-        desmarcado, nada aparece para os visitantes.
+        as informações abaixo e o botão da ficha de inscrição. A <b>logo do evento</b>{" "}
+        é enviada aqui mesmo, neste formulário. Enquanto estiver desmarcado, nada
+        aparece para os visitantes.
       </p>
 
       {ok && <p className="admin-ok">{ok}</p>}
@@ -149,17 +150,44 @@ export default function InicioAdmin() {
           </label>
         </div>
 
-        <label className="admin-campo">
-          Rota do evento (a logo dessa rota aparece na página do evento)
-          <select value={rotaId} onChange={(e) => setRotaId(e.target.value)}>
-            <option value="">— nenhuma —</option>
-            {roteiros.map((r) => (
-              <option key={r.id} value={r.id}>
-                {r.nome}
-              </option>
-            ))}
-          </select>
-        </label>
+        <div className="admin-fotos">
+          <b>Logo do evento</b>
+
+          <p className="admin-ajuda">
+            Envie aqui a imagem da logo <b>deste tour</b> — ela aparece no topo da página
+            do evento, no mesmo tamanho reduzido da tela de Percursos. Publica ao clicar
+            em <b>Salvar</b>. Se você não enviar nenhuma, o app usa a logo da rota
+            escolhida no fim deste formulário.
+          </p>
+
+          {logo && (
+            <div className="admin-logo-preview">
+              <img src={logo} alt="" />
+              <button
+                type="button"
+                className="outline"
+                onClick={() => {
+                  setLogo("");
+                  setOk('Logo marcada para remoção. Clique em "Salvar" para publicar.');
+                }}
+              >
+                Remover logo
+              </button>
+            </div>
+          )}
+
+          <div className="admin-form-upload">
+            <label>{logo ? "Trocar a logo do evento:" : "Enviar a logo do evento:"}</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                enviarLogo(e.target.files?.[0] ?? null);
+                e.target.value = "";
+              }}
+            />
+          </div>
+        </div>
 
         <input
           type="text"
@@ -191,43 +219,22 @@ export default function InicioAdmin() {
           em outra guia.
         </small>
 
-        <div className="admin-fotos">
-          <b>Logo do evento (opcional)</b>
+        <label className="admin-campo">
+          Rota do evento (opcional)
+          <select value={rotaId} onChange={(e) => setRotaId(e.target.value)}>
+            <option value="">— nenhuma —</option>
+            {roteiros.map((r) => (
+              <option key={r.id} value={r.id}>
+                {r.nome}
+              </option>
+            ))}
+          </select>
+        </label>
 
-          <p className="admin-ajuda">
-            Se você não enviar uma logo própria, o app usa a logo da rota escolhida
-            acima — a mesma que já aparece em Rotas/Percursos. Publica ao clicar em{" "}
-            <b>Salvar</b>.
-          </p>
-
-          {logo && (
-            <div className="admin-logo-preview">
-              <img src={logo} alt="" />
-              <button
-                type="button"
-                className="outline"
-                onClick={() => {
-                  setLogo("");
-                  setOk('Logo marcada para remoção. Clique em "Salvar" para publicar.');
-                }}
-              >
-                Remover logo
-              </button>
-            </div>
-          )}
-
-          <div className="admin-form-upload">
-            <label>{logo ? "Trocar a logo:" : "Enviar a logo:"}</label>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) => {
-                enviarLogo(e.target.files?.[0] ?? null);
-                e.target.value = "";
-              }}
-            />
-          </div>
-        </div>
+        <small className="admin-ajuda">
+          Serve para o link “ver o percurso completo desta rota” na página do evento e,
+          se você não enviou uma logo própria acima, é a logo usada nesta página.
+        </small>
 
         <h2>Ficha de inscrição geral</h2>
 
