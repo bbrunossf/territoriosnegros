@@ -1492,3 +1492,18 @@ a, a:visited, a:hover, a:active {
   color: #8f611d;
 }
 
+/* território sem foto/vídeo cadastrados: bloco discreto no lugar da imagem */
+.territorio-sem-foto {
+  display: grid;
+  place-items: center;
+  min-height: 190px;
+  background: #efe2c9;
+  border-color: #e3cf9f;
+  color: #7b522a;
+  font-size: 15px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 18px;
+}
+

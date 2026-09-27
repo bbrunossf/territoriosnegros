@@ -95,12 +95,17 @@ export default function Territorio() {
           />
           Seu navegador não suporta vídeo.
         </video>
-      ) : (
+      ) : territorio.imagem ? (
         <img
           src={territorio.imagem}
           alt={territorio.nome}
           className="territorio-media"
         />
+      ) : (
+        /* sem foto nem vídeo cadastrados: mostra um aviso em vez de imagem quebrada */
+        <div className="territorio-media territorio-sem-foto">
+          <span>Imagem deste território em produção</span>
+        </div>
       )}
 
       <InfoRapida
