@@ -1,14 +1,10 @@
 import { useNavigate } from "react-router-dom";
-//import dados from "../data/dados.json";
 import PageTitle from "../components/PageTitle";
-import { useTerritorios } from "../context/TerritoriosContext";
-
-//const { roteiros } = dados;
-
+import { useTerritorios } from "../context/useTerritorios";
 
 export default function Roteiros() {
   const navigate = useNavigate();
-  const { roteiros } = useTerritorios();
+  const { roteiros, inscricaoUrl } = useTerritorios();
 
   return (
     <>
@@ -19,6 +15,7 @@ export default function Roteiros() {
 
       {roteiros.map((r) => {
         const experiencias = Array.isArray(r.experiencia) ? r.experiencia : [];
+        const inscricao = r.inscricaoUrl || inscricaoUrl;
 
         return (
           <article key={r.id} className="roteiro-card">
@@ -56,9 +53,37 @@ export default function Roteiros() {
             >
               Iniciar percurso
             </button>
+
+            {r.mapaUrl && (
+              <a
+                className="outline roteiro-btn"
+                href={r.mapaUrl}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Ver o traçado no mapa
+              </a>
+            )}
+
+            {inscricao && (
+              <a
+                className="outline roteiro-btn"
+                href={inscricao}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Ficha de inscrição
+              </a>
+            )}
           </article>
         );
       })}
+
+      {roteiros.length === 0 && (
+        <p className="aviso-vazio">
+          Nenhuma rota disponível no momento.
+        </p>
+      )}
     </>
   );
 }

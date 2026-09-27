@@ -13,13 +13,14 @@ export default function Intro() {
       <PageTitle title="Antes de caminhar" />
 
       <Info>
-        Este guia propõe uma{" "}
-        <b>
-          leitura da cidade de Vitória - ES a partir
-          dos territórios negros
-        </b>
-        . Não se trata de turismo, mas de uma
-        experiência formativa em campo.
+        Este guia propõe uma leitura da cidade de
+        Vitória - ES a partir dos{" "}
+        <b>Territórios Negros</b>. Não se trata de um
+        guia de turismo, mas de uma experiência de
+        reconhecimento e interpretação da cidade para
+        além das narrativas oficiais, a partir das
+        lentes da geografia, da história e da
+        sociabilidade da população negra.
       </Info>
 
       <Topic
@@ -42,10 +43,9 @@ export default function Intro() {
       >
         <Numbered
           items={[
-            "Escolha um percurso conforme o público, o clima e o contexto da visita",
             "Leia o essencial em cada ponto e observe o espaço ao redor",
             "Use o corpo como instrumento de leitura do território",
-            "Evite transformar a experiência em consumo turístico",
+            "Não transforme a experiência em apenas consumo turístico. Contribua para valorização, preservação e proteção dos territórios negros.",
           ]}
         />
       </Topic>
@@ -57,6 +57,10 @@ export default function Intro() {
 
         <Link to="/roteiros" className="outline">
           Ir direto para os roteiros
+        </Link>
+
+        <Link to="/vitoria" className="outline">
+          A cidade de Vitória - ES
         </Link>
       </div>
     </>

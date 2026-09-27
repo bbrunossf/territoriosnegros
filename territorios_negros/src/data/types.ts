@@ -5,6 +5,12 @@ export interface IdadeCamada {
   label: string;
 }
 
+/** Foto de apoio de um território (galeria liberada durante o tour) */
+export interface FotoTerritorio {
+  url: string;
+  legenda?: string;
+}
+
 export interface Territorio {
   id: string;
   nome: string;
@@ -24,6 +30,18 @@ export interface Territorio {
   pergunta: string;
   video?: string;
   idadeCamadas?: IdadeCamada[];
+
+  // ── campos de gestão (painel da autoria) ──
+  /** id da categoria (tabela categorias) */
+  categoria: string | null;
+  /** false = escondido do público (ex.: dia de tour só com o que será visitado) */
+  ativo: boolean;
+  /** ordem de exibição na aba Territórios */
+  ordem: number;
+  /** fotos de apoio, liberadas/bloqueadas em conjunto */
+  fotos: FotoTerritorio[];
+  /** true = visitantes já podem ver as fotos de apoio */
+  fotosLiberadas: boolean;
 }
 
 export interface Roteiro {
@@ -34,6 +52,37 @@ export interface Roteiro {
   acessibilidade: string;
   experiencia: string[];
   pontos: string[];
+  ativo: boolean;
+  ordem: number;
+  /** link do mapa do percurso (Google My Maps etc.) exibido embutido na rota */
+  mapaUrl: string | null;
+  /** ficha de inscrição desta rota */
+  inscricaoUrl: string | null;
+}
+
+export interface Categoria {
+  id: string;
+  nome: string;
+  ordem: number;
+}
+
+export interface Mensagem {
+  id: string;
+  nome: string;
+  email: string | null;
+  whatsapp: string | null;
+  mensagem: string;
+  lida: boolean;
+  criadoEm: string;
+}
+
+/** Aviso de próximo tour mostrado na tela inicial */
+export interface ProximoTour {
+  ativo: boolean;
+  texto: string;
+  data: string;
+  hora: string;
+  inscricaoUrl: string;
 }
 
 

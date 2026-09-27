@@ -18,13 +18,17 @@ import Login from "./routes/login";
 import AdminLayout from "./components/AdminLayout";
 import TerritoriosAdmin from "./components/TerritoriosAdmin";
 import RoteirosAdmin from "./components/RoteirosAdmin";
+import CategoriasAdmin from "./components/CategoriasAdmin";
+import InicioAdmin from "./components/InicioAdmin";
+import MensagensAdmin from "./components/MensagensAdmin";
 import { Navigate } from "react-router-dom";
 
 
 import Home from "./components/Home";
 import Intro from "./components/Intro";
 import Conceito from "./components/Conceito";
-import Sobre from "./components/Sobre";
+import Vitoria from "./components/Vitoria";
+import Contato from "./components/Contato";
 import Roteiros from "./components/Roteiros";
 import Percurso from "./components/Percurso";
 import Territorios from "./components/Territorios";
@@ -40,7 +44,10 @@ createRoot(document.getElementById('root')!).render(
               <Route index element={<Home />} />
               <Route path="intro" element={<Intro />} />
               <Route path="conceito" element={<Conceito />} />
-              <Route path="sobre" element={<Sobre />} />
+              {/* "Sobre" foi incorporada à Base teórica */}
+              <Route path="sobre" element={<Navigate to="/conceito" replace />} />
+              <Route path="vitoria" element={<Vitoria />} />
+              <Route path="contato" element={<Contato />} />
               <Route path="roteiros" element={<Roteiros />} />
               <Route path="percurso/:rotaId" element={<Percurso />} />
               <Route path="percurso/:rotaId/:indice" element={<Territorio />} />
@@ -54,6 +61,9 @@ createRoot(document.getElementById('root')!).render(
               <Route index element={<Navigate to="/admin/territorios" replace />} />
               <Route path="territorios" element={<TerritoriosAdmin />} />
               <Route path="roteiros" element={<RoteirosAdmin />} />
+              <Route path="categorias" element={<CategoriasAdmin />} />
+              <Route path="inicio" element={<InicioAdmin />} />
+              <Route path="mensagens" element={<MensagensAdmin />} />
             </Route>
           </Routes>
       </TerritoriosProvider>

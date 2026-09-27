@@ -2,9 +2,10 @@
 import Topic from "../components/Topic";
 
 import { idadeTexto } from "../utils/data";
+import type { IdadeCamada, Territorio } from "../data/types";
 
 type Props = {
-  territorio: any;
+  territorio: Territorio;
   idade: number | null;
 };
 
@@ -51,7 +52,7 @@ export default function InfoRapida({
   }
 
   if (territorio.idadeCamadas) {
-    territorio.idadeCamadas.forEach((c: any) =>
+    territorio.idadeCamadas.forEach((c: IdadeCamada) =>
       cards.push([
         "📜",
         "Camada temporal",

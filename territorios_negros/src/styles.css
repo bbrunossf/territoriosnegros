@@ -1004,3 +1004,425 @@ a, a:visited, a:hover, a:active {
 .admin-sidebar-btn:hover {
   background: rgba(255, 255, 255, 0.1);
 }
+
+
+/* ══════════════════════════════════════════════════════════════════
+   AJUSTES 27/09/2026 - pedidos da autoria
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ── 1. Leitura: fonte maior nos textos do app ── */
+.phone {
+  font-size: 17px;
+}
+
+.info-box {
+  font-size: 17px;
+  line-height: 1.62;
+}
+
+.topic-title {
+  font-size: 14.5px;
+}
+
+.section-header {
+  font-size: 14.5px;
+}
+
+.numbered-item {
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+.page-subtitle {
+  font-size: 16px;
+}
+
+.territorio-counter {
+  font-size: 13px;
+}
+
+.territorio-topbar {
+  top: 72px;
+}
+
+.roteiro-title {
+  font-size: 20px;
+}
+
+.roteiro-subtitle {
+  font-size: 15.5px;
+}
+
+.roteiro-section,
+.roteiro-count,
+.roteiro-list {
+  font-size: 15.5px;
+}
+
+.territorios-item,
+.percurso-item {
+  font-size: 17px;
+}
+
+.territorios-palavra,
+.percurso-palavra {
+  font-size: 14px;
+}
+
+.info-rapida-grid {
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.territorios-thumb-vazia {
+  display: grid;
+  place-items: center;
+  background: #efe2c9;
+  color: #8c5d21;
+  font-size: 20px;
+}
+
+/* o menu inferior agora tem 5 itens (Sobre entrou em Conceito) */
+.bottom-nav {
+  grid-template-columns: repeat(5, 1fr);
+}
+
+.bottom-nav-btn {
+  font-size: 11.5px;
+}
+
+/* links-botão de largura total */
+.roteiro-btn,
+.conceito-btn,
+.fim-btn {
+  display: block;
+  text-align: center;
+}
+
+.aviso-vazio {
+  margin-top: 22px;
+  text-align: center;
+  color: #7b522a;
+}
+
+.form-erro {
+  color: #6b2d2d;
+  font-size: 15px;
+}
+
+.form-ok {
+  color: #2d5a3d;
+  font-size: 15px;
+}
+
+/* ── 2. Cabeçalho: marca do app no lugar da imagem ── */
+.header-brand {
+  display: inline-flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.header-brand b {
+  color: #fff1d6;
+  font-size: 18px;
+  letter-spacing: 0.4px;
+}
+
+.header-brand span {
+  color: #c58b2a;
+  font-size: 12px;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+}
+
+/* ── 3. Tela inicial: aviso de próximo tour e autoria ── */
+.home-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.home-tour {
+  background: rgba(246, 235, 220, 0.94);
+  border: 1px solid rgba(197, 139, 42, 0.7);
+  border-radius: 16px;
+  padding: 14px;
+  text-align: center;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.22);
+}
+
+.home-tour-titulo {
+  font-size: 17px;
+  font-weight: 900;
+  color: #1b100c;
+}
+
+.home-tour-data {
+  margin-top: 4px;
+  font-size: 16px;
+  color: #563827;
+}
+
+.home-tour-btn {
+  margin-top: 10px;
+}
+
+.home-date {
+  font-size: 12px;
+}
+
+.home-autoria {
+  text-align: center;
+  font-size: 12px;
+  letter-spacing: 0.3px;
+  color: #fff1d6;
+  opacity: 0.92;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.62);
+}
+
+/* ── 4. Território: galeria de fotos de apoio ── */
+.territorio-galeria {
+  display: grid;
+  gap: 14px;
+  margin-top: 12px;
+}
+
+.territorio-foto {
+  margin: 0;
+}
+
+.territorio-foto img {
+  width: 100%;
+  display: block;
+  border-radius: 14px;
+  border: 1px solid #3a2015;
+  background: #000;
+}
+
+.territorio-foto figcaption {
+  margin-top: 6px;
+  font-size: 15px;
+  color: #563827;
+  line-height: 1.45;
+}
+
+/* ── 5. Mapa do percurso ── */
+.mapa-embed {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 14px;
+  border: 1px solid #dcc18a;
+  margin-top: 12px;
+}
+
+.mapa-embed iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* ── 6. Painel: avisos, campos e galeria ── */
+.admin-ok,
+.admin-erro {
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 15px;
+  margin: 0 0 16px;
+}
+
+.admin-ok {
+  background: #e8f0e6;
+  border: 1px solid #9dbf9d;
+  color: #234a2b;
+}
+
+.admin-erro {
+  background: #f6e7e3;
+  border: 1px solid #cf9c8f;
+  color: #5c2b22;
+}
+
+.admin-ajuda {
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: #563827;
+  margin: 0;
+}
+
+.admin-campo,
+.admin-check {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14.5px;
+  color: #563827;
+}
+
+.admin-check {
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-check input {
+  width: 20px;
+  height: 20px;
+}
+
+.admin-form input,
+.admin-form textarea,
+.admin-form select {
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 15px;
+}
+
+.admin-form select {
+  background: #fff;
+}
+
+.admin-fotos-estado {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 15px;
+}
+
+.admin-galeria {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 14px;
+}
+
+.admin-galeria-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: #fdf8f0;
+  border: 1px solid #e5d2a8;
+  border-radius: 12px;
+  padding: 10px;
+}
+
+.admin-galeria-item img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+}
+
+.admin-galeria-item input {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 14px;
+}
+
+.admin-galeria-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.admin-galeria-acoes button {
+  font-size: 13px;
+  padding: 8px 10px;
+}
+
+.admin-pontos {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 15px;
+}
+
+.admin-ponto {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fdf8f0;
+  border: 1px solid #e5d2a8;
+  border-radius: 10px;
+  padding: 8px 10px;
+}
+
+.admin-ponto-num {
+  color: #8c5d21;
+  font-weight: 900;
+  min-width: 22px;
+}
+
+.admin-ponto-nome {
+  flex: 1;
+}
+
+.admin-ponto-aviso {
+  color: #8a4a3a;
+}
+
+.admin-ponto-add {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.admin-ponto-add select {
+  flex: 1;
+  min-width: 220px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 15px;
+}
+
+.admin-linha-inativa {
+  background: #f2efe9;
+  color: #6b6355;
+}
+
+.admin-mensagem {
+  background: #fff;
+  border: 1px solid #e5d2a8;
+  border-left: 5px solid #d8c9a5;
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 14px;
+}
+
+.admin-mensagem-nova {
+  border-left-color: #b8832c;
+}
+
+.admin-mensagem-topo {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 15px;
+}
+
+.admin-mensagem-topo span {
+  color: #7b522a;
+  font-size: 13.5px;
+}
+
+.admin-mensagem-contato {
+  margin-top: 6px;
+  font-size: 14.5px;
+}
+
+.admin-mensagem-texto {
+  margin: 10px 0 12px;
+  font-size: 16px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+

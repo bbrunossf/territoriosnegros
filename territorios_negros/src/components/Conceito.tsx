@@ -93,6 +93,69 @@ export default function Conceito() {
         </p>
       </Topic>
 
+      {/* ── conteúdo que antes ficava na aba "Sobre" ── */}
+      <Topic
+        icon="ⓘ"
+        title="Sobre o app"
+      >
+        <p>
+          Este aplicativo é um guia educacional
+          de leitura territorial, criado para
+          apoiar caminhadas, aulas de campo e
+          experiências formativas sobre os
+          territórios negros no Centro de
+          Vitória - ES.
+        </p>
+
+        <p>
+          <b>Autoria:</b> Aingrid Fabiane de Souza,
+          licenciada em Geografia (UFES).
+          <br />
+          <b>Base teórica:</b> TCC “Territórios
+          Negros na cidade de Vitória - ES (2024)”.
+        </p>
+      </Topic>
+
+      <Topic
+        icon="♪"
+        title="Produções associadas ao projeto"
+      >
+        <ul className="sobre-list">
+          <li>
+            <a
+              href={LINKS.musica1}
+              target="_blank"
+              rel="noreferrer"
+              className="sobre-link"
+            >
+              Vitória, Não Apague Nossa Cor
+            </a>
+          </li>
+
+          <li>
+            <a
+              href={LINKS.musica2}
+              target="_blank"
+              rel="noreferrer"
+              className="sobre-link"
+            >
+              Mulher Raiz Ancestral
+            </a>
+          </li>
+
+          <li>
+            <a
+              href={LINKS.documentario}
+              target="_blank"
+              rel="noreferrer"
+              className="sobre-link"
+            >
+              Documentário – Coisas de Negres
+            </a>
+          </li>
+        </ul>
+      </Topic>
+
       <Info>
         <b>TCC completo:</b>
         <br />
@@ -109,6 +172,10 @@ export default function Conceito() {
 
       <Link to="/roteiros" className="btn conceito-btn">
         Ir para os roteiros
+      </Link>
+
+      <Link to="/contato" className="outline conceito-btn">
+        Enviar uma mensagem
       </Link>
     </>
   );

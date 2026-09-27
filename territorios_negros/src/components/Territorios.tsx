@@ -1,54 +1,18 @@
 //Territorios.tsx
 import { useNavigate } from "react-router-dom";
-import { useTerritorios } from "../context/TerritoriosContext";
+import { useTerritorios } from "../context/useTerritorios";
+import { agruparPorCategoria } from "../utils/catalogo";
 
 import PageTitle from "../components/PageTitle";
 import SectionHeader from "../components/SectionHeader";
-//import type { TerritoriosMap } from "../data/types";
-
-
-
-const grupos = [
-  {
-    titulo: "Arquiteturas e religiosidade",
-    ids: ["rosario", "saogoncalo"],
-  },
-  {
-    titulo:
-      "Institucionalização da memória e cultura negra",
-    ids: ["mucane"],
-  },
-  {
-    titulo: "Monumentos e marcos de memória",
-    ids: ["grilhoes", "dona", "pelourinho"],
-  },
-  {
-    titulo:
-      "Espaços urbanos, infraestrutura e permanência",
-    ids: [
-      "praca",
-      "chafariz",
-      "vilarubim",
-      "moscoso",
-      "rua13",
-    ],
-  },
-  {
-    titulo:
-      "Personalidades e trajetórias negras",
-    ids: ["mariasaraiva", "zilda"],
-  },
-  {
-    titulo: "Cultura e práticas",
-    ids: ["sambao", "congo", "piedade"],
-  },
-];
-
-
 
 export default function Territorios() {
   const navigate = useNavigate();
-  const { territorios } = useTerritorios();
+  const { territorios, categorias, carregando } = useTerritorios();
+
+  // Os grupos agora vêm do banco (tabela "categorias"), não mais fixos no código:
+  // território novo entra na lista assim que recebe uma categoria no painel.
+  const grupos = agruparPorCategoria(territorios, categorias);
 
   return (
     <>
@@ -58,33 +22,38 @@ export default function Territorios() {
       />
 
       {grupos.map((g) => (
-        <section key={g.titulo}>
+        <section key={g.id}>
           <SectionHeader title={g.titulo} />
 
-          {g.ids.map((id) => {
-            const t = territorios[id];
-            if (!t) return null;
-
-            return (
-              <button
-                key={id}
-                className="territorios-item"
-                onClick={() => navigate(`/territorio/${id}`)}
-              >
+          {g.territorios.map((t) => (
+            <button
+              key={t.id}
+              className="territorios-item"
+              onClick={() => navigate(`/territorio/${t.id}`)}
+            >
+              {t.imagem ? (
                 <img src={t.imagem} alt="" className="territorios-thumb" />
+              ) : (
+                <span className="territorios-thumb territorios-thumb-vazia">●</span>
+              )}
 
-                <span>
-                  <b>{t.nome}</b>
-                  <br />
-                  <small className="territorios-palavra">{t.palavra}</small>
-                </span>
+              <span>
+                <b>{t.nome}</b>
+                <br />
+                <small className="territorios-palavra">{t.palavra}</small>
+              </span>
 
-                <b className="territorios-arrow">›</b>
-              </button>
-            );
-          })}
+              <b className="territorios-arrow">›</b>
+            </button>
+          ))}
         </section>
       ))}
+
+      {!carregando && grupos.length === 0 && (
+        <p className="aviso-vazio">
+          Nenhum território disponível no momento.
+        </p>
+      )}
     </>
   );
 }

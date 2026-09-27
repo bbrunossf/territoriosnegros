@@ -1,74 +1,64 @@
 //Territorio.tsx
 import { useParams, useNavigate } from "react-router-dom";
-import { useTerritorios } from "../context/TerritoriosContext";
-//import dados from "../data/dados.json";
+import { useTerritorios } from "../context/useTerritorios";
+import { pontosVisiveis } from "../utils/catalogo";
 
 import InfoRapida from "../components/InfoRapida";
-// import Info from "../components/Info";
 import Numbered from "../components/Numbered";
 import Topic from "../components/Topic";
 
 import { calcularIdade } from "../utils/data";
-// import { foto } from "../utils/imagens";
-//import type { Territorio as TerritorioType } from "../data/types";
-
-
-
-//const { roteiros, ordemTerritoriosVisual } = dados;
-
 
 export default function Territorio() {
   const { rotaId, indice: indiceStr, id } = useParams();
   const navigate = useNavigate();
   const { territorios, roteiros, ordemTerritoriosVisual } = useTerritorios();
 
+  const dentroDeRota = !!rotaId && rotaId !== "todos";
 
-  // Determina o contexto: veio de uma rota ou de "todos"?
-  const roteiro = rotaId && rotaId !== "todos"
-    ? roteiros.find(r => r.id === rotaId)
-    : { nome: "Territórios", subtitulo: "Consulta individual", pontos: ordemTerritoriosVisual };
+  // Lista de territórios do contexto atual (uma rota ou "todos"),
+  // sempre só com os que estão habilitados no painel.
+  const lista = dentroDeRota
+    ? pontosVisiveis(roteiros.find((r) => r.id === rotaId)?.pontos, territorios)
+    : ordemTerritoriosVisual.map((tid) => territorios[tid]).filter(Boolean);
 
-  if (!roteiro) return <p>Rota não encontrada.</p>;
+  if (dentroDeRota && !roteiros.find((r) => r.id === rotaId)) {
+    return <p>Rota não encontrada.</p>;
+  }
 
-  const indice = rotaId && rotaId !== "todos"
+  const indice = dentroDeRota
     ? Number(indiceStr)
-    : ordemTerritoriosVisual.indexOf(id ?? "");
+    : lista.findIndex((t) => t.id === id);
 
-  const territorio = territorios[roteiro.pontos[indice]];
+  const territorio = lista[indice];
+
   if (!territorio) return <p>Território não encontrado.</p>;
 
   const idade = calcularIdade(territorio.ano);
 
+  const irPara = (novoIndice: number) => {
+    if (dentroDeRota) navigate(`/percurso/${rotaId}/${novoIndice}`);
+    else navigate(`/territorio/${lista[novoIndice].id}`);
+  };
+
   const proximo = () => {
-    if (indice < roteiro.pontos.length - 1) {
-      const novoIndice = indice + 1;
-      if (rotaId && rotaId !== "todos")
-        navigate(`/percurso/${rotaId}/${novoIndice}`);
-      else
-        navigate(`/territorio/${roteiro.pontos[novoIndice]}`);
-    } else {
-      navigate("/fim");
-    }
+    if (indice < lista.length - 1) irPara(indice + 1);
+    else navigate("/fim");
   };
 
   const voltar = () => {
-    if (indice > 0) {
-      const novoIndice = indice - 1;
-      if (rotaId && rotaId !== "todos")
-        navigate(`/percurso/${rotaId}/${novoIndice}`);
-      else
-        navigate(`/territorio/${roteiro.pontos[novoIndice]}`);
-    } else {
-      navigate(rotaId && rotaId !== "todos" ? `/percurso/${rotaId}` : "/territorios");
-    }
+    if (indice > 0) irPara(indice - 1);
+    else navigate(dentroDeRota ? `/percurso/${rotaId}` : "/territorios");
   };
 
+  // Fotos de apoio: só aparecem quando a autoria libera (ex.: durante o tour).
+  const fotosApoio = territorio.fotosLiberadas ? territorio.fotos ?? [] : [];
 
   return (
       <>
         <div className="territorio-topbar">
           <p className="territorio-counter">
-            Território {indice + 1} de {roteiro.pontos.length}
+            Território {indice + 1} de {lista.length}
           </p>
 
           <h1 className="page-title">
@@ -95,7 +85,6 @@ export default function Territorio() {
       {territorio.video ? (
         <video
           controls
-          // poster={foto(territorio.imagem)}
           poster={territorio.imagem}
 
           className="territorio-media"
@@ -113,10 +102,27 @@ export default function Territorio() {
           className="territorio-media"
         />
       )}
+
       <InfoRapida
         territorio={territorio}
         idade={idade}
       />
+
+      {fotosApoio.length > 0 && (
+        <Topic
+          icon="▣"
+          title="Imagens de apoio"
+        >
+          <div className="territorio-galeria">
+            {fotosApoio.map((foto, i) => (
+              <figure key={`${foto.url}-${i}`} className="territorio-foto">
+                <img src={foto.url} alt={foto.legenda || territorio.nome} />
+                {foto.legenda && <figcaption>{foto.legenda}</figcaption>}
+              </figure>
+            ))}
+          </div>
+        </Topic>
+      )}
 
         <Topic
           icon="✦"

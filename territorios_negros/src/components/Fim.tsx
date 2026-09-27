@@ -18,6 +18,10 @@ export default function Fim() {
       <Link to="/roteiros" className="btn fim-btn">
         Escolher outro roteiro
       </Link>
+
+      <Link to="/contato" className="outline fim-btn">
+        Enviar uma mensagem para a autoria
+      </Link>
     </div>
   );
 }

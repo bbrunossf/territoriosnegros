@@ -1,9 +1,17 @@
 // RoteirosAdmin.tsx
 import "../styles.css";
 
-import { useEffect, useState } from "react";
-import { supabase } from "../lib/supabase";
-import type { Roteiro } from "../data/types";
+import { useCallback, useEffect, useState } from "react";
+import {
+  atualizarRoteiro,
+  excluirRoteiro,
+  fetchRoteiros,
+  fetchTerritorios,
+  salvarRoteiro,
+} from "../data/api";
+import type { Roteiro, Territorio, TerritoriosMap } from "../data/types";
+import { gerarSlug } from "../utils/catalogo";
+import { formatarDataHoraBR } from "../utils/data";
 
 // ── Helpers para arrays ↔ textarea ───────────────────────────
 
@@ -26,40 +34,66 @@ const FORM_VAZIO = {
   subtitulo: "",
   acessibilidade: "",
   experiencia: "",
-  pontos: "",
+  ativo: true,
+  ordem: "0",
+  mapaUrl: "",
+  inscricaoUrl: "",
 };
 
 // ── Componente ───────────────────────────────────────────────
 
 export default function RoteirosAdmin() {
   const [roteiros, setRoteiros] = useState<Roteiro[]>([]);
+  const [territorios, setTerritorios] = useState<TerritoriosMap>({});
   const [editando, setEditando] = useState<string | null>(null);
 
   const [form, setForm] = useState(FORM_VAZIO);
+  // ordem de visitação (ids), editada como lista
+  const [pontos, setPontos] = useState<string[]>([]);
+  const [novoPonto, setNovoPonto] = useState("");
 
-  // ── Carregar lista ──────────────────────────────────────
+  const [salvando, setSalvando] = useState(false);
+  const [ok, setOk] = useState("");
+  const [erro, setErro] = useState("");
 
-  async function carregar() {
-    const { data, error } = await supabase
-      .from("roteiros")
-      .select("*")
-      .order("nome");
+  // ── Carregar ────────────────────────────────────────────
 
-    if (error) {
-      console.error(error);
-      return;
+  const carregar = useCallback(async () => {
+    try {
+      const [rs, ts] = await Promise.all([fetchRoteiros(), fetchTerritorios()]);
+      setRoteiros(rs.sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR")));
+      setTerritorios(ts);
+    } catch (e) {
+      console.error(e);
+      setErro(e instanceof Error ? e.message : "Falha ao carregar as rotas.");
     }
-
-    setRoteiros((data as Roteiro[]) || []);
-  }
+  }, []);
 
   useEffect(() => {
-    carregar();
+    let ativo = true;
+
+    (async () => {
+      try {
+        const [rs, ts] = await Promise.all([fetchRoteiros(), fetchTerritorios()]);
+        if (!ativo) return;
+        setRoteiros(rs.sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR")));
+        setTerritorios(ts);
+      } catch (e) {
+        console.error(e);
+        if (ativo) {
+          setErro(e instanceof Error ? e.message : "Falha ao carregar as rotas.");
+        }
+      }
+    })();
+
+    return () => {
+      ativo = false;
+    };
   }, []);
 
   // ── Helpers de formulário ───────────────────────────────
 
-  function setCampo(campo: string, valor: string) {
+  function setCampo(campo: string, valor: string | boolean) {
     setForm((prev) => ({ ...prev, [campo]: valor }));
   }
 
@@ -70,109 +104,135 @@ export default function RoteirosAdmin() {
       subtitulo: r.subtitulo,
       acessibilidade: r.acessibilidade,
       experiencia: arrayParaTexto(r.experiencia ?? []),
-      pontos: arrayParaTexto(r.pontos ?? []),
+      ativo: r.ativo !== false,
+      ordem: String(r.ordem ?? 0),
+      mapaUrl: r.mapaUrl ?? "",
+      inscricaoUrl: r.inscricaoUrl ?? "",
     });
+    setPontos(r.pontos ?? []);
     setEditando(r.id);
+    setOk("");
+    setErro("");
   }
 
   function limparForm() {
     setForm(FORM_VAZIO);
+    setPontos([]);
     setEditando(null);
   }
 
-  // ── Montar payload ──────────────────────────────────────
+  // ── Lista de pontos (ordem de visitação) ────────────────
 
-  function montarPayload() {
-    return {
-      nome: form.nome,
-      nivel: form.nivel,
-      subtitulo: form.subtitulo,
-      acessibilidade: form.acessibilidade,
-      experiencia: textoParaArray(form.experiencia),
-      pontos: textoParaArray(form.pontos),
-    };
+  function adicionarPonto(id: string) {
+    if (!id || pontos.includes(id)) return;
+    setPontos([...pontos, id]);
   }
 
-  // ── CRUD: Criar ─────────────────────────────────────────
+  function moverPonto(indice: number, delta: number) {
+    const destino = indice + delta;
+    if (destino < 0 || destino >= pontos.length) return;
 
-  async function criarRoteiro(e: React.FormEvent) {
+    const lista = [...pontos];
+    [lista[indice], lista[destino]] = [lista[destino], lista[indice]];
+    setPontos(lista);
+  }
+
+  function removerPonto(indice: number) {
+    setPontos(pontos.filter((_, i) => i !== indice));
+  }
+
+  // ── Salvar ──────────────────────────────────────────────
+
+  async function salvar(e: React.FormEvent) {
     e.preventDefault();
+    setErro("");
+    setOk("");
 
-    const id = form.nome
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-|-$/g, "");
+    setSalvando(true);
 
-    const { error } = await supabase.from("roteiros").insert({
-      id,
-      ...montarPayload(),
-    });
+    try {
+      const id = editando ?? gerarSlug(form.nome);
 
-    if (error) {
-      console.error(error);
-      alert("Erro ao criar roteiro: " + error.message);
-      return;
+      const payload = {
+        nome: form.nome,
+        nivel: form.nivel,
+        subtitulo: form.subtitulo,
+        acessibilidade: form.acessibilidade,
+        experiencia: textoParaArray(form.experiencia),
+        ativo: form.ativo,
+        ordem: Number(form.ordem) || 0,
+        mapa_url: form.mapaUrl || null,
+        inscricao_url: form.inscricaoUrl || null,
+        pontos,
+      };
+
+      await salvarRoteiro(editando, { ...(editando ? {} : { id }), ...payload });
+
+      setEditando(id);
+      await carregar();
+      setOk(`Salvo em ${formatarDataHoraBR(new Date().toISOString())}.`);
+    } catch (e) {
+      console.error(e);
+      setErro(e instanceof Error ? e.message : "Falha ao salvar.");
+    } finally {
+      setSalvando(false);
     }
-
-    limparForm();
-    carregar();
   }
 
-  // ── CRUD: Atualizar ────────────────────────────────────
+  async function alternarAtivo(id: string, ativo: boolean) {
+    setErro("");
+    setOk("");
 
-  async function salvarEdicao(e: React.FormEvent) {
-    e.preventDefault();
-    if (!editando) return;
-
-    const { error } = await supabase
-      .from("roteiros")
-      .update(montarPayload())
-      .eq("id", editando);
-
-    if (error) {
-      console.error(error);
-      alert("Erro ao salvar: " + error.message);
-      return;
+    try {
+      await atualizarRoteiro(id, { ativo });
+      if (editando === id) setForm((prev) => ({ ...prev, ativo }));
+      setOk(ativo ? "Rota habilitada para os visitantes." : "Rota desabilitada.");
+      await carregar();
+    } catch (e) {
+      console.error(e);
+      setErro(e instanceof Error ? e.message : "Falha ao alterar a visibilidade.");
     }
-
-    limparForm();
-    carregar();
   }
 
-  // ── CRUD: Excluir ──────────────────────────────────────
+  async function excluir(id: string, nome: string) {
+    if (!window.confirm(`Excluir "${nome}"? Esta ação não pode ser desfeita.`)) return;
 
-  async function excluirRoteiro(id: string, nome: string) {
-    if (!window.confirm(`Excluir "${nome}"? Esta ação não pode ser desfeita.`))
-      return;
+    setErro("");
+    setOk("");
 
-    const { error } = await supabase.from("roteiros").delete().eq("id", id);
-
-    if (error) {
-      console.error(error);
-      alert("Erro ao excluir: " + error.message);
-      return;
+    try {
+      await excluirRoteiro(id);
+      if (editando === id) limparForm();
+      await carregar();
+      setOk("Rota excluída.");
+    } catch (e) {
+      console.error(e);
+      setErro(e instanceof Error ? e.message : "Falha ao excluir.");
     }
-
-    if (editando === id) limparForm();
-    carregar();
   }
 
   // ── Render ─────────────────────────────────────────────
 
   const estaEditando = editando !== null;
+  const disponiveis = Object.values(territorios).sort((a: Territorio, b: Territorio) =>
+    a.nome.localeCompare(b.nome, "pt-BR")
+  );
 
   return (
     <div>
-      <h1>Roteiros</h1>
+      <h1>Rotas</h1>
+
+      <p className="admin-ajuda">
+        Quando estiver guiando, deixe habilitada apenas a rota do dia — as outras
+        desaparecem para os visitantes. A ordem da lista abaixo é a ordem de visitação.
+      </p>
+
+      {ok && <p className="admin-ok">{ok}</p>}
+      {erro && <p className="admin-erro">{erro}</p>}
 
       {/* ─── Formulário (criar / editar) ─── */}
-      <form
-        className="admin-form"
-        onSubmit={estaEditando ? salvarEdicao : criarRoteiro}
-      >
-        <h2>{estaEditando ? `Editando: ${form.nome}` : "Novo roteiro"}</h2>
+      <form className="admin-form" onSubmit={salvar}>
+        <h2>{estaEditando ? `Editando: ${form.nome} (${editando})` : "Nova rota"}</h2>
 
         <div className="admin-form-grid">
           <input
@@ -189,7 +249,25 @@ export default function RoteirosAdmin() {
             onChange={(e) => setCampo("nivel", e.target.value)}
             required
           />
+
+          <label className="admin-campo">
+            Ordem na lista de rotas
+            <input
+              type="number"
+              value={form.ordem}
+              onChange={(e) => setCampo("ordem", e.target.value)}
+            />
+          </label>
         </div>
+
+        <label className="admin-check">
+          <input
+            type="checkbox"
+            checked={form.ativo}
+            onChange={(e) => setCampo("ativo", e.target.checked)}
+          />
+          Visível para os visitantes
+        </label>
 
         <textarea
           placeholder="Subtítulo * (ex: Início: MUCANE | Conclusão: Chafariz)"
@@ -209,65 +287,133 @@ export default function RoteirosAdmin() {
           onChange={(e) => setCampo("experiencia", e.target.value)}
           rows={4}
         />
-        <textarea
-          placeholder="Pontos (IDs dos territórios, um por linha)"
-          value={form.pontos}
-          onChange={(e) => setCampo("pontos", e.target.value)}
-          rows={4}
+
+        <input
+          type="text"
+          placeholder="Link do mapa do percurso (Google My Maps) — opcional"
+          value={form.mapaUrl}
+          onChange={(e) => setCampo("mapaUrl", e.target.value)}
         />
-        <small style={{ color: "#8f611d" }}>
-          IDs válidos: mucane, praca, dona, chafariz, rua13, vilarubim, moscoso,
-          grilhoes, mariasaraiva, zilda, congo, piedade, sambao, saogoncalo,
-          rosario, pelourinho
+        <small className="admin-ajuda">
+          No Google My Maps: crie o mapa com o traçado do percurso, clique em
+          Compartilhar → “Qualquer pessoa com o link” → copie o link e cole aqui. Ele
+          aparece embutido na tela da rota.
         </small>
 
+        <input
+          type="text"
+          placeholder="Link da ficha de inscrição desta rota — opcional"
+          value={form.inscricaoUrl}
+          onChange={(e) => setCampo("inscricaoUrl", e.target.value)}
+        />
+
+        {/* ─── Ordem de visitação ─── */}
+        <div className="admin-pontos">
+          <b>Ordem de visitação</b>
+
+          {pontos.length === 0 && (
+            <p className="admin-ajuda">Nenhum território nesta rota ainda.</p>
+          )}
+
+          {pontos.map((id, i) => {
+            const t = territorios[id];
+            return (
+              <div key={`${id}-${i}`} className="admin-ponto">
+                <span className="admin-ponto-num">{i + 1}.</span>
+
+                <span className="admin-ponto-nome">
+                  {t ? t.nome : id}
+                  {t?.ativo === false && (
+                    <small className="admin-ponto-aviso"> (desabilitado no momento)</small>
+                  )}
+                </span>
+
+                <button type="button" className="outline" onClick={() => moverPonto(i, -1)}>
+                  ↑
+                </button>
+                <button type="button" className="outline" onClick={() => moverPonto(i, 1)}>
+                  ↓
+                </button>
+                <button type="button" className="outline" onClick={() => removerPonto(i)}>
+                  ✕
+                </button>
+              </div>
+            );
+          })}
+
+          <div className="admin-ponto-add">
+            <select value={novoPonto} onChange={(e) => setNovoPonto(e.target.value)}>
+              <option value="">— escolher território —</option>
+              {disponiveis.map((t) => (
+                <option key={t.id} value={t.id}>
+                  {t.nome}
+                  {t.ativo === false ? " (desabilitado)" : ""}
+                </option>
+              ))}
+            </select>
+
+            <button
+              type="button"
+              className="outline"
+              onClick={() => {
+                adicionarPonto(novoPonto);
+                setNovoPonto("");
+              }}
+            >
+              Adicionar ao fim
+            </button>
+          </div>
+        </div>
+
         <div className="admin-form-botoes">
-          <button type="submit" className="btn">
-            {estaEditando ? "💾 Salvar alterações" : "➕ Criar roteiro"}
+          <button type="submit" className="btn" disabled={salvando}>
+            {salvando ? "Salvando..." : estaEditando ? "Salvar alterações" : "Criar rota"}
           </button>
           {estaEditando && (
             <button type="button" className="outline" onClick={limparForm}>
-              Cancelar
+              Fechar / limpar
             </button>
           )}
         </div>
       </form>
 
-      {/* ─── Tabela de roteiros ─── */}
+      {/* ─── Tabela ─── */}
       <table className="admin-table">
         <thead>
           <tr>
             <th>Nome</th>
             <th>Nível</th>
-            <th>Subtítulo</th>
-            <th>Pontos</th>
+            <th>Territórios</th>
+            <th>Mapa</th>
+            <th>Visível</th>
             <th>Ações</th>
           </tr>
         </thead>
 
         <tbody>
           {roteiros.map((r) => (
-            <tr key={r.id}>
-              <td>{r.nome}</td>
-              <td>{r.nivel}</td>
-              <td style={{ fontSize: 13, color: "#563827" }}>
-                {r.subtitulo}
+            <tr key={r.id} className={r.ativo === false ? "admin-linha-inativa" : ""}>
+              <td>
+                <b>{r.nome}</b>
+                <br />
+                <small>{r.id}</small>
               </td>
-              <td>{r.pontos?.length ?? 0} territórios</td>
-
-              <td className="admin-acoes">
+              <td>{r.nivel}</td>
+              <td>{r.pontos?.length ?? 0}</td>
+              <td>{r.mapaUrl ? "sim" : "não"}</td>
+              <td>
                 <button
-                  className="outline"
-                  onClick={() => preencherForm(r)}
-                  title="Editar"
+                  className={r.ativo === false ? "outline" : "btn"}
+                  onClick={() => alternarAtivo(r.id, r.ativo === false)}
                 >
+                  {r.ativo === false ? "habilitar" : "desabilitar"}
+                </button>
+              </td>
+              <td className="admin-acoes">
+                <button className="outline" onClick={() => preencherForm(r)} title="Editar">
                   ✏️
                 </button>
-                <button
-                  className="outline"
-                  onClick={() => excluirRoteiro(r.id, r.nome)}
-                  title="Excluir"
-                >
+                <button className="outline" onClick={() => excluir(r.id, r.nome)} title="Excluir">
                   🗑️
                 </button>
               </td>
@@ -276,8 +422,8 @@ export default function RoteirosAdmin() {
 
           {roteiros.length === 0 && (
             <tr>
-              <td colSpan={5} style={{ textAlign: "center", padding: 24 }}>
-                Nenhum roteiro cadastrado.
+              <td colSpan={6} style={{ textAlign: "center", padding: 24 }}>
+                Nenhuma rota cadastrada.
               </td>
             </tr>
           )}

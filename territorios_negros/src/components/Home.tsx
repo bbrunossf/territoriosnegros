@@ -3,10 +3,14 @@ import { Link } from "react-router-dom";
 import LOGO from "../assets/logo.png";
 import CAPA_INICIAL from "../assets/capa-inicial.jpg";
 
-import { formatarDataAcesso } from "../utils/data";
-
+import { formatarDataAcesso, formatarDataBR } from "../utils/data";
+import { useTerritorios } from "../context/useTerritorios";
 
 export default function Home() {
+  const { proximoTour, inscricaoUrl } = useTerritorios();
+
+  const inscricao = proximoTour?.inscricaoUrl || inscricaoUrl;
+
   return (
     <section
       className="home"
@@ -20,13 +24,35 @@ export default function Home() {
           alt="Logo AFS"
           className="home-logo"
         />
-
-        <span className="home-badge">
-          Aingrid Fabiane de Souza
-        </span>
       </div>
 
       <div className="home-bottom">
+        {proximoTour && (
+          <div className="home-tour">
+            <p className="home-tour-titulo">
+              {proximoTour.texto || "Próximo tour"}
+            </p>
+
+            {(proximoTour.data || proximoTour.hora) && (
+              <p className="home-tour-data">
+                {formatarDataBR(proximoTour.data)}
+                {proximoTour.hora ? ` às ${proximoTour.hora}` : ""}
+              </p>
+            )}
+
+            {inscricao && (
+              <a
+                className="btn home-tour-btn"
+                href={inscricao}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Clique aqui e se inscreva
+              </a>
+            )}
+          </div>
+        )}
+
         <Link to="/Intro" className="btn home-start-btn">
           Iniciar a leitura da cidade de Vitória - ES a partir
           dos territórios negros
@@ -34,6 +60,10 @@ export default function Home() {
 
         <p className="home-date">
           Acesso em {formatarDataAcesso()}
+        </p>
+
+        <p className="home-autoria">
+          Aingrid Fabiane de Souza — Licenciada em Geografia (UFES)
         </p>
       </div>
     </section>
