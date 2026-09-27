@@ -74,6 +74,7 @@ const FORM_VAZIO = {
   pergunta: "",
   video: "",
   idadeCamadas: "",
+  imagemCredito: "",
 };
 
 // ── Componente ───────────────────────────────────────────────
@@ -165,6 +166,7 @@ export default function TerritoriosAdmin() {
       pergunta: t.pergunta ?? "",
       video: t.video ?? "",
       idadeCamadas: idadeCamadasParaTexto(t.idadeCamadas),
+      imagemCredito: t.imagemCredito ?? "",
     });
     setImagemFile(null);
     setImagemAtual(t.imagem ?? "");
@@ -214,6 +216,7 @@ export default function TerritoriosAdmin() {
       idade_camadas: textoParaIdadeCamadas(form.idadeCamadas),
       fotos,
       fotos_liberadas: fotosLiberadas,
+      imagem_credito: form.imagemCredito || null,
       ...(imagemFinal && { imagem: imagemFinal }),
     };
   }
@@ -240,10 +243,33 @@ export default function TerritoriosAdmin() {
         imagemUrl = await uploadFoto(id, imagemFile);
       }
 
-      await salvarTerritorio(editando, {
-        ...(editando ? {} : { id }),
-        ...montarPayload(imagemUrl),
-      });
+      const corpo = { ...(editando ? {} : { id }), ...montarPayload(imagemUrl) };
+
+      try {
+        await salvarTerritorio(editando, corpo);
+      } catch (e) {
+        const mensagem = e instanceof Error ? e.message : "";
+
+        // janela de transição: sem a coluna nova no banco, salva o resto
+        if (/column .* does not exist/i.test(mensagem)) {
+          const semCredito: Record<string, unknown> = { ...corpo };
+          delete semCredito.imagem_credito;
+
+          await salvarTerritorio(editando, semCredito);
+
+          setEditando(id);
+          setPendente(false);
+          await carregar();
+          setErro(
+            "O território foi salvo, mas o crédito da foto principal não: falta " +
+              "rodar supabase/migrations/20260927_creditos_imagens.sql no SQL Editor " +
+              "do Supabase. Os créditos das fotos de apoio já funcionam."
+          );
+          return;
+        }
+
+        throw e;
+      }
 
       setEditando(id);
       if (imagemUrl) {
@@ -305,6 +331,11 @@ export default function TerritoriosAdmin() {
 
   function alterarLegenda(indice: number, legenda: string) {
     setFotos(fotos.map((f, i) => (i === indice ? { ...f, legenda } : f)));
+    setPendente(true);
+  }
+
+  function alterarCredito(indice: number, credito: string) {
+    setFotos(fotos.map((f, i) => (i === indice ? { ...f, credito } : f)));
     setPendente(true);
   }
 
@@ -557,6 +588,13 @@ export default function TerritoriosAdmin() {
             }}
             required={!estaEditando}
           />
+
+          <input
+            type="text"
+            placeholder="Crédito da foto principal (ex: Foto: Maria Souza)"
+            value={form.imagemCredito}
+            onChange={(e) => setCampo("imagemCredito", e.target.value)}
+          />
         </div>
 
         {/* ─── Fotos de apoio ─── */}
@@ -574,7 +612,10 @@ export default function TerritoriosAdmin() {
                 A foto principal aparece sempre no topo da página do território. Estas
                 imagens aparecem no fim da página e só para os visitantes quando você{" "}
                 <b>libera</b> a visualização — ideal para o momento do tour. Nada aqui
-                é publicado antes de você clicar em <b>Salvar alterações</b>.
+                é publicado antes de você clicar em <b>Salvar alterações</b>. O{" "}
+                <b>crédito</b> aparece embaixo da imagem, no app e quando ela é
+                ampliada; na foto principal, vale o crédito da foto marcada como
+                principal.
               </p>
 
               <div className="admin-fotos-estado">
@@ -626,6 +667,13 @@ export default function TerritoriosAdmin() {
                       placeholder="Legenda da imagem"
                       value={foto.legenda ?? ""}
                       onChange={(e) => alterarLegenda(i, e.target.value)}
+                    />
+
+                    <input
+                      type="text"
+                      placeholder="Crédito (ex: Foto: Maria Souza · Acervo pessoal)"
+                      value={foto.credito ?? ""}
+                      onChange={(e) => alterarCredito(i, e.target.value)}
                     />
 
                     <div className="admin-galeria-acoes">

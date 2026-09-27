@@ -229,6 +229,11 @@ export default function RoteirosAdmin() {
     setPendente(true);
   }
 
+  function alterarCreditoMapa(indice: number, credito: string) {
+    setMapas(mapas.map((f, i) => (i === indice ? { ...f, credito } : f)));
+    setPendente(true);
+  }
+
   function alterarLegendaMapa(indice: number, legenda: string) {
     setMapas(mapas.map((m, i) => (i === indice ? { ...m, legenda } : m)));
     setPendente(true);
@@ -543,6 +548,13 @@ export default function RoteirosAdmin() {
                       placeholder="Legenda do mapa"
                       value={mapa.legenda ?? ""}
                       onChange={(e) => alterarLegendaMapa(i, e.target.value)}
+                    />
+
+                    <input
+                      type="text"
+                      placeholder="Crédito (ex: Cartografia: Maria Souza)"
+                      value={mapa.credito ?? ""}
+                      onChange={(e) => alterarCreditoMapa(i, e.target.value)}
                     />
 
                     <div className="admin-galeria-acoes">

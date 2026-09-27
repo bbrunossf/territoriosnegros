@@ -98,6 +98,7 @@ export default function Percurso() {
                   url={mapa.url}
                   alt={mapa.legenda || `Mapa ${i + 1} de ${roteiro.nome}`}
                   legenda={mapa.legenda}
+                  credito={mapa.credito}
                 />
               ))}
             </div>

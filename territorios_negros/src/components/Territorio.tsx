@@ -66,6 +66,13 @@ export default function Territorio() {
   // Fotos de apoio: só aparecem quando a autoria libera (ex.: durante o tour).
   const fotosApoio = territorio.fotosLiberadas ? territorio.fotos ?? [] : [];
 
+  // crédito da foto principal: campo próprio; se estiver vazio e a foto
+  // principal estiver na galeria, aproveita o crédito cadastrado nela
+  const creditoPrincipal =
+    territorio.imagemCredito ||
+    territorio.fotos?.find((f) => f.url === territorio.imagem)?.credito ||
+    "";
+
   return (
       <>
         <div className="territorio-topbar">
@@ -108,11 +115,15 @@ export default function Territorio() {
           Seu navegador não suporta vídeo.
         </video>
       ) : territorio.imagem ? (
-        <img
-          src={territorio.imagem}
-          alt={territorio.nome}
-          className="territorio-media"
-        />
+        <>
+          <img
+            src={territorio.imagem}
+            alt={territorio.nome}
+            className="territorio-media"
+          />
+
+          {creditoPrincipal && <p className="foto-credito">{creditoPrincipal}</p>}
+        </>
       ) : (
         /* sem foto nem vídeo cadastrados: mostra um aviso em vez de imagem quebrada */
         <div className="territorio-media territorio-sem-foto">
@@ -172,6 +183,7 @@ export default function Territorio() {
                   url={foto.url}
                   alt={foto.legenda || territorio.nome}
                   legenda={foto.legenda}
+                  credito={foto.credito}
                 />
               ))}
             </div>

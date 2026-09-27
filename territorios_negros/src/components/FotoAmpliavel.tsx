@@ -4,6 +4,8 @@ type Props = {
   url: string;
   alt: string;
   legenda?: string;
+  /** crédito da imagem (autoria, acervo, fonte) */
+  credito?: string;
   className?: string;
 };
 
@@ -20,7 +22,7 @@ const ZOOM_MAX = 4;
  * tela inteira com Zoom + / − (de 10% a 400%), botão "caber na tela" para ver o
  * mapa inteiro de uma vez, e atalho para abrir o arquivo original em nova guia.
  */
-export default function FotoAmpliavel({ url, alt, legenda, className }: Props) {
+export default function FotoAmpliavel({ url, alt, legenda, credito, className }: Props) {
   const [aberto, setAberto] = useState(false);
   const [zoom, setZoom] = useState(1);
   const [ajustado, setAjustado] = useState(false);
@@ -114,7 +116,12 @@ export default function FotoAmpliavel({ url, alt, legenda, className }: Props) {
           <span className="foto-dica">⌕ ampliar</span>
         </button>
 
-        {legenda && <figcaption>{legenda}</figcaption>}
+        {(legenda || credito) && (
+          <figcaption>
+            {legenda}
+            {credito && <span className="foto-credito">{credito}</span>}
+          </figcaption>
+        )}
       </figure>
 
       {aberto && (
@@ -162,6 +169,15 @@ export default function FotoAmpliavel({ url, alt, legenda, className }: Props) {
             <button type="button" className="outline" onClick={fechar}>
               fechar ✕
             </button>
+
+            {/* legenda e crédito sempre visíveis, junto dos controles */}
+            {(legenda || credito) && (
+              <p className="foto-zoom-legenda">
+                {legenda}
+                {legenda && credito && " · "}
+                {credito}
+              </p>
+            )}
           </div>
 
           <div className="foto-zoom-area" ref={areaRef}>
@@ -174,6 +190,7 @@ export default function FotoAmpliavel({ url, alt, legenda, className }: Props) {
               style={{ width: `${zoom * 100}%`, opacity: imagemCarregada ? 1 : 0 }}
               onClick={(e) => e.stopPropagation()}
             />
+
           </div>
         </div>
       )}

@@ -340,6 +340,7 @@ interface RawTerritorio {
   ordem?: number | null;
   fotos?: FotoTerritorio[] | null;
   fotos_liberadas?: boolean | null;
+  imagem_credito?: string | null;
 }
 
 function mapTerritorio(raw: RawTerritorio): Territorio {
@@ -367,6 +368,7 @@ function mapTerritorio(raw: RawTerritorio): Territorio {
     ordem: raw.ordem ?? 0,
     fotos: Array.isArray(raw.fotos) ? raw.fotos : [],
     fotosLiberadas: raw.fotos_liberadas === true,
+    imagemCredito: raw.imagem_credito ?? null,
   };
 }
 

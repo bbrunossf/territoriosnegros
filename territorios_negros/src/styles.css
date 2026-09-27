@@ -1531,6 +1531,31 @@ a, a:visited, a:hover, a:active {
   flex-wrap: wrap;
 }
 
+/* crédito da imagem (autoria, acervo, fonte) */
+.foto-credito {
+  display: block;
+  font-size: 12px;
+  font-style: italic;
+  opacity: 0.75;
+  margin-top: 2px;
+}
+
+/* crédito sob a foto principal do território */
+p.foto-credito {
+  text-align: right;
+  margin: 4px 2px 0;
+}
+
+.foto-zoom-legenda {
+  flex-basis: 100%;
+  max-width: 900px;
+  margin: 2px auto 0;
+  color: #f2e6d2;
+  font-size: 13px;
+  text-align: center;
+  line-height: 1.45;
+}
+
 /* imagem clicável: amplia em tela cheia (mapas, pranchas, documentos) */
 .foto-botao {
   position: relative;

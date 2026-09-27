@@ -9,6 +9,8 @@ export interface IdadeCamada {
 export interface FotoTerritorio {
   url: string;
   legenda?: string;
+  /** crédito da imagem (autoria, acervo, fonte) */
+  credito?: string;
 }
 
 export interface Territorio {
@@ -42,6 +44,8 @@ export interface Territorio {
   fotos: FotoTerritorio[];
   /** true = visitantes já podem ver as fotos de apoio */
   fotosLiberadas: boolean;
+  /** crédito da foto principal (autoria, acervo, fonte) */
+  imagemCredito: string | null;
 }
 
 export interface Roteiro {
