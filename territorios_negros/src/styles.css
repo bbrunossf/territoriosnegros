@@ -1615,6 +1615,37 @@ a, a:visited, a:hover, a:active {
 }
 
 /* blocos de conteúdo (painel da página Vitória) */
+/* abas de páginas e linhas de campos no painel */
+.admin-abas {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 14px 0 6px;
+}
+
+.admin-linha {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.admin-linha input[type="text"] {
+  flex: 1 1 170px;
+  min-width: 110px;
+}
+
+.pagina-botoes {
+  display: grid;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.pagina-botao {
+  display: block;
+  text-align: center;
+}
+
 .admin-bloco {
   border: 1px solid #e5d2a8;
   background: #fffdf8;

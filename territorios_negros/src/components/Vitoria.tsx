@@ -1,15 +1,12 @@
 import { useTerritorios } from "../context/useTerritorios";
-import {
-  VITORIA_PADRAO,
-  normalizarPagina,
-} from "../data/conteudoPadrao";
+import { VITORIA_PADRAO, normalizarPagina } from "../data/paginas";
 import PaginaConteudo from "./PaginaConteudo";
 
-// Vitoria.tsx — contexto básico da cidade, agora editável no painel (aba Vitória)
+// Texto editável no painel (aba Páginas) — chave: pagina_vitoria
 export default function Vitoria() {
   const { config } = useTerritorios();
 
-  const pagina = normalizarPagina(config.pagina_vitoria, VITORIA_PADRAO);
-
-  return <PaginaConteudo pagina={pagina} />;
+  return (
+    <PaginaConteudo pagina={normalizarPagina(config.pagina_vitoria, VITORIA_PADRAO)} />
+  );
 }

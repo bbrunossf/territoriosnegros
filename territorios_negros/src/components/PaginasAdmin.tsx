@@ -1,0 +1,496 @@
+// PaginasAdmin.tsx — edição dos textos das páginas do app (aba Páginas)
+import "../styles.css";
+
+import { useEffect, useState } from "react";
+import { salvarConfig } from "../data/api";
+import { useTerritorios } from "../context/useTerritorios";
+import {
+  CONTATO_PADRAO,
+  CONCEITO_PADRAO,
+  FIM_PADRAO,
+  INTRO_PADRAO,
+  VITORIA_PADRAO,
+  normalizarPagina,
+  type BlocoConteudo,
+  type BotaoConteudo,
+  type PaginaConteudo,
+} from "../data/paginas";
+import { formatarDataHoraBR } from "../utils/data";
+
+interface DefinicaoPagina {
+  chave: string;
+  nome: string;
+  caminho: string;
+  padrao: PaginaConteudo;
+  aviso?: string;
+}
+
+const PAGINAS: DefinicaoPagina[] = [
+  { chave: "pagina_intro", nome: "Antes", caminho: "/intro", padrao: INTRO_PADRAO },
+  { chave: "pagina_vitoria", nome: "Vitória", caminho: "/vitoria", padrao: VITORIA_PADRAO },
+  { chave: "pagina_conceito", nome: "Conceito", caminho: "/conceito", padrao: CONCEITO_PADRAO },
+  { chave: "pagina_fim", nome: "Fim", caminho: "/fim", padrao: FIM_PADRAO },
+  {
+    chave: "pagina_contato",
+    nome: "Contato",
+    caminho: "/contato",
+    padrao: CONTATO_PADRAO,
+    aviso:
+      "Nesta página o formulário de mensagem continua fixo: aqui você edita o título, o " +
+      "subtítulo e o texto de abertura que aparecem acima dele.",
+  },
+];
+
+const BLOCO_NOVO: BlocoConteudo = {
+  icone: "•",
+  titulo: "",
+  texto: "",
+  itens: [],
+  destaque: "",
+  links: [],
+};
+
+function itensParaTexto(itens: string[]): string {
+  return itens.join("\n");
+}
+
+function textoParaItens(txt: string): string[] {
+  return txt
+    .split("\n")
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
+export default function PaginasAdmin() {
+  const { config, recarregar } = useTerritorios();
+
+  const [indice, setIndice] = useState(0);
+  const definicao = PAGINAS[indice];
+
+  const [pagina, setPagina] = useState<PaginaConteudo>(definicao.padrao);
+  const [pendente, setPendente] = useState(false);
+  const [salvando, setSalvando] = useState(false);
+  const [ok, setOk] = useState("");
+  const [erro, setErro] = useState("");
+
+  useEffect(() => {
+    let ativo = true;
+
+    (async () => {
+      await Promise.resolve();
+      if (!ativo) return;
+
+      setPagina(normalizarPagina(config[definicao.chave], definicao.padrao));
+      setPendente(false);
+      setOk("");
+      setErro("");
+    })();
+
+    return () => {
+      ativo = false;
+    };
+  }, [config, definicao.chave, definicao.padrao]);
+
+  // ── navegação entre as páginas ──────────────────────────
+
+  function trocarPagina(novo: number) {
+    if (novo === indice) return;
+
+    if (
+      pendente &&
+      !window.confirm(
+        "Você tem alterações não salvas nesta página. Trocar de página e descartar?"
+      )
+    ) {
+      return;
+    }
+
+    setIndice(novo);
+  }
+
+  // ── edição ──────────────────────────────────────────────
+
+  function setCampo(campo: keyof PaginaConteudo, valor: string) {
+    setPagina((p) => ({ ...p, [campo]: valor }));
+    setPendente(true);
+  }
+
+  function setBloco(indiceBloco: number, campo: keyof BlocoConteudo, valor: string) {
+    setPagina((p) => ({
+      ...p,
+      blocos: p.blocos.map((b, i) => {
+        if (i !== indiceBloco) return b;
+        if (campo === "itens") return { ...b, itens: textoParaItens(valor) };
+        return { ...b, [campo]: valor };
+      }),
+    }));
+    setPendente(true);
+  }
+
+  function moverBloco(indiceBloco: number, delta: number) {
+    const destino = indiceBloco + delta;
+    if (destino < 0 || destino >= pagina.blocos.length) return;
+
+    const blocos = [...pagina.blocos];
+    [blocos[indiceBloco], blocos[destino]] = [blocos[destino], blocos[indiceBloco]];
+
+    setPagina((p) => ({ ...p, blocos }));
+    setPendente(true);
+  }
+
+  function removerBloco(indiceBloco: number) {
+    const nome = pagina.blocos[indiceBloco]?.titulo || `bloco ${indiceBloco + 1}`;
+    if (!window.confirm(`Remover o bloco "${nome}"?`)) return;
+
+    setPagina((p) => ({ ...p, blocos: p.blocos.filter((_, i) => i !== indiceBloco) }));
+    setPendente(true);
+  }
+
+  function adicionarBloco() {
+    setPagina((p) => ({ ...p, blocos: [...p.blocos, { ...BLOCO_NOVO }] }));
+    setPendente(true);
+  }
+
+  // links dentro de um bloco
+  function setLink(bloco: number, link: number, campo: "texto" | "url", valor: string) {
+    setPagina((p) => ({
+      ...p,
+      blocos: p.blocos.map((b, i) =>
+        i === bloco
+          ? {
+              ...b,
+              links: b.links.map((l, j) => (j === link ? { ...l, [campo]: valor } : l)),
+            }
+          : b
+      ),
+    }));
+    setPendente(true);
+  }
+
+  function adicionarLink(bloco: number) {
+    setPagina((p) => ({
+      ...p,
+      blocos: p.blocos.map((b, i) =>
+        i === bloco ? { ...b, links: [...b.links, { texto: "", url: "" }] } : b
+      ),
+    }));
+    setPendente(true);
+  }
+
+  function removerLink(bloco: number, link: number) {
+    setPagina((p) => ({
+      ...p,
+      blocos: p.blocos.map((b, i) =>
+        i === bloco ? { ...b, links: b.links.filter((_, j) => j !== link) } : b
+      ),
+    }));
+    setPendente(true);
+  }
+
+  // botões do fim da página
+  function setBotao(i: number, campo: keyof BotaoConteudo, valor: string) {
+    setPagina((p) => ({
+      ...p,
+      botoes: p.botoes.map((b, j) =>
+        j === i
+          ? { ...b, [campo]: campo === "estilo" ? (valor as "btn" | "outline") : valor }
+          : b
+      ),
+    }));
+    setPendente(true);
+  }
+
+  function moverBotao(i: number, delta: number) {
+    const destino = i + delta;
+    if (destino < 0 || destino >= pagina.botoes.length) return;
+
+    const botoes = [...pagina.botoes];
+    [botoes[i], botoes[destino]] = [botoes[destino], botoes[i]];
+
+    setPagina((p) => ({ ...p, botoes }));
+    setPendente(true);
+  }
+
+  function removerBotao(i: number) {
+    setPagina((p) => ({ ...p, botoes: p.botoes.filter((_, j) => j !== i) }));
+    setPendente(true);
+  }
+
+  function adicionarBotao() {
+    setPagina((p) => ({
+      ...p,
+      botoes: [...p.botoes, { texto: "", url: "/", estilo: "outline" }],
+    }));
+    setPendente(true);
+  }
+
+  // ── salvar ──────────────────────────────────────────────
+
+  async function salvar(e: React.FormEvent) {
+    e.preventDefault();
+    setOk("");
+    setErro("");
+    setSalvando(true);
+
+    try {
+      await salvarConfig(definicao.chave, pagina);
+      await recarregar();
+      setPendente(false);
+      setOk(`Publicado em ${formatarDataHoraBR(new Date().toISOString())}.`);
+    } catch (e) {
+      console.error(e);
+      setErro(e instanceof Error ? e.message : "Falha ao salvar.");
+    } finally {
+      setSalvando(false);
+    }
+  }
+
+  return (
+    <div>
+      <h1>Páginas</h1>
+
+      <p className="admin-ajuda">
+        Aqui você edita os textos das páginas do app. Em cada página, os blocos são as seções
+        com ícone e título. Para dar destaque, use <b>**duas estrelas**</b> (negrito) ou{" "}
+        <b>*uma estrela*</b> (itálico); no texto do bloco, deixe uma <b>linha em branco</b>{" "}
+        entre parágrafos. Nada é publicado antes de clicar em <b>Salvar</b>.
+      </p>
+
+      <div className="admin-abas">
+        {PAGINAS.map((p, i) => (
+          <button
+            key={p.chave}
+            type="button"
+            className={i === indice ? "btn" : "outline"}
+            onClick={() => trocarPagina(i)}
+          >
+            {p.nome}
+          </button>
+        ))}
+      </div>
+
+      {definicao.aviso && <p className="admin-ajuda">{definicao.aviso}</p>}
+
+      {ok && <p className="admin-ok">{ok}</p>}
+      {erro && <p className="admin-erro">{erro}</p>}
+
+      <form className="admin-form" onSubmit={salvar}>
+        <h2>
+          {definicao.nome}
+          {pendente && <span className="admin-pendente"> · alterações não salvas</span>}
+        </h2>
+
+        <div className="admin-form-grid">
+          <input
+            type="text"
+            placeholder="Título da página"
+            value={pagina.titulo}
+            onChange={(e) => setCampo("titulo", e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="Subtítulo (opcional)"
+            value={pagina.subtitulo}
+            onChange={(e) => setCampo("subtitulo", e.target.value)}
+          />
+        </div>
+
+        <label className="admin-campo">
+          Bloco destacado de abertura (caixa do topo)
+          <textarea
+            value={pagina.destaque}
+            onChange={(e) => setCampo("destaque", e.target.value)}
+            rows={5}
+          />
+        </label>
+
+        <h2>Blocos da página</h2>
+
+        {pagina.blocos.length === 0 && (
+          <p className="admin-ajuda">Nenhum bloco nesta página ainda.</p>
+        )}
+
+        {pagina.blocos.map((bloco, i) => (
+          <div key={i} className="admin-bloco">
+            <div className="admin-bloco-topo">
+              <span className="admin-bloco-num">bloco {i + 1}</span>
+
+              <input
+                type="text"
+                className="admin-bloco-icone"
+                placeholder="ícone"
+                value={bloco.icone}
+                onChange={(e) => setBloco(i, "icone", e.target.value)}
+              />
+
+              <input
+                type="text"
+                placeholder="Título do bloco"
+                value={bloco.titulo}
+                onChange={(e) => setBloco(i, "titulo", e.target.value)}
+              />
+
+              <button type="button" className="outline" onClick={() => moverBloco(i, -1)}>
+                ↑
+              </button>
+              <button type="button" className="outline" onClick={() => moverBloco(i, 1)}>
+                ↓
+              </button>
+              <button type="button" className="outline" onClick={() => removerBloco(i)}>
+                ✕
+              </button>
+            </div>
+
+            <textarea
+              placeholder="Texto do bloco (linha em branco separa parágrafos)"
+              value={bloco.texto}
+              onChange={(e) => setBloco(i, "texto", e.target.value)}
+              rows={5}
+            />
+
+            <textarea
+              placeholder="Lista com travessão — um item por linha (opcional)"
+              value={itensParaTexto(bloco.itens)}
+              onChange={(e) => setBloco(i, "itens", e.target.value)}
+              rows={3}
+            />
+
+            <textarea
+              placeholder="Caixa destacada dentro do bloco (opcional)"
+              value={bloco.destaque}
+              onChange={(e) => setBloco(i, "destaque", e.target.value)}
+              rows={3}
+            />
+
+            {bloco.links.map((link, j) => (
+              <div key={j} className="admin-linha">
+                <input
+                  type="text"
+                  placeholder="Texto do link"
+                  value={link.texto}
+                  onChange={(e) => setLink(i, j, "texto", e.target.value)}
+                />
+                <input
+                  type="text"
+                  placeholder="Endereço do link (https://...)"
+                  value={link.url}
+                  onChange={(e) => setLink(i, j, "url", e.target.value)}
+                />
+                <button type="button" className="outline" onClick={() => removerLink(i, j)}>
+                  ✕
+                </button>
+              </div>
+            ))}
+
+            <button
+              type="button"
+              className="outline"
+              onClick={() => adicionarLink(i)}
+            >
+              + link neste bloco
+            </button>
+          </div>
+        ))}
+
+        <button type="button" className="outline" onClick={adicionarBloco}>
+          + Adicionar bloco
+        </button>
+
+        <h2>Caixa final (link)</h2>
+
+        <p className="admin-ajuda">
+          A caixa que aparece depois dos blocos — usada para o mapa (Vitória) e para o TCC
+          (Conceito). Deixe o endereço vazio para não aparecer.
+        </p>
+
+        <input
+          type="text"
+          placeholder="Texto antes do link (ex: Mapa do centro histórico:)"
+          value={pagina.rodapeTexto}
+          onChange={(e) => setCampo("rodapeTexto", e.target.value)}
+        />
+
+        <input
+          type="text"
+          placeholder="Texto do link (ex: Abrir no mapa)"
+          value={pagina.rodapeLinkTexto}
+          onChange={(e) => setCampo("rodapeLinkTexto", e.target.value)}
+        />
+
+        <input
+          type="text"
+          placeholder="Endereço (https://...)"
+          value={pagina.rodapeUrl}
+          onChange={(e) => setCampo("rodapeUrl", e.target.value)}
+        />
+
+        <h2>Botões do fim da página</h2>
+
+        {pagina.botoes.map((botao, i) => (
+          <div key={i} className="admin-linha">
+            <input
+              type="text"
+              placeholder="Texto do botão"
+              value={botao.texto}
+              onChange={(e) => setBotao(i, "texto", e.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="/roteiros, /contato ou https://..."
+              value={botao.url}
+              onChange={(e) => setBotao(i, "url", e.target.value)}
+            />
+            <select
+              value={botao.estilo}
+              onChange={(e) => setBotao(i, "estilo", e.target.value)}
+            >
+              <option value="btn">destacado</option>
+              <option value="outline">contorno</option>
+            </select>
+            <button type="button" className="outline" onClick={() => moverBotao(i, -1)}>
+              ↑
+            </button>
+            <button type="button" className="outline" onClick={() => moverBotao(i, 1)}>
+              ↓
+            </button>
+            <button type="button" className="outline" onClick={() => removerBotao(i)}>
+              ✕
+            </button>
+          </div>
+        ))}
+
+        <button type="button" className="outline" onClick={adicionarBotao}>
+          + Adicionar botão
+        </button>
+
+        <div className="admin-form-botoes">
+          <button type="submit" className="btn" disabled={salvando}>
+            {salvando ? "Salvando..." : "Salvar"}
+          </button>
+
+          <a className="outline" href={definicao.caminho} target="_blank" rel="noreferrer">
+            ver a página
+          </a>
+
+          <button
+            type="button"
+            className="outline"
+            onClick={() => {
+              if (
+                window.confirm(
+                  "Voltar ao texto original desta página? Suas alterações não salvas serão perdidas."
+                )
+              ) {
+                setPagina(definicao.padrao);
+                setPendente(true);
+                setOk('Texto original carregado. Clique em "Salvar" para publicar.');
+              }
+            }}
+          >
+            restaurar texto original
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}

@@ -1,9 +1,10 @@
 // Contato.tsx — formulário simples (nome, e-mail, whatsapp e mensagem)
 import { useState } from "react";
 
-import Info from "../components/Info";
-import PageTitle from "../components/PageTitle";
+import PaginaConteudo from "../components/PaginaConteudo";
 import { enviarMensagem } from "../data/api";
+import { useTerritorios } from "../context/useTerritorios";
+import { CONTATO_PADRAO, normalizarPagina } from "../data/paginas";
 
 export default function Contato() {
   const [nome, setNome] = useState("");
@@ -14,6 +15,10 @@ export default function Contato() {
   const [enviando, setEnviando] = useState(false);
   const [ok, setOk] = useState(false);
   const [erro, setErro] = useState("");
+
+  // título e texto de abertura são editáveis no painel (aba Páginas)
+  const { config } = useTerritorios();
+  const pagina = normalizarPagina(config.pagina_contato, CONTATO_PADRAO);
 
   async function enviar(e: React.FormEvent) {
     e.preventDefault();
@@ -47,17 +52,7 @@ export default function Contato() {
   }
 
   return (
-    <>
-      <PageTitle
-        title="Fale com a autoria"
-        subtitle="Dúvidas, sugestões ou pedido de visita guiada."
-      />
-
-      <Info>
-        Envie sua mensagem pelo formulário abaixo.
-        Ela chega direto para a autoria do guia.
-      </Info>
-
+    <PaginaConteudo pagina={pagina}>
       <form className="admin-form contato-form" onSubmit={enviar}>
         <input
           type="text"
@@ -101,6 +96,6 @@ export default function Contato() {
           {enviando ? "Enviando..." : "Enviar mensagem"}
         </button>
       </form>
-    </>
+    </PaginaConteudo>
   );
 }

@@ -1,27 +1,12 @@
-import { Link } from "react-router-dom";
-import Info from "../components/Info";
-import PageTitle from "../components/PageTitle";
+import { useTerritorios } from "../context/useTerritorios";
+import { FIM_PADRAO, normalizarPagina } from "../data/paginas";
+import PaginaConteudo from "./PaginaConteudo";
 
-
-
+// Texto editável no painel (aba Páginas) — chave: pagina_fim
 export default function Fim() {
+  const { config } = useTerritorios();
+
   return (
-    <div className="fim">
-      <PageTitle title="Fim do percurso" />
-
-      <Info>
-        A cidade não termina aqui. Os territórios
-        negros permanecem — visíveis ou não.
-        Continue observando.
-      </Info>
-
-      <Link to="/roteiros" className="btn fim-btn">
-        Escolher outro roteiro
-      </Link>
-
-      <Link to="/contato" className="outline fim-btn">
-        Enviar uma mensagem para a autoria
-      </Link>
-    </div>
+    <PaginaConteudo pagina={normalizarPagina(config.pagina_fim, FIM_PADRAO)} />
   );
 }

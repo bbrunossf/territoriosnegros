@@ -1,18 +1,33 @@
 import { Fragment, type ReactNode } from "react";
 
-/** Texto com **negrito** e *itálico* — a mesma marcação usada no painel. */
+/**
+ * Texto com **negrito** e *itálico* — a mesma marcação usada no painel.
+ * Linha simples dentro do texto vira quebra de linha.
+ */
 export function formatarInline(texto: string): ReactNode[] {
-  return texto.split(/(\*\*[^*]+\*\*|\*[^*]+\*)/g).map((parte, i) => {
+  const partes = texto.split(/(\*\*[^*]+\*\*|\*[^*]+\*)/g);
+  const saida: ReactNode[] = [];
+
+  partes.forEach((parte, i) => {
+    if (!parte) return;
+
     if (parte.startsWith("**") && parte.endsWith("**") && parte.length > 4) {
-      return <b key={i}>{parte.slice(2, -2)}</b>;
+      saida.push(<b key={`b${i}`}>{parte.slice(2, -2)}</b>);
+      return;
     }
 
     if (parte.startsWith("*") && parte.endsWith("*") && parte.length > 2) {
-      return <i key={i}>{parte.slice(1, -1)}</i>;
+      saida.push(<i key={`i${i}`}>{parte.slice(1, -1)}</i>);
+      return;
     }
 
-    return <Fragment key={i}>{parte}</Fragment>;
+    parte.split("\n").forEach((linha, j) => {
+      if (j > 0) saida.push(<br key={`br${i}-${j}`} />);
+      if (linha) saida.push(<Fragment key={`t${i}-${j}`}>{linha}</Fragment>);
+    });
   });
+
+  return saida;
 }
 
 /** quebra um texto em parágrafos (linha em branco separa) */
