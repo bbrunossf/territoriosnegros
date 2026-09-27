@@ -32,7 +32,18 @@ export default function Territorio() {
 
   const territorio = lista[indice];
 
-  if (!territorio) return <p>Território não encontrado.</p>;
+  if (!territorio) {
+    // existe no banco, mas está desabilitado no painel (fora do recorte de hoje)
+    if (id && territorios[id] && territorios[id].ativo === false) {
+      return (
+        <p className="aviso-vazio">
+          Este território não faz parte do percurso de hoje.
+        </p>
+      );
+    }
+
+    return <p>Território não encontrado.</p>;
+  }
 
   const idade = calcularIdade(territorio.ano);
 
