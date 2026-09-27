@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 
-import LOGO from "../assets/logo.png";
 import CAPA_INICIAL from "../assets/capa-inicial.jpg";
 
 import { formatarDataAcesso, formatarDataBR } from "../utils/data";
@@ -12,19 +11,15 @@ export default function Home() {
   const inscricao = proximoTour?.inscricaoUrl || inscricaoUrl;
 
   return (
-    <section
-      className="home"
-      style={{
-        backgroundImage: `linear-gradient(rgba(0,0,0,.22), rgba(0,0,0,.44)), url(${CAPA_INICIAL})`,
-      }}
-    >
-      <div className="home-top">
-        <img
-          src={LOGO}
-          alt="Logo AFS"
-          className="home-logo"
-        />
-      </div>
+    <section className="home">
+      {/* a capa ocupa a faixa de cima: o cartão do tour e os botões ficam
+          abaixo dela, então nada mais fica por cima da arte */}
+      <div
+        className="home-capa"
+        style={{ backgroundImage: `url(${CAPA_INICIAL})` }}
+        role="img"
+        aria-label="Territórios Negros - Vitória - ES"
+      />
 
       <div className="home-bottom">
         {proximoTour && (

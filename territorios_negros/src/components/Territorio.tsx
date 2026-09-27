@@ -108,22 +108,6 @@ export default function Territorio() {
         idade={idade}
       />
 
-      {fotosApoio.length > 0 && (
-        <Topic
-          icon="▣"
-          title="Imagens de apoio"
-        >
-          <div className="territorio-galeria">
-            {fotosApoio.map((foto, i) => (
-              <figure key={`${foto.url}-${i}`} className="territorio-foto">
-                <img src={foto.url} alt={foto.legenda || territorio.nome} />
-                {foto.legenda && <figcaption>{foto.legenda}</figcaption>}
-              </figure>
-            ))}
-          </div>
-        </Topic>
-      )}
-
         <Topic
           icon="✦"
           title="O que é este território?"
@@ -157,6 +141,23 @@ export default function Territorio() {
             {territorio.palavra}
           </p>
         </Topic>
+
+        {/* as imagens de apoio vêm por último, depois da palavra-chave */}
+        {fotosApoio.length > 0 && (
+          <Topic
+            icon="▣"
+            title="Imagens de apoio"
+          >
+            <div className="territorio-galeria">
+              {fotosApoio.map((foto, i) => (
+                <figure key={`${foto.url}-${i}`} className="territorio-foto">
+                  <img src={foto.url} alt={foto.legenda || territorio.nome} />
+                  {foto.legenda && <figcaption>{foto.legenda}</figcaption>}
+                </figure>
+              ))}
+            </div>
+          </Topic>
+        )}
       </>
     );
   }

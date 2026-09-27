@@ -1136,30 +1136,59 @@ a, a:visited, a:hover, a:active {
 }
 
 /* ── 3. Tela inicial: aviso de próximo tour e autoria ── */
+
+/* a capa virou uma faixa no topo e o conteúdo fica abaixo, no fundo do app:
+   assim o cartão do tour nunca cobre a arte da capa, em qualquer tela */
+.home {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #f7efdf;
+}
+
+.home-capa {
+  flex: 1 1 auto;
+  min-height: 42vh;
+  background-color: #f7efdf;
+  background-size: cover;
+  background-position: center 30%;
+  background-repeat: no-repeat;
+}
+
 .home-bottom {
+  position: static;
+  left: auto;
+  right: auto;
+  bottom: auto;
+  flex: 0 0 auto;
+
   display: flex;
   flex-direction: column;
   gap: 12px;
+
+  padding: 14px 22px 92px;
+  background: #f7efdf;
 }
 
 .home-tour {
-  background: rgba(246, 235, 220, 0.94);
+  background: #fdf8ec;
   border: 1px solid rgba(197, 139, 42, 0.7);
   border-radius: 16px;
-  padding: 14px;
+  padding: 12px;
   text-align: center;
-  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.22);
+  box-shadow: 0 8px 18px rgba(54, 33, 18, 0.12);
 }
 
 .home-tour-titulo {
-  font-size: 17px;
+  font-size: 16px;
+  line-height: 1.32;
   font-weight: 900;
   color: #1b100c;
 }
 
 .home-tour-data {
   margin-top: 4px;
-  font-size: 16px;
+  font-size: 15px;
   color: #563827;
 }
 
@@ -1433,5 +1462,33 @@ a, a:visited, a:hover, a:active {
   font-size: 16px;
   line-height: 1.6;
   white-space: pre-wrap;
+}
+
+/* ── 7. Painel: aviso de alterações não salvas e galeria ── */
+.admin-pendente {
+  color: #8a4a3a;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.admin-fotos {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-top: 1px solid #e5d2a8;
+  padding-top: 14px;
+}
+
+.admin-galeria-principal,
+.admin-galeria-apoio {
+  font-size: 12.5px;
+  font-weight: 900;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: #7b522a;
+}
+
+.admin-galeria-principal {
+  color: #8f611d;
 }
 

@@ -1,4 +1,10 @@
 // TerritoriosAdmin.tsx
+//
+// Regra de gravação (combinada com a autoria):
+//  • botões da TABELA (habilitar/desabilitar, liberar/bloquear fotos, excluir)
+//    gravam na hora -- são os que ela usa durante o tour;
+//  • tudo que é EDIÇÃO (textos, fotos de apoio, foto principal, legenda,
+//    categoria, ordem) só vale depois de clicar em "Salvar alterações".
 import "../styles.css";
 
 import { useCallback, useEffect, useState } from "react";
@@ -16,7 +22,6 @@ import { formatarDataHoraBR } from "../utils/data";
 
 // ── Helpers para campos de array ─────────────────────────────
 
-/** Converte string[] ↔ textarea (uma linha por item) */
 function arrayParaTexto(arr: string[]): string {
   return arr.join("\n");
 }
@@ -28,7 +33,6 @@ function textoParaArray(txt: string): string[] {
     .filter(Boolean);
 }
 
-/** Converte IdadeCamada[] ↔ textarea (formato "ano: label" por linha) */
 function idadeCamadasParaTexto(arr: Territorio["idadeCamadas"]): string {
   if (!arr) return "";
   return arr.map((ic) => `${ic.ano}: ${ic.label}`).join("\n");
@@ -48,7 +52,7 @@ function textoParaIdadeCamadas(txt: string): Territorio["idadeCamadas"] {
     .filter((ic): ic is { ano: number; label: string } => ic !== null);
 }
 
-// ── Estado inicial do formulário (valores vazios) ────────────
+// ── Estado inicial do formulário ─────────────────────────────
 
 const FORM_VAZIO = {
   nome: "",
@@ -83,9 +87,11 @@ export default function TerritoriosAdmin() {
   const [imagemFile, setImagemFile] = useState<File | null>(null);
   const [imagemAtual, setImagemAtual] = useState<string>("");
 
-  // fotos de apoio (galeria) já gravadas no banco
   const [fotos, setFotos] = useState<FotoTerritorio[]>([]);
   const [fotosLiberadas, setFotosLiberadas] = useState(false);
+
+  // há alteração no formulário que ainda não foi gravada?
+  const [pendente, setPendente] = useState(false);
 
   const [salvando, setSalvando] = useState(false);
   const [ok, setOk] = useState("");
@@ -135,6 +141,7 @@ export default function TerritoriosAdmin() {
 
   function setCampo(campo: string, valor: string | boolean) {
     setForm((prev) => ({ ...prev, [campo]: valor }));
+    setPendente(true);
   }
 
   function preencherForm(t: Territorio) {
@@ -164,6 +171,7 @@ export default function TerritoriosAdmin() {
     setFotos(t.fotos ?? []);
     setFotosLiberadas(t.fotosLiberadas === true);
     setEditando(t.id);
+    setPendente(false);
     setOk("");
     setErro("");
   }
@@ -175,11 +183,15 @@ export default function TerritoriosAdmin() {
     setFotos([]);
     setFotosLiberadas(false);
     setEditando(null);
+    setPendente(false);
   }
 
   // ── Montar objeto para INSERT/UPDATE ────────────────────────
 
-  function montarPayload(imagemUrl?: string) {
+  function montarPayload(imagemEnviada?: string) {
+    // a foto principal pode ter sido trocada na galeria (sem upload novo)
+    const imagemFinal = imagemEnviada ?? (imagemAtual || undefined);
+
     return {
       nome: form.nome,
       local: form.local,
@@ -202,11 +214,11 @@ export default function TerritoriosAdmin() {
       idade_camadas: textoParaIdadeCamadas(form.idadeCamadas),
       fotos,
       fotos_liberadas: fotosLiberadas,
-      ...(imagemUrl !== undefined && { imagem: imagemUrl }),
+      ...(imagemFinal && { imagem: imagemFinal }),
     };
   }
 
-  // ── Salvar (criar / editar) ─────────────────────────────────
+  // ── Salvar (única forma de publicar uma edição) ─────────────
 
   async function salvar(e: React.FormEvent) {
     e.preventDefault();
@@ -233,15 +245,15 @@ export default function TerritoriosAdmin() {
         ...montarPayload(imagemUrl),
       });
 
-      // Não limpa mais o formulário: a autoria precisa ver o que ficou salvo.
       setEditando(id);
       if (imagemUrl) {
         setImagemAtual(imagemUrl);
         setImagemFile(null);
       }
 
+      setPendente(false);
       await carregar();
-      setOk(`Salvo em ${formatarDataHoraBR(new Date().toISOString())}.`);
+      setOk(`Alterações publicadas em ${formatarDataHoraBR(new Date().toISOString())}.`);
     } catch (e) {
       console.error(e);
       setErro(e instanceof Error ? e.message : "Falha ao salvar.");
@@ -250,7 +262,7 @@ export default function TerritoriosAdmin() {
     }
   }
 
-  // ── Fotos de apoio (gravadas na hora, para não perder upload) ─
+  // ── Fotos de apoio (edição local: publica no "Salvar alterações") ──
 
   async function adicionarFotos(files: FileList | null) {
     if (!files || !editando) return;
@@ -266,74 +278,47 @@ export default function TerritoriosAdmin() {
         novas.push({ url, legenda: "" });
       }
 
-      const lista = [...fotos, ...novas];
-      setFotos(lista);
-      await atualizarTerritorio(editando, { fotos: lista });
-      setOk(`Foto(s) adicionada(s): ${novas.length}.`);
-      await carregar();
+      setFotos([...fotos, ...novas]);
+      setPendente(true);
+      setOk(
+        `${novas.length} foto(s) enviada(s). Clique em "Salvar alterações" para publicar.`
+      );
     } catch (e) {
       console.error(e);
       setErro(e instanceof Error ? e.message : "Falha ao enviar a foto.");
     }
   }
 
-  async function salvarFotos(lista: FotoTerritorio[], aviso: string) {
-    if (!editando) return;
-    setErro("");
-    setOk("");
-
-    try {
-      setFotos(lista);
-      await atualizarTerritorio(editando, { fotos: lista });
-      setOk(aviso);
-      await carregar();
-    } catch (e) {
-      console.error(e);
-      setErro(e instanceof Error ? e.message : "Falha ao gravar as fotos.");
-    }
+  function removerFoto(indice: number) {
+    setFotos(fotos.filter((_, i) => i !== indice));
+    setPendente(true);
+    setOk("Foto marcada para remoção. Clique em \"Salvar alterações\" para confirmar.");
   }
 
-  async function usarComoPrincipal(url: string) {
-    if (!editando) return;
-    setErro("");
-    setOk("");
-
-    try {
-      await atualizarTerritorio(editando, { imagem: url });
-      setImagemAtual(url);
-      setOk("Foto definida como principal.");
-      await carregar();
-    } catch (e) {
-      console.error(e);
-      setErro(e instanceof Error ? e.message : "Falha ao trocar a foto principal.");
-    }
+  function definirPrincipal(url: string) {
+    setImagemAtual(url);
+    setPendente(true);
+    setOk(
+      "Foto marcada como principal. Clique em \"Salvar alterações\" para confirmar."
+    );
   }
 
-  async function alternarFotosPublicas(liberar: boolean) {
-    setErro("");
-    setOk("");
-
-    try {
-      // no formulário aberto reflete na hora; na tabela grava direto pelo id
-      setFotosLiberadas(liberar);
-
-      const alvo = editando ?? null;
-
-      if (alvo) {
-        await atualizarTerritorio(alvo, { fotos_liberadas: liberar });
-        setOk(
-          liberar
-            ? "Fotos de apoio liberadas para os visitantes."
-            : "Fotos de apoio bloqueadas para os visitantes."
-        );
-      }
-
-      await carregar();
-    } catch (e) {
-      console.error(e);
-      setErro(e instanceof Error ? e.message : "Falha ao alterar a visibilidade das fotos.");
-    }
+  function alterarLegenda(indice: number, legenda: string) {
+    setFotos(fotos.map((f, i) => (i === indice ? { ...f, legenda } : f)));
+    setPendente(true);
   }
+
+  function alterarFotosLiberadas(liberar: boolean) {
+    setFotosLiberadas(liberar);
+    setPendente(true);
+    setOk(
+      liberar
+        ? "Fotos marcadas como liberadas. Clique em \"Salvar alterações\" para publicar."
+        : "Fotos marcadas como bloqueadas. Clique em \"Salvar alterações\" para publicar."
+    );
+  }
+
+  // ── Ações instantâneas da tabela (usadas durante o tour) ────
 
   async function alternarAtivo(id: string, ativo: boolean) {
     setErro("");
@@ -342,7 +327,11 @@ export default function TerritoriosAdmin() {
     try {
       await atualizarTerritorio(id, { ativo });
       if (editando === id) setForm((prev) => ({ ...prev, ativo }));
-      setOk(ativo ? "Território habilitado." : "Território desabilitado.");
+      setOk(
+        ativo
+          ? "Território habilitado para os visitantes (gravado)."
+          : "Território desabilitado para os visitantes (gravado)."
+      );
       await carregar();
     } catch (e) {
       console.error(e);
@@ -350,7 +339,24 @@ export default function TerritoriosAdmin() {
     }
   }
 
-  // ── Excluir ─────────────────────────────────────────────────
+  async function alternarFotosTabela(id: string, liberar: boolean) {
+    setErro("");
+    setOk("");
+
+    try {
+      await atualizarTerritorio(id, { fotos_liberadas: liberar });
+      if (editando === id) setFotosLiberadas(liberar);
+      setOk(
+        liberar
+          ? "Fotos de apoio liberadas para os visitantes (gravado)."
+          : "Fotos de apoio bloqueadas para os visitantes (gravado)."
+      );
+      await carregar();
+    } catch (e) {
+      console.error(e);
+      setErro(e instanceof Error ? e.message : "Falha ao alterar as fotos.");
+    }
+  }
 
   async function excluir(id: string, nome: string) {
     if (!window.confirm(`Excluir "${nome}"? Esta ação não pode ser desfeita.`)) return;
@@ -383,9 +389,10 @@ export default function TerritoriosAdmin() {
       <h1>Territórios</h1>
 
       <p className="admin-ajuda">
-        Use <b>Habilitar/Desabilitar</b> para esconder do público o que não faz parte
-        do tour do dia. Use <b>Fotos</b> para liberar ou bloquear as imagens de apoio
-        durante a explanação.
+        Os botões <b>habilitar/desabilitar</b> e <b>liberar/bloquear fotos</b> da
+        tabela gravam na hora — são para usar durante o tour. Todo o resto (textos,
+        fotos, foto principal) só é publicado quando você clica em{" "}
+        <b>Salvar alterações</b>.
       </p>
 
       {ok && <p className="admin-ok">{ok}</p>}
@@ -393,7 +400,10 @@ export default function TerritoriosAdmin() {
 
       {/* ─── Formulário (criar / editar) ─── */}
       <form className="admin-form" onSubmit={salvar}>
-        <h2>{estaEditando ? `Editando: ${form.nome} (${editando})` : "Novo território"}</h2>
+        <h2>
+          {estaEditando ? `Editando: ${form.nome} (${editando})` : "Novo território"}
+          {pendente && <span className="admin-pendente"> · alterações não salvas</span>}
+        </h2>
 
         <div className="admin-form-grid">
           <input
@@ -527,137 +537,144 @@ export default function TerritoriosAdmin() {
           rows={3}
         />
 
+        {/* ─── Foto principal ─── */}
         <div className="admin-form-upload">
           <label>
             Foto principal{!estaEditando ? " *" : " (selecione apenas para trocar)"}:
           </label>
 
-          {imagemAtual && (
-            <img src={imagemAtual} alt="" className="admin-thumb" />
-          )}
+          {imagemAtual && <img src={imagemAtual} alt="" className="admin-thumb" />}
 
           <input
             type="file"
             accept="image/*"
             onChange={(e) => {
               const file = e.target.files?.[0];
-              if (file) setImagemFile(file);
+              if (file) {
+                setImagemFile(file);
+                setPendente(true);
+              }
             }}
             required={!estaEditando}
           />
         </div>
 
+        {/* ─── Fotos de apoio ─── */}
+        <div className="admin-fotos">
+          <b>Fotos de apoio (imagens extras do território)</b>
+
+          {!estaEditando ? (
+            <p className="admin-ajuda">
+              Salve o território primeiro. Depois de salvo, este bloco libera o envio
+              de várias fotos, mapas e imagens de apoio.
+            </p>
+          ) : (
+            <>
+              <p className="admin-ajuda">
+                A foto principal aparece sempre no topo da página do território. Estas
+                imagens aparecem no fim da página e só para os visitantes quando você{" "}
+                <b>libera</b> a visualização — ideal para o momento do tour. Nada aqui
+                é publicado antes de você clicar em <b>Salvar alterações</b>.
+              </p>
+
+              <div className="admin-fotos-estado">
+                <b>Situação:</b>{" "}
+                {fotosLiberadas
+                  ? "fotos liberadas para os visitantes"
+                  : "fotos bloqueadas"}{" "}
+                <button
+                  type="button"
+                  className={fotosLiberadas ? "outline" : "btn"}
+                  onClick={() => alterarFotosLiberadas(!fotosLiberadas)}
+                >
+                  {fotosLiberadas ? "Bloquear" : "Liberar"}
+                </button>
+              </div>
+
+              <div className="admin-form-upload">
+                <label>Adicionar fotos (pode escolher várias):</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={(e) => {
+                    adicionarFotos(e.target.files);
+                    e.target.value = "";
+                  }}
+                />
+              </div>
+
+              {fotos.length === 0 && (
+                <p className="admin-ajuda">Nenhuma foto de apoio cadastrada ainda.</p>
+              )}
+
+              <div className="admin-galeria">
+                {fotos.map((foto, i) => (
+                  <div key={`${foto.url}-${i}`} className="admin-galeria-item">
+                    {foto.url === imagemAtual ? (
+                      <span className="admin-galeria-principal">
+                        foto principal
+                      </span>
+                    ) : (
+                      <span className="admin-galeria-apoio">foto de apoio</span>
+                    )}
+
+                    <img src={foto.url} alt="" />
+
+                    <input
+                      type="text"
+                      placeholder="Legenda da imagem"
+                      value={foto.legenda ?? ""}
+                      onChange={(e) => alterarLegenda(i, e.target.value)}
+                    />
+
+                    <div className="admin-galeria-acoes">
+                      <button
+                        type="button"
+                        className="outline"
+                        onClick={() => definirPrincipal(foto.url)}
+                      >
+                        Tornar principal
+                      </button>
+
+                      <button
+                        type="button"
+                        className="outline"
+                        onClick={() => removerFoto(i)}
+                      >
+                        Remover
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+
         <div className="admin-form-botoes">
           <button type="submit" className="btn" disabled={salvando}>
-            {salvando ? "Salvando..." : estaEditando ? "Salvar alterações" : "Criar território"}
+            {salvando ? "Salvando..." : "Salvar alterações"}
           </button>
+
           {estaEditando && (
-            <button type="button" className="outline" onClick={limparForm}>
-              Fechar / limpar
+            <button
+              type="button"
+              className="outline"
+              onClick={() => {
+                if (
+                  !pendente ||
+                  window.confirm("Descartar as alterações não salvas deste território?")
+                ) {
+                  limparForm();
+                }
+              }}
+            >
+              Fechar / descartar
             </button>
           )}
         </div>
       </form>
-
-      {/* ─── Fotos de apoio ─── */}
-      <section className="admin-form">
-        <h2>Fotos de apoio (imagens extras do território)</h2>
-
-        {!estaEditando ? (
-          <p className="admin-ajuda">
-            Salve o território primeiro. Depois de salvo, este bloco libera o envio de
-            várias fotos, mapas e imagens de apoio.
-          </p>
-        ) : (
-          <>
-            <p className="admin-ajuda">
-              A foto principal aparece sempre no topo. Estas imagens só aparecem para os
-              visitantes quando você <b>libera</b> a visualização — ideal para o momento
-              do tour.
-            </p>
-
-            <div className="admin-fotos-estado">
-              <b>Situação atual:</b>{" "}
-              {fotosLiberadas ? "fotos liberadas" : "fotos bloqueadas"}{" "}
-              <button
-                type="button"
-                className={fotosLiberadas ? "outline" : "btn"}
-                onClick={() => alternarFotosPublicas(!fotosLiberadas)}
-              >
-                {fotosLiberadas ? "Bloquear agora" : "Liberar agora"}
-              </button>
-            </div>
-
-            <div className="admin-form-upload">
-              <label>Adicionar fotos (pode escolher várias):</label>
-              <input
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={(e) => {
-                  adicionarFotos(e.target.files);
-                  e.target.value = "";
-                }}
-              />
-            </div>
-
-            {fotos.length === 0 && (
-              <p className="admin-ajuda">Nenhuma foto de apoio cadastrada ainda.</p>
-            )}
-
-            <div className="admin-galeria">
-              {fotos.map((foto, i) => (
-                <div key={`${foto.url}-${i}`} className="admin-galeria-item">
-                  <img src={foto.url} alt="" />
-
-                  <input
-                    type="text"
-                    placeholder="Legenda da imagem"
-                    value={foto.legenda ?? ""}
-                    onChange={(e) => {
-                      const lista = fotos.map((f, j) =>
-                        j === i ? { ...f, legenda: e.target.value } : f
-                      );
-                      setFotos(lista);
-                    }}
-                  />
-
-                  <div className="admin-galeria-acoes">
-                    <button
-                      type="button"
-                      className="outline"
-                      onClick={() => salvarFotos(fotos, "Legenda salva.")}
-                    >
-                      Salvar legenda
-                    </button>
-
-                    <button
-                      type="button"
-                      className="outline"
-                      onClick={() => usarComoPrincipal(foto.url)}
-                    >
-                      Usar como principal
-                    </button>
-
-                    <button
-                      type="button"
-                      className="outline"
-                      onClick={() =>
-                        salvarFotos(
-                          fotos.filter((_, j) => j !== i),
-                          "Foto removida."
-                        )
-                      }
-                    >
-                      Remover
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </>
-        )}
-      </section>
 
       {/* ─── Tabela de territórios cadastrados ─── */}
       <table className="admin-table">
@@ -666,8 +683,8 @@ export default function TerritoriosAdmin() {
             <th>Nome</th>
             <th>Categoria</th>
             <th>Ordem</th>
-            <th>Visível</th>
-            <th>Fotos de apoio</th>
+            <th>Visível (grava na hora)</th>
+            <th>Fotos de apoio (grava na hora)</th>
             <th>Ações</th>
           </tr>
         </thead>
@@ -697,13 +714,7 @@ export default function TerritoriosAdmin() {
                 <br />
                 <button
                   className="outline"
-                  onClick={() =>
-                    atualizarTerritorio(t.id, { fotos_liberadas: !t.fotosLiberadas })
-                      .then(carregar)
-                      .catch((e) =>
-                        setErro(e instanceof Error ? e.message : "Falha ao alterar fotos.")
-                      )
-                  }
+                  onClick={() => alternarFotosTabela(t.id, !t.fotosLiberadas)}
                 >
                   {t.fotosLiberadas ? "bloquear fotos" : "liberar fotos"}
                 </button>
@@ -711,7 +722,16 @@ export default function TerritoriosAdmin() {
               <td className="admin-acoes">
                 <button
                   className="outline"
-                  onClick={() => preencherForm(t)}
+                  onClick={() => {
+                    if (
+                      !pendente ||
+                      window.confirm(
+                        "Você tem alterações não salvas em outro território. Abrir este e descartar?"
+                      )
+                    ) {
+                      preencherForm(t);
+                    }
+                  }}
                   title="Editar"
                 >
                   ✏️
