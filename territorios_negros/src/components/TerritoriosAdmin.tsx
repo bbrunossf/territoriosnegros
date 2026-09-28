@@ -365,6 +365,25 @@ export default function TerritoriosAdmin() {
     );
   }
 
+  /**
+   * Reordena a galeria (↑ = -1, ↓ = +1). A ordem daqui é a ordem em que as
+   * imagens aparecem no fim da página do território, para o visitante.
+   */
+  function moverFoto(indice: number, delta: number) {
+    const destino = indice + delta;
+    if (destino < 0 || destino >= fotos.length) return;
+
+    const reordenadas = [...fotos];
+    [reordenadas[indice], reordenadas[destino]] = [
+      reordenadas[destino],
+      reordenadas[indice],
+    ];
+
+    setFotos(reordenadas);
+    setPendente(true);
+    setOk("Ordem alterada. Clique em \"Salvar alterações\" para publicar.");
+  }
+
   function alterarLegenda(indice: number, legenda: string) {
     setFotos(fotos.map((f, i) => (i === indice ? { ...f, legenda } : f)));
     setPendente(true);
@@ -660,7 +679,9 @@ export default function TerritoriosAdmin() {
                 <b>crédito</b> aparece embaixo da imagem, no app e quando ela é
                 ampliada; na foto principal, vale o crédito da foto marcada como
                 principal. A <b>legenda</b> de cada foto enviada já vem com o nome
-                do arquivo — ajuste só o que precisar.
+                do arquivo — ajuste só o que precisar. A ordem desta lista é a
+                ordem em que as imagens aparecem no app: use <b>↑ ↓</b> para
+                reorganizar.
               </p>
 
               <div className="admin-fotos-estado">
@@ -722,6 +743,24 @@ export default function TerritoriosAdmin() {
                     />
 
                     <div className="admin-galeria-acoes">
+                      <button
+                        type="button"
+                        className="outline"
+                        onClick={() => moverFoto(i, -1)}
+                        title="Mover para cima (aparece antes no app)"
+                      >
+                        ↑
+                      </button>
+
+                      <button
+                        type="button"
+                        className="outline"
+                        onClick={() => moverFoto(i, 1)}
+                        title="Mover para baixo (aparece depois no app)"
+                      >
+                        ↓
+                      </button>
+
                       <button
                         type="button"
                         className="outline"
