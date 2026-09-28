@@ -53,6 +53,23 @@ export async function fetchTerritorios(): Promise<TerritoriosMap> {
   }, {} as TerritoriosMap);
 }
 
+/**
+ * Linha crua do território (colunas como estão no banco).
+ * Usado antes de gravar, para comparar com o que está no painel.
+ */
+export async function fetchTerritorioBruto(
+  id: string
+): Promise<Record<string, unknown> | null> {
+  const { data, error } = await supabase
+    .from("territorios")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (error) throw error;
+  return (data as Record<string, unknown> | null) ?? null;
+}
+
 export async function fetchRoteiros(): Promise<Roteiro[]> {
   const { data, error } = await supabase
     .from("roteiros")

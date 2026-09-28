@@ -12,6 +12,7 @@ import {
   atualizarTerritorio,
   excluirTerritorio,
   fetchCategorias,
+  fetchTerritorioBruto,
   fetchTerritorios,
   salvarTerritorio,
   uploadFoto,
@@ -19,6 +20,10 @@ import {
 import type { Categoria, FotoTerritorio, Territorio } from "../data/types";
 import { gerarSlug } from "../utils/catalogo";
 import { formatarDataHoraBR } from "../utils/data";
+import {
+  avisoDeApagamento,
+  camposQueSeraoApagados,
+} from "../utils/protecaoEdicao";
 
 // ── Helpers para campos de array ─────────────────────────────
 
@@ -223,6 +228,30 @@ export default function TerritoriosAdmin() {
 
   // ── Salvar (única forma de publicar uma edição) ─────────────
 
+  /**
+   * Relê a linha do banco agora e avisa quando a gravação for apagar conteúdo
+   * que já está lá (ex.: painel aberto desde antes de uma correção no banco).
+   * Devolve false quando a autoria decide não salvar.
+   */
+  async function podeApagarConteudo(
+    id: string,
+    corpo: Record<string, unknown>
+  ): Promise<boolean> {
+    try {
+      const banco = await fetchTerritorioBruto(id);
+      if (!banco) return true; // linha não encontrada: deixa o salvamento responder
+
+      const aviso = avisoDeApagamento(camposQueSeraoApagados(banco, corpo));
+      if (!aviso) return true;
+
+      return window.confirm(aviso);
+    } catch (e) {
+      // falha só na conferência: não trava a edição
+      console.error(e);
+      return true;
+    }
+  }
+
   async function salvar(e: React.FormEvent) {
     e.preventDefault();
     setErro("");
@@ -244,6 +273,11 @@ export default function TerritoriosAdmin() {
       }
 
       const corpo = { ...(editando ? {} : { id }), ...montarPayload(imagemUrl) };
+
+      if (editando && !(await podeApagarConteudo(editando, corpo))) {
+        setOk("Nada foi gravado: você cancelou o aviso de conteúdo apagado.");
+        return;
+      }
 
       try {
         await salvarTerritorio(editando, corpo);
@@ -544,12 +578,20 @@ export default function TerritoriosAdmin() {
           onChange={(e) => setCampo("descricao", e.target.value)}
           required
         />
-        <textarea
-          placeholder="Observar (um item por linha)"
-          value={form.observar}
-          onChange={(e) => setCampo("observar", e.target.value)}
-          rows={4}
-        />
+        <label className="admin-campo">
+          Para observar durante a visita
+          <span className="admin-campo-dica">
+            Um item por linha. Cada linha vira um item na lista que o visitante lê
+            no app — se ficar vazio, essa parte da página aparece em branco.
+          </span>
+
+          <textarea
+            placeholder="Ex: A escadaria como parte da experiência de acesso ao território"
+            value={form.observar}
+            onChange={(e) => setCampo("observar", e.target.value)}
+            rows={4}
+          />
+        </label>
         <textarea
           placeholder="Pergunta para reflexão"
           value={form.pergunta}

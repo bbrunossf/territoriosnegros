@@ -1461,6 +1461,14 @@ a, a:visited, a:hover, a:active {
   height: 20px;
 }
 
+/* dica curta abaixo do rótulo de um campo do painel */
+.admin-campo-dica {
+  font-size: 13px;
+  line-height: 1.45;
+  color: #6b5b4d;
+  font-weight: 400;
+}
+
 .admin-form input,
 .admin-form textarea,
 .admin-form select {
