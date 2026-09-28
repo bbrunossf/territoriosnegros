@@ -1869,3 +1869,61 @@ p.foto-credito {
   padding: 6px;
 }
 
+
+/* ══════════════════════════════════════════════════════════════════
+   AJUSTES 28/09/2026 - pedidos da autoria
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ── 1. Lista de territórios: foto retangular e maior ──
+   Antes a foto era um círculo de 55px, o que cortava o lugar e não deixava
+   reconhecer o território. Agora é um retângulo arredondado de 96px (quase o
+   triplo da área), com o mesmo traço da identidade. Vale também para a lista do
+   percurso, que mostra os mesmos territórios. */
+
+.territorios-item,
+.percurso-item {
+  grid-template-columns: 96px 1fr 20px;
+  gap: 14px;
+  padding: 16px 0;
+}
+
+.territorios-thumb,
+.percurso-thumb {
+  width: 96px;
+  height: 96px;
+  border-radius: 12px;
+}
+
+/* ── 2. Nome do território em caixa alta ── */
+
+.territorios-nome,
+.percurso-nome {
+  display: block;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  font-size: 15px;
+  line-height: 1.38;
+}
+
+/* telas estreitas: foto um pouco menor e nome também, para o texto não
+   espremer em muitas linhas */
+@media (max-width: 380px) {
+  .territorios-item,
+  .percurso-item {
+    grid-template-columns: 84px 1fr 18px;
+    gap: 12px;
+  }
+
+  .territorios-thumb,
+  .percurso-thumb {
+    width: 84px;
+    height: 84px;
+    border-radius: 10px;
+  }
+
+  .territorios-nome,
+  .percurso-nome {
+    font-size: 14px;
+  }
+}
+

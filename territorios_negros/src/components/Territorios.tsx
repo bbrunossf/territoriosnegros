@@ -38,7 +38,7 @@ export default function Territorios() {
               )}
 
               <span>
-                <b>{t.nome}</b>
+                <b className="territorios-nome">{t.nome}</b>
                 <br />
                 <small className="territorios-palavra">{t.palavra}</small>
               </span>

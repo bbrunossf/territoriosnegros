@@ -44,7 +44,7 @@ export default function Percurso() {
           <img src={t.imagem} alt="" className="percurso-thumb" />
 
           <span>
-            <b>
+            <b className="percurso-nome">
               {i + 1}. {t.nome}
             </b>
             <br />
