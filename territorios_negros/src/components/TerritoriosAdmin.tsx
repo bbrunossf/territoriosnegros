@@ -20,6 +20,7 @@ import {
 import type { Categoria, FotoTerritorio, Territorio } from "../data/types";
 import { gerarSlug } from "../utils/catalogo";
 import { formatarDataHoraBR } from "../utils/data";
+import { legendaDoArquivo } from "../utils/legendas";
 import {
   avisoDeApagamento,
   camposQueSeraoApagados,
@@ -335,7 +336,8 @@ export default function TerritoriosAdmin() {
 
       for (const file of Array.from(files)) {
         const url = await uploadFoto(editando, file);
-        novas.push({ url, legenda: "" });
+        // a legenda já entra com o nome do arquivo (editável depois)
+        novas.push({ url, legenda: legendaDoArquivo(file.name) });
       }
 
       setFotos([...fotos, ...novas]);
@@ -657,7 +659,8 @@ export default function TerritoriosAdmin() {
                 é publicado antes de você clicar em <b>Salvar alterações</b>. O{" "}
                 <b>crédito</b> aparece embaixo da imagem, no app e quando ela é
                 ampliada; na foto principal, vale o crédito da foto marcada como
-                principal.
+                principal. A <b>legenda</b> de cada foto enviada já vem com o nome
+                do arquivo — ajuste só o que precisar.
               </p>
 
               <div className="admin-fotos-estado">

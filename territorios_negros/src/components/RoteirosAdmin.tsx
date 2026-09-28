@@ -18,6 +18,7 @@ import {
 import type { FotoTerritorio, Roteiro, Territorio, TerritoriosMap } from "../data/types";
 import { gerarSlug } from "../utils/catalogo";
 import { formatarDataHoraBR } from "../utils/data";
+import { legendaDoArquivo } from "../utils/legendas";
 
 // ── Helpers para arrays ↔ textarea ───────────────────────────
 
@@ -205,7 +206,8 @@ export default function RoteirosAdmin() {
 
       for (const file of Array.from(files)) {
         const url = await uploadFoto(editando, file, "roteiros");
-        novas.push({ url, legenda: "" });
+        // a legenda já entra com o nome do arquivo (editável depois)
+        novas.push({ url, legenda: legendaDoArquivo(file.name) });
       }
 
       setMapas([...mapas, ...novas]);
