@@ -49,7 +49,12 @@ export default function PaginaConteudo({
 
   const conteudo = (
     <>
-      <PageTitle title={pagina.titulo} subtitle={pagina.subtitulo} />
+      <PageTitle
+        title={pagina.titulo}
+        subtitle={pagina.subtitulo}
+        titleClassName={classesEstilo(pagina.tituloEstilo, "titulo")}
+        subtitleClassName={classesEstilo(pagina.subtituloEstilo, "titulo")}
+      />
 
       {destaque.length === 1 && (
         <Info>
@@ -98,6 +103,7 @@ export default function PaginaConteudo({
             icon={bloco.icone || "•"}
             title={bloco.titulo}
             className={classesEstilo(bloco.estilo)}
+            titleClassName={classesEstilo(bloco.tituloEstilo, "titulo")}
           >
             {paragrafosDe(bloco.texto).map((p, j) => (
               <p key={j}>

@@ -65,6 +65,7 @@ const BLOCO_NOVO: BlocoConteudo = {
   imagens: [],
   posicaoImagens: "fim",
   estilo: ESTILO_PADRAO,
+  tituloEstilo: ESTILO_PADRAO,
 };
 
 function itensParaTexto(itens: string[]): string {
@@ -85,14 +86,19 @@ function textoParaItens(txt: string): string[] {
 function CamposEstilo({
   estilo,
   onChange,
+  alvo = "texto",
 }: {
   estilo: EstiloTexto;
   onChange: (campo: keyof EstiloTexto, valor: string) => void;
+  /** o que está sendo formatado (só muda o nome nos rótulos) */
+  alvo?: "texto" | "titulo" | "subtitulo";
 }) {
+  const oQue = alvo === "texto" ? "texto" : alvo === "titulo" ? "título" : "subtítulo";
+
   return (
     <div className="admin-form-grid admin-form-grid-3">
       <label className="admin-campo">
-        Tamanho do texto
+        Tamanho do {oQue}
         <select
           value={estilo.tamanho}
           onChange={(e) => onChange("tamanho", e.target.value as TamanhoTexto)}
@@ -117,7 +123,7 @@ function CamposEstilo({
       </label>
 
       <label className="admin-campo">
-        Cor do texto
+        Cor do {oQue}
         <select
           value={estilo.cor}
           onChange={(e) => onChange("cor", e.target.value as CorTexto)}
@@ -143,6 +149,47 @@ function PreviaEstilo({ estilo, texto }: { estilo: EstiloTexto; texto: string })
       <p>
         <Inline texto={primeiro} />
       </p>
+    </div>
+  );
+}
+
+/**
+ * Prévia de um título (título da página, subtítulo ou título de seção) com a
+ * formatação escolhida, usando o mesmo elemento do app.
+ */
+function PreviaTitulo({
+  estilo,
+  texto,
+  tipo,
+}: {
+  estilo: EstiloTexto;
+  texto: string;
+  tipo: "pagina" | "subtitulo" | "secao";
+}) {
+  const conteudo = (texto || "").split(/\n/)[0]?.trim();
+
+  if (!conteudo) return null;
+
+  const classes = classesEstilo(estilo, "titulo");
+
+  return (
+    <div className="admin-previa">
+      <span className="admin-previa-rotulo">como vai ficar no app</span>
+
+      {tipo === "pagina" && (
+        <h1 className={`page-title ${classes}`.trim()}>{conteudo}</h1>
+      )}
+
+      {tipo === "subtitulo" && (
+        <p className={`page-subtitle ${classes}`.trim()}>{conteudo}</p>
+      )}
+
+      {tipo === "secao" && (
+        <h3 className={`topic-title ${classes}`.trim()}>
+          <span className="topic-icon"> </span>
+          {conteudo}
+        </h3>
+      )}
     </div>
   );
 }
@@ -264,6 +311,37 @@ export default function PaginasAdmin() {
     setPagina((p) => ({
       ...p,
       destaqueEstilo: trocarCampoEstilo(p.destaqueEstilo, campo, valor),
+    }));
+    setPendente(true);
+  }
+
+  /** formatação do título de uma seção (bloco) */
+  function setEstiloTituloBloco(indiceBloco: number, campo: keyof EstiloTexto, valor: string) {
+    setPagina((p) => ({
+      ...p,
+      blocos: p.blocos.map((b, i) =>
+        i === indiceBloco
+          ? { ...b, tituloEstilo: trocarCampoEstilo(b.tituloEstilo, campo, valor) }
+          : b
+      ),
+    }));
+    setPendente(true);
+  }
+
+  /** formatação do título da página */
+  function setEstiloTituloPagina(campo: keyof EstiloTexto, valor: string) {
+    setPagina((p) => ({
+      ...p,
+      tituloEstilo: trocarCampoEstilo(p.tituloEstilo, campo, valor),
+    }));
+    setPendente(true);
+  }
+
+  /** formatação do subtítulo da página (a linha abaixo do título) */
+  function setEstiloSubtitulo(campo: keyof EstiloTexto, valor: string) {
+    setPagina((p) => ({
+      ...p,
+      subtituloEstilo: trocarCampoEstilo(p.subtituloEstilo, campo, valor),
     }));
     setPendente(true);
   }
@@ -469,9 +547,11 @@ export default function PaginasAdmin() {
 
       <p className="admin-ajuda">
         Aqui você edita os textos das páginas do app. Em cada página, os blocos são as seções
-        com ícone e título. Em cada seção (e na caixa de abertura) você escolhe o{" "}
-        <b>tamanho</b>, o <b>alinhamento</b> e a <b>cor</b> do texto — a prévia mostra como
-        vai ficar antes de publicar. Dentro do texto, para destacar uma palavra use{" "}
+        com ícone e título. Você escolhe o <b>tamanho</b>, o <b>alinhamento</b> e a{" "}
+        <b>cor</b> — separadamente para o <b>título da página</b>, para o{" "}
+        <b>subtítulo</b>, para a <b>caixa de abertura</b> e, em cada seção, para o{" "}
+        <b>título</b> e para o <b>texto</b>. A prévia mostra como vai ficar antes de
+        publicar. Dentro do texto, para destacar uma palavra use{" "}
         <b>**duas estrelas**</b> (negrito) ou <b>*uma estrela*</b> (itálico); linha em branco
         separa parágrafos. Cada bloco também aceita <b>imagens e mapas</b>, que podem ficar
         visíveis ou bloqueados para os visitantes — e, no fim da página, há um atalho para
@@ -515,6 +595,39 @@ export default function PaginasAdmin() {
             placeholder="Subtítulo (opcional)"
             value={pagina.subtitulo}
             onChange={(e) => setCampo("subtitulo", e.target.value)}
+          />
+        </div>
+
+        <div className="admin-subsecao">
+          <b>Formatação do título da página</b>
+          <p className="admin-campo-dica">
+            Vale para o título grande do topo da página (o que está em letras
+            maiúsculas).
+          </p>
+
+          <CamposEstilo
+            alvo="titulo"
+            estilo={pagina.tituloEstilo}
+            onChange={setEstiloTituloPagina}
+          />
+          <PreviaTitulo estilo={pagina.tituloEstilo} texto={pagina.titulo} tipo="pagina" />
+        </div>
+
+        <div className="admin-subsecao">
+          <b>Formatação do subtítulo</b>
+          <p className="admin-campo-dica">
+            Vale para a linha de texto que aparece logo abaixo do título.
+          </p>
+
+          <CamposEstilo
+            alvo="subtitulo"
+            estilo={pagina.subtituloEstilo}
+            onChange={setEstiloSubtitulo}
+          />
+          <PreviaTitulo
+            estilo={pagina.subtituloEstilo}
+            texto={pagina.subtitulo}
+            tipo="subtitulo"
           />
         </div>
 
@@ -574,11 +687,29 @@ export default function PaginasAdmin() {
               rows={5}
             />
 
-            <CamposEstilo
-              estilo={bloco.estilo}
-              onChange={(campo, valor) => setEstiloBloco(i, campo, valor)}
-            />
-            <PreviaEstilo estilo={bloco.estilo} texto={bloco.texto} />
+            <div className="admin-subsecao">
+              <b>Formatação do título desta seção</b>
+              <p className="admin-campo-dica">
+                Vale para o título da seção (o que aparece com o ícone).
+              </p>
+
+              <CamposEstilo
+                alvo="titulo"
+                estilo={bloco.tituloEstilo}
+                onChange={(campo, valor) => setEstiloTituloBloco(i, campo, valor)}
+              />
+              <PreviaTitulo estilo={bloco.tituloEstilo} texto={bloco.titulo} tipo="secao" />
+            </div>
+
+            <div className="admin-subsecao">
+              <b>Formatação do texto desta seção</b>
+
+              <CamposEstilo
+                estilo={bloco.estilo}
+                onChange={(campo, valor) => setEstiloBloco(i, campo, valor)}
+              />
+              <PreviaEstilo estilo={bloco.estilo} texto={bloco.texto} />
+            </div>
 
             <textarea
               placeholder="Lista com travessão — um item por linha (opcional)"

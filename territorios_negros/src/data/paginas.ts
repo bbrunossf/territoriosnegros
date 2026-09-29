@@ -49,6 +49,8 @@ export interface BlocoConteudo {
   posicaoImagens: PosicaoImagens;
   /** formatação do texto desta seção (tamanho, alinhamento e cor) */
   estilo: EstiloTexto;
+  /** formatação do título desta seção */
+  tituloEstilo: EstiloTexto;
 }
 
 export type PosicaoImagens = "aposTexto" | "fim";
@@ -83,6 +85,10 @@ export interface BotaoConteudo {
 export interface PaginaConteudo {
   titulo: string;
   subtitulo: string;
+  /** formatação do título da página */
+  tituloEstilo: EstiloTexto;
+  /** formatação do subtítulo da página (a linha abaixo do título) */
+  subtituloEstilo: EstiloTexto;
   /** bloco destacado de abertura */
   destaque: string;
   /** formatação do texto da caixa de abertura */
@@ -101,6 +107,8 @@ export interface PaginaConteudo {
 const VAZIO: PaginaConteudo = {
   titulo: "",
   subtitulo: "",
+  tituloEstilo: ESTILO_PADRAO,
+  subtituloEstilo: ESTILO_PADRAO,
   destaque: "",
   destaqueEstilo: ESTILO_PADRAO,
   blocos: [],
@@ -121,6 +129,7 @@ function bloco(parcial: Partial<BlocoConteudo>): BlocoConteudo {
     imagens: [],
     posicaoImagens: "fim",
     estilo: ESTILO_PADRAO,
+    tituloEstilo: ESTILO_PADRAO,
     ...parcial,
   };
 }
@@ -366,12 +375,37 @@ export function normalizarEstilo(valor: unknown): EstiloTexto {
   };
 }
 
-/** Classes CSS que aplicam a formatação escolhida (o estilo neutro não gera classe). */
-export function classesEstilo(estilo: EstiloTexto | undefined): string {
+/**
+ * Classes CSS que aplicam a formatação escolhida (o estilo neutro não gera
+ * classe, então o que já está publicado não muda).
+ *
+ * alvo = "texto"  → classes de texto corrido (texto-grande / texto-pequeno)
+ * alvo = "titulo" → classes de título (titulo-grande / titulo-pequeno), que
+ *                   respeitam o tamanho próprio de cada título do app
+ *                   (título da página, subtítulo e título de seção).
+ * Alinhamento e cor usam as mesmas classes nos dois casos.
+ */
+export function classesEstilo(
+  estilo: EstiloTexto | undefined,
+  alvo: "texto" | "titulo" = "texto"
+): string {
   const e = estilo ?? ESTILO_PADRAO;
 
+  const classeTamanho =
+    alvo === "titulo"
+      ? e.tamanho === "grande"
+        ? "titulo-grande"
+        : e.tamanho === "pequeno"
+          ? "titulo-pequeno"
+          : ""
+      : e.tamanho === "grande"
+        ? "texto-grande"
+        : e.tamanho === "pequeno"
+          ? "texto-pequeno"
+          : "";
+
   return [
-    e.tamanho === "grande" ? "texto-grande" : e.tamanho === "pequeno" ? "texto-pequeno" : "",
+    classeTamanho,
     e.alinhamento === "centro"
       ? "alin-centro"
       : e.alinhamento === "direita"
@@ -448,6 +482,7 @@ function normalizarBlocos(valor: unknown, padrao: BlocoConteudo[]): BlocoConteud
         imagens: normalizarImagens(o.imagens),
         posicaoImagens: o.posicaoImagens === "aposTexto" ? "aposTexto" : "fim",
         estilo: normalizarEstilo(o.estilo),
+        tituloEstilo: normalizarEstilo(o.tituloEstilo),
       });
     });
 }
@@ -492,6 +527,8 @@ export function normalizarPagina(
   return {
     titulo: textoDe(v.titulo, padrao.titulo) || padrao.titulo,
     subtitulo: textoDe(v.subtitulo, padrao.subtitulo),
+    tituloEstilo: normalizarEstilo(v.tituloEstilo),
+    subtituloEstilo: normalizarEstilo(v.subtituloEstilo),
     destaque: textoDe(v.destaque, padrao.destaque),
     destaqueEstilo: normalizarEstilo(v.destaqueEstilo),
     blocos: normalizarBlocos(v.blocos, padrao.blocos),

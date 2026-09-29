@@ -6,6 +6,8 @@ type Props = {
   children: ReactNode;
   /** classes extras (ex: formatação escolhida no painel: texto-grande, alin-centro) */
   className?: string;
+  /** classes de formatação do título da seção (ex: titulo-grande, cor-dourado) */
+  titleClassName?: string;
 };
 
 export default function Topic({
@@ -13,10 +15,11 @@ export default function Topic({
   title,
   children,
   className,
+  titleClassName,
 }: Props) {
   return (
     <section className={`topic ${className ?? ""}`.trim()}>
-      <h3 className="topic-title">
+      <h3 className={`topic-title ${titleClassName ?? ""}`.trim()}>
         <span className="topic-icon">
           {icon}
         </span>

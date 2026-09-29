@@ -1606,8 +1606,8 @@ a, a:visited, a:hover, a:active {
 }
 
 /* ── Formatação do texto escolhida pela autoria (aba Páginas) ──
-   As opções são aplicadas na seção inteira; os títulos das seções mantêm o
-   padrão do app de propósito (identidade visual). */
+   As opções são aplicadas na seção inteira; os títulos têm opções próprias
+   (também escolhidas no painel), com as classes .titulo-* abaixo. */
 
 /* tamanho: o app usa 17px como base; as classes cobrem também os trechos que
    têm tamanho próprio (caixas destacadas e listas) */
@@ -1634,6 +1634,61 @@ a, a:visited, a:hover, a:active {
 
 .alin-justificado {
   text-align: justify;
+}
+
+/* ── Títulos: título da página, subtítulo e título de cada seção ──
+   Cada título tem o seu próprio tamanho padrão no app (título da página 32px,
+   subtítulo e título de seção 14.5px), então as classes são escritas junto do
+   seletor do título para o "maior/menor" respeitar a proporção de cada um.
+   O estilo neutro não gera classe: nada muda no que já está publicado. */
+
+.topic-title.titulo-grande {
+  font-size: 17.5px;
+}
+
+.topic-title.titulo-pequeno {
+  font-size: 12.5px;
+}
+
+.page-subtitle.titulo-grande {
+  font-size: 17.5px;
+}
+
+.page-subtitle.titulo-pequeno {
+  font-size: 12.5px;
+}
+
+.page-title.titulo-grande {
+  font-size: 38px;
+}
+
+.page-title.titulo-pequeno {
+  font-size: 25px;
+}
+
+/* cor dos títulos (mesmas opções do texto) */
+.topic-title.cor-marrom,
+.page-title.cor-marrom,
+.page-subtitle.cor-marrom {
+  color: #6a452b;
+}
+
+.topic-title.cor-dourado,
+.page-title.cor-dourado,
+.page-subtitle.cor-dourado {
+  color: #96631a;
+}
+
+/* alinhamento dos títulos: o título de seção é uma linha com ícone, então o
+   alinhamento vale no texto e o bloco acompanha */
+.topic-title.alin-centro {
+  justify-content: center;
+  text-align: center;
+}
+
+.topic-title.alin-direita {
+  justify-content: flex-end;
+  text-align: right;
 }
 
 /* cores (legíveis sobre o fundo creme do app) */
