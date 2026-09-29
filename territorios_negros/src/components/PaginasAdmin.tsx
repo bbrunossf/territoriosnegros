@@ -19,6 +19,7 @@ import {
 } from "../data/paginas";
 import { formatarDataHoraBR } from "../utils/data";
 import { legendaDoArquivo } from "../utils/legendas";
+import FormularioContatoAdmin from "./FormularioContatoAdmin";
 
 interface DefinicaoPagina {
   chave: string;
@@ -39,8 +40,9 @@ const PAGINAS: DefinicaoPagina[] = [
     caminho: "/contato",
     padrao: CONTATO_PADRAO,
     aviso:
-      "Nesta página o formulário de mensagem continua fixo: aqui você edita o título, o " +
-      "subtítulo e o texto de abertura que aparecem acima dele.",
+      "Nesta página o formulário de mensagem aparece abaixo destes textos: aqui você " +
+      "edita o título, o subtítulo e o texto de abertura — e, no fim da página, os " +
+      "campos e as mensagens do próprio formulário.",
   },
 ];
 
@@ -726,6 +728,9 @@ export default function PaginasAdmin() {
           </button>
         </div>
       </form>
+
+      {/* o formulário "Fale com a autoria" é editado junto da página Contato */}
+      {definicao.chave === "pagina_contato" && <FormularioContatoAdmin />}
     </div>
   );
 }

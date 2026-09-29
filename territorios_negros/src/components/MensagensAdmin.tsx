@@ -77,7 +77,8 @@ export default function MensagensAdmin() {
 
       <p className="admin-ajuda">
         Tudo que chega pelo formulário “Fale com a autoria” aparece aqui.
-        {naoLidas > 0 ? ` ${naoLidas} não lida(s).` : " Nenhuma pendente."}
+        {naoLidas > 0 ? ` ${naoLidas} não lida(s).` : " Nenhuma pendente."} O formulário
+        que o visitante preenche é editável em <b>Páginas › Contato</b>, no fim da página.
       </p>
 
       {ok && <p className="admin-ok">{ok}</p>}

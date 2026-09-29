@@ -1479,6 +1479,22 @@ a, a:visited, a:hover, a:active {
   font-weight: 400;
 }
 
+/* seção de edição que vive embaixo de outra no painel (ex: formulário de
+   contato, dentro da aba Páginas › Contato) */
+.admin-subsecao {
+  margin-top: 28px;
+  border-top: 2px solid #e5d2a8;
+  padding-top: 18px;
+}
+
+/* separador entre grupos de campos do painel */
+.admin-divisor {
+  border: 0;
+  border-top: 1px dashed #e5d2a8;
+  margin: 14px 0 4px;
+  width: 100%;
+}
+
 .admin-form input,
 .admin-form textarea,
 .admin-form select {

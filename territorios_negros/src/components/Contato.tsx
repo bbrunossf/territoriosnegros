@@ -1,7 +1,11 @@
 // Contato.tsx — formulário (nome, e-mail, whatsapp e mensagem)
 //
+// Quais campos aparecem, quais são obrigatórios e os textos são definidos pela
+// autoria no painel (Páginas › Contato › Formulário de contato); sem nada
+// salvo, vale o formulário padrão (igual ao que já estava no ar).
+//
 // Proteções simples contra mensagens indevidas:
-//  · WhatsApp obrigatório, conferido (DDD + número)
+//  · WhatsApp conferido (DDD + número)
 //  · pergunta de soma ("você é uma pessoa?") que muda a cada envio
 //  · campo-armadilha invisível, que só robôs preenchem
 import { useState } from "react";
@@ -10,6 +14,10 @@ import PaginaConteudo from "../components/PaginaConteudo";
 import { enviarMensagem } from "../data/api";
 import { useTerritorios } from "../context/useTerritorios";
 import { CONTATO_PADRAO, normalizarPagina } from "../data/paginas";
+import {
+  normalizarFormulario,
+  rotuloComObrigatorio,
+} from "../data/formularioContato";
 
 function novaSoma() {
   return {
@@ -36,9 +44,10 @@ export default function Contato() {
   const [ok, setOk] = useState(false);
   const [erro, setErro] = useState("");
 
-  // título e texto de abertura são editáveis no painel (aba Páginas)
+  // título, texto de abertura e formulário são editáveis no painel
   const { config } = useTerritorios();
   const pagina = normalizarPagina(config.pagina_contato, CONTATO_PADRAO);
+  const form = normalizarFormulario(config.formulario_contato);
 
   async function enviar(e: React.FormEvent) {
     e.preventDefault();
@@ -51,17 +60,29 @@ export default function Contato() {
       return;
     }
 
-    if (!nome.trim() || !mensagem.trim()) {
-      setErro("Preencha o nome e a mensagem.");
+    // campos obrigatórios (definidos no painel) que ficaram em branco
+    const faltando: string[] = [];
+
+    if (form.nomeObrigatorio && !nome.trim()) faltando.push(form.nomeRotulo);
+    if (form.emailMostrar && form.emailObrigatorio && !email.trim()) {
+      faltando.push(form.emailRotulo);
+    }
+    if (form.whatsappMostrar && form.whatsappObrigatorio && !whatsapp.trim()) {
+      faltando.push(form.whatsappRotulo);
+    }
+    if (form.mensagemObrigatoria && !mensagem.trim()) faltando.push(form.mensagemRotulo);
+
+    if (faltando.length > 0) {
+      setErro(`Preencha: ${faltando.join(", ")}.`);
       return;
     }
 
     const telefone = soDigitos(whatsapp);
 
-    if (telefone.length < 10 || telefone.length > 11) {
-      setErro(
-        "Informe o WhatsApp com DDD (ex: 27 99999-9999). É por ele que a autoria responde."
-      );
+    // o WhatsApp, quando preenchido, precisa ter DDD — é por ele que a
+    // autoria responde
+    if (telefone && (telefone.length < 10 || telefone.length > 11)) {
+      setErro("Informe o WhatsApp com DDD (ex: 27 99999-9999).");
       return;
     }
 
@@ -100,32 +121,42 @@ export default function Contato() {
       <form className="admin-form contato-form" onSubmit={enviar}>
         <input
           type="text"
-          placeholder="Nome *"
+          placeholder={rotuloComObrigatorio(form.nomeRotulo, form.nomeObrigatorio)}
           value={nome}
           onChange={(e) => setNome(e.target.value)}
         />
 
-        <input
-          type="email"
-          placeholder="E-mail"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+        {form.emailMostrar && (
+          <input
+            type="email"
+            placeholder={rotuloComObrigatorio(form.emailRotulo, form.emailObrigatorio)}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        )}
 
-        <input
-          type="tel"
-          placeholder="WhatsApp (com DDD) *"
-          value={whatsapp}
-          onChange={(e) => setWhatsapp(e.target.value)}
-          inputMode="tel"
-        />
+        {form.whatsappMostrar && (
+          <input
+            type="tel"
+            placeholder={rotuloComObrigatorio(
+              form.whatsappRotulo,
+              form.whatsappObrigatorio
+            )}
+            value={whatsapp}
+            onChange={(e) => setWhatsapp(e.target.value)}
+            inputMode="tel"
+          />
+        )}
 
-        <p className="form-ajuda">
-          O WhatsApp é obrigatório: é por ele que a autoria responde. Não será publicado.
-        </p>
+        {form.whatsappMostrar && form.whatsappAjuda && (
+          <p className="form-ajuda">{form.whatsappAjuda}</p>
+        )}
 
         <textarea
-          placeholder="Mensagem *"
+          placeholder={rotuloComObrigatorio(
+            form.mensagemRotulo,
+            form.mensagemObrigatoria
+          )}
           value={mensagem}
           onChange={(e) => setMensagem(e.target.value)}
           rows={5}
@@ -164,14 +195,10 @@ export default function Contato() {
 
         {erro && <p className="form-erro">{erro}</p>}
 
-        {ok && (
-          <p className="form-ok">
-            Mensagem enviada. Obrigada!
-          </p>
-        )}
+        {ok && <p className="form-ok">{form.sucesso}</p>}
 
         <button type="submit" className="btn" disabled={enviando}>
-          {enviando ? "Enviando..." : "Enviar mensagem"}
+          {enviando ? "Enviando..." : form.botao}
         </button>
       </form>
     </PaginaConteudo>
