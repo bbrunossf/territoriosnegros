@@ -5,6 +5,11 @@ import { useEffect, useState } from "react";
 import { normalizarProximoTour, salvarConfig, uploadFoto } from "../data/api";
 import { useTerritorios } from "../context/useTerritorios";
 import { formatarDataHoraBR } from "../utils/data";
+import CAPA_ORIGINAL from "../assets/capa-inicial.jpg";
+import {
+  TELA_INICIAL_PADRAO,
+  normalizarCapa,
+} from "../data/telaInicial";
 
 export default function InicioAdmin() {
   const { config, roteiros, recarregar } = useTerritorios();
@@ -19,6 +24,16 @@ export default function InicioAdmin() {
   const [logo, setLogo] = useState("");
   const [inscricao, setInscricao] = useState("");
   const [inscricaoGeral, setInscricaoGeral] = useState("");
+
+  // imagem de fundo e textos fixos da tela inicial
+  const [capaUrl, setCapaUrl] = useState("");
+  const [capaCredito, setCapaCredito] = useState("");
+  const [selo, setSelo] = useState("");
+  const [botaoInscricao, setBotaoInscricao] = useState("");
+  const [botaoInicio, setBotaoInicio] = useState("");
+  const [autoria, setAutoria] = useState("");
+
+  const [enviandoCapa, setEnviandoCapa] = useState(false);
 
   const [ok, setOk] = useState("");
   const [erro, setErro] = useState("");
@@ -45,6 +60,24 @@ export default function InicioAdmin() {
       setInscricaoGeral(
         typeof config.inscricao_url === "string" ? config.inscricao_url : ""
       );
+
+      const capa = normalizarCapa(config.capa_inicial);
+      setCapaUrl(capa.url);
+      setCapaCredito(capa.credito);
+
+      // nos textos, campo vazio = usa o texto original do app (o original
+      // aparece como dica cinza dentro do campo)
+      const textos = (
+        config.tela_inicial && typeof config.tela_inicial === "object"
+          ? config.tela_inicial
+          : {}
+      ) as Record<string, unknown>;
+      const txt = (valor: unknown) => (typeof valor === "string" ? valor : "");
+
+      setSelo(txt(textos.selo));
+      setBotaoInscricao(txt(textos.botao_inscricao));
+      setBotaoInicio(txt(textos.botao_inicio));
+      setAutoria(txt(textos.autoria));
     })();
 
     return () => {
@@ -68,6 +101,25 @@ export default function InicioAdmin() {
     }
   }
 
+  async function enviarCapa(file: File | null) {
+    if (!file) return;
+
+    setOk("");
+    setErro("");
+    setEnviandoCapa(true);
+
+    try {
+      const url = await uploadFoto("capa-inicial", file, "capa");
+      setCapaUrl(url);
+      setOk('Imagem de fundo enviada. Clique em "Salvar" para publicar no app.');
+    } catch (e) {
+      console.error(e);
+      setErro(e instanceof Error ? e.message : "Falha ao enviar a imagem de fundo.");
+    } finally {
+      setEnviandoCapa(false);
+    }
+  }
+
   async function salvar(e: React.FormEvent) {
     e.preventDefault();
     setOk("");
@@ -88,6 +140,18 @@ export default function InicioAdmin() {
 
       await salvarConfig("inscricao_url", inscricaoGeral);
 
+      await salvarConfig("capa_inicial", {
+        url: capaUrl,
+        credito: capaCredito,
+      });
+
+      await salvarConfig("tela_inicial", {
+        selo,
+        botao_inscricao: botaoInscricao,
+        botao_inicio: botaoInicio,
+        autoria,
+      });
+
       await recarregar();
       setOk(`Salvo em ${formatarDataHoraBR(new Date().toISOString())}.`);
     } catch (e) {
@@ -105,7 +169,8 @@ export default function InicioAdmin() {
         título do evento. Quem tocar no título vê a página do evento — com data, local,
         as informações abaixo e o botão da ficha de inscrição. A <b>logo do evento</b>{" "}
         é enviada aqui mesmo, neste formulário. Enquanto estiver desmarcado, nada
-        aparece para os visitantes.
+        aparece para os visitantes. No fim desta página você também troca a{" "}
+        <b>imagem de fundo</b> e os <b>textos fixos</b> da tela inicial.
       </p>
 
       {ok && <p className="admin-ok">{ok}</p>}
@@ -249,6 +314,119 @@ export default function InicioAdmin() {
           value={inscricaoGeral}
           onChange={(e) => setInscricaoGeral(e.target.value)}
         />
+
+        <h2>Imagem de fundo e textos da tela inicial</h2>
+
+        <p className="admin-ajuda">
+          A tela inicial do app tem uma imagem de fundo (a capa) e alguns textos fixos.
+          Os campos abaixo já mostram, em cinza, o que está no ar hoje: escreva por cima
+          para trocar e deixe <b>vazio</b> para voltar ao texto original. Tudo publica ao
+          clicar em <b>Salvar</b>.
+        </p>
+
+        <div className="admin-fotos">
+          <b>Imagem de fundo (capa)</b>
+
+          <p className="admin-ajuda">
+            Envie uma imagem para substituir a arte atual — no celular prefira uma imagem
+            deitada, com boa resolução. O botão <b>voltar à arte original</b> desfaz a
+            troca (a arte do app fica guardada).
+          </p>
+
+          <div className="admin-logo-preview">
+            <img
+              className="admin-capa-preview"
+              src={capaUrl || CAPA_ORIGINAL}
+              alt=""
+            />
+
+            <div className="admin-capa-estado">
+              <span className="admin-galeria-apoio">
+                {capaUrl ? "imagem enviada por você" : "arte original do app"}
+              </span>
+
+              {capaUrl && (
+                <button
+                  type="button"
+                  className="outline"
+                  onClick={() => {
+                    setCapaUrl("");
+                    setOk(
+                      'A arte original será usada. Clique em "Salvar" para publicar.'
+                    );
+                  }}
+                >
+                  voltar à arte original
+                </button>
+              )}
+            </div>
+          </div>
+
+          <div className="admin-form-upload">
+            <label>{capaUrl ? "Trocar a imagem de fundo:" : "Enviar a imagem de fundo:"}</label>
+
+            <input
+              type="file"
+              accept="image/*"
+              disabled={enviandoCapa}
+              onChange={(e) => {
+                enviarCapa(e.target.files?.[0] ?? null);
+                e.target.value = "";
+              }}
+            />
+
+            {enviandoCapa && (
+              <p className="admin-ajuda">Enviando a imagem, aguarde...</p>
+            )}
+          </div>
+
+          <input
+            type="text"
+            placeholder="Crédito da imagem de fundo (ex: Foto: Maria Souza · Acervo pessoal)"
+            value={capaCredito}
+            onChange={(e) => setCapaCredito(e.target.value)}
+          />
+        </div>
+
+        <label className="admin-campo">
+          Faixa do próximo evento (aparece na tela inicial e na página do evento)
+          <input
+            type="text"
+            placeholder={TELA_INICIAL_PADRAO.selo}
+            value={selo}
+            onChange={(e) => setSelo(e.target.value)}
+          />
+        </label>
+
+        <label className="admin-campo">
+          Botão de inscrição, dentro do cartão do evento
+          <input
+            type="text"
+            placeholder={TELA_INICIAL_PADRAO.botaoInscricao}
+            value={botaoInscricao}
+            onChange={(e) => setBotaoInscricao(e.target.value)}
+          />
+        </label>
+
+        <label className="admin-campo">
+          Botão principal da tela inicial (o que abre a leitura da cidade)
+          <textarea
+            rows={2}
+            placeholder={TELA_INICIAL_PADRAO.botaoInicio}
+            value={botaoInicio}
+            onChange={(e) => setBotaoInicio(e.target.value)}
+          />
+        </label>
+
+        <label className="admin-campo">
+          Linha de autoria, no rodapé da tela inicial
+          <input
+            type="text"
+            placeholder={TELA_INICIAL_PADRAO.autoria}
+            value={autoria}
+            onChange={(e) => setAutoria(e.target.value)}
+          />
+        </label>
 
         <div className="admin-form-botoes">
           <button type="submit" className="btn">

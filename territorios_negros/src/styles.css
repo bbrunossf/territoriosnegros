@@ -1343,6 +1343,16 @@ a, a:visited, a:hover, a:active {
   text-shadow: 0 1px 8px rgba(0, 0, 0, 0.62);
 }
 
+/* crédito da imagem de fundo, logo abaixo da capa */
+.home-capa-credito {
+  margin: 0;
+  text-align: right;
+  font-size: 11px;
+  font-style: italic;
+  color: #7b522a;
+  opacity: 0.85;
+}
+
 /* ── 4. Território: galeria de fotos de apoio ── */
 .territorio-galeria {
   display: grid;
@@ -1878,6 +1888,22 @@ p.foto-credito {
   border: 1px solid #e5d2a8;
   border-radius: 12px;
   padding: 6px;
+}
+
+/* prévia da imagem de fundo da tela inicial (aba Página inicial):
+   mais larga que a prévia da logo, para mostrar o enquadramento */
+.admin-logo-preview img.admin-capa-preview {
+  width: 260px;
+  height: 150px;
+  max-height: none;
+  object-fit: cover;
+}
+
+.admin-capa-estado {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
 }
 
 

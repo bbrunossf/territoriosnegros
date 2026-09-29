@@ -4,11 +4,17 @@ import CAPA_INICIAL from "../assets/capa-inicial.jpg";
 
 import { formatarDataAcesso, formatarDataBR } from "../utils/data";
 import { useTerritorios } from "../context/useTerritorios";
+import { normalizarCapa, normalizarTextosIniciais } from "../data/telaInicial";
 
 export default function Home() {
-  const { proximoTour, inscricaoUrl } = useTerritorios();
+  const { proximoTour, inscricaoUrl, config } = useTerritorios();
 
   const inscricao = proximoTour?.inscricaoUrl || inscricaoUrl;
+
+  // arte e textos da tela inicial: vêm do painel (aba Página inicial), com o
+  // conteúdo original do app como reserva
+  const capa = normalizarCapa(config.capa_inicial);
+  const textos = normalizarTextosIniciais(config.tela_inicial);
 
   return (
     <section className="home">
@@ -16,15 +22,17 @@ export default function Home() {
           abaixo dela, então nada mais fica por cima da arte */}
       <div
         className="home-capa"
-        style={{ backgroundImage: `url(${CAPA_INICIAL})` }}
+        style={{ backgroundImage: `url(${capa.url || CAPA_INICIAL})` }}
         role="img"
         aria-label="Territórios Negros - Vitória - ES"
       />
 
       <div className="home-bottom">
+        {capa.credito && <p className="home-capa-credito">{capa.credito}</p>}
+
         {proximoTour && (
           <div className="home-tour">
-            <p className="home-tour-selo">Próximo evento disponível</p>
+            <p className="home-tour-selo">{textos.selo}</p>
 
             {/* o título é o caminho para as informações do tour e a inscrição */}
             <Link to="/evento" className="home-tour-titulo home-tour-link">
@@ -53,15 +61,14 @@ export default function Home() {
                 target="_blank"
                 rel="noreferrer"
               >
-                Clique aqui e se inscreva
+                {textos.botaoInscricao}
               </a>
             )}
           </div>
         )}
 
         <Link to="/Intro" className="btn home-start-btn">
-          Iniciar a leitura da cidade de Vitória - ES a partir
-          dos territórios negros
+          {textos.botaoInicio}
         </Link>
 
         <div className="home-creditos">
@@ -69,9 +76,7 @@ export default function Home() {
             Acesso em {formatarDataAcesso()}
           </p>
 
-          <p className="home-autoria">
-            Aingrid Fabiane de Souza — Licenciada em Geografia (UFES)
-          </p>
+          <p className="home-autoria">{textos.autoria}</p>
         </div>
       </div>
     </section>

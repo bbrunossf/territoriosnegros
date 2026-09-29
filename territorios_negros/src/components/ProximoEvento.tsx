@@ -2,13 +2,17 @@ import { Link } from "react-router-dom";
 
 import { formatarDataBR } from "../utils/data";
 import { useTerritorios } from "../context/useTerritorios";
+import { normalizarTextosIniciais } from "../data/telaInicial";
 
 /**
  * Página do próximo evento: informações do tour e a ficha de inscrição.
  * Chega-se a ela tocando no título do evento na tela inicial.
  */
 export default function ProximoEvento() {
-  const { proximoTour, roteiros, inscricaoUrl } = useTerritorios();
+  const { proximoTour, roteiros, inscricaoUrl, config } = useTerritorios();
+
+  // a faixa do topo é a mesma da tela inicial (editada na aba Página inicial)
+  const textos = normalizarTextosIniciais(config.tela_inicial);
 
   const inscricao = proximoTour?.inscricaoUrl || inscricaoUrl;
 
@@ -38,7 +42,7 @@ export default function ProximoEvento() {
 
   return (
     <>
-      <p className="evento-selo">Próximo evento disponível</p>
+      <p className="evento-selo">{textos.selo}</p>
 
       <h1 className="page-title">{proximoTour.texto || "Próximo tour"}</h1>
 
