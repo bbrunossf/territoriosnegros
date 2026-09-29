@@ -106,6 +106,24 @@ export function imagensVisiveis(imagens: ImagemBloco[] | undefined): ImagemBloco
   return (imagens ?? []).filter((i) => i.url && i.visivel !== false);
 }
 
+/**
+ * Liga ou desliga de uma vez todas as imagens de todas as seções de uma página
+ * (equivalente ao "liberar/bloquear fotos de apoio" dos territórios). Devolve
+ * uma página nova, sem mexer na original.
+ */
+export function definirVisibilidadeDeTodasAsImagens(
+  pagina: PaginaConteudo,
+  visivel: boolean
+): PaginaConteudo {
+  return {
+    ...pagina,
+    blocos: pagina.blocos.map((bloco) => ({
+      ...bloco,
+      imagens: bloco.imagens.map((imagem) => ({ ...imagem, visivel })),
+    })),
+  };
+}
+
 // ─────────────────────────────────────────────────────── Antes de caminhar
 
 export const INTRO_PADRAO: PaginaConteudo = {

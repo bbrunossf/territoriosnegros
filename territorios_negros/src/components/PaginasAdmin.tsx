@@ -10,6 +10,7 @@ import {
   FIM_PADRAO,
   INTRO_PADRAO,
   VITORIA_PADRAO,
+  definirVisibilidadeDeTodasAsImagens,
   normalizarPagina,
   type BlocoConteudo,
   type BotaoConteudo,
@@ -157,6 +158,15 @@ export default function PaginasAdmin() {
 
   function adicionarBloco() {
     setPagina((p) => ({ ...p, blocos: [...p.blocos, { ...BLOCO_NOVO }] }));
+    setPendente(true);
+  }
+
+  /**
+   * Liga/desliga de uma vez todas as imagens da página (todas as seções) —
+   * atalho equivalente ao "liberar/bloquear fotos de apoio" dos territórios.
+   */
+  function definirVisibilidadeTodas(visivel: boolean) {
+    setPagina((p) => definirVisibilidadeDeTodasAsImagens(p, visivel));
     setPendente(true);
   }
 
@@ -331,6 +341,11 @@ export default function PaginasAdmin() {
 
   // ── salvar ──────────────────────────────────────────────
 
+  /** quantas imagens a página tem no total e quantas o visitante está vendo */
+  const imagensDaPagina = pagina.blocos.flatMap((b) => b.imagens);
+  const totalImagens = imagensDaPagina.length;
+  const imagensAparecendo = imagensDaPagina.filter((i) => i.visivel !== false).length;
+
   async function salvar(e: React.FormEvent) {
     e.preventDefault();
     setOk("");
@@ -359,8 +374,9 @@ export default function PaginasAdmin() {
         com ícone e título. Para dar destaque, use <b>**duas estrelas**</b> (negrito) ou{" "}
         <b>*uma estrela*</b> (itálico); no texto do bloco, deixe uma <b>linha em branco</b>{" "}
         entre parágrafos. Cada bloco também aceita <b>imagens e mapas</b>, que podem ficar
-        visíveis ou bloqueados para os visitantes. Nada é publicado antes de clicar em{" "}
-        <b>Salvar</b>.
+        visíveis ou bloqueados para os visitantes — e, no fim da página, há um atalho para
+        liberar ou bloquear todas as imagens desta página de uma vez. Nada é publicado antes
+        de clicar em <b>Salvar</b>.
       </p>
 
       <div className="admin-abas">
@@ -632,6 +648,39 @@ export default function PaginasAdmin() {
         <button type="button" className="outline" onClick={adicionarBloco}>
           + Adicionar bloco
         </button>
+
+        {totalImagens > 0 && (
+          <>
+            <h2>Imagens de todas as seções</h2>
+
+            <p className="admin-ajuda">
+              Atalho igual ao das fotos de apoio dos territórios: aqui você libera ou
+              bloqueia de uma vez <b>todas as imagens desta página</b>, em todas as
+              seções. Continua valendo a regra desta aba — nada muda no app antes de
+              clicar em <b>Salvar</b>. Para mexer em uma imagem só, use o botão
+              liberar/bloquear dentro da seção dela.
+            </p>
+
+            <div className="admin-fotos-estado">
+              <b>Situação:</b> {imagensAparecendo} de {totalImagens} imagem(ns) aparecendo
+              no app
+              <button
+                type="button"
+                className={imagensAparecendo < totalImagens ? "btn" : "outline"}
+                onClick={() => definirVisibilidadeTodas(true)}
+              >
+                Liberar todas
+              </button>
+              <button
+                type="button"
+                className={imagensAparecendo > 0 ? "btn" : "outline"}
+                onClick={() => definirVisibilidadeTodas(false)}
+              >
+                Bloquear todas
+              </button>
+            </div>
+          </>
+        )}
 
         <h2>Caixa final (link)</h2>
 
