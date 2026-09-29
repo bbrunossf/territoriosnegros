@@ -2,7 +2,7 @@
 import "../styles.css";
 
 import { useEffect, useState } from "react";
-import { salvarConfig } from "../data/api";
+import { salvarConfig, uploadFoto } from "../data/api";
 import { useTerritorios } from "../context/useTerritorios";
 import {
   CONTATO_PADRAO,
@@ -13,9 +13,12 @@ import {
   normalizarPagina,
   type BlocoConteudo,
   type BotaoConteudo,
+  type ImagemBloco,
   type PaginaConteudo,
+  type PosicaoImagens,
 } from "../data/paginas";
 import { formatarDataHoraBR } from "../utils/data";
+import { legendaDoArquivo } from "../utils/legendas";
 
 interface DefinicaoPagina {
   chave: string;
@@ -48,6 +51,8 @@ const BLOCO_NOVO: BlocoConteudo = {
   itens: [],
   destaque: "",
   links: [],
+  imagens: [],
+  posicaoImagens: "fim",
 };
 
 function itensParaTexto(itens: string[]): string {
@@ -70,6 +75,8 @@ export default function PaginasAdmin() {
   const [pagina, setPagina] = useState<PaginaConteudo>(definicao.padrao);
   const [pendente, setPendente] = useState(false);
   const [salvando, setSalvando] = useState(false);
+  /** bloco que está recebendo upload agora (mostra "enviando...") */
+  const [enviando, setEnviando] = useState<number | null>(null);
   const [ok, setOk] = useState("");
   const [erro, setErro] = useState("");
 
@@ -148,6 +155,102 @@ export default function PaginasAdmin() {
 
   function adicionarBloco() {
     setPagina((p) => ({ ...p, blocos: [...p.blocos, { ...BLOCO_NOVO }] }));
+    setPendente(true);
+  }
+
+  // ── imagens do bloco (mapas, fotos, esquemas) ───────────
+
+  /** envia uma ou várias imagens para o bloco (ficam no Storage do Supabase) */
+  async function adicionarImagens(indiceBloco: number, files: FileList | null) {
+    if (!files || files.length === 0) return;
+
+    setOk("");
+    setErro("");
+    setEnviando(indiceBloco);
+
+    try {
+      const novas: ImagemBloco[] = [];
+
+      for (const file of Array.from(files)) {
+        const url = await uploadFoto(`${definicao.chave}-b${indiceBloco + 1}`, file, "paginas");
+        // a legenda já entra com o nome do arquivo (editável depois)
+        novas.push({
+          url,
+          legenda: legendaDoArquivo(file.name),
+          credito: "",
+          visivel: true,
+        });
+      }
+
+      setPagina((p) => ({
+        ...p,
+        blocos: p.blocos.map((b, i) =>
+          i === indiceBloco ? { ...b, imagens: [...b.imagens, ...novas] } : b
+        ),
+      }));
+      setPendente(true);
+      setOk(
+        `${novas.length} imagem(ns) enviada(s). Clique em "Salvar" para publicar no app.`
+      );
+    } catch (e) {
+      console.error(e);
+      setErro(e instanceof Error ? e.message : "Falha ao enviar a imagem.");
+    } finally {
+      setEnviando(null);
+    }
+  }
+
+  function setImagem(indiceBloco: number, indiceImagem: number, campo: keyof ImagemBloco, valor: unknown) {
+    setPagina((p) => ({
+      ...p,
+      blocos: p.blocos.map((b, i) =>
+        i === indiceBloco
+          ? {
+              ...b,
+              imagens: b.imagens.map((img, j) =>
+                j === indiceImagem ? { ...img, [campo]: valor } : img
+              ),
+            }
+          : b
+      ),
+    }));
+    setPendente(true);
+  }
+
+  function moverImagem(indiceBloco: number, indiceImagem: number, delta: number) {
+    const bloco = pagina.blocos[indiceBloco];
+    const destino = indiceImagem + delta;
+    if (!bloco || destino < 0 || destino >= bloco.imagens.length) return;
+
+    const imagens = [...bloco.imagens];
+    [imagens[indiceImagem], imagens[destino]] = [imagens[destino], imagens[indiceImagem]];
+
+    setPagina((p) => ({
+      ...p,
+      blocos: p.blocos.map((b, i) => (i === indiceBloco ? { ...b, imagens } : b)),
+    }));
+    setPendente(true);
+  }
+
+  function removerImagem(indiceBloco: number, indiceImagem: number) {
+    if (!window.confirm("Remover esta imagem do bloco?")) return;
+
+    setPagina((p) => ({
+      ...p,
+      blocos: p.blocos.map((b, i) =>
+        i === indiceBloco
+          ? { ...b, imagens: b.imagens.filter((_, j) => j !== indiceImagem) }
+          : b
+      ),
+    }));
+    setPendente(true);
+  }
+
+  function setPosicaoImagens(indiceBloco: number, valor: PosicaoImagens) {
+    setPagina((p) => ({
+      ...p,
+      blocos: p.blocos.map((b, i) => (i === indiceBloco ? { ...b, posicaoImagens: valor } : b)),
+    }));
     setPendente(true);
   }
 
@@ -253,7 +356,9 @@ export default function PaginasAdmin() {
         Aqui você edita os textos das páginas do app. Em cada página, os blocos são as seções
         com ícone e título. Para dar destaque, use <b>**duas estrelas**</b> (negrito) ou{" "}
         <b>*uma estrela*</b> (itálico); no texto do bloco, deixe uma <b>linha em branco</b>{" "}
-        entre parágrafos. Nada é publicado antes de clicar em <b>Salvar</b>.
+        entre parágrafos. Cada bloco também aceita <b>imagens e mapas</b>, que podem ficar
+        visíveis ou bloqueados para os visitantes. Nada é publicado antes de clicar em{" "}
+        <b>Salvar</b>.
       </p>
 
       <div className="admin-abas">
@@ -361,6 +466,136 @@ export default function PaginasAdmin() {
               onChange={(e) => setBloco(i, "destaque", e.target.value)}
               rows={3}
             />
+
+            {/* ─── imagens deste bloco ─── */}
+            <div className="admin-fotos">
+              <b>Imagens desta seção (mapas, fotos, esquemas)</b>
+
+              <p className="admin-ajuda">
+                Envie uma ou várias imagens e elas aparecem dentro desta seção, no app.
+                A <b>legenda</b> de cada uma já entra com o nome do arquivo — ajuste só o
+                que precisar. O <b>crédito</b> aparece embaixo da imagem. A ordem desta
+                lista é a ordem em que elas aparecem: use <b>↑ ↓</b> para reorganizar. O
+                botão <b>Bloquear</b> esconde a imagem dos visitantes (útil para liberar
+                no momento do tour); <b>Liberar</b> mostra de novo. Foto principal e
+                imagens deste bloco só vão para o app depois de clicar em <b>Salvar</b>.
+              </p>
+
+              {bloco.imagens.length > 0 && (
+                <label className="admin-campo">
+                  Onde as imagens aparecem nesta seção
+                  <span className="admin-campo-dica">
+                    Escolha se entram logo depois do texto principal ou no fim da seção,
+                    depois das listas e das caixas.
+                  </span>
+
+                  <select
+                    value={bloco.posicaoImagens}
+                    onChange={(e) => setPosicaoImagens(i, e.target.value as PosicaoImagens)}
+                  >
+                    <option value="aposTexto">logo depois do texto principal</option>
+                    <option value="fim">no fim da seção</option>
+                  </select>
+                </label>
+              )}
+
+              <div className="admin-form-upload">
+                <label>Adicionar imagens a esta seção (pode escolher várias):</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  disabled={enviando === i}
+                  onChange={(e) => {
+                    adicionarImagens(i, e.target.files);
+                    e.target.value = "";
+                  }}
+                />
+                {enviando === i && (
+                  <p className="admin-ajuda">Enviando as imagens, aguarde...</p>
+                )}
+              </div>
+
+              {bloco.imagens.length === 0 && (
+                <p className="admin-ajuda">Nenhuma imagem nesta seção ainda.</p>
+              )}
+
+              <div className="admin-galeria">
+                {bloco.imagens.map((imagem, j) => {
+                  const bloqueada = imagem.visivel === false;
+
+                  return (
+                    <div
+                      key={`${imagem.url}-${j}`}
+                      className={`admin-galeria-item ${bloqueada ? "admin-galeria-bloqueada" : ""}`}
+                    >
+                      <span
+                        className={bloqueada ? "admin-galeria-apoio" : "admin-galeria-principal"}
+                      >
+                        {bloqueada ? "oculta para os visitantes" : "aparecendo no app"}
+                      </span>
+
+                      <img src={imagem.url} alt="" />
+
+                      <input
+                        type="text"
+                        placeholder="Legenda da imagem"
+                        value={imagem.legenda ?? ""}
+                        onChange={(e) => setImagem(i, j, "legenda", e.target.value)}
+                      />
+
+                      <input
+                        type="text"
+                        placeholder="Crédito (ex: Mapa: Aingrid Souza · Acervo pessoal)"
+                        value={imagem.credito ?? ""}
+                        onChange={(e) => setImagem(i, j, "credito", e.target.value)}
+                      />
+
+                      <div className="admin-galeria-acoes">
+                        <button
+                          type="button"
+                          className="outline"
+                          onClick={() => moverImagem(i, j, -1)}
+                          title="Mover para cima (aparece antes no app)"
+                        >
+                          ↑
+                        </button>
+
+                        <button
+                          type="button"
+                          className="outline"
+                          onClick={() => moverImagem(i, j, 1)}
+                          title="Mover para baixo (aparece depois no app)"
+                        >
+                          ↓
+                        </button>
+
+                        <button
+                          type="button"
+                          className={bloqueada ? "btn" : "outline"}
+                          onClick={() => setImagem(i, j, "visivel", bloqueada)}
+                          title={
+                            bloqueada
+                              ? "Mostrar esta imagem para os visitantes"
+                              : "Esconder esta imagem dos visitantes"
+                          }
+                        >
+                          {bloqueada ? "Liberar" : "Bloquear"}
+                        </button>
+
+                        <button
+                          type="button"
+                          className="outline"
+                          onClick={() => removerImagem(i, j)}
+                        >
+                          Remover
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
 
             {bloco.links.map((link, j) => (
               <div key={j} className="admin-linha">

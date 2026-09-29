@@ -6,7 +6,9 @@ import Inline from "../components/Inline";
 import Numbered from "../components/Numbered";
 import PageTitle from "../components/PageTitle";
 import Topic from "../components/Topic";
+import FotoAmpliavel from "../components/FotoAmpliavel";
 
+import { imagensVisiveis } from "../data/paginas";
 import type { BotaoConteudo, PaginaConteudo } from "../data/paginas";
 
 import { paragrafosDe } from "../utils/texto";
@@ -66,44 +68,68 @@ export default function PaginaConteudo({
 
       {children}
 
-      {pagina.blocos.map((bloco, i) => (
-        <Topic
-          key={`${bloco.titulo}-${i}`}
-          icon={bloco.icone || "•"}
-          title={bloco.titulo}
-        >
-          {paragrafosDe(bloco.texto).map((p, j) => (
-            <p key={j}>
-              <Inline texto={p} />
-            </p>
-          ))}
+      {pagina.blocos.map((bloco, i) => {
+        // imagens que a autoria liberou para os visitantes
+        const imagens = imagensVisiveis(bloco.imagens);
 
-          {bloco.itens.length > 0 && <Numbered items={bloco.itens} />}
-
-          {bloco.destaque && (
-            <Info>
-              <Inline texto={bloco.destaque} />
-            </Info>
-          )}
-
-          {bloco.links.length > 0 && (
-            <ul className="sobre-list">
-              {bloco.links.map((link, k) => (
-                <li key={`${link.url}-${k}`}>
-                  <a
-                    href={link.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="sobre-link"
-                  >
-                    <Inline texto={link.texto} />
-                  </a>
-                </li>
+        const galeria =
+          imagens.length > 0 ? (
+            <div className="territorio-galeria bloco-galeria">
+              {imagens.map((imagem, k) => (
+                <FotoAmpliavel
+                  key={`${imagem.url}-${k}`}
+                  url={imagem.url}
+                  alt={imagem.legenda || bloco.titulo}
+                  legenda={imagem.legenda}
+                  credito={imagem.credito}
+                />
               ))}
-            </ul>
-          )}
-        </Topic>
-      ))}
+            </div>
+          ) : null;
+
+        return (
+          <Topic
+            key={`${bloco.titulo}-${i}`}
+            icon={bloco.icone || "•"}
+            title={bloco.titulo}
+          >
+            {paragrafosDe(bloco.texto).map((p, j) => (
+              <p key={j}>
+                <Inline texto={p} />
+              </p>
+            ))}
+
+            {bloco.posicaoImagens === "aposTexto" && galeria}
+
+            {bloco.itens.length > 0 && <Numbered items={bloco.itens} />}
+
+            {bloco.destaque && (
+              <Info>
+                <Inline texto={bloco.destaque} />
+              </Info>
+            )}
+
+            {bloco.posicaoImagens !== "aposTexto" && galeria}
+
+            {bloco.links.length > 0 && (
+              <ul className="sobre-list">
+                {bloco.links.map((link, k) => (
+                  <li key={`${link.url}-${k}`}>
+                    <a
+                      href={link.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="sobre-link"
+                    >
+                      <Inline texto={link.texto} />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </Topic>
+        );
+      })}
 
       {pagina.rodapeUrl && (
         <Info>

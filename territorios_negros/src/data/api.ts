@@ -313,7 +313,7 @@ export async function excluirMensagem(id: string): Promise<void> {
 export async function uploadFoto(
   id: string,
   file: File,
-  pasta: "territorios" | "roteiros" | "eventos" = "territorios"
+  pasta: "territorios" | "roteiros" | "eventos" | "paginas" = "territorios"
 ): Promise<string> {
   const extensao = file.name.split(".").pop() ?? "jpg";
   const nomeArquivo = `${id}-${Date.now()}-${Math.random()

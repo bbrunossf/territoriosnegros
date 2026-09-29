@@ -15,6 +15,17 @@ export interface ItemLink {
   url: string;
 }
 
+/** Imagem (mapa, foto, esquema) inserida dentro de um bloco de texto */
+export interface ImagemBloco {
+  url: string;
+  /** legenda exibida embaixo da imagem */
+  legenda?: string;
+  /** crédito da imagem (autoria, acervo, fonte) */
+  credito?: string;
+  /** false = a autoria bloqueou: os visitantes não veem esta imagem */
+  visivel?: boolean;
+}
+
 export interface BlocoConteudo {
   /** símbolo do bloco (ex: ◉ ✦ ✓) */
   icone: string;
@@ -27,7 +38,17 @@ export interface BlocoConteudo {
   destaque: string;
   /** lista de links */
   links: ItemLink[];
+  /** imagens do bloco, na ordem em que aparecem no app */
+  imagens: ImagemBloco[];
+  /**
+   * onde as imagens entram na seção:
+   *  - "aposTexto": logo depois do texto principal
+   *  - "fim": no fim da seção (depois do texto, das listas e das caixas)
+   */
+  posicaoImagens: PosicaoImagens;
 }
+
+export type PosicaoImagens = "aposTexto" | "fim";
 
 export interface BotaoConteudo {
   texto: string;
@@ -70,8 +91,19 @@ function bloco(parcial: Partial<BlocoConteudo>): BlocoConteudo {
     itens: [],
     destaque: "",
     links: [],
+    imagens: [],
+    posicaoImagens: "fim",
     ...parcial,
   };
+}
+
+/**
+ * Imagens que o visitante pode ver: a autoria bloqueia (visivel = false) as
+ * que ainda não devem aparecer no app — mesma ideia das fotos de apoio dos
+ * territórios, só que imagem por imagem.
+ */
+export function imagensVisiveis(imagens: ImagemBloco[] | undefined): ImagemBloco[] {
+  return (imagens ?? []).filter((i) => i.url && i.visivel !== false);
 }
 
 // ─────────────────────────────────────────────────────── Antes de caminhar
@@ -264,6 +296,25 @@ function textoDe(valor: unknown, padrao: string): string {
   return typeof valor === "string" ? valor : padrao;
 }
 
+function normalizarImagens(valor: unknown): ImagemBloco[] {
+  if (!Array.isArray(valor)) return [];
+
+  return valor
+    .filter((i) => i && typeof i === "object")
+    .map((i) => {
+      const o = i as Record<string, unknown>;
+
+      return {
+        url: textoDe(o.url, ""),
+        legenda: textoDe(o.legenda, ""),
+        credito: textoDe(o.credito, ""),
+        // por padrão a imagem aparece; só fica oculta se a autoria bloquear
+        visivel: o.visivel !== false,
+      };
+    })
+    .filter((i) => i.url);
+}
+
 function normalizarBlocos(valor: unknown, padrao: BlocoConteudo[]): BlocoConteudo[] {
   if (!Array.isArray(valor)) return padrao;
 
@@ -292,6 +343,8 @@ function normalizarBlocos(valor: unknown, padrao: BlocoConteudo[]): BlocoConteud
               })
               .filter((l) => l.texto || l.url)
           : [],
+        imagens: normalizarImagens(o.imagens),
+        posicaoImagens: o.posicaoImagens === "aposTexto" ? "aposTexto" : "fim",
       });
     });
 }

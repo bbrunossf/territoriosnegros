@@ -1532,6 +1532,17 @@ a, a:visited, a:hover, a:active {
   padding: 8px 10px;
 }
 
+/* imagem que a autoria bloqueou: fica apagada no painel */
+.admin-galeria-bloqueada img {
+  opacity: 0.5;
+  border-style: dashed;
+}
+
+/* imagens dentro de um bloco de texto (aba Páginas) */
+.bloco-galeria {
+  margin: 14px 0 2px;
+}
+
 .admin-pontos {
   display: flex;
   flex-direction: column;
