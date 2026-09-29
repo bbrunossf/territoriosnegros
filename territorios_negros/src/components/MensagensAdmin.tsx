@@ -1,10 +1,17 @@
 // MensagensAdmin.tsx — caixa de entrada do formulário "Fale com a autoria"
+//
+// A lista se atualiza sozinha a cada 30 segundos: quem fica com o painel aberto
+// vê a mensagem nova aparecer sem precisar recarregar a página. O contador da
+// aba "Mensagens" (e do título da janela) é atualizado pelo próprio painel.
 import "../styles.css";
 
 import { useCallback, useEffect, useState } from "react";
 import { excluirMensagem, fetchMensagens, marcarMensagem } from "../data/api";
 import type { Mensagem } from "../data/types";
 import { formatarDataHoraBR } from "../utils/data";
+
+/** de quanto em quanto tempo a caixa de entrada se atualiza (ms) */
+const INTERVALO = 30000;
 
 export default function MensagensAdmin() {
   const [mensagens, setMensagens] = useState<Mensagem[]>([]);
@@ -35,8 +42,18 @@ export default function MensagensAdmin() {
       }
     })();
 
+    const relogio = window.setInterval(async () => {
+      try {
+        const lista = await fetchMensagens();
+        if (ativo) setMensagens(lista);
+      } catch {
+        // sem rede ou sem permissão: mantém a lista que já está na tela
+      }
+    }, INTERVALO);
+
     return () => {
       ativo = false;
+      window.clearInterval(relogio);
     };
   }, []);
 
@@ -77,8 +94,10 @@ export default function MensagensAdmin() {
 
       <p className="admin-ajuda">
         Tudo que chega pelo formulário “Fale com a autoria” aparece aqui.
-        {naoLidas > 0 ? ` ${naoLidas} não lida(s).` : " Nenhuma pendente."} O formulário
-        que o visitante preenche é editável em <b>Páginas › Contato</b>, no fim da página.
+        {naoLidas > 0 ? ` ${naoLidas} não lida(s).` : " Nenhuma pendente."} Esta página se
+        atualiza sozinha a cada 30 segundos, e o número de não lidas aparece também no
+        título da aba do navegador. O formulário que o visitante preenche é editável em{" "}
+        <b>Páginas › Contato</b>, no fim da página.
       </p>
 
       {ok && <p className="admin-ok">{ok}</p>}
