@@ -46,9 +46,32 @@ export interface BlocoConteudo {
    *  - "fim": no fim da seção (depois do texto, das listas e das caixas)
    */
   posicaoImagens: PosicaoImagens;
+  /** formatação do texto desta seção (tamanho, alinhamento e cor) */
+  estilo: EstiloTexto;
 }
 
 export type PosicaoImagens = "aposTexto" | "fim";
+
+export type TamanhoTexto = "normal" | "grande" | "pequeno";
+export type Alinhamento = "esquerda" | "centro" | "direita" | "justificado";
+export type CorTexto = "padrao" | "marrom" | "dourado";
+
+/**
+ * Formatação escolhida pela autoria para um trecho de texto (uma seção inteira
+ * da página, ou a caixa de abertura). São opções fechadas de propósito: mantêm
+ * a identidade visual do app e não deixam o texto virar uma colcha de retalhos.
+ */
+export interface EstiloTexto {
+  tamanho: TamanhoTexto;
+  alinhamento: Alinhamento;
+  cor: CorTexto;
+}
+
+export const ESTILO_PADRAO: EstiloTexto = {
+  tamanho: "normal",
+  alinhamento: "esquerda",
+  cor: "padrao",
+};
 
 export interface BotaoConteudo {
   texto: string;
@@ -61,6 +84,8 @@ export interface PaginaConteudo {
   subtitulo: string;
   /** bloco destacado de abertura */
   destaque: string;
+  /** formatação do texto da caixa de abertura */
+  destaqueEstilo: EstiloTexto;
   blocos: BlocoConteudo[];
   /** caixa destacada final (com um link: mapa, TCC...) */
   rodapeTexto: string;
@@ -76,6 +101,7 @@ const VAZIO: PaginaConteudo = {
   titulo: "",
   subtitulo: "",
   destaque: "",
+  destaqueEstilo: ESTILO_PADRAO,
   blocos: [],
   rodapeTexto: "",
   rodapeLinkTexto: "",
@@ -93,6 +119,7 @@ function bloco(parcial: Partial<BlocoConteudo>): BlocoConteudo {
     links: [],
     imagens: [],
     posicaoImagens: "fim",
+    estilo: ESTILO_PADRAO,
     ...parcial,
   };
 }
@@ -314,6 +341,62 @@ function textoDe(valor: unknown, padrao: string): string {
   return typeof valor === "string" ? valor : padrao;
 }
 
+/**
+ * Garante que a formatação vinda do banco é uma das opções válidas
+ * (qualquer outra coisa volta ao padrão).
+ */
+export function normalizarEstilo(valor: unknown): EstiloTexto {
+  if (!valor || typeof valor !== "object") return ESTILO_PADRAO;
+
+  const v = valor as Record<string, unknown>;
+
+  const tamanhos: TamanhoTexto[] = ["normal", "grande", "pequeno"];
+  const alinhamentos: Alinhamento[] = ["esquerda", "centro", "direita", "justificado"];
+  const cores: CorTexto[] = ["padrao", "marrom", "dourado"];
+
+  return {
+    tamanho: tamanhos.includes(v.tamanho as TamanhoTexto)
+      ? (v.tamanho as TamanhoTexto)
+      : ESTILO_PADRAO.tamanho,
+    alinhamento: alinhamentos.includes(v.alinhamento as Alinhamento)
+      ? (v.alinhamento as Alinhamento)
+      : ESTILO_PADRAO.alinhamento,
+    cor: cores.includes(v.cor as CorTexto) ? (v.cor as CorTexto) : ESTILO_PADRAO.cor,
+  };
+}
+
+/** Classes CSS que aplicam a formatação escolhida (o estilo neutro não gera classe). */
+export function classesEstilo(estilo: EstiloTexto | undefined): string {
+  const e = estilo ?? ESTILO_PADRAO;
+
+  return [
+    e.tamanho === "grande" ? "texto-grande" : e.tamanho === "pequeno" ? "texto-pequeno" : "",
+    e.alinhamento === "centro"
+      ? "alin-centro"
+      : e.alinhamento === "direita"
+        ? "alin-direita"
+        : e.alinhamento === "justificado"
+          ? "alin-justificado"
+          : "",
+    e.cor === "marrom" ? "cor-marrom" : e.cor === "dourado" ? "cor-dourado" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+}
+
+/**
+ * Troca um campo da formatação (usado pelos seletores do painel).
+ * Valor que não é uma das opções válidas volta ao padrão daquele campo.
+ */
+export function trocarCampoEstilo(
+  estilo: EstiloTexto | undefined,
+  campo: keyof EstiloTexto,
+  valor: string
+): EstiloTexto {
+  const atual = estilo ?? ESTILO_PADRAO;
+  return normalizarEstilo({ ...atual, [campo]: valor });
+}
+
 function normalizarImagens(valor: unknown): ImagemBloco[] {
   if (!Array.isArray(valor)) return [];
 
@@ -363,6 +446,7 @@ function normalizarBlocos(valor: unknown, padrao: BlocoConteudo[]): BlocoConteud
           : [],
         imagens: normalizarImagens(o.imagens),
         posicaoImagens: o.posicaoImagens === "aposTexto" ? "aposTexto" : "fim",
+        estilo: normalizarEstilo(o.estilo),
       });
     });
 }
@@ -408,6 +492,7 @@ export function normalizarPagina(
     titulo: textoDe(v.titulo, padrao.titulo) || padrao.titulo,
     subtitulo: textoDe(v.subtitulo, padrao.subtitulo),
     destaque: textoDe(v.destaque, padrao.destaque),
+    destaqueEstilo: normalizarEstilo(v.destaqueEstilo),
     blocos: normalizarBlocos(v.blocos, padrao.blocos),
     rodapeTexto: textoDe(v.rodapeTexto, textoDe(v.mapaTexto, padrao.rodapeTexto)),
     rodapeLinkTexto: textoDe(v.rodapeLinkTexto, padrao.rodapeLinkTexto),

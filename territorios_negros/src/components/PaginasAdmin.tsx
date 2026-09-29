@@ -7,20 +7,28 @@ import { useTerritorios } from "../context/useTerritorios";
 import {
   CONTATO_PADRAO,
   CONCEITO_PADRAO,
+  ESTILO_PADRAO,
   FIM_PADRAO,
   INTRO_PADRAO,
   VITORIA_PADRAO,
+  classesEstilo,
   definirVisibilidadeDeTodasAsImagens,
   normalizarPagina,
+  trocarCampoEstilo,
+  type Alinhamento,
   type BlocoConteudo,
   type BotaoConteudo,
+  type CorTexto,
+  type EstiloTexto,
   type ImagemBloco,
   type PaginaConteudo,
   type PosicaoImagens,
+  type TamanhoTexto,
 } from "../data/paginas";
 import { formatarDataHoraBR } from "../utils/data";
 import { legendaDoArquivo } from "../utils/legendas";
 import FormularioContatoAdmin from "./FormularioContatoAdmin";
+import Inline from "./Inline";
 
 interface DefinicaoPagina {
   chave: string;
@@ -56,6 +64,7 @@ const BLOCO_NOVO: BlocoConteudo = {
   links: [],
   imagens: [],
   posicaoImagens: "fim",
+  estilo: ESTILO_PADRAO,
 };
 
 function itensParaTexto(itens: string[]): string {
@@ -67,6 +76,75 @@ function textoParaItens(txt: string): string[] {
     .split("\n")
     .map((s) => s.trim())
     .filter(Boolean);
+}
+
+/**
+ * Os três seletores de formatação (tamanho, alinhamento e cor) usados tanto
+ * nas seções quanto na caixa de abertura da página.
+ */
+function CamposEstilo({
+  estilo,
+  onChange,
+}: {
+  estilo: EstiloTexto;
+  onChange: (campo: keyof EstiloTexto, valor: string) => void;
+}) {
+  return (
+    <div className="admin-form-grid admin-form-grid-3">
+      <label className="admin-campo">
+        Tamanho do texto
+        <select
+          value={estilo.tamanho}
+          onChange={(e) => onChange("tamanho", e.target.value as TamanhoTexto)}
+        >
+          <option value="normal">padrão</option>
+          <option value="grande">maior</option>
+          <option value="pequeno">menor</option>
+        </select>
+      </label>
+
+      <label className="admin-campo">
+        Alinhamento
+        <select
+          value={estilo.alinhamento}
+          onChange={(e) => onChange("alinhamento", e.target.value as Alinhamento)}
+        >
+          <option value="esquerda">à esquerda</option>
+          <option value="centro">centralizado</option>
+          <option value="direita">à direita</option>
+          <option value="justificado">justificado</option>
+        </select>
+      </label>
+
+      <label className="admin-campo">
+        Cor do texto
+        <select
+          value={estilo.cor}
+          onChange={(e) => onChange("cor", e.target.value as CorTexto)}
+        >
+          <option value="padrao">padrão</option>
+          <option value="marrom">marrom</option>
+          <option value="dourado">dourado</option>
+        </select>
+      </label>
+    </div>
+  );
+}
+
+/** Prévia de como o texto vai ficar no app, com a formatação escolhida. */
+function PreviaEstilo({ estilo, texto }: { estilo: EstiloTexto; texto: string }) {
+  const primeiro = texto.split(/\n\s*\n/)[0]?.trim();
+
+  if (!primeiro) return null;
+
+  return (
+    <div className={`admin-previa ${classesEstilo(estilo)}`.trim()}>
+      <span className="admin-previa-rotulo">como vai ficar no app</span>
+      <p>
+        <Inline texto={primeiro} />
+      </p>
+    </div>
+  );
 }
 
 export default function PaginasAdmin() {
@@ -167,6 +245,26 @@ export default function PaginasAdmin() {
    */
   function definirVisibilidadeTodas(visivel: boolean) {
     setPagina((p) => definirVisibilidadeDeTodasAsImagens(p, visivel));
+    setPendente(true);
+  }
+
+  // ── formatação (tamanho, alinhamento e cor) ─────────────
+
+  function setEstiloBloco(indiceBloco: number, campo: keyof EstiloTexto, valor: string) {
+    setPagina((p) => ({
+      ...p,
+      blocos: p.blocos.map((b, i) =>
+        i === indiceBloco ? { ...b, estilo: trocarCampoEstilo(b.estilo, campo, valor) } : b
+      ),
+    }));
+    setPendente(true);
+  }
+
+  function setEstiloDestaque(campo: keyof EstiloTexto, valor: string) {
+    setPagina((p) => ({
+      ...p,
+      destaqueEstilo: trocarCampoEstilo(p.destaqueEstilo, campo, valor),
+    }));
     setPendente(true);
   }
 
@@ -371,9 +469,11 @@ export default function PaginasAdmin() {
 
       <p className="admin-ajuda">
         Aqui você edita os textos das páginas do app. Em cada página, os blocos são as seções
-        com ícone e título. Para dar destaque, use <b>**duas estrelas**</b> (negrito) ou{" "}
-        <b>*uma estrela*</b> (itálico); no texto do bloco, deixe uma <b>linha em branco</b>{" "}
-        entre parágrafos. Cada bloco também aceita <b>imagens e mapas</b>, que podem ficar
+        com ícone e título. Em cada seção (e na caixa de abertura) você escolhe o{" "}
+        <b>tamanho</b>, o <b>alinhamento</b> e a <b>cor</b> do texto — a prévia mostra como
+        vai ficar antes de publicar. Dentro do texto, para destacar uma palavra use{" "}
+        <b>**duas estrelas**</b> (negrito) ou <b>*uma estrela*</b> (itálico); linha em branco
+        separa parágrafos. Cada bloco também aceita <b>imagens e mapas</b>, que podem ficar
         visíveis ou bloqueados para os visitantes — e, no fim da página, há um atalho para
         liberar ou bloquear todas as imagens desta página de uma vez. Nada é publicado antes
         de clicar em <b>Salvar</b>.
@@ -427,6 +527,9 @@ export default function PaginasAdmin() {
           />
         </label>
 
+        <CamposEstilo estilo={pagina.destaqueEstilo} onChange={setEstiloDestaque} />
+        <PreviaEstilo estilo={pagina.destaqueEstilo} texto={pagina.destaque} />
+
         <h2>Blocos da página</h2>
 
         {pagina.blocos.length === 0 && (
@@ -470,6 +573,12 @@ export default function PaginasAdmin() {
               onChange={(e) => setBloco(i, "texto", e.target.value)}
               rows={5}
             />
+
+            <CamposEstilo
+              estilo={bloco.estilo}
+              onChange={(campo, valor) => setEstiloBloco(i, campo, valor)}
+            />
+            <PreviaEstilo estilo={bloco.estilo} texto={bloco.texto} />
 
             <textarea
               placeholder="Lista com travessão — um item por linha (opcional)"

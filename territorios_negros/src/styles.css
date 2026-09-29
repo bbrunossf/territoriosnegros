@@ -1605,6 +1605,76 @@ a, a:visited, a:hover, a:active {
   border-radius: 8px;
 }
 
+/* ── Formatação do texto escolhida pela autoria (aba Páginas) ──
+   As opções são aplicadas na seção inteira; os títulos das seções mantêm o
+   padrão do app de propósito (identidade visual). */
+
+/* tamanho: o app usa 17px como base; as classes cobrem também os trechos que
+   têm tamanho próprio (caixas destacadas e listas) */
+.texto-grande,
+.texto-grande .info-box,
+.texto-grande .numbered-item {
+  font-size: 19.5px;
+}
+
+.texto-pequeno,
+.texto-pequeno .info-box,
+.texto-pequeno .numbered-item {
+  font-size: 15px;
+}
+
+/* alinhamento */
+.alin-centro {
+  text-align: center;
+}
+
+.alin-direita {
+  text-align: right;
+}
+
+.alin-justificado {
+  text-align: justify;
+}
+
+/* cores (legíveis sobre o fundo creme do app) */
+.cor-marrom {
+  color: #6a452b;
+}
+
+.cor-dourado {
+  color: #96631a;
+}
+
+/* prévia da formatação dentro do painel */
+.admin-previa {
+  background: #f3ece1;
+  border: 1px dashed #e5d2a8;
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.admin-previa p {
+  margin: 6px 0 0;
+}
+
+.admin-previa-rotulo {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: #7b522a;
+}
+
+/* linha de campos com três colunas no painel (tamanho, alinhamento, cor) */
+.admin-form-grid-3 {
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+
+.admin-form select,
+.admin-form-grid select {
+  width: 100%;
+}
+
 /* caixa de ação que apaga dados (zerar estatísticas): destaque sem cor
    vermelha/verde, para não depender de percepção de cor */
 .admin-perigo {

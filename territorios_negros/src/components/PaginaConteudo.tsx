@@ -8,7 +8,7 @@ import PageTitle from "../components/PageTitle";
 import Topic from "../components/Topic";
 import FotoAmpliavel from "../components/FotoAmpliavel";
 
-import { imagensVisiveis } from "../data/paginas";
+import { imagensVisiveis, classesEstilo } from "../data/paginas";
 import type { BotaoConteudo, PaginaConteudo } from "../data/paginas";
 
 import { paragrafosDe } from "../utils/texto";
@@ -45,6 +45,7 @@ export default function PaginaConteudo({
   children?: ReactNode;
 }) {
   const destaque = paragrafosDe(pagina.destaque);
+  const classesDestaque = classesEstilo(pagina.destaqueEstilo);
 
   const conteudo = (
     <>
@@ -52,17 +53,21 @@ export default function PaginaConteudo({
 
       {destaque.length === 1 && (
         <Info>
-          <Inline texto={destaque[0]} />
+          <div className={classesDestaque}>
+            <Inline texto={destaque[0]} />
+          </div>
         </Info>
       )}
 
       {destaque.length > 1 && (
         <Info>
-          {destaque.map((p, i) => (
-            <p key={i}>
-              <Inline texto={p} />
-            </p>
-          ))}
+          <div className={classesDestaque}>
+            {destaque.map((p, i) => (
+              <p key={i}>
+                <Inline texto={p} />
+              </p>
+            ))}
+          </div>
         </Info>
       )}
 
@@ -92,6 +97,7 @@ export default function PaginaConteudo({
             key={`${bloco.titulo}-${i}`}
             icon={bloco.icone || "•"}
             title={bloco.titulo}
+            className={classesEstilo(bloco.estilo)}
           >
             {paragrafosDe(bloco.texto).map((p, j) => (
               <p key={j}>
