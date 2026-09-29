@@ -7,6 +7,9 @@ export default function Fim() {
   const { config } = useTerritorios();
 
   return (
-    <PaginaConteudo pagina={normalizarPagina(config.pagina_fim, FIM_PADRAO)} />
+    <PaginaConteudo
+      pagina={normalizarPagina(config.pagina_fim, FIM_PADRAO)}
+      tela="fim"
+    />
   );
 }

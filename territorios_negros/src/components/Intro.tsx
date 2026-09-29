@@ -7,6 +7,9 @@ export default function Intro() {
   const { config } = useTerritorios();
 
   return (
-    <PaginaConteudo pagina={normalizarPagina(config.pagina_intro, INTRO_PADRAO)} />
+    <PaginaConteudo
+      pagina={normalizarPagina(config.pagina_intro, INTRO_PADRAO)}
+      tela="intro"
+    />
   );
 }

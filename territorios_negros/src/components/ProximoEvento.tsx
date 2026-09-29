@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { formatarDataBR } from "../utils/data";
 import { useTerritorios } from "../context/useTerritorios";
 import { normalizarTextosIniciais } from "../data/telaInicial";
+import BotaoContato from "./BotaoContato";
 
 /**
  * Página do próximo evento: informações do tour e a ficha de inscrição.
@@ -109,6 +110,8 @@ export default function ProximoEvento() {
           <Link to={`/percurso/${rota.id}`}>ver o percurso completo desta rota ›</Link>
         </p>
       )}
+
+      <BotaoContato tela="evento" />
 
       <p className="evento-voltar">
         <Link to="/">‹ voltar para a tela inicial</Link>

@@ -3,6 +3,7 @@ import { useTerritorios } from "../context/useTerritorios";
 import { pontosVisiveis } from "../utils/catalogo";
 import { somenteVisiveis } from "../utils/visibilidade";
 
+import BotaoContato from "../components/BotaoContato";
 import FotoAmpliavel from "../components/FotoAmpliavel";
 
 export default function Percurso() {
@@ -124,6 +125,8 @@ export default function Percurso() {
           Ficha de inscrição
         </a>
       )}
+
+      <BotaoContato tela="percurso" />
     </>
   );
 }

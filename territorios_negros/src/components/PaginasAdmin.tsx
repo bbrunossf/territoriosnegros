@@ -28,6 +28,7 @@ import {
 import { formatarDataHoraBR } from "../utils/data";
 import { legendaDoArquivo } from "../utils/legendas";
 import FormularioContatoAdmin from "./FormularioContatoAdmin";
+import BotaoContatoAdmin from "./BotaoContatoAdmin";
 import Inline from "./Inline";
 
 interface DefinicaoPagina {
@@ -1020,6 +1021,9 @@ export default function PaginasAdmin() {
 
       {/* o formulário "Fale com a autoria" é editado junto da página Contato */}
       {definicao.chave === "pagina_contato" && <FormularioContatoAdmin />}
+
+      {/* botão de ação que aparece no fim das telas (vale para o app inteiro) */}
+      <BotaoContatoAdmin />
     </div>
   );
 }

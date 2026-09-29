@@ -2227,3 +2227,31 @@ p.foto-credito {
   }
 }
 
+/* ── Botão "Enviar uma mensagem" no fim das telas (aba Páginas) ── */
+
+/* o botão entra depois dos botões próprios da página, com respiro */
+.botao-contato {
+  margin-top: 26px;
+}
+
+/* lista de telas com caixinha de marcar no painel */
+.admin-telas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 6px 14px;
+  margin-bottom: 10px;
+}
+
+.admin-tela {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--texto, #3b2416);
+}
+
+.admin-tela input {
+  width: auto;
+  margin: 0;
+}
+

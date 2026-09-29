@@ -7,6 +7,9 @@ export default function Vitoria() {
   const { config } = useTerritorios();
 
   return (
-    <PaginaConteudo pagina={normalizarPagina(config.pagina_vitoria, VITORIA_PADRAO)} />
+    <PaginaConteudo
+      pagina={normalizarPagina(config.pagina_vitoria, VITORIA_PADRAO)}
+      tela="vitoria"
+    />
   );
 }

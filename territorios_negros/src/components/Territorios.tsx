@@ -5,6 +5,7 @@ import { agruparPorCategoria } from "../utils/catalogo";
 
 import PageTitle from "../components/PageTitle";
 import SectionHeader from "../components/SectionHeader";
+import BotaoContato from "../components/BotaoContato";
 
 export default function Territorios() {
   const navigate = useNavigate();
@@ -54,6 +55,8 @@ export default function Territorios() {
           Nenhum território disponível no momento.
         </p>
       )}
+
+      <BotaoContato tela="territorios" />
     </>
   );
 }

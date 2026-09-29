@@ -7,6 +7,7 @@ import InfoRapida from "../components/InfoRapida";
 import Numbered from "../components/Numbered";
 import Topic from "../components/Topic";
 import FotoAmpliavel from "../components/FotoAmpliavel";
+import BotaoContato from "../components/BotaoContato";
 
 import { calcularIdade } from "../utils/data";
 
@@ -189,6 +190,8 @@ export default function Territorio() {
             </div>
           </Topic>
         )}
+
+        <BotaoContato tela="territorio" />
       </>
     );
   }

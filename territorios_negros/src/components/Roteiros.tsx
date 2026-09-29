@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import PageTitle from "../components/PageTitle";
+import BotaoContato from "../components/BotaoContato";
 import { useTerritorios } from "../context/useTerritorios";
 
 export default function Roteiros() {
@@ -92,6 +93,8 @@ export default function Roteiros() {
           Nenhuma rota disponível no momento.
         </p>
       )}
+
+      <BotaoContato tela="roteiros" />
     </>
   );
 }

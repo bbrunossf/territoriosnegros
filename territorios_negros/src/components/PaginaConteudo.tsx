@@ -12,6 +12,7 @@ import { imagensVisiveis, classesEstilo } from "../data/paginas";
 import type { BotaoConteudo, PaginaConteudo } from "../data/paginas";
 
 import { paragrafosDe } from "../utils/texto";
+import BotaoContato from "./BotaoContato";
 
 function Botao({ botao }: { botao: BotaoConteudo }) {
   const classe = `${botao.estilo} pagina-botao`;
@@ -40,9 +41,15 @@ function Botao({ botao }: { botao: BotaoConteudo }) {
 export default function PaginaConteudo({
   pagina,
   children,
+  tela,
 }: {
   pagina: PaginaConteudo;
   children?: ReactNode;
+  /**
+   * qual tela é esta (ver TELAS_BOTAO, em data/botaoContato.ts). Serve para o
+   * botão "Enviar uma mensagem" do fim da página. Sem tela, o botão não entra.
+   */
+  tela?: string;
 }) {
   const destaque = paragrafosDe(pagina.destaque);
   const classesDestaque = classesEstilo(pagina.destaqueEstilo);
@@ -166,6 +173,8 @@ export default function PaginaConteudo({
           ))}
         </div>
       )}
+
+      {tela && <BotaoContato tela={tela} botoes={pagina.botoes} />}
     </>
   );
 
