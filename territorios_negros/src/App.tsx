@@ -1,6 +1,7 @@
 import { Outlet, useLocation } from "react-router-dom";
 import Header from "./components/Header";
 import BottomNav from "./components/BottomNav";
+import RegistrarAcesso from "./components/RegistrarAcesso";
 import { useTerritorios } from "./context/useTerritorios";
 
 export default function App() {
@@ -36,6 +37,9 @@ export default function App() {
   return (
       <div className="app">
         <div className="phone">
+          {/* contador de acessos: registra a tela aberta, sem dado pessoal */}
+          <RegistrarAcesso />
+
           {!isHome && <Header />}
           <main className={isHome ? "main-home" : "content"}>
             <Outlet />
@@ -43,5 +47,5 @@ export default function App() {
           <BottomNav />
         </div>
       </div>
-    );
+  );
 }

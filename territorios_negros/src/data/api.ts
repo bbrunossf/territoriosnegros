@@ -7,6 +7,7 @@
 
 import { supabase } from "../lib/supabase";
 import type {
+  Acesso,
   Categoria,
   FotoTerritorio,
   Mensagem,
@@ -265,6 +266,77 @@ export async function salvarConfig(chave: string, valor: unknown): Promise<void>
   exigirLinhas(data as { key: string }[] | null, error, "salvar configuração");
 }
 
+// ─────────────────────────────────────────────────── ACESSOS (contador de uso)
+
+/** códigos do Supabase/Postgres quando a tabela ainda não existe no banco */
+const CODIGOS_TABELA_AUSENTE = ["PGRST205", "PGRST202", "42P01"];
+
+function erroDeAcesso(error: { code?: string; message: string }): Error {
+  if (error.code && CODIGOS_TABELA_AUSENTE.includes(error.code)) {
+    return new Error(
+      "O contador de acessos ainda não está ativado no banco de dados. Falta rodar a " +
+        "migração supabase/migrations/20260929_acessos.sql no SQL Editor do Supabase — " +
+        "sem isso o app funciona normal, mas nada é contado."
+    );
+  }
+
+  return new Error(error.message);
+}
+
+/**
+ * Registra uma página vista. Feito por visitante anônimo: aqui NÃO se confere
+ * linha devolvida (o anônimo não pode ler a tabela), só o erro do insert.
+ */
+export async function registrarAcesso(registro: {
+  rota: string;
+  dispositivo: string;
+  sessao: string;
+}): Promise<void> {
+  const { error } = await supabase.from("acessos").insert(registro);
+  if (error) throw erroDeAcesso(error);
+}
+
+/** Acessos dos últimos `dias` dias (mais recentes primeiro). */
+export async function fetchAcessos(dias: number, limite = 20000): Promise<Acesso[]> {
+  const desde = new Date(Date.now() - dias * 86400000).toISOString();
+
+  const { data, error } = await supabase
+    .from("acessos")
+    .select("*")
+    .gte("criado_em", desde)
+    .order("criado_em", { ascending: false })
+    .limit(limite);
+
+  if (error) throw erroDeAcesso(error);
+
+  return ((data as RawAcesso[] | null) ?? []).map((a) => ({
+    id: Number(a.id),
+    criadoEm: a.criado_em,
+    dia: a.dia,
+    rota: a.rota,
+    dispositivo: a.dispositivo ?? "",
+    sessao: a.sessao ?? null,
+  }));
+}
+
+/** Total de acessos desde o começo (consulta leve, não traz as linhas). */
+export async function contarAcessos(): Promise<number> {
+  const { count, error } = await supabase
+    .from("acessos")
+    .select("id", { count: "exact", head: true });
+
+  if (error) throw erroDeAcesso(error);
+  return count ?? 0;
+}
+
+/** Apaga registros mais antigos que `dias` (a autoria escolhe no painel). */
+export async function limparAcessosAntigos(dias: number): Promise<void> {
+  const antes = new Date(Date.now() - dias * 86400000).toISOString();
+
+  const { error } = await supabase.from("acessos").delete().lt("criado_em", antes);
+  if (error) throw erroDeAcesso(error);
+}
+
 // ─────────────────────────────────────────────────── MENSAGENS
 
 /**
@@ -431,6 +503,15 @@ interface RawMensagem {
   mensagem: string;
   lida: boolean | null;
   criado_em: string;
+}
+
+interface RawAcesso {
+  id: number | string;
+  criado_em: string;
+  dia: string;
+  rota: string;
+  dispositivo: string | null;
+  sessao: string | null;
 }
 
 /** Normaliza o valor de app_config.proximo_tour (que é livre no banco). */

@@ -71,6 +71,10 @@ export default function AdminLayout() {
           Páginas
         </Link>
 
+        <Link to="/admin/acessos" className="admin-sidebar-btn">
+          Acessos
+        </Link>
+
         <Link to="/admin/mensagens" className="admin-sidebar-btn">
           Mensagens
           {naoLidas > 0 && <span className="admin-badge">{naoLidas}</span>}

@@ -74,6 +74,21 @@ export interface Categoria {
   ordem: number;
 }
 
+/**
+ * Registro anônimo de acesso ao app (uma linha por página vista).
+ * Sem dado pessoal: nem IP, nem nome, nem cookie — só a rota, a hora, o tipo
+ * de aparelho e um código aleatório de sessão da aba.
+ */
+export interface Acesso {
+  id: number;
+  criadoEm: string;
+  /** dia no fuso de Vitória - ES (aaaa-mm-dd) */
+  dia: string;
+  rota: string;
+  dispositivo: string;
+  sessao: string | null;
+}
+
 export interface Mensagem {
   id: string;
   nome: string;

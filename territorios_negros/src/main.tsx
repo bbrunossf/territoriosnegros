@@ -22,6 +22,7 @@ import CategoriasAdmin from "./components/CategoriasAdmin";
 import InicioAdmin from "./components/InicioAdmin";
 import PaginasAdmin from "./components/PaginasAdmin";
 import MensagensAdmin from "./components/MensagensAdmin";
+import AcessosAdmin from "./components/AcessosAdmin";
 import { Navigate } from "react-router-dom";
 
 
@@ -68,6 +69,7 @@ createRoot(document.getElementById('root')!).render(
               <Route path="inicio" element={<InicioAdmin />} />
               <Route path="paginas" element={<PaginasAdmin />} />
               <Route path="mensagens" element={<MensagensAdmin />} />
+              <Route path="acessos" element={<AcessosAdmin />} />
             </Route>
           </Routes>
       </TerritoriosProvider>

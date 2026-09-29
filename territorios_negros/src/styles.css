@@ -1495,6 +1495,116 @@ a, a:visited, a:hover, a:active {
   width: 100%;
 }
 
+/* ── Contador de acessos (aba Acessos) ── */
+.acessos-cartoes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 12px;
+  margin: 16px 0 8px;
+}
+
+.acessos-cartao {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: #fdf8f0;
+  border: 1px solid #e5d2a8;
+  border-radius: 12px;
+  padding: 14px;
+}
+
+.acessos-cartao-num {
+  font-size: 30px;
+  font-weight: 900;
+  line-height: 1.1;
+  color: #1b100c;
+}
+
+.acessos-cartao-rotulo {
+  font-size: 13.5px;
+  line-height: 1.4;
+  color: #6b5b4d;
+}
+
+/* barras por dia: uma por dia do período, altura proporcional */
+.acessos-barras {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  overflow-x: auto;
+  padding: 8px 0 4px;
+  border-bottom: 1px solid #e5d2a8;
+}
+
+.acesso-barra {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 26px;
+  flex: 1 0 auto;
+}
+
+.acesso-barra-num {
+  font-size: 11px;
+  font-weight: 700;
+  color: #7b522a;
+  min-height: 14px;
+}
+
+.acesso-barra-trilha {
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+  height: 110px;
+  background: #f4ead6;
+  border-radius: 6px 6px 0 0;
+}
+
+.acesso-barra-preenchida {
+  width: 100%;
+  background: #c58b2a;
+  border-radius: 6px 6px 0 0;
+  transition: height 0.2s ease;
+}
+
+.acesso-barra-dia {
+  font-size: 10.5px;
+  color: #6b5b4d;
+  white-space: nowrap;
+}
+
+.acessos-dispositivos {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.acessos-dispositivo {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.acessos-dispositivo-nome {
+  font-size: 14px;
+  color: #563827;
+}
+
+.acessos-dispositivo-trilha {
+  height: 12px;
+  background: #f4ead6;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.acessos-dispositivo-preenchida {
+  height: 100%;
+  background: #8f611d;
+  border-radius: 8px;
+}
+
 .admin-form input,
 .admin-form textarea,
 .admin-form select {
