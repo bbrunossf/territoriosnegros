@@ -246,6 +246,18 @@ export default function RoteirosAdmin() {
     setPendente(true);
   }
 
+  /** bloqueia ou libera um mapa (o visitante só vê os liberados) */
+  function alterarVisibilidadeMapa(indice: number, visivel: boolean) {
+    setMapas(mapas.map((m, i) => (i === indice ? { ...m, visivel } : m)));
+    setPendente(true);
+  }
+
+  /** bloqueia ou libera todos os mapas da rota de uma vez */
+  function definirVisibilidadeDosMapas(visivel: boolean) {
+    setMapas(mapas.map((m) => ({ ...m, visivel })));
+    setPendente(true);
+  }
+
   // ── Salvar ──────────────────────────────────────────────
 
   async function salvar(e: React.FormEvent) {
@@ -363,6 +375,9 @@ export default function RoteirosAdmin() {
   const disponiveis = Object.values(territorios).sort((a: Territorio, b: Territorio) =>
     a.nome.localeCompare(b.nome, "pt-BR")
   );
+
+  /** quantos mapas desta rota o visitante está vendo (linha de situação) */
+  const mapasAparecendo = mapas.filter((m) => m.visivel !== false).length;
 
   return (
     <div>
@@ -516,8 +531,12 @@ export default function RoteirosAdmin() {
           ) : (
             <>
               <p className="admin-ajuda">
-                Podem ser vários mapas (o antigo, o atual, recortes etc.). A ordem aqui é
-                a ordem em que aparecem no app. Publica ao clicar em{" "}
+                Os mapas aparecem na página da rota, abaixo do mapa interativo. A ordem
+                aqui é a ordem em que aparecem no app. Cada mapa tem o botão{" "}
+                <b>Bloquear / Liberar</b>: bloqueado, ele continua guardado aqui mas os
+                visitantes não veem — útil para liberar só no momento da atividade. A
+                linha <b>Situação</b> mostra quantos estão aparecendo e permite bloquear
+                ou liberar todos de uma vez. Publica ao clicar em{" "}
                 <b>Salvar alterações</b>.
               </p>
 
@@ -538,40 +557,84 @@ export default function RoteirosAdmin() {
                 <p className="admin-ajuda">Nenhum mapa cadastrado ainda.</p>
               )}
 
+              {mapas.length > 0 && (
+                <div className="admin-fotos-estado">
+                  <b>Situação:</b> {mapasAparecendo} de {mapas.length} mapa(s) aparecendo
+                  no app
+                  <button
+                    type="button"
+                    className={mapasAparecendo < mapas.length ? "btn" : "outline"}
+                    onClick={() => definirVisibilidadeDosMapas(true)}
+                  >
+                    Liberar todos
+                  </button>
+                  <button
+                    type="button"
+                    className={mapasAparecendo > 0 ? "btn" : "outline"}
+                    onClick={() => definirVisibilidadeDosMapas(false)}
+                  >
+                    Bloquear todos
+                  </button>
+                </div>
+              )}
+
               <div className="admin-galeria">
-                {mapas.map((mapa, i) => (
-                  <div key={`${mapa.url}-${i}`} className="admin-galeria-item">
-                    <span className="admin-galeria-apoio">mapa {i + 1}</span>
+                {mapas.map((mapa, i) => {
+                  const bloqueado = mapa.visivel === false;
 
-                    <img src={mapa.url} alt="" />
+                  return (
+                    <div
+                      key={`${mapa.url}-${i}`}
+                      className={`admin-galeria-item ${bloqueado ? "admin-galeria-bloqueada" : ""}`}
+                    >
+                      <span
+                        className={bloqueado ? "admin-galeria-apoio" : "admin-galeria-principal"}
+                      >
+                        mapa {i + 1} · {bloqueado ? "oculto para os visitantes" : "aparecendo no app"}
+                      </span>
 
-                    <input
-                      type="text"
-                      placeholder="Legenda do mapa"
-                      value={mapa.legenda ?? ""}
-                      onChange={(e) => alterarLegendaMapa(i, e.target.value)}
-                    />
+                      <img src={mapa.url} alt="" />
 
-                    <input
-                      type="text"
-                      placeholder="Crédito (ex: Cartografia: Maria Souza)"
-                      value={mapa.credito ?? ""}
-                      onChange={(e) => alterarCreditoMapa(i, e.target.value)}
-                    />
+                      <input
+                        type="text"
+                        placeholder="Legenda do mapa"
+                        value={mapa.legenda ?? ""}
+                        onChange={(e) => alterarLegendaMapa(i, e.target.value)}
+                      />
 
-                    <div className="admin-galeria-acoes">
-                      <button type="button" className="outline" onClick={() => moverMapa(i, -1)}>
-                        ↑
-                      </button>
-                      <button type="button" className="outline" onClick={() => moverMapa(i, 1)}>
-                        ↓
-                      </button>
-                      <button type="button" className="outline" onClick={() => removerMapa(i)}>
-                        Remover
-                      </button>
+                      <input
+                        type="text"
+                        placeholder="Crédito (ex: Cartografia: Maria Souza)"
+                        value={mapa.credito ?? ""}
+                        onChange={(e) => alterarCreditoMapa(i, e.target.value)}
+                      />
+
+                      <div className="admin-galeria-acoes">
+                        <button type="button" className="outline" onClick={() => moverMapa(i, -1)}>
+                          ↑
+                        </button>
+                        <button type="button" className="outline" onClick={() => moverMapa(i, 1)}>
+                          ↓
+                        </button>
+                        <button
+                          type="button"
+                          className={bloqueado ? "btn" : "outline"}
+                          onClick={() => alterarVisibilidadeMapa(i, bloqueado)}
+                          title={
+                            bloqueado
+                              ? "Mostrar este mapa para os visitantes"
+                              : "Esconder este mapa dos visitantes"
+                          }
+                        >
+                          {bloqueado ? "Liberar" : "Bloquear"}
+                        </button>
+                        <button type="button" className="outline" onClick={() => removerMapa(i)}>
+                          Remover
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </>
           )}

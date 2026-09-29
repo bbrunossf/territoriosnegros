@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useTerritorios } from "../context/useTerritorios";
 import { pontosVisiveis } from "../utils/catalogo";
+import { somenteVisiveis } from "../utils/visibilidade";
 
 import FotoAmpliavel from "../components/FotoAmpliavel";
 
@@ -16,7 +17,10 @@ export default function Percurso() {
   // Só entram no percurso os territórios que estão habilitados no painel.
   const pontos = pontosVisiveis(roteiro.pontos, territorios);
   const inscricao = roteiro.inscricaoUrl || inscricaoUrl;
-  const temMapas = !!roteiro.mapaUrl || roteiro.mapas.length > 0;
+
+  // mapas bloqueados no painel não aparecem para os visitantes
+  const mapasVisiveis = somenteVisiveis(roteiro.mapas);
+  const temMapas = !!roteiro.mapaUrl || mapasVisiveis.length > 0;
 
   return (
     <>
@@ -90,9 +94,9 @@ export default function Percurso() {
             </>
           )}
 
-          {roteiro.mapas.length > 0 && (
+          {mapasVisiveis.length > 0 && (
             <div className="territorio-galeria">
-              {roteiro.mapas.map((mapa, i) => (
+              {mapasVisiveis.map((mapa, i) => (
                 <FotoAmpliavel
                   key={`${mapa.url}-${i}`}
                   url={mapa.url}

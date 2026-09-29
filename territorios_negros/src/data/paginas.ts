@@ -9,6 +9,7 @@
 // definido aqui — que é exatamente o texto original de cada página.
 
 import LINKS from "./links.json";
+import { somenteVisiveis } from "../utils/visibilidade";
 
 export interface ItemLink {
   texto: string;
@@ -130,7 +131,7 @@ function bloco(parcial: Partial<BlocoConteudo>): BlocoConteudo {
  * territórios, só que imagem por imagem.
  */
 export function imagensVisiveis(imagens: ImagemBloco[] | undefined): ImagemBloco[] {
-  return (imagens ?? []).filter((i) => i.url && i.visivel !== false);
+  return somenteVisiveis(imagens);
 }
 
 /**

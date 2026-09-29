@@ -503,7 +503,10 @@ function mapRoteiro(raw: RawRoteiro): Roteiro {
     ordem: raw.ordem ?? 0,
     mapaUrl: raw.mapa_url ?? null,
     logo: raw.logo ?? null,
-    mapas: Array.isArray(raw.mapas) ? raw.mapas : [],
+    // mapa sem o campo "visivel" é mapa antigo: continua aparecendo
+    mapas: Array.isArray(raw.mapas)
+      ? raw.mapas.map((m) => ({ ...m, visivel: m.visivel !== false }))
+      : [],
     inscricaoUrl: raw.inscricao_url ?? null,
   };
 }

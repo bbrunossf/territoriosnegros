@@ -11,6 +11,12 @@ export interface FotoTerritorio {
   legenda?: string;
   /** crédito da imagem (autoria, acervo, fonte) */
   credito?: string;
+  /**
+   * false = bloqueada para os visitantes.
+   * Usado nas imagens de mapa das rotas (as fotos de apoio do território têm
+   * o liberar/bloquear em conjunto, no campo fotos_liberadas).
+   */
+  visivel?: boolean;
 }
 
 export interface Territorio {
