@@ -6,7 +6,7 @@
 import "../styles.css";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { contarAcessos, fetchAcessos, limparAcessosAntigos } from "../data/api";
+import { contarAcessos, fetchAcessos, limparAcessosAntigos, zerarAcessos } from "../data/api";
 import type { Acesso } from "../data/types";
 import { formatarDataHoraBR } from "../utils/data";
 import {
@@ -124,6 +124,32 @@ export default function AcessosAdmin() {
     } catch (e) {
       console.error(e);
       setErro(e instanceof Error ? e.message : "Falha ao apagar os registros antigos.");
+    }
+  }
+
+  /** zera tudo: usado antes de divulgar o app, para o número sair limpo */
+  async function zerar() {
+    const confirmado = window.confirm(
+      `Zerar as estatísticas? Isso apaga TODOS os ${totalGeral} registro(s) de acesso ` +
+        `e a contagem recomeça do zero a partir de agora (não tem como desfazer). ` +
+        `A contagem continua funcionando normalmente depois disso.`
+    );
+
+    if (!confirmado) return;
+
+    setOk("");
+    setErro("");
+
+    try {
+      const apagados = await zerarAcessos();
+      await atualizar();
+      setOk(
+        `Estatísticas zeradas: ${apagados} registro(s) apagado(s). A contagem começou de ` +
+          `novo a partir de agora.`
+      );
+    } catch (e) {
+      console.error(e);
+      setErro(e instanceof Error ? e.message : "Falha ao zerar as estatísticas.");
     }
   }
 
@@ -311,6 +337,26 @@ export default function AcessosAdmin() {
             Lista carregada em {carregadoEm || "—"}. Use <b>atualizar agora</b> para ver o
             número mais recente.
           </p>
+
+          <h2>Zerar as estatísticas</h2>
+
+          <div className="admin-perigo">
+            <p className="admin-ajuda">
+              Use isto <b>antes de divulgar o app para o público</b>: enquanto você está
+              testando e conferindo as edições, os seus próprios acessos entram na conta, e
+              o número do dia do lançamento sairia misturado com eles. Ao zerar, todos os
+              registros são apagados e a contagem recomeça do zero <b>a partir de agora</b> —
+              o contador continua funcionando normalmente depois. Não tem como desfazer.
+            </p>
+
+            <div className="admin-fotos-estado">
+              <b>Registros guardados agora:</b> {totalGeral}
+
+              <button type="button" className="outline" onClick={zerar}>
+                zerar estatísticas
+              </button>
+            </div>
+          </div>
         </>
       )}
     </div>

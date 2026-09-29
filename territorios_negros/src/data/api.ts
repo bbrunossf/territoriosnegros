@@ -337,6 +337,19 @@ export async function limparAcessosAntigos(dias: number): Promise<void> {
   if (error) throw erroDeAcesso(error);
 }
 
+/**
+ * Zera as estatísticas: apaga TODOS os registros de acesso.
+ * Usado antes de divulgar o app, para o número não sair contaminado pelos
+ * acessos de teste da própria autoria. Devolve quantos registros foram apagados.
+ */
+export async function zerarAcessos(): Promise<number> {
+  // o filtro "id >= 0" pega todas as linhas (o delete do Supabase exige filtro)
+  const { data, error } = await supabase.from("acessos").delete().gte("id", 0).select("id");
+
+  if (error) throw erroDeAcesso(error);
+  return ((data as { id: number }[] | null) ?? []).length;
+}
+
 // ─────────────────────────────────────────────────── MENSAGENS
 
 /**

@@ -1605,6 +1605,18 @@ a, a:visited, a:hover, a:active {
   border-radius: 8px;
 }
 
+/* caixa de ação que apaga dados (zerar estatísticas): destaque sem cor
+   vermelha/verde, para não depender de percepção de cor */
+.admin-perigo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #fdf8f0;
+  border: 2px solid #c58b2a;
+  border-radius: 12px;
+  padding: 14px;
+}
+
 .admin-form input,
 .admin-form textarea,
 .admin-form select {
