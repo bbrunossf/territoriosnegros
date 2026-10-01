@@ -55,7 +55,27 @@ a, a:visited, a:hover, a:active {
 
 .admin-form-botoes {
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
+
+  /* ── "Salvar" preso no pé da tela ──
+     Nos formulários longos (território, rota, página) os botões de salvar ficam
+     lá embaixo, fora da vista de quem está preenchendo. Com o bottom: 0 eles
+     ficam presos no pé da janela enquanto o formulário rola e voltam ao lugar
+     de sempre quando o fim do formulário já está à vista. */
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+
+  /* sangra até as bordas do cartão (.admin-form tem padding de 20px e raio de
+     16px), senão o conteúdo que rola por baixo aparece nas laterais do botão */
+  margin: 0 -20px -20px;
+  padding: 12px 20px;
+  background: white;
+  border-radius: 0 0 16px 16px;
+
+  /* separador sutil entre os botões presos e o conteúdo que passa por baixo */
+  border-top: 1px solid #e5d2a8;
 }
 
 .admin-acoes {
