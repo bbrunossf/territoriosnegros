@@ -681,37 +681,75 @@ export default function TerritoriosAdmin() {
           {pendente && <span className="admin-pendente"> · alterações não salvas</span>}
         </h2>
 
+        <hr className="admin-divisor" />
+        <h3 className="admin-form-secao">Identificação</h3>
+
         <div className="admin-form-grid">
-          <input
-            type="text"
-            placeholder="Nome *"
-            value={form.nome}
-            onChange={(e) => setCampo("nome", e.target.value)}
-            required
-          />
-          <input
-            type="text"
-            placeholder="Local *"
-            value={form.local}
-            onChange={(e) => setCampo("local", e.target.value)}
-            required
-          />
-          <input
-            type="text"
-            placeholder="Palavra-chave *"
-            value={form.palavra}
-            onChange={(e) => setCampo("palavra", e.target.value)}
-            required
-          />
-          <input
-            type="number"
-            placeholder="Ano"
-            value={form.ano}
-            onChange={(e) => setCampo("ano", e.target.value)}
-          />
+          <label className="admin-campo">
+            <b>Nome do território *</b>
+            <span className="admin-campo-dica">
+              Título grande da página do território e o nome que aparece na lista.
+            </span>
+            <input
+              type="text"
+              placeholder="Ex: Igreja do Rosário dos Homens Pretos"
+              value={form.nome}
+              onChange={(e) => setCampo("nome", e.target.value)}
+              required
+            />
+          </label>
 
           <label className="admin-campo">
-            Categoria
+            <b>Local *</b>
+            <span className="admin-campo-dica">
+              Endereço ou bairro, em letra menor embaixo do nome — e também no item
+              da lista.
+            </span>
+            <input
+              type="text"
+              placeholder="Ex: Centro de Vitória - ES"
+              value={form.local}
+              onChange={(e) => setCampo("local", e.target.value)}
+              required
+            />
+          </label>
+
+          <label className="admin-campo">
+            <b>Palavra-chave *</b>
+            <span className="admin-campo-dica">
+              Uma palavra que resume o território. Aparece na seção{" "}
+              <b>Palavra-chave</b>, perto do fim da página, antes das imagens de
+              apoio.
+            </span>
+            <input
+              type="text"
+              placeholder="Ex: RESISTÊNCIA"
+              value={form.palavra}
+              onChange={(e) => setCampo("palavra", e.target.value)}
+              required
+            />
+          </label>
+
+          <label className="admin-campo">
+            <b>Ano</b>
+            <span className="admin-campo-dica">
+              Só o número. O app usa este ano para calcular a idade mostrada nas{" "}
+              <b>Informações rápidas</b>; ano errado = idade errada.
+            </span>
+            <input
+              type="number"
+              placeholder="Ex: 1767"
+              value={form.ano}
+              onChange={(e) => setCampo("ano", e.target.value)}
+            />
+          </label>
+
+          <label className="admin-campo">
+            <b>Categoria</b>
+            <span className="admin-campo-dica">
+              Grupo em que o território aparece na lista. As categorias são criadas e
+              ordenadas na aba <b>Categorias</b>.
+            </span>
             <select
               value={form.categoria}
               onChange={(e) => setCampo("categoria", e.target.value)}
@@ -726,7 +764,10 @@ export default function TerritoriosAdmin() {
           </label>
 
           <label className="admin-campo">
-            Ordem na lista (menor aparece antes)
+            <b>Ordem na lista</b>
+            <span className="admin-campo-dica">
+              Menor número aparece antes na lista, dentro da categoria.
+            </span>
             <input
               type="number"
               value={form.ordem}
@@ -741,59 +782,134 @@ export default function TerritoriosAdmin() {
             checked={form.ativo}
             onChange={(e) => setCampo("ativo", e.target.checked)}
           />
-          Visível para os visitantes (desmarque para esconder durante o tour)
+          <span className="admin-check-texto">
+            <b>Visível para os visitantes</b>
+            <span className="admin-campo-dica">
+              Desmarcado, o território sai da lista e do percurso do dia (nada é
+              apagado); quem abrir um link antigo lê “não faz parte do percurso de
+              hoje”.
+            </span>
+          </span>
         </label>
 
-        <textarea
-          placeholder="Camadas (ex: 1912: construção → 1993: museu)"
-          value={form.camadas}
-          onChange={(e) => setCampo("camadas", e.target.value)}
-        />
-        <textarea
-          placeholder="Contexto"
-          value={form.contexto}
-          onChange={(e) => setCampo("contexto", e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Criação"
-          value={form.criacao}
-          onChange={(e) => setCampo("criacao", e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Função"
-          value={form.funcao}
-          onChange={(e) => setCampo("funcao", e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Transformações"
-          value={form.transformacoes}
-          onChange={(e) => setCampo("transformacoes", e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Status"
-          value={form.status}
-          onChange={(e) => setCampo("status", e.target.value)}
-        />
-        <textarea
-          placeholder="Observação"
-          value={form.observacao}
-          onChange={(e) => setCampo("observacao", e.target.value)}
-        />
-        <textarea
-          placeholder="Descrição *"
-          value={form.descricao}
-          onChange={(e) => setCampo("descricao", e.target.value)}
-          required
-        />
+        <hr className="admin-divisor" />
+        <h3 className="admin-form-secao">
+          Ficha do território (cartões de “Informações rápidas”)
+        </h3>
+
         <label className="admin-campo">
-          Para observar durante a visita
+          <b>Camadas</b>
           <span className="admin-campo-dica">
-            Um item por linha. Cada linha vira um item na lista que o visitante lê
-            no app — se ficar vazio, essa parte da página aparece em branco.
+            Faixa de tempo do território, do mais antigo ao mais recente. É o
+            primeiro cartão das Informações rápidas.
+          </span>
+          <textarea
+            placeholder="Ex: Antes de 1765: irmandade → 1767–1768: construção → ampliações nos séculos XVIII e XIX"
+            value={form.camadas}
+            onChange={(e) => setCampo("camadas", e.target.value)}
+          />
+        </label>
+
+        <label className="admin-campo">
+          <b>Contexto</b>
+          <span className="admin-campo-dica">
+            O que acontecia em volta na época, em uma frase. Cartão “Contexto”.
+          </span>
+          <textarea
+            placeholder="Ex: Organização negra religiosa, social e política no período colonial."
+            value={form.contexto}
+            onChange={(e) => setCampo("contexto", e.target.value)}
+          />
+        </label>
+
+        <label className="admin-campo">
+          <b>Criação</b>
+          <span className="admin-campo-dica">
+            Quem ou o que deu origem ao território. Cartão “Criação”.
+          </span>
+          <input
+            type="text"
+            placeholder="Ex: Irmandade do Rosário"
+            value={form.criacao}
+            onChange={(e) => setCampo("criacao", e.target.value)}
+          />
+        </label>
+
+        <label className="admin-campo">
+          <b>Função</b>
+          <span className="admin-campo-dica">
+            Para que servia ou serve hoje. Cartão “Função”.
+          </span>
+          <input
+            type="text"
+            placeholder="Ex: Culto, organização social, alforria e sepultamento"
+            value={form.funcao}
+            onChange={(e) => setCampo("funcao", e.target.value)}
+          />
+        </label>
+
+        <label className="admin-campo">
+          <b>Transformações</b>
+          <span className="admin-campo-dica">
+            O que mudou com o tempo. Cartão “Transformações”.
+          </span>
+          <input
+            type="text"
+            placeholder="Ex: Ampliações → tombamento → patrimônio histórico."
+            value={form.transformacoes}
+            onChange={(e) => setCampo("transformacoes", e.target.value)}
+          />
+        </label>
+
+        <label className="admin-campo">
+          <b>Status</b>
+          <span className="admin-campo-dica">
+            Como o território está hoje. Cartão “Status”.
+          </span>
+          <input
+            type="text"
+            placeholder="Ex: Igreja preservada e ativa"
+            value={form.status}
+            onChange={(e) => setCampo("status", e.target.value)}
+          />
+        </label>
+
+        <label className="admin-campo">
+          <b>Observação</b>
+          <span className="admin-campo-dica">
+            Um detalhe extra, quando houver. Cartão “Observação” — se ficar vazio, o
+            cartão não aparece no app.
+          </span>
+          <textarea
+            placeholder="Opcional: um detalhe que não cabe nos outros campos"
+            value={form.observacao}
+            onChange={(e) => setCampo("observacao", e.target.value)}
+          />
+        </label>
+
+        <hr className="admin-divisor" />
+        <h3 className="admin-form-secao">Textos que o visitante lê</h3>
+
+        <label className="admin-campo">
+          <b>Descrição do território *</b>
+          <span className="admin-campo-dica">
+            O texto principal, na seção “O que é este território?”. Escreva em
+            parágrafos livres, como num texto corrido.
+          </span>
+          <textarea
+            placeholder="Escreva aqui o que o visitante lê sobre este território."
+            value={form.descricao}
+            onChange={(e) => setCampo("descricao", e.target.value)}
+            required
+          />
+        </label>
+
+        <label className="admin-campo">
+          <b>Para observar durante a visita</b>
+          <span className="admin-campo-dica">
+            Seção “Para observar durante a visita”. Um item por linha: cada linha vira
+            um item da lista que o visitante lê no app — se ficar vazio, essa parte da
+            página aparece em branco.
           </span>
 
           <textarea
@@ -803,40 +919,72 @@ export default function TerritoriosAdmin() {
             rows={4}
           />
         </label>
-        <textarea
-          placeholder="Pergunta para reflexão"
-          value={form.pergunta}
-          onChange={(e) => setCampo("pergunta", e.target.value)}
-        />
+
         <label className="admin-campo">
-          Vídeo no topo — opcional (toca no lugar da foto principal)
+          <b>Pergunta para reflexão</b>
           <span className="admin-campo-dica">
-            Cole aqui o link direto do arquivo, terminando em .mp4. Para vídeos com
-            botão de <b>liberar/bloquear</b> (e também links do YouTube), use o bloco{" "}
+            Aparece em itálico na seção “Para refletir”. Pode ser uma pergunta ou uma
+            frase curta.
+          </span>
+          <textarea
+            placeholder="Ex: Quem construiu este lugar e quem ficou fora da história oficial?"
+            value={form.pergunta}
+            onChange={(e) => setCampo("pergunta", e.target.value)}
+          />
+        </label>
+
+        <label className="admin-campo">
+          <b>Idade das camadas (cartões de tempo)</b>
+          <span className="admin-campo-dica">
+            Uma linha por camada, no formato “ano: rótulo”. Cada linha vira um cartão
+            “Camada temporal” nas Informações rápidas.
+          </span>
+          <textarea
+            placeholder={'Ex:\n1767: construção da igreja\n1890: ampliação da nave'}
+            value={form.idadeCamadas}
+            onChange={(e) => setCampo("idadeCamadas", e.target.value)}
+            rows={3}
+          />
+        </label>
+        <label className="admin-campo">
+          <b>Vídeo no topo — opcional</b>
+          <span className="admin-campo-dica">
+            Toca no lugar da foto principal, no alto da página. Cole o link direto do
+            arquivo, terminando em .mp4. Para vídeos com botão de{" "}
+            <b>liberar/bloquear</b> (e também links do YouTube), use o bloco{" "}
             <b>Vídeos de apoio</b>, logo abaixo das fotos de apoio.
           </span>
 
           <input
             type="text"
-            placeholder="https://.../video.mp4 (opcional)"
+            placeholder="https://.../video.mp4"
             value={form.video}
             onChange={(e) => setCampo("video", e.target.value)}
           />
         </label>
-        <textarea
-          placeholder='Idade das camadas (formato: "ano: label", uma por linha)'
-          value={form.idadeCamadas}
-          onChange={(e) => setCampo("idadeCamadas", e.target.value)}
-          rows={3}
-        />
+
 
         {/* ─── Foto principal ─── */}
         <div className="admin-form-upload">
           <label>
-            Foto principal{!estaEditando ? " *" : " (selecione apenas para trocar)"}:
+            <b>Foto principal{!estaEditando ? " *" : ""}</b>
+            <span className="admin-campo-dica">
+              É a imagem que abre a página do território.{" "}
+              {estaEditando
+                ? "Escolha um arquivo apenas se quiser trocar: sem escolher nada, a foto atual continua."
+                : ""}{" "}
+              As demais imagens vão no bloco <b>Fotos de apoio</b>, mais abaixo.
+            </span>
           </label>
 
-          {imagemAtual && <img src={imagemAtual} alt="" className="admin-thumb" />}
+          {imagemAtual && (
+            <img
+              src={imagemAtual}
+              alt=""
+              className="admin-thumb"
+              title="Foto principal que está no app hoje"
+            />
+          )}
 
           <input
             type="file"
@@ -851,9 +999,18 @@ export default function TerritoriosAdmin() {
             required={!estaEditando}
           />
 
+          <label>
+            <b>Crédito da foto principal</b>
+            <span className="admin-campo-dica">
+              Aparece em letra pequena logo abaixo da foto, no app e na imagem
+              ampliada. Se deixar vazio, o app usa o crédito da foto de apoio com a
+              mesma imagem.
+            </span>
+          </label>
+
           <input
             type="text"
-            placeholder="Crédito da foto principal (ex: Foto: Maria Souza)"
+            placeholder="Ex: Foto: Maria Souza · Acervo pessoal"
             value={form.imagemCredito}
             onChange={(e) => setCampo("imagemCredito", e.target.value)}
           />
@@ -945,19 +1102,25 @@ export default function TerritoriosAdmin() {
 
                       <img src={foto.url} alt="" />
 
-                      <input
-                        type="text"
-                        placeholder="Legenda da imagem"
-                        value={foto.legenda ?? ""}
-                        onChange={(e) => alterarLegenda(i, e.target.value)}
-                      />
+                      <label className="admin-galeria-campo">
+                        <span>Legenda da imagem</span>
+                        <input
+                          type="text"
+                          placeholder="Ex: Fachada da igreja em 2024"
+                          value={foto.legenda ?? ""}
+                          onChange={(e) => alterarLegenda(i, e.target.value)}
+                        />
+                      </label>
 
-                      <input
-                        type="text"
-                        placeholder="Crédito (ex: Foto: Maria Souza · Acervo pessoal)"
-                        value={foto.credito ?? ""}
-                        onChange={(e) => alterarCredito(i, e.target.value)}
-                      />
+                      <label className="admin-galeria-campo">
+                        <span>Crédito</span>
+                        <input
+                          type="text"
+                          placeholder="Ex: Foto: Maria Souza · Acervo pessoal"
+                          value={foto.credito ?? ""}
+                          onChange={(e) => alterarCredito(i, e.target.value)}
+                        />
+                      </label>
 
                       <div className="admin-galeria-acoes">
                         <button
@@ -1124,19 +1287,25 @@ export default function TerritoriosAdmin() {
                         compacto
                       />
 
-                      <input
-                        type="text"
-                        placeholder="Legenda do vídeo"
-                        value={video.legenda ?? ""}
-                        onChange={(e) => alterarLegendaVideo(i, e.target.value)}
-                      />
+                      <label className="admin-galeria-campo">
+                        <span>Legenda do vídeo</span>
+                        <input
+                          type="text"
+                          placeholder="Ex: Festa de São Benedito, 2024"
+                          value={video.legenda ?? ""}
+                          onChange={(e) => alterarLegendaVideo(i, e.target.value)}
+                        />
+                      </label>
 
-                      <input
-                        type="text"
-                        placeholder="Crédito (ex: Vídeo: Maria Souza · Acervo pessoal)"
-                        value={video.credito ?? ""}
-                        onChange={(e) => alterarCreditoVideo(i, e.target.value)}
-                      />
+                      <label className="admin-galeria-campo">
+                        <span>Crédito</span>
+                        <input
+                          type="text"
+                          placeholder="Ex: Vídeo: Maria Souza · Acervo pessoal"
+                          value={video.credito ?? ""}
+                          onChange={(e) => alterarCreditoVideo(i, e.target.value)}
+                        />
+                      </label>
 
                       <div className="admin-galeria-acoes">
                         <button

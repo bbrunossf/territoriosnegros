@@ -1568,6 +1568,42 @@ a, a:visited, a:hover, a:active {
   font-weight: 400;
 }
 
+/* Título de grupo dentro de um formulário longo do painel. Com muitos campos, o
+   rótulo de cada um diz o que é o campo — mas a pessoa também precisa saber em
+   que parte do formulário está. Usado com um <hr className="admin-divisor" />. */
+.admin-form-secao {
+  margin: 4px 0 -2px;
+  font-size: 13.5px;
+  font-weight: 900;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  color: #7b522a;
+}
+
+/* rótulos compostos (nome em negrito + dica) fora do .admin-campo:
+   na caixa de upload e no checkbox, a dica precisa cair em linha própria */
+.admin-form-upload label .admin-campo-dica {
+  display: block;
+  margin-top: 2px;
+}
+
+.admin-check-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* rótulo fixo de cada campo de uma mídia da galeria (legenda, crédito): com o
+   texto preenchido, o placeholder desaparecia e os dois campos ficavam iguais */
+.admin-galeria-campo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12.5px;
+  letter-spacing: 0.4px;
+  color: #6b5b4d;
+}
+
 /* seção de edição que vive embaixo de outra no painel (ex: formulário de
    contato, dentro da aba Páginas › Contato) */
 .admin-subsecao {
