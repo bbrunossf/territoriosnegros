@@ -185,19 +185,34 @@ export default function InicioAdmin() {
             checked={ativo}
             onChange={(e) => setAtivo(e.target.checked)}
           />
-          Mostrar o aviso de próximo tour na tela inicial
+          <span className="admin-check-texto">
+            <b>Mostrar o aviso de próximo tour na tela inicial</b>
+            <span className="admin-campo-dica">
+              Desmarcado, a faixa do evento e a página do evento saem do app (nada é
+              apagado).
+            </span>
+          </span>
         </label>
 
-        <input
-          type="text"
-          placeholder="Título do evento (ex: CAMINHOS DA MEMÓRIA, IDENTIDADE E INCLUSÃO)"
-          value={texto}
-          onChange={(e) => setTexto(e.target.value)}
-        />
+        <label className="admin-campo">
+          <b>Título do evento</b>
+          <span className="admin-campo-dica">
+            É o título da faixa na tela inicial e o título da página do evento.
+          </span>
+          <input
+            type="text"
+            placeholder="Ex: CAMINHOS DA MEMÓRIA, IDENTIDADE E INCLUSÃO"
+            value={texto}
+            onChange={(e) => setTexto(e.target.value)}
+          />
+        </label>
 
         <div className="admin-form-grid">
           <label className="admin-campo">
-            Data
+            <b>Data do evento</b>
+            <span className="admin-campo-dica">
+              Aparece no aviso da tela inicial e na página do evento.
+            </span>
             <input
               type="date"
               value={data}
@@ -206,7 +221,10 @@ export default function InicioAdmin() {
           </label>
 
           <label className="admin-campo">
-            Horário
+            <b>Horário</b>
+            <span className="admin-campo-dica">
+              Aparece ao lado da data, no aviso e na página do evento.
+            </span>
             <input
               type="time"
               value={hora}
@@ -254,38 +272,57 @@ export default function InicioAdmin() {
           </div>
         </div>
 
-        <input
-          type="text"
-          placeholder="Local do evento (ex: Centro de Vitória - ES)"
-          value={local}
-          onChange={(e) => setLocal(e.target.value)}
-        />
-
-        <textarea
-          placeholder={
-            "Informações sobre o tour (uma linha por parágrafo)\n" +
-            "ex: Ponto de encontro, duração, o que levar, acessibilidade..."
-          }
-          value={info}
-          onChange={(e) => setInfo(e.target.value)}
-          rows={7}
-        />
-
-        <input
-          type="text"
-          placeholder="Link da ficha de inscrição / página do evento (Google Docs)"
-          value={inscricao}
-          onChange={(e) => setInscricao(e.target.value)}
-        />
-
-        <small className="admin-ajuda">
-          Este link é o botão “Abrir a ficha de inscrição” na página do evento. Pode ser
-          a página do Google Docs com as informações ou direto o formulário — ele abre
-          em outra guia.
-        </small>
+        <label className="admin-campo">
+          <b>Local do evento</b>
+          <span className="admin-campo-dica">
+            Linha em letra menor embaixo do título, no aviso da tela inicial e na página
+            do evento.
+          </span>
+          <input
+            type="text"
+            placeholder="Ex: Centro de Vitória - ES"
+            value={local}
+            onChange={(e) => setLocal(e.target.value)}
+          />
+        </label>
 
         <label className="admin-campo">
-          Rota do evento (opcional)
+          <b>Informações sobre o tour</b>
+          <span className="admin-campo-dica">
+            Texto da página do evento. Uma linha por parágrafo — ponto de encontro,
+            duração, o que levar, acessibilidade.
+          </span>
+          <textarea
+            placeholder={
+              "Ex:\nPonto de encontro: escadaria da Catedral\nDuração: 2 horas\nLevar água e protetor solar"
+            }
+            value={info}
+            onChange={(e) => setInfo(e.target.value)}
+            rows={7}
+          />
+        </label>
+
+        <label className="admin-campo">
+          <b>Link da ficha de inscrição deste evento</b>
+          <span className="admin-campo-dica">
+            Vira o botão “Abrir a ficha de inscrição” na página do evento. Pode ser a
+            página do Google Docs com as informações ou direto o formulário — ele abre
+            em outra guia.
+          </span>
+          <input
+            type="text"
+            placeholder="Ex: https://forms.gle/..."
+            value={inscricao}
+            onChange={(e) => setInscricao(e.target.value)}
+          />
+        </label>
+
+        <label className="admin-campo">
+          <b>Rota do evento (opcional)</b>
+          <span className="admin-campo-dica">
+            Serve para o link “ver o percurso completo desta rota” na página do evento e,
+            se você não enviou uma logo própria acima, é a logo usada nesta página.
+          </span>
           <select value={rotaId} onChange={(e) => setRotaId(e.target.value)}>
             <option value="">— nenhuma —</option>
             {roteiros.map((r) => (
@@ -296,24 +333,21 @@ export default function InicioAdmin() {
           </select>
         </label>
 
-        <small className="admin-ajuda">
-          Serve para o link “ver o percurso completo desta rota” na página do evento e,
-          se você não enviou uma logo própria acima, é a logo usada nesta página.
-        </small>
-
         <h2>Ficha de inscrição geral</h2>
 
-        <p className="admin-ajuda">
-          Este link é usado quando a rota não tem um link próprio: aparece no aviso da
-          tela inicial, na lista de rotas e na tela de cada rota.
-        </p>
-
-        <input
-          type="text"
-          placeholder="Link da ficha de inscrição (geral)"
-          value={inscricaoGeral}
-          onChange={(e) => setInscricaoGeral(e.target.value)}
-        />
+        <label className="admin-campo">
+          <b>Link da ficha de inscrição (geral)</b>
+          <span className="admin-campo-dica">
+            Usado quando a rota não tem um link próprio: aparece no aviso da tela inicial,
+            na lista de rotas e na tela de cada rota.
+          </span>
+          <input
+            type="text"
+            placeholder="Ex: https://forms.gle/..."
+            value={inscricaoGeral}
+            onChange={(e) => setInscricaoGeral(e.target.value)}
+          />
+        </label>
 
         <h2>Imagem de fundo e textos da tela inicial</h2>
 
@@ -380,16 +414,27 @@ export default function InicioAdmin() {
             )}
           </div>
 
-          <input
-            type="text"
-            placeholder="Crédito da imagem de fundo (ex: Foto: Maria Souza · Acervo pessoal)"
-            value={capaCredito}
-            onChange={(e) => setCapaCredito(e.target.value)}
-          />
+          <label className="admin-campo">
+            <b>Crédito da imagem de fundo</b>
+            <span className="admin-campo-dica">
+              Aparece em letra pequena sobre a capa, na tela inicial. Vale para a arte
+              original e para uma imagem enviada por você.
+            </span>
+            <input
+              type="text"
+              placeholder="Ex: Foto: Maria Souza · Acervo pessoal"
+              value={capaCredito}
+              onChange={(e) => setCapaCredito(e.target.value)}
+            />
+          </label>
         </div>
 
         <label className="admin-campo">
-          Faixa do próximo evento (aparece na tela inicial e na página do evento)
+          <b>Faixa do próximo evento</b>
+          <span className="admin-campo-dica">
+            Selo no topo da faixa do evento. Aparece na tela inicial e na página do evento
+            — é o mesmo texto nos dois lugares.
+          </span>
           <input
             type="text"
             placeholder={TELA_INICIAL_PADRAO.selo}
@@ -399,7 +444,11 @@ export default function InicioAdmin() {
         </label>
 
         <label className="admin-campo">
-          Botão de inscrição, dentro do cartão do evento
+          <b>Botão de inscrição, dentro do cartão do evento</b>
+          <span className="admin-campo-dica">
+            Texto do botão que abre a ficha de inscrição, no aviso do evento na tela
+            inicial.
+          </span>
           <input
             type="text"
             placeholder={TELA_INICIAL_PADRAO.botaoInscricao}
@@ -409,7 +458,11 @@ export default function InicioAdmin() {
         </label>
 
         <label className="admin-campo">
-          Botão principal da tela inicial (o que abre a leitura da cidade)
+          <b>Botão principal da tela inicial</b>
+          <span className="admin-campo-dica">
+            Texto do botão que abre a leitura da cidade — é o primeiro toque de quem chega
+            no app.
+          </span>
           <textarea
             rows={2}
             placeholder={TELA_INICIAL_PADRAO.botaoInicio}
@@ -419,7 +472,10 @@ export default function InicioAdmin() {
         </label>
 
         <label className="admin-campo">
-          Linha de autoria, no rodapé da tela inicial
+          <b>Linha de autoria</b>
+          <span className="admin-campo-dica">
+            Linha pequena no rodapé da tela inicial (autoria do projeto).
+          </span>
           <input
             type="text"
             placeholder={TELA_INICIAL_PADRAO.autoria}

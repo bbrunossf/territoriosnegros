@@ -399,24 +399,43 @@ export default function RoteirosAdmin() {
           {pendente && <span className="admin-pendente"> · alterações não salvas</span>}
         </h2>
 
+        <hr className="admin-divisor" />
+        <h3 className="admin-form-secao">Identificação da rota</h3>
+
         <div className="admin-form-grid">
-          <input
-            type="text"
-            placeholder="Nome *"
-            value={form.nome}
-            onChange={(e) => setCampo("nome", e.target.value)}
-            required
-          />
-          <input
-            type="text"
-            placeholder="Nível (ex: Fácil, Intermediário, Avançado) *"
-            value={form.nivel}
-            onChange={(e) => setCampo("nivel", e.target.value)}
-            required
-          />
+          <label className="admin-campo">
+            <b>Nome da rota *</b>
+            <span className="admin-campo-dica">
+              Título da tela da rota e do cartão na tela Percursos.
+            </span>
+            <input
+              type="text"
+              placeholder="Ex: Rota Centro Histórico"
+              value={form.nome}
+              onChange={(e) => setCampo("nome", e.target.value)}
+              required
+            />
+          </label>
 
           <label className="admin-campo">
-            Ordem na lista de rotas
+            <b>Nível *</b>
+            <span className="admin-campo-dica">
+              Selo no canto do cartão da rota, ao lado do nome.
+            </span>
+            <input
+              type="text"
+              placeholder="Ex: Fácil"
+              value={form.nivel}
+              onChange={(e) => setCampo("nivel", e.target.value)}
+              required
+            />
+          </label>
+
+          <label className="admin-campo">
+            <b>Ordem na lista de rotas</b>
+            <span className="admin-campo-dica">
+              Menor número aparece antes na tela Percursos.
+            </span>
             <input
               type="number"
               value={form.ordem}
@@ -431,46 +450,90 @@ export default function RoteirosAdmin() {
             checked={form.ativo}
             onChange={(e) => setCampo("ativo", e.target.checked)}
           />
-          Visível para os visitantes
+          <span className="admin-check-texto">
+            <b>Visível para os visitantes</b>
+            <span className="admin-campo-dica">
+              Desmarcada, a rota sai da tela Percursos do app (nada é apagado).
+            </span>
+          </span>
         </label>
 
-        <textarea
-          placeholder="Subtítulo * (ex: Início: MUCANE | Conclusão: Chafariz)"
-          value={form.subtitulo}
-          onChange={(e) => setCampo("subtitulo", e.target.value)}
-          required
-        />
-        <textarea
-          placeholder="Acessibilidade *"
-          value={form.acessibilidade}
-          onChange={(e) => setCampo("acessibilidade", e.target.value)}
-          required
-        />
-        <textarea
-          placeholder="Experiências (uma por linha)"
-          value={form.experiencia}
-          onChange={(e) => setCampo("experiencia", e.target.value)}
-          rows={4}
-        />
+        <hr className="admin-divisor" />
+        <h3 className="admin-form-secao">Textos que o visitante lê</h3>
 
-        <input
-          type="text"
-          placeholder="Link do mapa do percurso (Google My Maps) — opcional"
-          value={form.mapaUrl}
-          onChange={(e) => setCampo("mapaUrl", e.target.value)}
-        />
-        <small className="admin-ajuda">
-          No Google My Maps: crie o mapa com o traçado, clique em Compartilhar →
-          “Qualquer pessoa com o link” → copie o link e cole aqui. Ele aparece embutido
-          na tela da rota, antes das suas imagens de mapa.
-        </small>
+        <label className="admin-campo">
+          <b>Subtítulo *</b>
+          <span className="admin-campo-dica">
+            Linha em letra menor logo abaixo do título da rota — é onde entram início e
+            conclusão do percurso.
+          </span>
+          <textarea
+            placeholder="Ex: Início: MUCANE | Conclusão: Chafariz"
+            value={form.subtitulo}
+            onChange={(e) => setCampo("subtitulo", e.target.value)}
+            required
+          />
+        </label>
 
-        <input
-          type="text"
-          placeholder="Link da ficha de inscrição desta rota — opcional"
-          value={form.inscricaoUrl}
-          onChange={(e) => setCampo("inscricaoUrl", e.target.value)}
-        />
+        <label className="admin-campo">
+          <b>Acessibilidade *</b>
+          <span className="admin-campo-dica">
+            Seção “Acessibilidade” do cartão da rota. Se ficar vazio, o app escreve
+            “Informação de acessibilidade em revisão.”
+          </span>
+          <textarea
+            placeholder="Ex: Percurso plano, com calçamento irregular em dois trechos"
+            value={form.acessibilidade}
+            onChange={(e) => setCampo("acessibilidade", e.target.value)}
+            required
+          />
+        </label>
+
+        <label className="admin-campo">
+          <b>Experiências</b>
+          <span className="admin-campo-dica">
+            Seção “O que você vai vivenciar” do cartão da rota. Um item por linha; cada
+            linha vira um item da lista.
+          </span>
+          <textarea
+            placeholder={"Ex:\nArquitetura colonial\nHistórias de resistência"}
+            value={form.experiencia}
+            onChange={(e) => setCampo("experiencia", e.target.value)}
+            rows={4}
+          />
+        </label>
+
+        <hr className="admin-divisor" />
+        <h3 className="admin-form-secao">Links da rota</h3>
+
+        <label className="admin-campo">
+          <b>Mapa do traçado (Google My Maps) — opcional</b>
+          <span className="admin-campo-dica">
+            No Google My Maps: crie o mapa com o traçado, clique em Compartilhar →
+            “Qualquer pessoa com o link” → copie o link e cole aqui. Ele aparece
+            embutido na tela da rota, antes das suas imagens de mapa.
+          </span>
+          <input
+            type="text"
+            placeholder="https://www.google.com/maps/d/..."
+            value={form.mapaUrl}
+            onChange={(e) => setCampo("mapaUrl", e.target.value)}
+          />
+        </label>
+
+        <label className="admin-campo">
+          <b>Ficha de inscrição desta rota — opcional</b>
+          <span className="admin-campo-dica">
+            Vira o botão “Ficha de inscrição” na tela e no cartão desta rota. Se ficar
+            vazio, o app usa o link geral definido na aba Início.
+          </span>
+          <input
+            type="text"
+            placeholder="Ex: https://forms.gle/..."
+            value={form.inscricaoUrl}
+            onChange={(e) => setCampo("inscricaoUrl", e.target.value)}
+          />
+        </label>
 
         {/* ─── Logo da rota ─── */}
         <div className="admin-fotos">
@@ -595,19 +658,25 @@ export default function RoteirosAdmin() {
 
                       <img src={mapa.url} alt="" />
 
-                      <input
-                        type="text"
-                        placeholder="Legenda do mapa"
-                        value={mapa.legenda ?? ""}
-                        onChange={(e) => alterarLegendaMapa(i, e.target.value)}
-                      />
+                      <label className="admin-galeria-campo">
+                        <span>Legenda do mapa</span>
+                        <input
+                          type="text"
+                          placeholder="Ex: Traçado do percurso no centro"
+                          value={mapa.legenda ?? ""}
+                          onChange={(e) => alterarLegendaMapa(i, e.target.value)}
+                        />
+                      </label>
 
-                      <input
-                        type="text"
-                        placeholder="Crédito (ex: Cartografia: Maria Souza)"
-                        value={mapa.credito ?? ""}
-                        onChange={(e) => alterarCreditoMapa(i, e.target.value)}
-                      />
+                      <label className="admin-galeria-campo">
+                        <span>Crédito</span>
+                        <input
+                          type="text"
+                          placeholder="Ex: Cartografia: Maria Souza"
+                          value={mapa.credito ?? ""}
+                          onChange={(e) => alterarCreditoMapa(i, e.target.value)}
+                        />
+                      </label>
 
                       <div className="admin-galeria-acoes">
                         <button type="button" className="outline" onClick={() => moverMapa(i, -1)}>

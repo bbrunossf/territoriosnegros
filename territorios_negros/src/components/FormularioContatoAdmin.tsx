@@ -94,9 +94,14 @@ export default function FormularioContatoAdmin() {
       {erro && <p className="admin-erro">{erro}</p>}
 
       <label className="admin-campo">
-        Campo “Nome” — texto que aparece no campo
+        <b>Rótulo do campo “Nome”</b>
+        <span className="admin-campo-dica">
+          Texto que o visitante lê dentro da caixa. Leva um <b>*</b> quando o campo é
+          obrigatório.
+        </span>
         <input
           type="text"
+          placeholder="Ex: Nome"
           value={form.nomeRotulo}
           onChange={(e) => set("nomeRotulo", e.target.value)}
         />
@@ -108,7 +113,7 @@ export default function FormularioContatoAdmin() {
           checked={form.nomeObrigatorio}
           onChange={(e) => set("nomeObrigatorio", e.target.checked)}
         />
-        Nome obrigatório
+        <b>Nome obrigatório</b>
       </label>
 
       <hr className="admin-divisor" />
@@ -119,17 +124,23 @@ export default function FormularioContatoAdmin() {
           checked={form.emailMostrar}
           onChange={(e) => set("emailMostrar", e.target.checked)}
         />
-        Pedir e-mail no formulário
+        <b>Pedir e-mail no formulário</b>
       </label>
 
       {form.emailMostrar && (
         <>
-          <input
-            type="text"
-            placeholder="Texto do campo (ex: E-mail)"
-            value={form.emailRotulo}
-            onChange={(e) => set("emailRotulo", e.target.value)}
-          />
+          <label className="admin-campo">
+            <b>Rótulo do campo “E-mail”</b>
+            <span className="admin-campo-dica">
+              Texto que o visitante lê dentro da caixa.
+            </span>
+            <input
+              type="text"
+              placeholder="Ex: E-mail"
+              value={form.emailRotulo}
+              onChange={(e) => set("emailRotulo", e.target.value)}
+            />
+          </label>
 
           <label className="admin-check">
             <input
@@ -137,7 +148,7 @@ export default function FormularioContatoAdmin() {
               checked={form.emailObrigatorio}
               onChange={(e) => set("emailObrigatorio", e.target.checked)}
             />
-            E-mail obrigatório
+            <b>E-mail obrigatório</b>
           </label>
         </>
       )}
@@ -150,17 +161,23 @@ export default function FormularioContatoAdmin() {
           checked={form.whatsappMostrar}
           onChange={(e) => set("whatsappMostrar", e.target.checked)}
         />
-        Pedir WhatsApp no formulário
+        <b>Pedir WhatsApp no formulário</b>
       </label>
 
       {form.whatsappMostrar && (
         <>
-          <input
-            type="text"
-            placeholder="Texto do campo (ex: WhatsApp (com DDD))"
-            value={form.whatsappRotulo}
-            onChange={(e) => set("whatsappRotulo", e.target.value)}
-          />
+          <label className="admin-campo">
+            <b>Rótulo do campo “WhatsApp”</b>
+            <span className="admin-campo-dica">
+              Texto que o visitante lê dentro da caixa. O app valida o DDD.
+            </span>
+            <input
+              type="text"
+              placeholder="Ex: WhatsApp (com DDD)"
+              value={form.whatsappRotulo}
+              onChange={(e) => set("whatsappRotulo", e.target.value)}
+            />
+          </label>
 
           <label className="admin-check">
             <input
@@ -168,11 +185,14 @@ export default function FormularioContatoAdmin() {
               checked={form.whatsappObrigatorio}
               onChange={(e) => set("whatsappObrigatorio", e.target.checked)}
             />
-            WhatsApp obrigatório
+            <b>WhatsApp obrigatório</b>
           </label>
 
           <label className="admin-campo">
-            Aviso abaixo do campo de WhatsApp (deixe vazio para não aparecer)
+            <b>Aviso abaixo do campo de WhatsApp</b>
+            <span className="admin-campo-dica">
+              Linha em letra pequena embaixo do campo. Deixe vazio para não aparecer.
+            </span>
             <textarea
               rows={2}
               value={form.whatsappAjuda}
@@ -192,9 +212,13 @@ export default function FormularioContatoAdmin() {
       <hr className="admin-divisor" />
 
       <label className="admin-campo">
-        Campo “Mensagem” — texto que aparece no campo
+        <b>Rótulo do campo “Mensagem”</b>
+        <span className="admin-campo-dica">
+          Texto que o visitante lê dentro da caixa de texto da mensagem.
+        </span>
         <input
           type="text"
+          placeholder="Ex: Mensagem"
           value={form.mensagemRotulo}
           onChange={(e) => set("mensagemRotulo", e.target.value)}
         />
@@ -206,13 +230,16 @@ export default function FormularioContatoAdmin() {
           checked={form.mensagemObrigatoria}
           onChange={(e) => set("mensagemObrigatoria", e.target.checked)}
         />
-        Mensagem obrigatória
+        <b>Mensagem obrigatória</b>
       </label>
 
       <hr className="admin-divisor" />
 
       <label className="admin-campo">
-        Texto do botão de envio
+        <b>Texto do botão de envio</b>
+        <span className="admin-campo-dica">
+          O que está escrito no botão que envia a mensagem.
+        </span>
         <input
           type="text"
           placeholder="Ex: Enviar mensagem"
@@ -222,7 +249,10 @@ export default function FormularioContatoAdmin() {
       </label>
 
       <label className="admin-campo">
-        Aviso depois que a mensagem é enviada
+        <b>Aviso depois que a mensagem é enviada</b>
+        <span className="admin-campo-dica">
+          Mensagem de agradecimento que substitui o formulário depois do envio.
+        </span>
         <input
           type="text"
           placeholder="Ex: Mensagem enviada. Obrigada!"

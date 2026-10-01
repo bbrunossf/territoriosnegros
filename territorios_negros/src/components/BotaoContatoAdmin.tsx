@@ -103,7 +103,10 @@ export default function BotaoContatoAdmin() {
       {erro && <p className="admin-erro">{erro}</p>}
 
       <label className="admin-campo">
-        O botão deve aparecer?
+        <b>O botão deve aparecer?</b>
+        <span className="admin-campo-dica">
+          Desligado, ele some de todas as telas do app.
+        </span>
         <select
           value={botao.ativo ? "sim" : "nao"}
           onChange={(e) => {
@@ -117,7 +120,10 @@ export default function BotaoContatoAdmin() {
       </label>
 
       <label className="admin-campo">
-        Texto do botão
+        <b>Texto do botão</b>
+        <span className="admin-campo-dica">
+          O que o visitante lê no botão. Deixe vazio para o texto original do app.
+        </span>
         <input
           type="text"
           placeholder={BOTAO_CONTATO_PADRAO.texto}

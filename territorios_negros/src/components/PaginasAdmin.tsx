@@ -99,7 +99,7 @@ function CamposEstilo({
   return (
     <div className="admin-form-grid admin-form-grid-3">
       <label className="admin-campo">
-        Tamanho do {oQue}
+        <b>Tamanho do {oQue}</b>
         <select
           value={estilo.tamanho}
           onChange={(e) => onChange("tamanho", e.target.value as TamanhoTexto)}
@@ -111,7 +111,7 @@ function CamposEstilo({
       </label>
 
       <label className="admin-campo">
-        Alinhamento
+        <b>Alinhamento</b>
         <select
           value={estilo.alinhamento}
           onChange={(e) => onChange("alinhamento", e.target.value as Alinhamento)}
@@ -124,7 +124,7 @@ function CamposEstilo({
       </label>
 
       <label className="admin-campo">
-        Cor do {oQue}
+        <b>Cor do {oQue}</b>
         <select
           value={estilo.cor}
           onChange={(e) => onChange("cor", e.target.value as CorTexto)}
@@ -584,19 +584,35 @@ export default function PaginasAdmin() {
           {pendente && <span className="admin-pendente"> · alterações não salvas</span>}
         </h2>
 
+        <hr className="admin-divisor" />
+        <h3 className="admin-form-secao">Topo da página</h3>
+
         <div className="admin-form-grid">
-          <input
-            type="text"
-            placeholder="Título da página"
-            value={pagina.titulo}
-            onChange={(e) => setCampo("titulo", e.target.value)}
-          />
-          <input
-            type="text"
-            placeholder="Subtítulo (opcional)"
-            value={pagina.subtitulo}
-            onChange={(e) => setCampo("subtitulo", e.target.value)}
-          />
+          <label className="admin-campo">
+            <b>Título da página</b>
+            <span className="admin-campo-dica">
+              Título grande no topo da página do app.
+            </span>
+            <input
+              type="text"
+              placeholder="Ex: Conceito"
+              value={pagina.titulo}
+              onChange={(e) => setCampo("titulo", e.target.value)}
+            />
+          </label>
+
+          <label className="admin-campo">
+            <b>Subtítulo (opcional)</b>
+            <span className="admin-campo-dica">
+              Linha em letra menor logo abaixo do título. Vazio = não aparece no app.
+            </span>
+            <input
+              type="text"
+              placeholder="Ex: Das lentes da geografia"
+              value={pagina.subtitulo}
+              onChange={(e) => setCampo("subtitulo", e.target.value)}
+            />
+          </label>
         </div>
 
         <div className="admin-subsecao">
@@ -633,7 +649,12 @@ export default function PaginasAdmin() {
         </div>
 
         <label className="admin-campo">
-          Bloco destacado de abertura (caixa do topo)
+          <b>Bloco destacado de abertura (caixa do topo)</b>
+          <span className="admin-campo-dica">
+            Caixa em destaque logo abaixo do subtítulo. Vale a mesma marcação dos
+            blocos: <b>**negrito**</b>, <b>*itálico*</b> e linha em branco entre
+            parágrafos.
+          </span>
           <textarea
             value={pagina.destaque}
             onChange={(e) => setCampo("destaque", e.target.value)}
@@ -644,7 +665,8 @@ export default function PaginasAdmin() {
         <CamposEstilo estilo={pagina.destaqueEstilo} onChange={setEstiloDestaque} />
         <PreviaEstilo estilo={pagina.destaqueEstilo} texto={pagina.destaque} />
 
-        <h2>Blocos da página</h2>
+        <hr className="admin-divisor" />
+        <h3 className="admin-form-secao">Blocos da página</h3>
 
         {pagina.blocos.length === 0 && (
           <p className="admin-ajuda">Nenhum bloco nesta página ainda.</p>
@@ -655,20 +677,25 @@ export default function PaginasAdmin() {
             <div className="admin-bloco-topo">
               <span className="admin-bloco-num">bloco {i + 1}</span>
 
-              <input
-                type="text"
-                className="admin-bloco-icone"
-                placeholder="ícone"
-                value={bloco.icone}
-                onChange={(e) => setBloco(i, "icone", e.target.value)}
-              />
+              <label className="admin-campo admin-campo-compacto admin-bloco-icone">
+                <b>Ícone</b>
+                <input
+                  type="text"
+                  placeholder="✦"
+                  value={bloco.icone}
+                  onChange={(e) => setBloco(i, "icone", e.target.value)}
+                />
+              </label>
 
-              <input
-                type="text"
-                placeholder="Título do bloco"
-                value={bloco.titulo}
-                onChange={(e) => setBloco(i, "titulo", e.target.value)}
-              />
+              <label className="admin-campo admin-campo-compacto">
+                <b>Título da seção</b>
+                <input
+                  type="text"
+                  placeholder="Ex: O que é este território?"
+                  value={bloco.titulo}
+                  onChange={(e) => setBloco(i, "titulo", e.target.value)}
+                />
+              </label>
 
               <button type="button" className="outline" onClick={() => moverBloco(i, -1)}>
                 ↑
@@ -681,12 +708,19 @@ export default function PaginasAdmin() {
               </button>
             </div>
 
-            <textarea
-              placeholder="Texto do bloco (linha em branco separa parágrafos)"
-              value={bloco.texto}
-              onChange={(e) => setBloco(i, "texto", e.target.value)}
-              rows={5}
-            />
+            <label className="admin-campo">
+              <b>Texto da seção</b>
+              <span className="admin-campo-dica">
+                O texto que o visitante lê nesta seção. Linha em branco separa
+                parágrafos; <b>**negrito**</b> e <b>*itálico*</b> destacam palavras.
+              </span>
+              <textarea
+                placeholder="Escreva aqui o texto desta seção"
+                value={bloco.texto}
+                onChange={(e) => setBloco(i, "texto", e.target.value)}
+                rows={5}
+              />
+            </label>
 
             <div className="admin-subsecao">
               <b>Formatação do título desta seção</b>
@@ -712,19 +746,33 @@ export default function PaginasAdmin() {
               <PreviaEstilo estilo={bloco.estilo} texto={bloco.texto} />
             </div>
 
-            <textarea
-              placeholder="Lista com travessão — um item por linha (opcional)"
-              value={itensParaTexto(bloco.itens)}
-              onChange={(e) => setBloco(i, "itens", e.target.value)}
-              rows={3}
-            />
+            <label className="admin-campo">
+              <b>Lista de itens (opcional)</b>
+              <span className="admin-campo-dica">
+                Uma linha por item: cada linha vira um item da lista com travessão.
+                Deixe vazio se esta seção não tem lista.
+              </span>
+              <textarea
+                placeholder={"Ex:\nUso do espaço público\nMemória do lugar"}
+                value={itensParaTexto(bloco.itens)}
+                onChange={(e) => setBloco(i, "itens", e.target.value)}
+                rows={3}
+              />
+            </label>
 
-            <textarea
-              placeholder="Caixa destacada dentro do bloco (opcional)"
-              value={bloco.destaque}
-              onChange={(e) => setBloco(i, "destaque", e.target.value)}
-              rows={3}
-            />
+            <label className="admin-campo">
+              <b>Caixa destacada dentro da seção (opcional)</b>
+              <span className="admin-campo-dica">
+                Quadro em destaque no meio do texto desta seção. Deixe vazio se não
+                houver.
+              </span>
+              <textarea
+                placeholder="Ex: Esta caixa aparece realçada no meio da seção"
+                value={bloco.destaque}
+                onChange={(e) => setBloco(i, "destaque", e.target.value)}
+                rows={3}
+              />
+            </label>
 
             {/* ─── imagens deste bloco ─── */}
             <div className="admin-fotos">
@@ -796,19 +844,25 @@ export default function PaginasAdmin() {
 
                       <img src={imagem.url} alt="" />
 
-                      <input
-                        type="text"
-                        placeholder="Legenda da imagem"
-                        value={imagem.legenda ?? ""}
-                        onChange={(e) => setImagem(i, j, "legenda", e.target.value)}
-                      />
+                      <label className="admin-galeria-campo">
+                        <span>Legenda da imagem</span>
+                        <input
+                          type="text"
+                          placeholder="Ex: Mapa do centro histórico"
+                          value={imagem.legenda ?? ""}
+                          onChange={(e) => setImagem(i, j, "legenda", e.target.value)}
+                        />
+                      </label>
 
-                      <input
-                        type="text"
-                        placeholder="Crédito (ex: Mapa: Aingrid Souza · Acervo pessoal)"
-                        value={imagem.credito ?? ""}
-                        onChange={(e) => setImagem(i, j, "credito", e.target.value)}
-                      />
+                      <label className="admin-galeria-campo">
+                        <span>Crédito</span>
+                        <input
+                          type="text"
+                          placeholder="Ex: Mapa: Aingrid Souza · Acervo pessoal"
+                          value={imagem.credito ?? ""}
+                          onChange={(e) => setImagem(i, j, "credito", e.target.value)}
+                        />
+                      </label>
 
                       <div className="admin-galeria-acoes">
                         <button
@@ -856,20 +910,35 @@ export default function PaginasAdmin() {
               </div>
             </div>
 
+            {bloco.links.length > 0 && (
+              <p className="admin-ajuda">
+                <b>Links desta seção:</b> o <b>texto</b> é o que o visitante clica e o{" "}
+                <b>endereço</b> é para onde ele vai (começando por https://).
+              </p>
+            )}
+
             {bloco.links.map((link, j) => (
               <div key={j} className="admin-linha">
-                <input
-                  type="text"
-                  placeholder="Texto do link"
-                  value={link.texto}
-                  onChange={(e) => setLink(i, j, "texto", e.target.value)}
-                />
-                <input
-                  type="text"
-                  placeholder="Endereço do link (https://...)"
-                  value={link.url}
-                  onChange={(e) => setLink(i, j, "url", e.target.value)}
-                />
+                <label className="admin-campo admin-campo-compacto">
+                  <b>Texto do link</b>
+                  <input
+                    type="text"
+                    placeholder="Ex: Ver o mapa do percurso"
+                    value={link.texto}
+                    onChange={(e) => setLink(i, j, "texto", e.target.value)}
+                  />
+                </label>
+
+                <label className="admin-campo admin-campo-compacto">
+                  <b>Endereço do link</b>
+                  <input
+                    type="text"
+                    placeholder="https://..."
+                    value={link.url}
+                    onChange={(e) => setLink(i, j, "url", e.target.value)}
+                  />
+                </label>
+
                 <button type="button" className="outline" onClick={() => removerLink(i, j)}>
                   ✕
                 </button>
@@ -892,7 +961,8 @@ export default function PaginasAdmin() {
 
         {totalImagens > 0 && (
           <>
-            <h2>Imagens de todas as seções</h2>
+            <hr className="admin-divisor" />
+            <h3 className="admin-form-secao">Imagens de todas as seções</h3>
 
             <p className="admin-ajuda">
               Atalho igual ao das fotos de apoio dos territórios: aqui você libera ou
@@ -923,57 +993,97 @@ export default function PaginasAdmin() {
           </>
         )}
 
-        <h2>Caixa final (link)</h2>
+        <hr className="admin-divisor" />
+        <h3 className="admin-form-secao">Caixa final (link)</h3>
 
         <p className="admin-ajuda">
           A caixa que aparece depois dos blocos — usada para o mapa (Vitória) e para o TCC
           (Conceito). Deixe o endereço vazio para não aparecer.
         </p>
 
-        <input
-          type="text"
-          placeholder="Texto antes do link (ex: Mapa do centro histórico:)"
-          value={pagina.rodapeTexto}
-          onChange={(e) => setCampo("rodapeTexto", e.target.value)}
-        />
+        <label className="admin-campo">
+          <b>Texto antes do link</b>
+          <span className="admin-campo-dica">
+            Frase que apresenta o link dentro da caixa.
+          </span>
+          <input
+            type="text"
+            placeholder="Ex: Mapa do centro histórico:"
+            value={pagina.rodapeTexto}
+            onChange={(e) => setCampo("rodapeTexto", e.target.value)}
+          />
+        </label>
 
-        <input
-          type="text"
-          placeholder="Texto do link (ex: Abrir no mapa)"
-          value={pagina.rodapeLinkTexto}
-          onChange={(e) => setCampo("rodapeLinkTexto", e.target.value)}
-        />
+        <label className="admin-campo">
+          <b>Texto do link</b>
+          <span className="admin-campo-dica">
+            O que o visitante clica dentro da caixa.
+          </span>
+          <input
+            type="text"
+            placeholder="Ex: Abrir no mapa"
+            value={pagina.rodapeLinkTexto}
+            onChange={(e) => setCampo("rodapeLinkTexto", e.target.value)}
+          />
+        </label>
 
-        <input
-          type="text"
-          placeholder="Endereço (https://...)"
-          value={pagina.rodapeUrl}
-          onChange={(e) => setCampo("rodapeUrl", e.target.value)}
-        />
+        <label className="admin-campo">
+          <b>Endereço do link</b>
+          <span className="admin-campo-dica">
+            Começando por https://. Vazio = a caixa final não aparece no app.
+          </span>
+          <input
+            type="text"
+            placeholder="https://..."
+            value={pagina.rodapeUrl}
+            onChange={(e) => setCampo("rodapeUrl", e.target.value)}
+          />
+        </label>
 
-        <h2>Botões do fim da página</h2>
+        <hr className="admin-divisor" />
+        <h3 className="admin-form-secao">Botões do fim da página</h3>
+
+        {pagina.botoes.length > 0 && (
+          <p className="admin-ajuda">
+            Em cada botão: o <b>texto</b> é o que está escrito, o <b>endereço</b> é para
+            onde ele leva e a <b>aparência</b> define se ele fica destacado (fundo
+            dourado) ou só com contorno.
+          </p>
+        )}
 
         {pagina.botoes.map((botao, i) => (
           <div key={i} className="admin-linha">
-            <input
-              type="text"
-              placeholder="Texto do botão"
-              value={botao.texto}
-              onChange={(e) => setBotao(i, "texto", e.target.value)}
-            />
-            <input
-              type="text"
-              placeholder="/roteiros, /contato ou https://..."
-              value={botao.url}
-              onChange={(e) => setBotao(i, "url", e.target.value)}
-            />
-            <select
-              value={botao.estilo}
-              onChange={(e) => setBotao(i, "estilo", e.target.value)}
-            >
-              <option value="btn">destacado</option>
-              <option value="outline">contorno</option>
-            </select>
+            <label className="admin-campo admin-campo-compacto">
+              <b>Texto do botão</b>
+              <input
+                type="text"
+                placeholder="Ex: Iniciar percurso"
+                value={botao.texto}
+                onChange={(e) => setBotao(i, "texto", e.target.value)}
+              />
+            </label>
+
+            <label className="admin-campo admin-campo-compacto">
+              <b>Endereço</b>
+              <input
+                type="text"
+                placeholder="/roteiros, /contato ou https://..."
+                value={botao.url}
+                onChange={(e) => setBotao(i, "url", e.target.value)}
+              />
+            </label>
+
+            <label className="admin-campo admin-campo-compacto">
+              <b>Aparência</b>
+              <select
+                value={botao.estilo}
+                onChange={(e) => setBotao(i, "estilo", e.target.value)}
+              >
+                <option value="btn">destacado</option>
+                <option value="outline">contorno</option>
+              </select>
+            </label>
+
             <button type="button" className="outline" onClick={() => moverBotao(i, -1)}>
               ↑
             </button>

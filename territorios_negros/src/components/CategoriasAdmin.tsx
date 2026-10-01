@@ -131,16 +131,25 @@ export default function CategoriasAdmin() {
         <h2>{editando ? `Editando: ${nome}` : "Nova categoria"}</h2>
 
         <div className="admin-form-grid">
-          <input
-            type="text"
-            placeholder="Nome da categoria *"
-            value={nome}
-            onChange={(e) => setNome(e.target.value)}
-            required
-          />
+          <label className="admin-campo">
+            <b>Nome da categoria *</b>
+            <span className="admin-campo-dica">
+              É o título do grupo na tela Territórios do app.
+            </span>
+            <input
+              type="text"
+              placeholder="Ex: Territórios de resistência"
+              value={nome}
+              onChange={(e) => setNome(e.target.value)}
+              required
+            />
+          </label>
 
           <label className="admin-campo">
-            Ordem
+            <b>Ordem</b>
+            <span className="admin-campo-dica">
+              Menor número aparece antes na lista. Empate é resolvido pelo nome.
+            </span>
             <input
               type="number"
               value={ordem}

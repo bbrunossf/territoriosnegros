@@ -1593,6 +1593,14 @@ a, a:visited, a:hover, a:active {
   gap: 2px;
 }
 
+/* rótulo curto para campos que dividem uma fileira com botões (bloco da página,
+   link, botão): só o nome, sem dica, para a fileira não ficar alta */
+.admin-campo-compacto {
+  gap: 3px;
+  font-size: 12.5px;
+  color: #6b5b4d;
+}
+
 /* rótulo fixo de cada campo de uma mídia da galeria (legenda, crédito): com o
    texto preenchido, o placeholder desaparecia e os dois campos ficavam iguais */
 .admin-galeria-campo {
@@ -2123,9 +2131,21 @@ a, a:visited, a:hover, a:active {
   flex-wrap: wrap;
 }
 
-.admin-linha input[type="text"] {
+/* Na fileira de um link/botão cada campo é um rótulo com o campo dentro (o
+   rótulo fica em cima, sempre visível). Mesma ressalva do bloco: nada de
+   flex-basis no input, que numa coluna viraria altura. */
+.admin-linha > label {
   flex: 1 1 170px;
   min-width: 110px;
+}
+
+.admin-linha > label select {
+  width: 100%;
+}
+
+.admin-linha input[type="text"] {
+  width: 100%;
+  flex: 0 0 auto;
 }
 
 .pagina-botoes {
@@ -2156,9 +2176,21 @@ a, a:visited, a:hover, a:active {
   flex-wrap: wrap;
 }
 
-.admin-bloco-topo input[type="text"] {
+/* Na fileira do bloco cada campo virou um rótulo com o campo dentro: o input
+   NÃO pode manter flex-basis, porque dentro de uma coluna o flex-basis vira
+   ALTURA (o campo ficaria com 200px de altura). */
+.admin-bloco-topo > label {
   flex: 1 1 200px;
   min-width: 120px;
+}
+
+.admin-bloco-topo > label.admin-bloco-icone {
+  flex: 0 0 78px;
+}
+
+.admin-bloco-topo input[type="text"] {
+  width: 100%;
+  flex: 0 0 auto;
 }
 
 .admin-bloco-num {
@@ -2169,8 +2201,7 @@ a, a:visited, a:hover, a:active {
   color: #7b522a;
 }
 
-.admin-bloco-icone {
-  flex: 0 0 64px !important;
+.admin-bloco-icone input[type="text"] {
   text-align: center;
 }
 
