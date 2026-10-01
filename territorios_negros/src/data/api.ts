@@ -165,6 +165,45 @@ export async function atualizarTerritorio(
   exigirLinhas(data as { id: string }[] | null, error, "atualizar território");
 }
 
+/**
+ * Liga/desliga UMA foto ou UM vídeo de apoio, gravando na hora — é botão de
+ * tour, como o liberar/bloquear do conjunto.
+ *
+ * Grava a partir da linha do banco (não do formulário), para não publicar nem
+ * perder texto que ainda está pendente no painel. O item é achado pela URL,
+ * porque a lista do painel pode estar com ordem/nova mídia ainda não publicada.
+ *
+ * Devolve false quando o item ainda não existe no banco (mídia nova, sem
+ * "Salvar alterações"): aí não há o que gravar e o painel orienta a salvar.
+ */
+export async function definirVisibilidadeMidia(
+  id: string,
+  campo: "fotos" | "videos",
+  url: string,
+  visivel: boolean
+): Promise<boolean> {
+  const linha = await fetchTerritorioBruto(id);
+  const bruto = linha?.[campo];
+
+  const lista = Array.isArray(bruto)
+    ? bruto.map((item) => ({ ...(item as Record<string, unknown>) }))
+    : [];
+
+  const alvo = lista.findIndex((item) => item.url === url);
+  if (alvo < 0) return false;
+
+  lista[alvo] = { ...lista[alvo], visivel };
+
+  const { data, error } = await supabase
+    .from("territorios")
+    .update({ [campo]: lista })
+    .eq("id", id)
+    .select("id");
+
+  exigirLinhas(data as { id: string }[] | null, error, `alterar visibilidade (${campo})`);
+  return true;
+}
+
 export async function excluirTerritorio(id: string): Promise<void> {
   const { data, error } = await supabase
     .from("territorios")

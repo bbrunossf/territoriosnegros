@@ -10,6 +10,7 @@ import "../styles.css";
 import { useCallback, useEffect, useState } from "react";
 import {
   atualizarTerritorio,
+  definirVisibilidadeMidia,
   excluirTerritorio,
   fetchCategorias,
   fetchTerritorioBruto,
@@ -413,16 +414,6 @@ export default function TerritoriosAdmin() {
     setPendente(true);
   }
 
-  function alterarFotosLiberadas(liberar: boolean) {
-    setFotosLiberadas(liberar);
-    setPendente(true);
-    setOk(
-      liberar
-        ? "Fotos marcadas como liberadas. Clique em \"Salvar alterações\" para publicar."
-        : "Fotos marcadas como bloqueadas. Clique em \"Salvar alterações\" para publicar."
-    );
-  }
-
   // ── Vídeos de apoio (mesma regra das fotos) ─────────────────
 
   function avisoParaPublicar(acao: string) {
@@ -520,14 +511,53 @@ export default function TerritoriosAdmin() {
     setPendente(true);
   }
 
-  function alterarVideosLiberados(liberar: boolean) {
-    setVideosLiberados(liberar);
-    setPendente(true);
-    setOk(
-      liberar
-        ? "Vídeos marcados como liberados. Clique em \"Salvar alterações\" para publicar."
-        : "Vídeos marcados como bloqueados. Clique em \"Salvar alterações\" para publicar."
-    );
+  /**
+   * Liga/desliga UMA foto ou UM vídeo de apoio, gravando na hora.
+   *
+   * É o botão de uso durante a visita guiada: não publica nem descarta o que
+   * ainda está pendente no formulário — grava só a visibilidade daquele item,
+   * direto no banco, e espelha no formulário para o "Salvar alterações"
+   * seguinte não desfazer o que foi gravado.
+   */
+  async function alternarVisibilidadeMidia(
+    campo: "fotos" | "videos",
+    url: string,
+    visivel: boolean
+  ) {
+    if (!editando) return;
+
+    setErro("");
+    setOk("");
+
+    const ehFoto = campo === "fotos";
+
+    try {
+      const gravado = await definirVisibilidadeMidia(editando, campo, url, visivel);
+
+      if (!gravado) {
+        setErro(
+          "Este item ainda não está publicado no banco: clique em \"Salvar " +
+            "alterações\" e depois use o botão outra vez."
+        );
+        return;
+      }
+
+      if (ehFoto) {
+        setFotos(fotos.map((f) => (f.url === url ? { ...f, visivel } : f)));
+      } else {
+        setVideos(videos.map((v) => (v.url === url ? { ...v, visivel } : v)));
+      }
+
+      await carregar();
+      setOk(
+        `${ehFoto ? "Foto" : "Vídeo"} de apoio ${
+          visivel ? "habilitado" : "desabilitado"
+        } para os visitantes (gravado).`
+      );
+    } catch (e) {
+      console.error(e);
+      setErro(e instanceof Error ? e.message : "Falha ao alterar a visibilidade.");
+    }
   }
 
   // ── Ações instantâneas da tabela (usadas durante o tour) ────
@@ -614,9 +644,24 @@ export default function TerritoriosAdmin() {
     }
   }
 
+  /** Liberar/bloquear TODAS as fotos do território aberto (grava na hora). */
+  async function alternarFotosConjunto(liberar: boolean) {
+    if (editando) await alternarFotosTabela(editando, liberar);
+  }
+
+  /** Liberar/bloquear TODOS os vídeos do território aberto (grava na hora). */
+  async function alternarVideosConjunto(liberar: boolean) {
+    if (editando) await alternarVideosTabela(editando, liberar);
+  }
+
   // ── Render ──────────────────────────────────────────────────
 
   const estaEditando = editando !== null;
+
+  // Quantas mídias de apoio estão habilitadas individualmente: alimenta a linha
+  // "Situação" dos dois blocos e a coluna da tabela.
+  const fotosHabilitadas = fotos.filter((f) => f.visivel !== false).length;
+  const videosHabilitados = videos.filter((v) => v.visivel !== false).length;
 
   function nomeCategoria(id: string | null) {
     if (!id) return "— sem categoria —";
@@ -628,10 +673,13 @@ export default function TerritoriosAdmin() {
       <h1>Territórios</h1>
 
       <p className="admin-ajuda">
-        Os botões <b>habilitar/desabilitar</b>, <b>liberar/bloquear fotos</b> e{" "}
-        <b>liberar/bloquear vídeos</b> da tabela gravam na hora — são para usar
-        durante o tour. Todo o resto (textos, fotos, vídeos, foto principal) só é
-        publicado quando você clica em <b>Salvar alterações</b>.
+        Tudo que é <b>mostrar ou esconder</b> grava na hora: os botões{" "}
+        <b>habilitar/desabilitar</b>, <b>liberar/bloquear fotos</b> e{" "}
+        <b>liberar/bloquear vídeos</b> da tabela, o <b>Liberar/Bloquear todas</b> de
+        cada bloco e o <b>Habilitar/Desabilitar</b> de cada foto e de cada vídeo.
+        São os botões para usar durante a visita guiada. O resto (textos, legendas,
+        créditos, ordem, envio de arquivos, foto principal) só é publicado quando
+        você clica em <b>Salvar alterações</b>.
       </p>
 
       {ok && <p className="admin-ok">{ok}</p>}
@@ -836,27 +884,39 @@ export default function TerritoriosAdmin() {
               <p className="admin-ajuda">
                 A foto principal aparece sempre no topo da página do território. Estas
                 imagens aparecem no fim da página e só para os visitantes quando você{" "}
-                <b>libera</b> a visualização — ideal para o momento do tour. Nada aqui
-                é publicado antes de você clicar em <b>Salvar alterações</b>. O{" "}
+                <b>libera</b> a visualização — ideal para o momento do tour. O{" "}
+                <b>Liberar todas / Bloquear todas</b> e o <b>Habilitar/Desabilitar</b>{" "}
+                de cada imagem <b>gravam na hora</b>, para você usar durante a visita
+                guiada. O resto — legenda, crédito, ordem, envio de novas fotos e a
+                escolha da principal — só é publicado no <b>Salvar alterações</b>. O{" "}
                 <b>crédito</b> aparece embaixo da imagem, no app e quando ela é
                 ampliada; na foto principal, vale o crédito da foto marcada como
                 principal. A <b>legenda</b> de cada foto enviada já vem com o nome
-                do arquivo — ajuste só o que precisar. A ordem desta lista é a
-                ordem em que as imagens aparecem no app: use <b>↑ ↓</b> para
-                reorganizar.
+                do arquivo — ajuste só o que precisar.
               </p>
 
               <div className="admin-fotos-estado">
                 <b>Situação:</b>{" "}
-                {fotosLiberadas
-                  ? "fotos liberadas para os visitantes"
-                  : "fotos bloqueadas"}{" "}
+                {fotosLiberadas ? (
+                  <>
+                    conjunto liberado para os visitantes ·{" "}
+                    <b>
+                      {fotosHabilitadas} de {fotos.length}
+                    </b>{" "}
+                    imagem(ns) habilitada(s)
+                  </>
+                ) : (
+                  <>
+                    conjunto bloqueado — nenhuma aparece, nem as {fotosHabilitadas}{" "}
+                    habilitada(s) abaixo
+                  </>
+                )}{" "}
                 <button
                   type="button"
                   className={fotosLiberadas ? "outline" : "btn"}
-                  onClick={() => alterarFotosLiberadas(!fotosLiberadas)}
+                  onClick={() => alternarFotosConjunto(!fotosLiberadas)}
                 >
-                  {fotosLiberadas ? "Bloquear" : "Liberar"}
+                  {fotosLiberadas ? "Bloquear todas" : "Liberar todas"}
                 </button>
               </div>
 
@@ -878,69 +938,102 @@ export default function TerritoriosAdmin() {
               )}
 
               <div className="admin-galeria">
-                {fotos.map((foto, i) => (
-                  <div key={`${foto.url}-${i}`} className="admin-galeria-item">
-                    {foto.url === imagemAtual ? (
-                      <span className="admin-galeria-principal">
-                        foto principal
-                      </span>
-                    ) : (
-                      <span className="admin-galeria-apoio">foto de apoio</span>
-                    )}
+                {fotos.map((foto, i) => {
+                  const principal = foto.url === imagemAtual;
+                  const desabilitada = foto.visivel === false;
 
-                    <img src={foto.url} alt="" />
+                  return (
+                    <div
+                      key={`${foto.url}-${i}`}
+                      className={`admin-galeria-item ${
+                        desabilitada ? "admin-galeria-bloqueada" : ""
+                      }`}
+                    >
+                      {principal ? (
+                        <span className="admin-galeria-principal">
+                          foto principal (sempre no topo)
+                        </span>
+                      ) : (
+                        <span className="admin-galeria-apoio">
+                          foto de apoio {i + 1} ·{" "}
+                          {desabilitada ? "desabilitada" : "habilitada"}
+                        </span>
+                      )}
 
-                    <input
-                      type="text"
-                      placeholder="Legenda da imagem"
-                      value={foto.legenda ?? ""}
-                      onChange={(e) => alterarLegenda(i, e.target.value)}
-                    />
+                      <img src={foto.url} alt="" />
 
-                    <input
-                      type="text"
-                      placeholder="Crédito (ex: Foto: Maria Souza · Acervo pessoal)"
-                      value={foto.credito ?? ""}
-                      onChange={(e) => alterarCredito(i, e.target.value)}
-                    />
+                      <input
+                        type="text"
+                        placeholder="Legenda da imagem"
+                        value={foto.legenda ?? ""}
+                        onChange={(e) => alterarLegenda(i, e.target.value)}
+                      />
 
-                    <div className="admin-galeria-acoes">
-                      <button
-                        type="button"
-                        className="outline"
-                        onClick={() => moverFoto(i, -1)}
-                        title="Mover para cima (aparece antes no app)"
-                      >
-                        ↑
-                      </button>
+                      <input
+                        type="text"
+                        placeholder="Crédito (ex: Foto: Maria Souza · Acervo pessoal)"
+                        value={foto.credito ?? ""}
+                        onChange={(e) => alterarCredito(i, e.target.value)}
+                      />
 
-                      <button
-                        type="button"
-                        className="outline"
-                        onClick={() => moverFoto(i, 1)}
-                        title="Mover para baixo (aparece depois no app)"
-                      >
-                        ↓
-                      </button>
+                      <div className="admin-galeria-acoes">
+                        <button
+                          type="button"
+                          className="outline"
+                          onClick={() => moverFoto(i, -1)}
+                          title="Mover para cima (aparece antes no app)"
+                        >
+                          ↑
+                        </button>
 
-                      <button
-                        type="button"
-                        className="outline"
-                        onClick={() => definirPrincipal(foto.url)}
-                      >
-                        Tornar principal
-                      </button>
+                        <button
+                          type="button"
+                          className="outline"
+                          onClick={() => moverFoto(i, 1)}
+                          title="Mover para baixo (aparece depois no app)"
+                        >
+                          ↓
+                        </button>
 
-                      <button
-                        type="button"
-                        className="outline"
-                        onClick={() => removerFoto(i)}
-                      >
-                        Remover
-                      </button>
+                        {/* a foto principal não entra no controle individual: ela
+                            aparece sempre no topo; troque a principal se quiser
+                            outra imagem ali */}
+                        {!principal && (
+                          <button
+                            type="button"
+                            className={desabilitada ? "btn" : "outline"}
+                            onClick={() =>
+                              alternarVisibilidadeMidia("fotos", foto.url, desabilitada)
+                            }
+                            title={
+                              desabilitada
+                                ? "Mostrar esta imagem para os visitantes (grava na hora)"
+                                : "Esconder esta imagem dos visitantes (grava na hora)"
+                            }
+                          >
+                            {desabilitada ? "Habilitar" : "Desabilitar"}
+                          </button>
+                        )}
+
+                        <button
+                          type="button"
+                          className="outline"
+                          onClick={() => definirPrincipal(foto.url)}
+                        >
+                          Tornar principal
+                        </button>
+
+                        <button
+                          type="button"
+                          className="outline"
+                          onClick={() => removerFoto(i)}
+                        >
+                          Remover
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </>
           )}
@@ -963,22 +1056,23 @@ export default function TerritoriosAdmin() {
                 igual às fotos. Você pode enviar o arquivo do aparelho (até{" "}
                 {LIMITE_VIDEO_MB} MB por vídeo) <b>ou</b> colar o link (YouTube,
                 Vimeo, Google Drive): os dois funcionam, e o app monta o player
-                sozinho. Nada aqui é publicado antes de você clicar em{" "}
-                <b>Salvar alterações</b>. A ordem desta lista é a ordem em que os
-                vídeos aparecem no app: use <b>↑ ↓</b> para reorganizar.
+                sozinho. O <b>Liberar todos / Bloquear todos</b> e o{" "}
+                <b>Habilitar/Desabilitar</b> de cada vídeo <b>gravam na hora</b>,
+                para você usar durante a visita guiada. A legenda, o crédito, a ordem
+                e o envio de novos vídeos valem no <b>Salvar alterações</b>.
               </p>
 
               <div className="admin-fotos-estado">
                 <b>Situação:</b>{" "}
                 {videosLiberados
-                  ? "vídeos liberados para os visitantes"
-                  : "vídeos bloqueados"}{" "}
+                  ? `conjunto liberado para os visitantes · ${videosHabilitados} de ${videos.length} vídeo(s) habilitado(s)`
+                  : `conjunto bloqueado — nenhum aparece, nem os ${videosHabilitados} habilitado(s) abaixo`}{" "}
                 <button
                   type="button"
                   className={videosLiberados ? "outline" : "btn"}
-                  onClick={() => alterarVideosLiberados(!videosLiberados)}
+                  onClick={() => alternarVideosConjunto(!videosLiberados)}
                 >
-                  {videosLiberados ? "Bloquear" : "Liberar"}
+                  {videosLiberados ? "Bloquear todos" : "Liberar todos"}
                 </button>
               </div>
 
@@ -1021,61 +1115,86 @@ export default function TerritoriosAdmin() {
               )}
 
               <div className="admin-galeria">
-                {videos.map((video, i) => (
-                  <div key={`${video.url}-${i}`} className="admin-galeria-item">
-                    <span className="admin-galeria-apoio">
-                      {video.link ? "vídeo por link" : "vídeo enviado"}
-                    </span>
+                {videos.map((video, i) => {
+                  const desabilitado = video.visivel === false;
 
-                    <PlayerVideo
-                      url={video.url}
-                      titulo={video.legenda || `Vídeo ${i + 1}`}
-                      compacto
-                    />
+                  return (
+                    <div
+                      key={`${video.url}-${i}`}
+                      className={`admin-galeria-item ${
+                        desabilitado ? "admin-galeria-bloqueada" : ""
+                      }`}
+                    >
+                      <span className="admin-galeria-apoio">
+                        vídeo {i + 1} · {video.link ? "por link" : "enviado"} ·{" "}
+                        {desabilitado ? "desabilitado" : "habilitado"}
+                      </span>
 
-                    <input
-                      type="text"
-                      placeholder="Legenda do vídeo"
-                      value={video.legenda ?? ""}
-                      onChange={(e) => alterarLegendaVideo(i, e.target.value)}
-                    />
+                      <PlayerVideo
+                        url={video.url}
+                        titulo={video.legenda || `Vídeo ${i + 1}`}
+                        compacto
+                      />
 
-                    <input
-                      type="text"
-                      placeholder="Crédito (ex: Vídeo: Maria Souza · Acervo pessoal)"
-                      value={video.credito ?? ""}
-                      onChange={(e) => alterarCreditoVideo(i, e.target.value)}
-                    />
+                      <input
+                        type="text"
+                        placeholder="Legenda do vídeo"
+                        value={video.legenda ?? ""}
+                        onChange={(e) => alterarLegendaVideo(i, e.target.value)}
+                      />
 
-                    <div className="admin-galeria-acoes">
-                      <button
-                        type="button"
-                        className="outline"
-                        onClick={() => moverVideo(i, -1)}
-                        title="Mover para cima (aparece antes no app)"
-                      >
-                        ↑
-                      </button>
+                      <input
+                        type="text"
+                        placeholder="Crédito (ex: Vídeo: Maria Souza · Acervo pessoal)"
+                        value={video.credito ?? ""}
+                        onChange={(e) => alterarCreditoVideo(i, e.target.value)}
+                      />
 
-                      <button
-                        type="button"
-                        className="outline"
-                        onClick={() => moverVideo(i, 1)}
-                        title="Mover para baixo (aparece depois no app)"
-                      >
-                        ↓
-                      </button>
+                      <div className="admin-galeria-acoes">
+                        <button
+                          type="button"
+                          className="outline"
+                          onClick={() => moverVideo(i, -1)}
+                          title="Mover para cima (aparece antes no app)"
+                        >
+                          ↑
+                        </button>
 
-                      <button
-                        type="button"
-                        className="outline"
-                        onClick={() => removerVideo(i)}
-                      >
-                        Remover
-                      </button>
+                        <button
+                          type="button"
+                          className="outline"
+                          onClick={() => moverVideo(i, 1)}
+                          title="Mover para baixo (aparece depois no app)"
+                        >
+                          ↓
+                        </button>
+
+                        <button
+                          type="button"
+                          className={desabilitado ? "btn" : "outline"}
+                          onClick={() =>
+                            alternarVisibilidadeMidia("videos", video.url, desabilitado)
+                          }
+                          title={
+                            desabilitado
+                              ? "Mostrar este vídeo para os visitantes (grava na hora)"
+                              : "Esconder este vídeo dos visitantes (grava na hora)"
+                          }
+                        >
+                          {desabilitado ? "Habilitar" : "Desabilitar"}
+                        </button>
+
+                        <button
+                          type="button"
+                          className="outline"
+                          onClick={() => removerVideo(i)}
+                        >
+                          Remover
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </>
           )}
@@ -1141,6 +1260,15 @@ export default function TerritoriosAdmin() {
               <td>
                 {t.fotos?.length ?? 0} foto(s) ·{" "}
                 {t.fotosLiberadas ? "liberadas" : "bloqueadas"}
+                {(t.fotos?.length ?? 0) > 0 && (
+                  <>
+                    <br />
+                    <small>
+                      {t.fotos.filter((f) => f.visivel !== false).length} de{" "}
+                      {t.fotos.length} habilitada(s)
+                    </small>
+                  </>
+                )}
                 <br />
                 <button
                   className="outline"
@@ -1152,6 +1280,15 @@ export default function TerritoriosAdmin() {
               <td>
                 {t.videos?.length ?? 0} vídeo(s) ·{" "}
                 {t.videosLiberados ? "liberados" : "bloqueados"}
+                {(t.videos?.length ?? 0) > 0 && (
+                  <>
+                    <br />
+                    <small>
+                      {t.videos.filter((v) => v.visivel !== false).length} de{" "}
+                      {t.videos.length} habilitado(s)
+                    </small>
+                  </>
+                )}
                 <br />
                 <button
                   className="outline"

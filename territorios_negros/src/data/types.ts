@@ -12,9 +12,10 @@ export interface FotoTerritorio {
   /** crédito da imagem (autoria, acervo, fonte) */
   credito?: string;
   /**
-   * false = bloqueada para os visitantes.
-   * Usado nas imagens de mapa das rotas (as fotos de apoio do território têm
-   * o liberar/bloquear em conjunto, no campo fotos_liberadas).
+   * false = desabilitada para os visitantes (controle individual, item por
+   * item). Vale para as fotos de apoio do território — que ainda têm o
+   * liberar/bloquear em conjunto no campo fotos_liberadas — e para os mapas
+   * das rotas. Ausente = habilitada.
    */
   visivel?: boolean;
 }
@@ -31,6 +32,8 @@ export interface VideoTerritorio {
   credito?: string;
   /** true quando o vídeo foi adicionado por link, e não enviado do aparelho */
   link?: boolean;
+  /** false = desabilitado para os visitantes (item por item); ausente = habilitado */
+  visivel?: boolean;
 }
 
 export interface Territorio {
