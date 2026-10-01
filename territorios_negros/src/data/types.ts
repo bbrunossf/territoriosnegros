@@ -19,6 +19,20 @@ export interface FotoTerritorio {
   visivel?: boolean;
 }
 
+/**
+ * Vídeo de apoio de um território (galeria liberada durante o tour).
+ * `url` pode ser um arquivo enviado do aparelho (mp4/webm/mov) ou um link
+ * colado (YouTube, Vimeo, Google Drive) — o app escolhe o player sozinho.
+ */
+export interface VideoTerritorio {
+  url: string;
+  legenda?: string;
+  /** crédito do vídeo (autoria, acervo, fonte) */
+  credito?: string;
+  /** true quando o vídeo foi adicionado por link, e não enviado do aparelho */
+  link?: boolean;
+}
+
 export interface Territorio {
   id: string;
   nome: string;
@@ -50,6 +64,10 @@ export interface Territorio {
   fotos: FotoTerritorio[];
   /** true = visitantes já podem ver as fotos de apoio */
   fotosLiberadas: boolean;
+  /** vídeos de apoio, liberados/bloqueados em conjunto */
+  videos: VideoTerritorio[];
+  /** true = visitantes já podem ver os vídeos de apoio */
+  videosLiberados: boolean;
   /** crédito da foto principal (autoria, acervo, fonte) */
   imagemCredito: string | null;
 }

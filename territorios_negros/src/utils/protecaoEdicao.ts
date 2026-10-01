@@ -23,6 +23,7 @@ export const ROTULOS_CAMPOS: Record<string, string> = {
   observar: "Para observar durante a visita",
   pergunta: "Pergunta para reflexão",
   video: "Vídeo",
+  videos: "Vídeos de apoio",
   idade_camadas: "Idade das camadas",
   imagem_credito: "Crédito da foto principal",
 };

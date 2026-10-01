@@ -15,6 +15,7 @@ import type {
   Roteiro,
   Territorio,
   TerritoriosMap,
+  VideoTerritorio,
 } from "./types";
 
 /** Gravação que não chegou ao banco (permissão de escrita ausente). */
@@ -393,12 +394,18 @@ export async function excluirMensagem(id: string): Promise<void> {
   exigirLinhas(data as { id: string }[] | null, error, "excluir mensagem");
 }
 
-// ─────────────────────────────────────────────────── FOTOS (storage)
+// ─────────────────────────────────────────────────── FOTOS E VÍDEOS (storage)
 
 export async function uploadFoto(
   id: string,
   file: File,
-  pasta: "territorios" | "roteiros" | "eventos" | "paginas" | "capa" = "territorios"
+  pasta:
+    | "territorios"
+    | "roteiros"
+    | "eventos"
+    | "paginas"
+    | "capa"
+    | "videos" = "territorios"
 ): Promise<string> {
   const extensao = file.name.split(".").pop() ?? "jpg";
   const nomeArquivo = `${id}-${Date.now()}-${Math.random()
@@ -414,6 +421,17 @@ export async function uploadFoto(
 
   const { data } = supabase.storage.from(BUCKET).getPublicUrl(caminho);
   return data.publicUrl;
+}
+
+/** Limite de tamanho por arquivo de vídeo no armazenamento do banco (em MB). */
+export const LIMITE_VIDEO_MB = 50;
+
+/**
+ * Envia um vídeo do aparelho da autoria. Vai para a pasta "videos" do mesmo
+ * armazenamento das fotos, e o app o toca pelo link público.
+ */
+export async function uploadVideo(id: string, file: File): Promise<string> {
+  return uploadFoto(id, file, "videos");
 }
 
 // ─────────────────────────────────────────────────── MAPEAMENTO
@@ -442,6 +460,8 @@ interface RawTerritorio {
   ordem?: number | null;
   fotos?: FotoTerritorio[] | null;
   fotos_liberadas?: boolean | null;
+  videos?: VideoTerritorio[] | null;
+  videos_liberados?: boolean | null;
   imagem_credito?: string | null;
 }
 
@@ -470,6 +490,8 @@ function mapTerritorio(raw: RawTerritorio): Territorio {
     ordem: raw.ordem ?? 0,
     fotos: Array.isArray(raw.fotos) ? raw.fotos : [],
     fotosLiberadas: raw.fotos_liberadas === true,
+    videos: Array.isArray(raw.videos) ? raw.videos : [],
+    videosLiberados: raw.videos_liberados === true,
     imagemCredito: raw.imagem_credito ?? null,
   };
 }

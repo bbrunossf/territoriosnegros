@@ -14,10 +14,13 @@ import {
   fetchCategorias,
   fetchTerritorioBruto,
   fetchTerritorios,
+  LIMITE_VIDEO_MB,
   salvarTerritorio,
   uploadFoto,
+  uploadVideo,
 } from "../data/api";
-import type { Categoria, FotoTerritorio, Territorio } from "../data/types";
+import type { Categoria, FotoTerritorio, Territorio, VideoTerritorio } from "../data/types";
+import PlayerVideo from "../components/PlayerVideo";
 import { gerarSlug } from "../utils/catalogo";
 import { formatarDataHoraBR } from "../utils/data";
 import { legendaDoArquivo } from "../utils/legendas";
@@ -96,6 +99,11 @@ export default function TerritoriosAdmin() {
 
   const [fotos, setFotos] = useState<FotoTerritorio[]>([]);
   const [fotosLiberadas, setFotosLiberadas] = useState(false);
+
+  const [videos, setVideos] = useState<VideoTerritorio[]>([]);
+  const [videosLiberados, setVideosLiberados] = useState(false);
+  /** link que a autoria colou para adicionar um vídeo (YouTube, Drive...) */
+  const [linkVideo, setLinkVideo] = useState("");
 
   // há alteração no formulário que ainda não foi gravada?
   const [pendente, setPendente] = useState(false);
@@ -178,6 +186,9 @@ export default function TerritoriosAdmin() {
     setImagemAtual(t.imagem ?? "");
     setFotos(t.fotos ?? []);
     setFotosLiberadas(t.fotosLiberadas === true);
+    setVideos(t.videos ?? []);
+    setVideosLiberados(t.videosLiberados === true);
+    setLinkVideo("");
     setEditando(t.id);
     setPendente(false);
     setOk("");
@@ -190,6 +201,9 @@ export default function TerritoriosAdmin() {
     setImagemAtual("");
     setFotos([]);
     setFotosLiberadas(false);
+    setVideos([]);
+    setVideosLiberados(false);
+    setLinkVideo("");
     setEditando(null);
     setPendente(false);
   }
@@ -222,6 +236,8 @@ export default function TerritoriosAdmin() {
       idade_camadas: textoParaIdadeCamadas(form.idadeCamadas),
       fotos,
       fotos_liberadas: fotosLiberadas,
+      videos,
+      videos_liberados: videosLiberados,
       imagem_credito: form.imagemCredito || null,
       ...(imagemFinal && { imagem: imagemFinal }),
     };
@@ -285,20 +301,23 @@ export default function TerritoriosAdmin() {
       } catch (e) {
         const mensagem = e instanceof Error ? e.message : "";
 
-        // janela de transição: sem a coluna nova no banco, salva o resto
+        // janela de transição: sem alguma coluna nova no banco, salva o resto
         if (/column .* does not exist/i.test(mensagem)) {
-          const semCredito: Record<string, unknown> = { ...corpo };
-          delete semCredito.imagem_credito;
+          const reduzido: Record<string, unknown> = { ...corpo };
+          delete reduzido.imagem_credito;
+          delete reduzido.videos;
+          delete reduzido.videos_liberados;
 
-          await salvarTerritorio(editando, semCredito);
+          await salvarTerritorio(editando, reduzido);
 
           setEditando(id);
           setPendente(false);
           await carregar();
           setErro(
-            "O território foi salvo, mas o crédito da foto principal não: falta " +
-              "rodar supabase/migrations/20260927_creditos_imagens.sql no SQL Editor " +
-              "do Supabase. Os créditos das fotos de apoio já funcionam."
+            "O território foi salvo, mas os campos novos (crédito da foto principal " +
+              "e vídeos de apoio) não: falta rodar no SQL Editor do Supabase os " +
+              "arquivos supabase/migrations/20260927_creditos_imagens.sql e " +
+              "supabase/migrations/20261001_videos_apoio_territorios.sql."
           );
           return;
         }
@@ -404,6 +423,113 @@ export default function TerritoriosAdmin() {
     );
   }
 
+  // ── Vídeos de apoio (mesma regra das fotos) ─────────────────
+
+  function avisoParaPublicar(acao: string) {
+    setPendente(true);
+    setOk(`${acao} Clique em "Salvar alterações" para publicar.`);
+  }
+
+  /**
+   * Envia os vídeos escolhidos no aparelho da autoria. Vídeo acima do limite do
+   * armazenamento não quebra o resto: fica de fora e o painel explica o motivo,
+   * sugerindo publicar no YouTube e usar o campo de link.
+   */
+  async function adicionarVideos(files: FileList | null) {
+    if (!files || !editando) return;
+
+    setErro("");
+    setOk("");
+
+    const grandes: string[] = [];
+
+    try {
+      const novas: VideoTerritorio[] = [];
+
+      for (const file of Array.from(files)) {
+        if (file.size > LIMITE_VIDEO_MB * 1024 * 1024) {
+          grandes.push(file.name);
+          continue;
+        }
+
+        const url = await uploadVideo(editando, file);
+        // a legenda já entra com o nome do arquivo (editável depois)
+        novas.push({ url, legenda: legendaDoArquivo(file.name) });
+      }
+
+      if (novas.length > 0) {
+        setVideos([...videos, ...novas]);
+        avisoParaPublicar(`${novas.length} vídeo(s) enviado(s).`);
+      }
+
+      if (grandes.length > 0) {
+        setErro(
+          `Estes vídeos passaram de ${LIMITE_VIDEO_MB} MB e não foram enviados: ` +
+            `${grandes.join(", ")}. Para vídeos maiores, publique no YouTube ` +
+            `(pode ser como "não listado") e use o campo de link aqui embaixo.`
+        );
+      }
+    } catch (e) {
+      console.error(e);
+      setErro(e instanceof Error ? e.message : "Falha ao enviar o vídeo.");
+    }
+  }
+
+  /** Adiciona um vídeo por link (YouTube, Vimeo, Google Drive ou arquivo direto). */
+  function adicionarVideoPorLink() {
+    const url = linkVideo.trim();
+
+    if (!url) {
+      setErro("Cole o link do vídeo (YouTube, Vimeo, Google Drive ou link do arquivo).");
+      return;
+    }
+
+    setErro("");
+    setVideos([...videos, { url, link: true }]);
+    setLinkVideo("");
+    avisoParaPublicar("Vídeo adicionado à lista.");
+  }
+
+  function removerVideo(indice: number) {
+    setVideos(videos.filter((_, i) => i !== indice));
+    avisoParaPublicar("Vídeo marcado para remoção.");
+  }
+
+  /** A ordem daqui é a ordem dos vídeos no fim da página do território. */
+  function moverVideo(indice: number, delta: number) {
+    const destino = indice + delta;
+    if (destino < 0 || destino >= videos.length) return;
+
+    const reordenados = [...videos];
+    [reordenados[indice], reordenados[destino]] = [
+      reordenados[destino],
+      reordenados[indice],
+    ];
+
+    setVideos(reordenados);
+    avisoParaPublicar("Ordem alterada.");
+  }
+
+  function alterarLegendaVideo(indice: number, legenda: string) {
+    setVideos(videos.map((v, i) => (i === indice ? { ...v, legenda } : v)));
+    setPendente(true);
+  }
+
+  function alterarCreditoVideo(indice: number, credito: string) {
+    setVideos(videos.map((v, i) => (i === indice ? { ...v, credito } : v)));
+    setPendente(true);
+  }
+
+  function alterarVideosLiberados(liberar: boolean) {
+    setVideosLiberados(liberar);
+    setPendente(true);
+    setOk(
+      liberar
+        ? "Vídeos marcados como liberados. Clique em \"Salvar alterações\" para publicar."
+        : "Vídeos marcados como bloqueados. Clique em \"Salvar alterações\" para publicar."
+    );
+  }
+
   // ── Ações instantâneas da tabela (usadas durante o tour) ────
 
   async function alternarAtivo(id: string, ativo: boolean) {
@@ -444,6 +570,33 @@ export default function TerritoriosAdmin() {
     }
   }
 
+  async function alternarVideosTabela(id: string, liberar: boolean) {
+    setErro("");
+    setOk("");
+
+    try {
+      await atualizarTerritorio(id, { videos_liberados: liberar });
+      if (editando === id) setVideosLiberados(liberar);
+      setOk(
+        liberar
+          ? "Vídeos de apoio liberados para os visitantes (gravado)."
+          : "Vídeos de apoio bloqueados para os visitantes (gravado)."
+      );
+      await carregar();
+    } catch (e) {
+      console.error(e);
+      const mensagem = e instanceof Error ? e.message : "";
+
+      setErro(
+        /column .* does not exist/i.test(mensagem)
+          ? "Os vídeos de apoio ainda não estão ativados no banco: falta rodar " +
+              "supabase/migrations/20261001_videos_apoio_territorios.sql no SQL " +
+              "Editor do Supabase."
+          : mensagem || "Falha ao alterar os vídeos."
+      );
+    }
+  }
+
   async function excluir(id: string, nome: string) {
     if (!window.confirm(`Excluir "${nome}"? Esta ação não pode ser desfeita.`)) return;
 
@@ -475,10 +628,10 @@ export default function TerritoriosAdmin() {
       <h1>Territórios</h1>
 
       <p className="admin-ajuda">
-        Os botões <b>habilitar/desabilitar</b> e <b>liberar/bloquear fotos</b> da
-        tabela gravam na hora — são para usar durante o tour. Todo o resto (textos,
-        fotos, foto principal) só é publicado quando você clica em{" "}
-        <b>Salvar alterações</b>.
+        Os botões <b>habilitar/desabilitar</b>, <b>liberar/bloquear fotos</b> e{" "}
+        <b>liberar/bloquear vídeos</b> da tabela gravam na hora — são para usar
+        durante o tour. Todo o resto (textos, fotos, vídeos, foto principal) só é
+        publicado quando você clica em <b>Salvar alterações</b>.
       </p>
 
       {ok && <p className="admin-ok">{ok}</p>}
@@ -618,12 +771,21 @@ export default function TerritoriosAdmin() {
           value={form.pergunta}
           onChange={(e) => setCampo("pergunta", e.target.value)}
         />
-        <input
-          type="text"
-          placeholder="URL do vídeo (opcional)"
-          value={form.video}
-          onChange={(e) => setCampo("video", e.target.value)}
-        />
+        <label className="admin-campo">
+          Vídeo no topo — opcional (toca no lugar da foto principal)
+          <span className="admin-campo-dica">
+            Cole aqui o link direto do arquivo, terminando em .mp4. Para vídeos com
+            botão de <b>liberar/bloquear</b> (e também links do YouTube), use o bloco{" "}
+            <b>Vídeos de apoio</b>, logo abaixo das fotos de apoio.
+          </span>
+
+          <input
+            type="text"
+            placeholder="https://.../video.mp4 (opcional)"
+            value={form.video}
+            onChange={(e) => setCampo("video", e.target.value)}
+          />
+        </label>
         <textarea
           placeholder='Idade das camadas (formato: "ano: label", uma por linha)'
           value={form.idadeCamadas}
@@ -784,6 +946,141 @@ export default function TerritoriosAdmin() {
           )}
         </div>
 
+        {/* ─── Vídeos de apoio ─── */}
+        <div className="admin-fotos">
+          <b>Vídeos de apoio (vídeos extras do território)</b>
+
+          {!estaEditando ? (
+            <p className="admin-ajuda">
+              Salve o território primeiro. Depois de salvo, este bloco libera o envio
+              de vídeos do aparelho ou por link, com o mesmo liberar/bloquear das fotos.
+            </p>
+          ) : (
+            <>
+              <p className="admin-ajuda">
+                Os vídeos aparecem no fim da página do território, logo depois das
+                imagens de apoio, e só para os visitantes quando você <b>libera</b> —
+                igual às fotos. Você pode enviar o arquivo do aparelho (até{" "}
+                {LIMITE_VIDEO_MB} MB por vídeo) <b>ou</b> colar o link (YouTube,
+                Vimeo, Google Drive): os dois funcionam, e o app monta o player
+                sozinho. Nada aqui é publicado antes de você clicar em{" "}
+                <b>Salvar alterações</b>. A ordem desta lista é a ordem em que os
+                vídeos aparecem no app: use <b>↑ ↓</b> para reorganizar.
+              </p>
+
+              <div className="admin-fotos-estado">
+                <b>Situação:</b>{" "}
+                {videosLiberados
+                  ? "vídeos liberados para os visitantes"
+                  : "vídeos bloqueados"}{" "}
+                <button
+                  type="button"
+                  className={videosLiberados ? "outline" : "btn"}
+                  onClick={() => alterarVideosLiberados(!videosLiberados)}
+                >
+                  {videosLiberados ? "Bloquear" : "Liberar"}
+                </button>
+              </div>
+
+              <div className="admin-form-upload">
+                <label>Adicionar vídeo do aparelho (pode escolher vários):</label>
+                <input
+                  type="file"
+                  accept="video/*"
+                  multiple
+                  onChange={(e) => {
+                    adicionarVideos(e.target.files);
+                    e.target.value = "";
+                  }}
+                />
+              </div>
+
+              <div className="admin-form-upload">
+                <label>ou cole o link do vídeo (YouTube, Vimeo, Google Drive):</label>
+
+                <div className="admin-video-link">
+                  <input
+                    type="text"
+                    placeholder="https://www.youtube.com/watch?v=..."
+                    value={linkVideo}
+                    onChange={(e) => setLinkVideo(e.target.value)}
+                  />
+
+                  <button
+                    type="button"
+                    className="outline"
+                    onClick={adicionarVideoPorLink}
+                  >
+                    Adicionar link
+                  </button>
+                </div>
+              </div>
+
+              {videos.length === 0 && (
+                <p className="admin-ajuda">Nenhum vídeo de apoio cadastrado ainda.</p>
+              )}
+
+              <div className="admin-galeria">
+                {videos.map((video, i) => (
+                  <div key={`${video.url}-${i}`} className="admin-galeria-item">
+                    <span className="admin-galeria-apoio">
+                      {video.link ? "vídeo por link" : "vídeo enviado"}
+                    </span>
+
+                    <PlayerVideo
+                      url={video.url}
+                      titulo={video.legenda || `Vídeo ${i + 1}`}
+                      compacto
+                    />
+
+                    <input
+                      type="text"
+                      placeholder="Legenda do vídeo"
+                      value={video.legenda ?? ""}
+                      onChange={(e) => alterarLegendaVideo(i, e.target.value)}
+                    />
+
+                    <input
+                      type="text"
+                      placeholder="Crédito (ex: Vídeo: Maria Souza · Acervo pessoal)"
+                      value={video.credito ?? ""}
+                      onChange={(e) => alterarCreditoVideo(i, e.target.value)}
+                    />
+
+                    <div className="admin-galeria-acoes">
+                      <button
+                        type="button"
+                        className="outline"
+                        onClick={() => moverVideo(i, -1)}
+                        title="Mover para cima (aparece antes no app)"
+                      >
+                        ↑
+                      </button>
+
+                      <button
+                        type="button"
+                        className="outline"
+                        onClick={() => moverVideo(i, 1)}
+                        title="Mover para baixo (aparece depois no app)"
+                      >
+                        ↓
+                      </button>
+
+                      <button
+                        type="button"
+                        className="outline"
+                        onClick={() => removerVideo(i)}
+                      >
+                        Remover
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+
         <div className="admin-form-botoes">
           <button type="submit" className="btn" disabled={salvando}>
             {salvando ? "Salvando..." : "Salvar alterações"}
@@ -817,6 +1114,7 @@ export default function TerritoriosAdmin() {
             <th>Ordem</th>
             <th>Visível (grava na hora)</th>
             <th>Fotos de apoio (grava na hora)</th>
+            <th>Vídeos de apoio (grava na hora)</th>
             <th>Ações</th>
           </tr>
         </thead>
@@ -851,6 +1149,17 @@ export default function TerritoriosAdmin() {
                   {t.fotosLiberadas ? "bloquear fotos" : "liberar fotos"}
                 </button>
               </td>
+              <td>
+                {t.videos?.length ?? 0} vídeo(s) ·{" "}
+                {t.videosLiberados ? "liberados" : "bloqueados"}
+                <br />
+                <button
+                  className="outline"
+                  onClick={() => alternarVideosTabela(t.id, !t.videosLiberados)}
+                >
+                  {t.videosLiberados ? "bloquear vídeos" : "liberar vídeos"}
+                </button>
+              </td>
               <td className="admin-acoes">
                 <button
                   className="outline"
@@ -881,7 +1190,7 @@ export default function TerritoriosAdmin() {
 
           {territorios.length === 0 && (
             <tr>
-              <td colSpan={6} style={{ textAlign: "center", padding: 24 }}>
+              <td colSpan={7} style={{ textAlign: "center", padding: 24 }}>
                 Nenhum território cadastrado.
               </td>
             </tr>

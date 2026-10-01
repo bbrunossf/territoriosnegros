@@ -7,6 +7,7 @@ import InfoRapida from "../components/InfoRapida";
 import Numbered from "../components/Numbered";
 import Topic from "../components/Topic";
 import FotoAmpliavel from "../components/FotoAmpliavel";
+import PlayerVideo from "../components/PlayerVideo";
 import BotaoContato from "../components/BotaoContato";
 
 import { calcularIdade } from "../utils/data";
@@ -66,6 +67,9 @@ export default function Territorio() {
 
   // Fotos de apoio: só aparecem quando a autoria libera (ex.: durante o tour).
   const fotosApoio = territorio.fotosLiberadas ? territorio.fotos ?? [] : [];
+
+  // Vídeos de apoio: mesma regra das fotos, com botão próprio de liberar/bloquear.
+  const videosApoio = territorio.videosLiberados ? territorio.videos ?? [] : [];
 
   // crédito da foto principal: campo próprio; se estiver vazio e a foto
   // principal estiver na galeria, aproveita o crédito cadastrado nela
@@ -186,6 +190,32 @@ export default function Territorio() {
                   legenda={foto.legenda}
                   credito={foto.credito}
                 />
+              ))}
+            </div>
+          </Topic>
+        )}
+
+        {/* vídeos de apoio: mesma ideia das imagens, com liberar/bloquear próprio */}
+        {videosApoio.length > 0 && (
+          <Topic
+            icon="▶"
+            title="Vídeos de apoio"
+          >
+            <div className="territorio-videos">
+              {videosApoio.map((video, i) => (
+                <figure key={`${video.url}-${i}`} className="territorio-video">
+                  <PlayerVideo
+                    url={video.url}
+                    titulo={video.legenda || `${territorio.nome} — vídeo ${i + 1}`}
+                  />
+
+                  {(video.legenda || video.credito) && (
+                    <figcaption>
+                      {video.legenda}
+                      {video.credito && <span className="foto-credito">{video.credito}</span>}
+                    </figcaption>
+                  )}
+                </figure>
               ))}
             </div>
           </Topic>

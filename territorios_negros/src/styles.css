@@ -1379,6 +1379,61 @@ a, a:visited, a:hover, a:active {
   line-height: 1.45;
 }
 
+/* ── 4b. Território: vídeos de apoio ── */
+.territorio-videos {
+  display: grid;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.territorio-video {
+  margin: 0;
+}
+
+.territorio-video figcaption {
+  margin-top: 6px;
+  font-size: 15px;
+  color: #563827;
+  line-height: 1.45;
+}
+
+/* player do vídeo: arquivo enviado (mp4) ou embutido (YouTube, Vimeo, Drive) */
+.video-player {
+  width: 100%;
+  display: block;
+  border-radius: 14px;
+  border: 1px solid #3a2015;
+  background: #000;
+}
+
+.video-embed {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+
+.video-embed iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* prévia pequena no painel (não ocupa a lista inteira) */
+.video-player-compacto {
+  max-height: 220px;
+}
+
+/* vídeo embutido no painel mantém a proporção 16:9 (não estica nem espreme) */
+.video-embed.video-player-compacto {
+  max-height: none;
+}
+
+.video-link {
+  margin: 0;
+}
+
 /* ── 5. Mapa do percurso ── */
 .mapa-embed {
   position: relative;
@@ -1798,6 +1853,22 @@ a, a:visited, a:hover, a:active {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+}
+
+/* painel: campo de link do vídeo com o botão ao lado */
+.admin-video-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-video-link input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 14px;
 }
 
 .admin-galeria-acoes button {
