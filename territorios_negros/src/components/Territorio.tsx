@@ -66,12 +66,10 @@ export default function Territorio() {
     else navigate(dentroDeRota ? `/percurso/${rotaId}` : "/territorios");
   };
 
-  // Fotos de apoio: só aparecem quando a autoria libera o conjunto (ex.: durante
-  // o tour) E a foto não estiver desabilitada individualmente no painel.
-  const fotosApoio = territorio.fotosLiberadas ? somenteVisiveis(territorio.fotos) : [];
-
-  // Vídeos de apoio: mesma regra das fotos, com botões próprios de liberar/bloquear.
-  const videosApoio = territorio.videosLiberados ? somenteVisiveis(territorio.videos) : [];
+  // Mídias de apoio: cada foto e cada vídeo tem o próprio "aparece/não aparece",
+  // ligado no painel (um por um ou todos de uma vez, durante o tour).
+  const fotosApoio = somenteVisiveis(territorio.fotos);
+  const videosApoio = somenteVisiveis(territorio.videos);
 
   // crédito da foto principal: campo próprio; se estiver vazio e a foto
   // principal estiver na galeria, aproveita o crédito cadastrado nela

@@ -204,6 +204,46 @@ export async function definirVisibilidadeMidia(
   return true;
 }
 
+/**
+ * Habilita/desabilita TODAS as fotos (ou todos os vídeos) de apoio de uma vez,
+ * gravando na hora — é o botão "todas" do painel e da lista de territórios.
+ *
+ * Grava item por item (não existe mais um "conjunto" separado: o app olha o
+ * `visivel` de cada mídia). A coluna antiga do conjunto (`fotos_liberadas` /
+ * `videos_liberados`) é atualizada junto, como espelho, para não deixar o banco
+ * com informação contraditória. Devolve quantos itens foram marcados.
+ */
+export async function definirVisibilidadeTodasMidias(
+  id: string,
+  campo: "fotos" | "videos",
+  visivel: boolean
+): Promise<number> {
+  const linha = await fetchTerritorioBruto(id);
+  const bruto = linha?.[campo];
+
+  const lista = Array.isArray(bruto)
+    ? bruto.map((item) => ({ ...(item as Record<string, unknown>) }))
+    : [];
+
+  const atualizada = lista.map((item) =>
+    typeof item.url === "string" && item.url ? { ...item, visivel } : item
+  );
+
+  const patch: Record<string, unknown> = {
+    [campo]: atualizada,
+    [campo === "fotos" ? "fotos_liberadas" : "videos_liberados"]: visivel,
+  };
+
+  const { data, error } = await supabase
+    .from("territorios")
+    .update(patch)
+    .eq("id", id)
+    .select("id");
+
+  exigirLinhas(data as { id: string }[] | null, error, `alterar visibilidade (${campo})`);
+  return atualizada.filter((item) => item.visivel === visivel).length;
+}
+
 export async function excluirTerritorio(id: string): Promise<void> {
   const { data, error } = await supabase
     .from("territorios")

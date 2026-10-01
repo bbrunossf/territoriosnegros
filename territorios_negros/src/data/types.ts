@@ -63,13 +63,17 @@ export interface Territorio {
   ativo: boolean;
   /** ordem de exibição na aba Territórios */
   ordem: number;
-  /** fotos de apoio, liberadas/bloqueadas em conjunto */
+  /** fotos de apoio (cada uma com o próprio visivel) */
   fotos: FotoTerritorio[];
-  /** true = visitantes já podem ver as fotos de apoio */
+  /**
+   * LEGADO: era o "mostrar/esconder todas as fotos". O app não usa mais —
+   * agora vale o `visivel` de cada foto. O painel ainda mantém esta coluna em
+   * dia quando se usa o botão "todas", para o banco não ficar contraditório.
+   */
   fotosLiberadas: boolean;
-  /** vídeos de apoio, liberados/bloqueados em conjunto */
+  /** vídeos de apoio (cada um com o próprio visivel) */
   videos: VideoTerritorio[];
-  /** true = visitantes já podem ver os vídeos de apoio */
+  /** LEGADO: espelho de "mostrar/esconder todos os vídeos" (ver fotosLiberadas) */
   videosLiberados: boolean;
   /** crédito da foto principal (autoria, acervo, fonte) */
   imagemCredito: string | null;

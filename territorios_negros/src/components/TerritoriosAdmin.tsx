@@ -11,6 +11,7 @@ import { useCallback, useEffect, useState } from "react";
 import {
   atualizarTerritorio,
   definirVisibilidadeMidia,
+  definirVisibilidadeTodasMidias,
   excluirTerritorio,
   fetchCategorias,
   fetchTerritorioBruto,
@@ -62,6 +63,11 @@ function textoParaIdadeCamadas(txt: string): Territorio["idadeCamadas"] {
     .filter((ic): ic is { ano: number; label: string } => ic !== null);
 }
 
+/** Quantas mídias de uma lista estão habilitadas (campo ausente = habilitada). */
+function habilitadasEm(itens: { visivel?: boolean }[] | undefined | null): number {
+  return (itens ?? []).filter((item) => item.visivel !== false).length;
+}
+
 // ── Estado inicial do formulário ─────────────────────────────
 
 const FORM_VAZIO = {
@@ -99,10 +105,8 @@ export default function TerritoriosAdmin() {
   const [imagemAtual, setImagemAtual] = useState<string>("");
 
   const [fotos, setFotos] = useState<FotoTerritorio[]>([]);
-  const [fotosLiberadas, setFotosLiberadas] = useState(false);
 
   const [videos, setVideos] = useState<VideoTerritorio[]>([]);
-  const [videosLiberados, setVideosLiberados] = useState(false);
   /** link que a autoria colou para adicionar um vídeo (YouTube, Drive...) */
   const [linkVideo, setLinkVideo] = useState("");
 
@@ -186,9 +190,7 @@ export default function TerritoriosAdmin() {
     setImagemFile(null);
     setImagemAtual(t.imagem ?? "");
     setFotos(t.fotos ?? []);
-    setFotosLiberadas(t.fotosLiberadas === true);
     setVideos(t.videos ?? []);
-    setVideosLiberados(t.videosLiberados === true);
     setLinkVideo("");
     setEditando(t.id);
     setPendente(false);
@@ -201,9 +203,7 @@ export default function TerritoriosAdmin() {
     setImagemFile(null);
     setImagemAtual("");
     setFotos([]);
-    setFotosLiberadas(false);
     setVideos([]);
-    setVideosLiberados(false);
     setLinkVideo("");
     setEditando(null);
     setPendente(false);
@@ -236,9 +236,7 @@ export default function TerritoriosAdmin() {
       video: form.video || null,
       idade_camadas: textoParaIdadeCamadas(form.idadeCamadas),
       fotos,
-      fotos_liberadas: fotosLiberadas,
       videos,
-      videos_liberados: videosLiberados,
       imagem_credito: form.imagemCredito || null,
       ...(imagemFinal && { imagem: imagemFinal }),
     };
@@ -581,48 +579,49 @@ export default function TerritoriosAdmin() {
     }
   }
 
-  async function alternarFotosTabela(id: string, liberar: boolean) {
+  /**
+   * Habilita/desabilita TODAS as fotos (ou todos os vídeos) de apoio de um
+   * território, gravando na hora — é o botão "todas" do bloco do formulário e o
+   * da lista de territórios.
+   *
+   * Não existe mais um "conjunto" separado do item: grava o `visivel` de cada
+   * mídia (o app olha isso) e espelha na coluna antiga do conjunto.
+   */
+  async function alternarTodasMidias(
+    id: string,
+    campo: "fotos" | "videos",
+    visivel: boolean
+  ) {
     setErro("");
     setOk("");
 
-    try {
-      await atualizarTerritorio(id, { fotos_liberadas: liberar });
-      if (editando === id) setFotosLiberadas(liberar);
-      setOk(
-        liberar
-          ? "Fotos de apoio liberadas para os visitantes (gravado)."
-          : "Fotos de apoio bloqueadas para os visitantes (gravado)."
-      );
-      await carregar();
-    } catch (e) {
-      console.error(e);
-      setErro(e instanceof Error ? e.message : "Falha ao alterar as fotos.");
-    }
-  }
-
-  async function alternarVideosTabela(id: string, liberar: boolean) {
-    setErro("");
-    setOk("");
+    const ehFoto = campo === "fotos";
 
     try {
-      await atualizarTerritorio(id, { videos_liberados: liberar });
-      if (editando === id) setVideosLiberados(liberar);
-      setOk(
-        liberar
-          ? "Vídeos de apoio liberados para os visitantes (gravado)."
-          : "Vídeos de apoio bloqueados para os visitantes (gravado)."
-      );
+      await definirVisibilidadeTodasMidias(id, campo, visivel);
+
+      // espelha no formulário, quando é o território que está aberto
+      if (editando === id) {
+        if (ehFoto) setFotos(fotos.map((f) => ({ ...f, visivel })));
+        else setVideos(videos.map((v) => ({ ...v, visivel })));
+      }
+
       await carregar();
+      setOk(
+        `Todas as ${ehFoto ? "fotos" : "vídeos"} de apoio foram ${
+          visivel ? "habilitadas" : "desabilitadas"
+        } para os visitantes (gravado).`
+      );
     } catch (e) {
       console.error(e);
       const mensagem = e instanceof Error ? e.message : "";
 
       setErro(
         /column .* does not exist/i.test(mensagem)
-          ? "Os vídeos de apoio ainda não estão ativados no banco: falta rodar " +
+          ? "As mídias de apoio ainda não estão ativadas no banco: falta rodar " +
               "supabase/migrations/20261001_videos_apoio_territorios.sql no SQL " +
               "Editor do Supabase."
-          : mensagem || "Falha ao alterar os vídeos."
+          : mensagem || "Falha ao alterar a visibilidade das mídias."
       );
     }
   }
@@ -644,24 +643,14 @@ export default function TerritoriosAdmin() {
     }
   }
 
-  /** Liberar/bloquear TODAS as fotos do território aberto (grava na hora). */
-  async function alternarFotosConjunto(liberar: boolean) {
-    if (editando) await alternarFotosTabela(editando, liberar);
-  }
-
-  /** Liberar/bloquear TODOS os vídeos do território aberto (grava na hora). */
-  async function alternarVideosConjunto(liberar: boolean) {
-    if (editando) await alternarVideosTabela(editando, liberar);
-  }
-
   // ── Render ──────────────────────────────────────────────────
 
   const estaEditando = editando !== null;
 
-  // Quantas mídias de apoio estão habilitadas individualmente: alimenta a linha
-  // "Situação" dos dois blocos e a coluna da tabela.
-  const fotosHabilitadas = fotos.filter((f) => f.visivel !== false).length;
-  const videosHabilitados = videos.filter((v) => v.visivel !== false).length;
+  // Quantas mídias de apoio estão habilitadas: alimenta a linha "Situação" dos
+  // dois blocos e a coluna da tabela.
+  const fotosHabilitadas = habilitadasEm(fotos);
+  const videosHabilitados = habilitadasEm(videos);
 
   function nomeCategoria(id: string | null) {
     if (!id) return "— sem categoria —";
@@ -673,13 +662,13 @@ export default function TerritoriosAdmin() {
       <h1>Territórios</h1>
 
       <p className="admin-ajuda">
-        Tudo que é <b>mostrar ou esconder</b> grava na hora: os botões{" "}
-        <b>habilitar/desabilitar</b>, <b>liberar/bloquear fotos</b> e{" "}
-        <b>liberar/bloquear vídeos</b> da tabela, o <b>Liberar/Bloquear todas</b> de
-        cada bloco e o <b>Habilitar/Desabilitar</b> de cada foto e de cada vídeo.
-        São os botões para usar durante a visita guiada. O resto (textos, legendas,
-        créditos, ordem, envio de arquivos, foto principal) só é publicado quando
-        você clica em <b>Salvar alterações</b>.
+        Tudo que é <b>mostrar ou esconder</b> grava na hora, e vale igual para o
+        território e para as mídias de apoio dele: o <b>habilitar/desabilitar</b> da
+        tabela, o <b>Habilitar todas / Desabilitar todas</b> de cada bloco e o{" "}
+        <b>Habilitar/Desabilitar</b> de cada foto e de cada vídeo. São os botões para
+        usar durante a visita guiada. O resto (textos, legendas, créditos, ordem,
+        envio de arquivos, foto principal) só é publicado quando você clica em{" "}
+        <b>Salvar alterações</b>.
       </p>
 
       {ok && <p className="admin-ok">{ok}</p>}
@@ -883,40 +872,34 @@ export default function TerritoriosAdmin() {
             <>
               <p className="admin-ajuda">
                 A foto principal aparece sempre no topo da página do território. Estas
-                imagens aparecem no fim da página e só para os visitantes quando você{" "}
-                <b>libera</b> a visualização — ideal para o momento do tour. O{" "}
-                <b>Liberar todas / Bloquear todas</b> e o <b>Habilitar/Desabilitar</b>{" "}
-                de cada imagem <b>gravam na hora</b>, para você usar durante a visita
-                guiada. O resto — legenda, crédito, ordem, envio de novas fotos e a
-                escolha da principal — só é publicado no <b>Salvar alterações</b>. O{" "}
-                <b>crédito</b> aparece embaixo da imagem, no app e quando ela é
-                ampliada; na foto principal, vale o crédito da foto marcada como
-                principal. A <b>legenda</b> de cada foto enviada já vem com o nome
-                do arquivo — ajuste só o que precisar.
+                imagens aparecem no fim da página, para os visitantes que estiverem{" "}
+                <b>habilitadas</b>. Cada imagem tem o seu <b>Habilitar/Desabilitar</b> —
+                e o <b>Habilitar todas / Desabilitar todas</b> resolve o conjunto de uma
+                vez. Os dois <b>gravam na hora</b>: é o botão para usar durante a visita
+                guiada, sem precisar salvar. O resto — legenda, crédito, ordem, envio
+                de novas fotos e a escolha da principal — só é publicado no{" "}
+                <b>Salvar alterações</b>. O <b>crédito</b> aparece embaixo da imagem,
+                no app e quando ela é ampliada; na foto principal, vale o crédito da
+                foto marcada como principal. A <b>legenda</b> de cada foto enviada já
+                vem com o nome do arquivo — ajuste só o que precisar.
               </p>
 
               <div className="admin-fotos-estado">
-                <b>Situação:</b>{" "}
-                {fotosLiberadas ? (
-                  <>
-                    conjunto liberado para os visitantes ·{" "}
-                    <b>
-                      {fotosHabilitadas} de {fotos.length}
-                    </b>{" "}
-                    imagem(ns) habilitada(s)
-                  </>
-                ) : (
-                  <>
-                    conjunto bloqueado — nenhuma aparece, nem as {fotosHabilitadas}{" "}
-                    habilitada(s) abaixo
-                  </>
-                )}{" "}
+                <b>Situação:</b> <b>{fotosHabilitadas}</b> de {fotos.length}{" "}
+                imagem(ns) habilitada(s) para os visitantes{" "}
                 <button
                   type="button"
-                  className={fotosLiberadas ? "outline" : "btn"}
-                  onClick={() => alternarFotosConjunto(!fotosLiberadas)}
+                  className={fotosHabilitadas < fotos.length ? "btn" : "outline"}
+                  onClick={() => editando && alternarTodasMidias(editando, "fotos", true)}
                 >
-                  {fotosLiberadas ? "Bloquear todas" : "Liberar todas"}
+                  Habilitar todas
+                </button>
+                <button
+                  type="button"
+                  className={fotosHabilitadas > 0 ? "btn" : "outline"}
+                  onClick={() => editando && alternarTodasMidias(editando, "fotos", false)}
+                >
+                  Desabilitar todas
                 </button>
               </div>
 
@@ -1052,27 +1035,32 @@ export default function TerritoriosAdmin() {
             <>
               <p className="admin-ajuda">
                 Os vídeos aparecem no fim da página do território, logo depois das
-                imagens de apoio, e só para os visitantes quando você <b>libera</b> —
-                igual às fotos. Você pode enviar o arquivo do aparelho (até{" "}
-                {LIMITE_VIDEO_MB} MB por vídeo) <b>ou</b> colar o link (YouTube,
-                Vimeo, Google Drive): os dois funcionam, e o app monta o player
-                sozinho. O <b>Liberar todos / Bloquear todos</b> e o{" "}
-                <b>Habilitar/Desabilitar</b> de cada vídeo <b>gravam na hora</b>,
-                para você usar durante a visita guiada. A legenda, o crédito, a ordem
-                e o envio de novos vídeos valem no <b>Salvar alterações</b>.
+                imagens de apoio, para os visitantes que estiverem <b>habilitados</b>.
+                Cada vídeo tem o seu <b>Habilitar/Desabilitar</b> (grava na hora) e o{" "}
+                <b>Habilitar todos / Desabilitar todos</b> resolve o conjunto de uma
+                vez. Você pode enviar o arquivo do aparelho (até {LIMITE_VIDEO_MB} MB
+                por vídeo) <b>ou</b> colar o link (YouTube, Vimeo, Google Drive): os
+                dois funcionam, e o app monta o player sozinho. A legenda, o crédito,
+                a ordem e o envio de novos vídeos valem no{" "}
+                <b>Salvar alterações</b>.
               </p>
 
               <div className="admin-fotos-estado">
-                <b>Situação:</b>{" "}
-                {videosLiberados
-                  ? `conjunto liberado para os visitantes · ${videosHabilitados} de ${videos.length} vídeo(s) habilitado(s)`
-                  : `conjunto bloqueado — nenhum aparece, nem os ${videosHabilitados} habilitado(s) abaixo`}{" "}
+                <b>Situação:</b> <b>{videosHabilitados}</b> de {videos.length}{" "}
+                vídeo(s) habilitado(s) para os visitantes{" "}
                 <button
                   type="button"
-                  className={videosLiberados ? "outline" : "btn"}
-                  onClick={() => alternarVideosConjunto(!videosLiberados)}
+                  className={videosHabilitados < videos.length ? "btn" : "outline"}
+                  onClick={() => editando && alternarTodasMidias(editando, "videos", true)}
                 >
-                  {videosLiberados ? "Bloquear todos" : "Liberar todos"}
+                  Habilitar todos
+                </button>
+                <button
+                  type="button"
+                  className={videosHabilitados > 0 ? "btn" : "outline"}
+                  onClick={() => editando && alternarTodasMidias(editando, "videos", false)}
+                >
+                  Desabilitar todos
                 </button>
               </div>
 
@@ -1259,42 +1247,36 @@ export default function TerritoriosAdmin() {
               </td>
               <td>
                 {t.fotos?.length ?? 0} foto(s) ·{" "}
-                {t.fotosLiberadas ? "liberadas" : "bloqueadas"}
-                {(t.fotos?.length ?? 0) > 0 && (
-                  <>
-                    <br />
-                    <small>
-                      {t.fotos.filter((f) => f.visivel !== false).length} de{" "}
-                      {t.fotos.length} habilitada(s)
-                    </small>
-                  </>
-                )}
+                {habilitadasEm(t.fotos)} habilitada(s)
                 <br />
                 <button
                   className="outline"
-                  onClick={() => alternarFotosTabela(t.id, !t.fotosLiberadas)}
+                  onClick={() => alternarTodasMidias(t.id, "fotos", true)}
                 >
-                  {t.fotosLiberadas ? "bloquear fotos" : "liberar fotos"}
+                  habilitar todas
+                </button>{" "}
+                <button
+                  className="outline"
+                  onClick={() => alternarTodasMidias(t.id, "fotos", false)}
+                >
+                  desabilitar todas
                 </button>
               </td>
               <td>
                 {t.videos?.length ?? 0} vídeo(s) ·{" "}
-                {t.videosLiberados ? "liberados" : "bloqueados"}
-                {(t.videos?.length ?? 0) > 0 && (
-                  <>
-                    <br />
-                    <small>
-                      {t.videos.filter((v) => v.visivel !== false).length} de{" "}
-                      {t.videos.length} habilitado(s)
-                    </small>
-                  </>
-                )}
+                {habilitadasEm(t.videos)} habilitado(s)
                 <br />
                 <button
                   className="outline"
-                  onClick={() => alternarVideosTabela(t.id, !t.videosLiberados)}
+                  onClick={() => alternarTodasMidias(t.id, "videos", true)}
                 >
-                  {t.videosLiberados ? "bloquear vídeos" : "liberar vídeos"}
+                  habilitar todos
+                </button>{" "}
+                <button
+                  className="outline"
+                  onClick={() => alternarTodasMidias(t.id, "videos", false)}
+                >
+                  desabilitar todos
                 </button>
               </td>
               <td className="admin-acoes">
