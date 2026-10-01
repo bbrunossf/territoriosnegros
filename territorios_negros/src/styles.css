@@ -10,21 +10,29 @@ a, a:visited, a:hover, a:active {
 
 
 
-/* ── Territorio: barra fixa no topo ── */
+/* ── Território: barra Voltar/Próximo presa no topo ──
+   O título rola junto com o texto; o que fica preso logo abaixo do Header é só
+   a fileira Voltar/Próximo, para não ser preciso voltar ao topo da página
+   quando se chega ao fim dela. */
 .territorio-topbar {
+  padding-bottom: 6px;
+}
+
+.territorio-acoes-fixas {
   position: sticky;
-  top: 64px;                      /* altura do Header (.header) */
-  z-index: 5;
+  /* altura do Header, medida em tempo de execução pelo Header.tsx */
+  top: var(--header-altura, 58px);
+  z-index: 6;
   background: #f7efdf;
 
   /* compensa o padding de .content para o fundo encostar nas bordas */
   margin-left: -22px;
   margin-right: -22px;
-  padding-left: 22px;
-  padding-right: 22px;
-  padding-bottom: 6px;
+  /* só o respiro de baixo: em cima, o espaço já vem da .page-line (assim a
+     fileira fica no mesmo lugar de antes quando a página está no topo) */
+  padding: 0 22px 10px;
 
-  /* separador visual sutil entre a barra fixa e o conteúdo scrollável */
+  /* separador sutil entre a barra presa e o conteúdo que rola por baixo */
   border-bottom: 1px solid rgba(159, 111, 42, 0.15);
 }
 
@@ -824,7 +832,13 @@ a, a:visited, a:hover, a:active {
   background: #f7efdf;
   color: #1b100c;
   position: relative;
+  /* O "hidden" aqui transformava o .phone numa área de rolagem (o overflow-y
+     vira "auto" por tabela) e isso desligava o sticky de tudo que está dentro
+     dele — o Header e a barra Voltar/Próximo. O "clip" corta o excesso
+     horizontal sem criar área de rolagem; o "hidden" fica como reserva para
+     navegador antigo, que simplesmente não prende a barra (como era antes). */
   overflow-x: hidden;
+  overflow-x: clip;
   box-shadow: 0 0 40px rgba(0, 0, 0, 0.32);
 }
 

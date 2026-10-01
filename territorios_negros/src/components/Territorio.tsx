@@ -94,7 +94,11 @@ export default function Territorio() {
           </p>
 
           <div className="page-line" />
+        </div>
 
+        {/* barra presa logo abaixo do Header: Voltar/Próximo ficam sempre à mão,
+            inclusive quando a pessoa está no fim da página */}
+        <div className="territorio-acoes-fixas">
           <div className="territorio-actions">
             <button className="outline" onClick={voltar}>
               ← Voltar
