@@ -4,6 +4,7 @@ import './index.css'
 import './styles.css'
 import App from './App.tsx'
 import ProtectedRoute from "./components/ProtectedRoute";
+import ScrollParaTopo from "./components/ScrollParaTopo";
 import { TerritoriosProvider } from "./context/TerritoriosContext";
 
 import {
@@ -42,6 +43,9 @@ import Fim from "./components/Fim";
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
+      {/* cada troca de tela começa no topo (o "Próximo" do percurso incluído) */}
+      <ScrollParaTopo />
+
       <TerritoriosProvider>
           <Routes>
             <Route path="/" element={<App />}>
