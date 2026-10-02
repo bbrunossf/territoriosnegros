@@ -254,7 +254,7 @@ export default function TerritoriosAdmin() {
       video: form.video || null,
       // a visibilidade de cada camada vai junto: o botão de camada grava na
       // hora, e sem isso o "Salvar alterações" seguinte desfaria a gravação
-      idade_camadas: textoParaIdadeCamadas(form.idadeCamadas).map((camada) => ({
+      idade_camadas: (textoParaIdadeCamadas(form.idadeCamadas) ?? []).map((camada) => ({
         ...camada,
         visivel: camadasVisiveis[String(camada.ano)] !== false,
       })),
@@ -586,7 +586,7 @@ export default function TerritoriosAdmin() {
   // continua pendente até "Salvar alterações".
 
   /** quantas camadas do texto do formulário estão aparecendo no app */
-  const camadasDoTexto = textoParaIdadeCamadas(form.idadeCamadas);
+  const camadasDoTexto = textoParaIdadeCamadas(form.idadeCamadas) ?? [];
   const camadasAparecendo = camadasDoTexto.filter(
     (camada) => camadasVisiveis[String(camada.ano)] !== false
   ).length;

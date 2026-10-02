@@ -260,11 +260,11 @@ export async function definirVisibilidadeCamada(
   const linha = await fetchTerritorioBruto(id);
   const bruto = linha?.idade_camadas;
 
-  const lista = Array.isArray(bruto)
+  const lista: Record<string, unknown>[] = Array.isArray(bruto)
     ? bruto.map((item) => ({ ...(item as Record<string, unknown>) }))
     : [];
 
-  const alvo = lista.findIndex((item) => Number(item.ano) === ano);
+  const alvo = lista.findIndex((item) => Number(item.ano as number) === ano);
   if (alvo < 0) return false;
 
   lista[alvo] = { ...lista[alvo], visivel };
@@ -291,13 +291,13 @@ export async function definirVisibilidadeTodasCamadas(
   const linha = await fetchTerritorioBruto(id);
   const bruto = linha?.idade_camadas;
 
-  const lista = Array.isArray(bruto)
+  const lista: Record<string, unknown>[] = Array.isArray(bruto)
     ? bruto.map((item) => ({ ...(item as Record<string, unknown>) }))
     : [];
 
   if (lista.length === 0) return [];
 
-  const atualizada = lista.map((item) => ({ ...item, visivel }));
+  const atualizada: Record<string, unknown>[] = lista.map((item) => ({ ...item, visivel }));
 
   const { data, error } = await supabase
     .from("territorios")
@@ -308,7 +308,7 @@ export async function definirVisibilidadeTodasCamadas(
   exigirLinhas(data as { id: string }[] | null, error, "alterar visibilidade (camadas)");
 
   return atualizada
-    .map((item) => Number(item.ano))
+    .map((item) => Number(item.ano as number))
     .filter((ano) => !Number.isNaN(ano));
 }
 
