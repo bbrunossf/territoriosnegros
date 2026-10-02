@@ -102,13 +102,50 @@ export function normalizarOrdem(bruto: unknown): BlocoFichaId[] {
 }
 
 export interface ConfigFicha {
+  /**
+   * Ordem padrão de TODOS os territórios (a autoria aplica a do MUCANE, por
+   * exemplo). Vale para quem não tem ordem própria — inclusive território novo.
+   */
+  ordemGeral?: unknown;
   porTerritorio?: Record<string, unknown>;
 }
 
-/** Ordem configurada para um território (sem configuração = ordem padrão). */
+/** Ordem configurada para um território: a própria dele, senão a padrão de todos. */
 export function ordemDoTerritorio(config: unknown, territorioId: string): BlocoFichaId[] {
   const conf = (config ?? {}) as ConfigFicha;
-  return normalizarOrdem((conf.porTerritorio ?? {})[territorioId]);
+  return normalizarOrdem((conf.porTerritorio ?? {})[territorioId] ?? conf.ordemGeral);
+}
+
+/** O território tem ordem própria (definida na tela dele)? */
+export function temOrdemPropria(config: unknown, territorioId: string): boolean {
+  const conf = (config ?? {}) as ConfigFicha;
+  return (conf.porTerritorio ?? {})[territorioId] !== undefined;
+}
+
+/** Existe uma ordem padrão aplicada a todos? */
+export function temOrdemGeral(config: unknown): boolean {
+  return ((config ?? {}) as ConfigFicha).ordemGeral !== undefined;
+}
+
+/**
+ * Padroniza todos os territórios com esta ordem: ela vira a ordem padrão e as
+ * ordens próprias que existirem são substituídas (o território volta a seguir o
+ * padrão). Ordem igual à original do app limpa tudo — banco limpo.
+ */
+export function padronizarParaTodos(config: unknown, ordem: BlocoFichaId[]): ConfigFicha {
+  const conf = (config ?? {}) as ConfigFicha;
+
+  if (ehOrdemPadrao(ordem)) {
+    return { ...conf, ordemGeral: undefined, porTerritorio: {} };
+  }
+
+  return { ...conf, ordemGeral: ordem, porTerritorio: {} };
+}
+
+/** Volta todos os territórios à ordem original do app. */
+export function voltarTodosAoOriginal(config: unknown): ConfigFicha {
+  const conf = (config ?? {}) as ConfigFicha;
+  return { ...conf, ordemGeral: undefined, porTerritorio: {} };
 }
 
 /**

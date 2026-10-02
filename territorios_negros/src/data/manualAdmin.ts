@@ -117,7 +117,7 @@ export const MANUAL_PADRAO: SecaoManual[] = [
     id: "ordem",
     titulo: "Ordem das informações na página do território",
     texto:
-      "Com um território aberto para edição, o bloco **Ordem das informações na página** lista, numerada, a sequência que o visitante lê. Use **↑ ↓** para posicionar e clique em **Salvar ordem** — esse botão é independente do “Salvar alterações”, que é do conteúdo.",
+      "Com um território aberto para edição, o bloco **Ordem das informações na página** lista, numerada, a sequência que o visitante lê. Use **↑ ↓** para posicionar e clique em **Salvar ordem** — esse botão é independente do “Salvar alterações”, que é do conteúdo.\n\n**Padronizar todos de uma vez:** no fim do bloco há **Aplicar esta ordem a todos os territórios** — a ordem da lista vira a ordem **padrão**: os outros territórios passam a seguir esta sequência (inclusive quem tinha ordem própria) e território criado depois já nasce assim. Ao lado, **voltar todos à ordem original do app** desfaz a padronização.\n\nPara deixar **um** território com ordem diferente dos outros, arrume só nele e salve: a ordem própria dele ganha do padrão. Para ele voltar a seguir o padrão, use **Voltar à ordem padrão** e salve.",
     itens: [
       "A marca ao lado de cada item diz o que ele é: **cartão** (sai dentro da caixa “Informações rápidas”) ou **seção de texto** (sai com título próprio).",
       "A ordem vale **só para o território aberto**. Território que você não arrumar segue a ordem de sempre.",

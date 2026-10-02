@@ -42,6 +42,10 @@ import {
   nomeDoBloco,
   ORDEM_PADRAO,
   ordemDoTerritorio,
+  padronizarParaTodos,
+  temOrdemGeral,
+  temOrdemPropria,
+  voltarTodosAoOriginal,
   type BlocoFichaId,
 } from "../data/fichaTerritorio";
 import {
@@ -671,6 +675,65 @@ export default function TerritoriosAdmin() {
     }
   }
 
+  /** aplica a ordem que está na tela a TODOS os territórios (vira o padrão) */
+  async function padronizarOrdem() {
+    if (!editando) return;
+
+    const certeza = window.confirm(
+      "Aplicar esta ordem a TODOS os territórios? Ela passa a ser a ordem padrão e " +
+        "território que já tiver ordem própria passa a seguir esta também."
+    );
+
+    if (!certeza) return;
+
+    setErro("");
+    setOk("");
+    setSalvandoOrdem(true);
+
+    try {
+      await salvarConfig(
+        "ficha_territorio",
+        padronizarParaTodos(config.ficha_territorio, ordemFicha)
+      );
+
+      await recarregar();
+      setOrdemLocal(null);
+      setOk(
+        "Ordem aplicada a todos os territórios. Esta é a ordem padrão agora — vale também para território criado depois."
+      );
+    } catch (e) {
+      console.error(e);
+      setErro(e instanceof Error ? e.message : "Falha ao padronizar a ordem.");
+    } finally {
+      setSalvandoOrdem(false);
+    }
+  }
+
+  /** devolve todos os territórios à sequência original do app */
+  async function voltarTodos() {
+    const certeza = window.confirm(
+      "Voltar TODOS os territórios à ordem original do app? A ordem padrão e as ordens próprias serão apagadas."
+    );
+
+    if (!certeza) return;
+
+    setErro("");
+    setOk("");
+    setSalvandoOrdem(true);
+
+    try {
+      await salvarConfig("ficha_territorio", voltarTodosAoOriginal(config.ficha_territorio));
+      await recarregar();
+      setOrdemLocal(null);
+      setOk("Todos os territórios voltaram à ordem original do app.");
+    } catch (e) {
+      console.error(e);
+      setErro(e instanceof Error ? e.message : "Falha ao voltar todos à ordem original.");
+    } finally {
+      setSalvandoOrdem(false);
+    }
+  }
+
   async function alternarCamadaVisivel(ano: number, visivel: boolean) {
     if (!editando) return;
 
@@ -1054,6 +1117,52 @@ export default function TerritoriosAdmin() {
                 para valer no app.
               </p>
             )}
+
+            <div className="admin-subsecao">
+              <b>Ordem padrão de todos os territórios</b>
+
+              <p className="admin-campo-dica">
+                {temOrdemPropria(config.ficha_territorio, editando ?? "")
+                  ? `“${form.nome}” tem ordem própria (a lista acima). Os outros territórios seguem ${
+                      temOrdemGeral(config.ficha_territorio)
+                        ? "a ordem padrão aplicada a todos"
+                        : "a ordem original do app"
+                    }.`
+                  : `“${form.nome}” está seguindo ${
+                      temOrdemGeral(config.ficha_territorio)
+                        ? "a ordem padrão aplicada a todos"
+                        : "a ordem original do app"
+                    } (não tem ordem própria).`}
+              </p>
+
+              <div className="admin-galeria-acoes">
+                <button
+                  type="button"
+                  className="btn"
+                  onClick={padronizarOrdem}
+                  disabled={salvandoOrdem}
+                >
+                  Aplicar esta ordem a todos os territórios
+                </button>
+
+                <button
+                  type="button"
+                  className="outline"
+                  onClick={voltarTodos}
+                  disabled={salvandoOrdem}
+                >
+                  voltar todos à ordem original do app
+                </button>
+              </div>
+
+              <p className="admin-campo-dica">
+                <b>Aplicar a todos</b> faz da ordem da lista acima a ordem <b>padrão</b>: os
+                outros territórios passam a seguir esta sequência (inclusive quem tinha ordem
+                própria) e território criado depois já nasce assim. Para <b>um</b> território
+                deixar de ter ordem própria, use “Voltar à ordem padrão” acima e salve — ele
+                volta a seguir o padrão.
+              </p>
+            </div>
           </>
         )}
 
