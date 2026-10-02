@@ -5,6 +5,7 @@ import { somenteVisiveis } from "../utils/visibilidade";
 
 import BotaoContato from "../components/BotaoContato";
 import FotoAmpliavel from "../components/FotoAmpliavel";
+import Inline from "../components/Inline";
 
 export default function Percurso() {
   const { rotaId } = useParams<{ rotaId: string }>();
@@ -36,7 +37,11 @@ export default function Percurso() {
         />
       )}
 
-      {roteiro.subtitulo && <p className="page-subtitle">{roteiro.subtitulo}</p>}
+      {roteiro.subtitulo && (
+        <p className="page-subtitle">
+          <Inline texto={roteiro.subtitulo} />
+        </p>
+      )}
 
       <div className="page-line" />
 

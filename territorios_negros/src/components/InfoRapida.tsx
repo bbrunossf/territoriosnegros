@@ -1,6 +1,7 @@
 
 import Topic from "../components/Topic";
 
+import { formatarInline } from "../utils/texto";
 import { idadeTexto } from "../utils/data";
 import type { IdadeCamada, Territorio } from "../data/types";
 
@@ -129,7 +130,9 @@ export default function InfoRapida({
 
               <br />
 
-              {value}
+              {/* o valor sai como foi digitado (linha simples vira quebra de
+                  linha; **negrito** e *itálico* valem aqui também) */}
+              {typeof value === "string" ? formatarInline(value) : value}
             </div>
           )
         )}

@@ -893,8 +893,10 @@ export default function TerritoriosAdmin() {
         <label className="admin-campo">
           <b>Descrição do território *</b>
           <span className="admin-campo-dica">
-            O texto principal, na seção “O que é este território?”. Escreva em
-            parágrafos livres, como num texto corrido.
+            O texto principal, na seção “O que é este território?”. Sai no app
+            exatamente como você escreve aqui: <b>linha em branco</b> separa
+            parágrafos, <b>Enter uma vez</b> quebra a linha no meio do parágrafo, e
+            você pode destacar palavras com <b>**negrito**</b> ou <b>*itálico*</b>.
           </span>
           <textarea
             placeholder="Escreva aqui o que o visitante lê sobre este território."

@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import PageTitle from "../components/PageTitle";
 import BotaoContato from "../components/BotaoContato";
+import Inline from "../components/Inline";
 import { useTerritorios } from "../context/useTerritorios";
 
 export default function Roteiros() {
@@ -31,7 +32,9 @@ export default function Roteiros() {
             <div className="roteiro-header">
               <div>
                 <b className="roteiro-title">{r.nome}</b>
-                <p className="roteiro-subtitle">{r.subtitulo}</p>
+                <p className="roteiro-subtitle">
+                  <Inline texto={r.subtitulo} />
+                </p>
               </div>
               <span className="roteiro-level">{r.nivel}</span>
             </div>
@@ -40,7 +43,9 @@ export default function Roteiros() {
               <b>O que você vai vivenciar:</b>
               <ul className="roteiro-list">
                 {experiencias.map((item: string, i: number) => (
-                  <li key={`${r.id}-experiencia-${i}`}>{item}</li>
+                  <li key={`${r.id}-experiencia-${i}`}>
+                    <Inline texto={item} />
+                  </li>
                 ))}
               </ul>
             </div>
@@ -48,7 +53,11 @@ export default function Roteiros() {
             <div className="roteiro-section">
               <b>Acessibilidade:</b>
               <p className="roteiro-text">
-                {r.acessibilidade || "Informação de acessibilidade em revisão."}
+                {r.acessibilidade ? (
+                  <Inline texto={r.acessibilidade} />
+                ) : (
+                  "Informação de acessibilidade em revisão."
+                )}
               </p>
             </div>
 

@@ -3,8 +3,10 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useTerritorios } from "../context/useTerritorios";
 import { pontosVisiveis } from "../utils/catalogo";
 import { somenteVisiveis } from "../utils/visibilidade";
+import { paragrafosDe } from "../utils/texto";
 
 import InfoRapida from "../components/InfoRapida";
+import Inline from "../components/Inline";
 import Numbered from "../components/Numbered";
 import Topic from "../components/Topic";
 import FotoAmpliavel from "../components/FotoAmpliavel";
@@ -149,7 +151,13 @@ export default function Territorio() {
           icon="✦"
           title="O que é este território?"
         >
-          <p>{territorio.descricao}</p>
+          {/* o texto sai igual ao que foi digitado no painel: linha em branco
+              separa parágrafos e a linha simples vira quebra de linha */}
+          {paragrafosDe(territorio.descricao).map((paragrafo, i) => (
+            <p key={i}>
+              <Inline texto={paragrafo} />
+            </p>
+          ))}
         </Topic>
 
         <Topic
@@ -166,7 +174,9 @@ export default function Territorio() {
           title="Para refletir"
         >
           <p>
-            <i>{territorio.pergunta}</i>
+            <i>
+              <Inline texto={territorio.pergunta} />
+            </i>
           </p>
         </Topic>
 
