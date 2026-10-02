@@ -2629,3 +2629,255 @@ p.foto-credito {
   margin: 0;
 }
 
+/* ── Painel no celular ────────────────────────────────────────
+   A autoria usa o painel no celular durante o guia. Com a barra lateral de
+   240px, sobrava uma faixa estreita para a edição (o texto saía cortado e
+   obrigava a rolar de lado). Em tela estreita a barra vira uma faixa de abas
+   que rola com o dedo, presa no topo, e o conteúdo ocupa a largura toda. */
+@media (max-width: 720px) {
+  .admin-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-sidebar {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    overflow-x: auto;
+    position: sticky;
+    top: 0;
+    z-index: 30;
+  }
+
+  .admin-sidebar h2 {
+    display: none;
+  }
+
+  .admin-sidebar .admin-sidebar-btn,
+  .admin-sidebar button {
+    white-space: nowrap;
+    flex: 0 0 auto;
+  }
+
+  .admin-content {
+    padding: 14px;
+  }
+}
+
+/* ── Aba "Fotos e vídeos" (painel) ────────────────────────────
+   Lista curta para ligar e desligar mídia de apoio durante o guia: feita
+   para o celular — um grupo por página/território, um botão por mídia,
+   gravando no próprio toque. */
+.midias {
+  display: block;
+  max-width: 760px;
+}
+
+.midias-total {
+  background: rgba(197, 139, 42, 0.12);
+  border: 1px solid rgba(197, 139, 42, 0.42);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 14px;
+  margin: 12px 0;
+}
+
+.midias-acoes-topo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.midias-acoes-topo .admin-ajuda {
+  margin: 0;
+  flex: 1;
+  min-width: 220px;
+}
+
+.midias-grupo {
+  background: #fffaf1;
+  border: 1px solid rgba(59, 36, 22, 0.18);
+  border-radius: 10px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+.midias-cabecalho {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  /* alvo grande: o dedo acerta sem zoom no celular */
+  min-height: 54px;
+  padding: 14px 12px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+}
+
+.midias-cabecalho-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.midias-cabecalho-texto b {
+  font-size: 15px;
+  line-height: 1.25;
+}
+
+.midias-resumo {
+  font-size: 13px;
+  opacity: 0.78;
+}
+
+.midias-etiqueta {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: rgba(59, 36, 22, 0.1);
+  border-radius: 999px;
+  padding: 3px 8px;
+  white-space: nowrap;
+}
+
+.midias-seta {
+  font-size: 14px;
+  opacity: 0.6;
+}
+
+.midias-corpo {
+  padding: 12px;
+  border-top: 1px solid rgba(59, 36, 22, 0.12);
+}
+
+.midias-bloco + .midias-bloco {
+  margin-top: 14px;
+}
+
+.midias-bloco-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+.midias-acoes {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.midias-acao {
+  font: inherit;
+  font-size: 12px;
+  min-height: 34px;
+  padding: 7px 10px;
+  border: 1px solid rgba(59, 36, 22, 0.3);
+  border-radius: 8px;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.midias-acao:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.midias-item {
+  display: grid;
+  grid-template-columns: 56px 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 8px 0;
+  border-top: 1px solid rgba(59, 36, 22, 0.08);
+}
+
+.midias-thumb {
+  width: 56px;
+  height: 56px;
+  border-radius: 8px;
+  object-fit: cover;
+  background: rgba(59, 36, 22, 0.08);
+  display: block;
+}
+
+.midias-thumb-video {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.midias-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.midias-legenda {
+  font-size: 14px;
+  line-height: 1.3;
+  overflow-wrap: break-word;
+}
+
+.midias-onde,
+.midias-abrir {
+  font-size: 12px;
+  opacity: 0.72;
+}
+
+.midias-btn {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  min-height: 42px;
+  min-width: 112px;
+  padding: 10px 12px;
+  border-radius: 9px;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.midias-btn.ligado {
+  background: #b8832c;
+  border-color: #8f611d;
+  color: #130b08;
+}
+
+.midias-btn.desligado {
+  background: none;
+  border-color: rgba(59, 36, 22, 0.38);
+  color: inherit;
+}
+
+.midias-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* no celular o botão desce para baixo do texto (sobra largura para a legenda) */
+@media (max-width: 520px) {
+  .midias-item {
+    grid-template-columns: 56px 1fr;
+  }
+
+  .midias-btn {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+}
+

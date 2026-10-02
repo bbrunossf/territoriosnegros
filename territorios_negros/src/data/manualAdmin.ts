@@ -64,6 +64,7 @@ export const MANUAL_PADRAO: SecaoManual[] = [
       "**Categorias** — as categorias que classificam os territórios.",
       "**Página inicial** — aviso do próximo tour, título/data/local/informações e link da ficha, capa, selo e botões.",
       "**Páginas** — as telas de texto do app (conceito, intro e outras): blocos, destaques, imagens e links.",
+      "**Fotos e vídeos** — a lista curta para ligar e desligar mídia **durante o guia**, no celular: tudo o que tem foto ou vídeo, por página e por território, com um botão por mídia (ver a seção própria mais adiante).",
       "**Acessos** — as estatísticas de uso do app (ver a seção própria mais adiante).",
       "**Mensagens** — o que os visitantes enviam pelo formulário de contato.",
       "**Manual** — esta página. Edite quando quiser: botão **Editar o manual**.",
@@ -135,6 +136,18 @@ export const MANUAL_PADRAO: SecaoManual[] = [
       "**Fotos e vídeos de apoio** — cada mídia tem o seu botão de mostrar/esconder e, acima da lista, **habilitar/desabilitar todas** (que marca item por item, para você ajustar um só depois sem estragar os outros).",
       "**Camadas de tempo** — mesma ideia: cada camada pode ser exibida ou não, com o contador “Situação X de N” e os botões de habilitar/desabilitar todas.",
       "**Rotas** — o botão de mostrar/esconder na tabela de rotas também grava na hora.",
+    ],
+  },
+  {
+    id: "midias-guia",
+    titulo: "Fotos e vídeos: ligar e desligar no meio do guia",
+    texto:
+      "A aba **Fotos e vídeos** existe para o celular, durante a visita guiada: em vez de abrir a ficha do território (que é longa e obriga a rolar muito), você tem uma lista curta com **tudo o que tem foto ou vídeo**, separada em **Páginas** e **Territórios**, e um botão por mídia. **Cada toque grava na hora** — não tem botão de salvar.\\n\\nCada grupo aparece fechado com o nome e o resumo (ex.: “10 fotos (3 ocultas) · 1 vídeo”); toque no nome para abrir e ver as mídias. O botão mostra o estado atual: **Habilitado** (aparece para o visitante) ou **Desabilitado** (guardado, fora do app). Toque nele para trocar.\\n\\nAcima de cada lista de fotos (ou de vídeos) há **habilitar todas / desabilitar todas**, que marca item por item — assim você desliga tudo de uma vez e liga só o que vai usar naquele ponto, sem estragar os ajustes individuais.\\n\\nAparecem só as páginas e os territórios que têm mídia. No fim da tela fica a lista dos que não têm nenhuma, e um território marcado **fora do percurso de hoje** (desativado no painel) tem a mídia invisível de qualquer forma: para ele aparecer, ative o território na aba Territórios.\\n\\n**Antes de começar o guia:** abra esta aba, confira o que está habilitado e desligue o que não faz parte do roteiro do dia.",
+    itens: [
+      "**Páginas** — hoje, a página **Vitória** é a única com fotos; as outras páginas não têm imagem nem vídeo (o app não tem vídeo nas páginas, só nos territórios).",
+      "**Territórios** — fotos e vídeos de apoio de cada um, na mesma ordem da aba Territórios.",
+      "O link **abrir**, ao lado de cada mídia, mostra o arquivo original em outra aba, para você conferir do que se trata.",
+      "**atualizar lista** recarrega o que está gravado — útil se você mexeu em outro aparelho.",
     ],
   },
   {

@@ -539,3 +539,58 @@ export function normalizarPagina(
     classe: padrao.classe,
   };
 }
+
+/**
+ * Todas as páginas de texto do app, na ordem em que aparecem no painel.
+ *
+ * Fica aqui (e não dentro da tela) porque a aba "Fotos e vídeos" também precisa
+ * saber quais páginas existem, o nome de cada uma e a rota no app — sem
+ * duplicar a lista em dois lugares.
+ */
+export interface DefinicaoPagina {
+  /** chave do registro no banco (app_config) */
+  chave: string;
+  nome: string;
+  /** rota no app, para conferir a página publicada */
+  caminho: string;
+  padrao: PaginaConteudo;
+  aviso?: string;
+}
+
+export const PAGINAS_DO_APP: DefinicaoPagina[] = [
+  { chave: "pagina_intro", nome: "Antes", caminho: "/intro", padrao: INTRO_PADRAO },
+  { chave: "pagina_vitoria", nome: "Vitória", caminho: "/vitoria", padrao: VITORIA_PADRAO },
+  { chave: "pagina_conceito", nome: "Conceito", caminho: "/conceito", padrao: CONCEITO_PADRAO },
+  { chave: "pagina_fim", nome: "Fim", caminho: "/fim", padrao: FIM_PADRAO },
+  {
+    chave: "pagina_contato",
+    nome: "Contato",
+    caminho: "/contato",
+    padrao: CONTATO_PADRAO,
+    aviso:
+      "Nesta página o formulário de mensagem aparece abaixo destes textos: aqui você " +
+      "edita o título, o subtítulo e o texto de abertura — e, no fim da página, os " +
+      "campos e as mensagens do próprio formulário.",
+  },
+];
+
+/**
+ * Liga/desliga UMA imagem da página (achada pelo endereço), gravando na hora —
+ * é o botão de guia, irmão do habilitar/desabilitar das fotos de apoio dos
+ * territórios. Devolve uma página nova, sem mexer na original.
+ */
+export function definirVisibilidadeDeImagem(
+  pagina: PaginaConteudo,
+  url: string,
+  visivel: boolean
+): PaginaConteudo {
+  return {
+    ...pagina,
+    blocos: pagina.blocos.map((bloco) => ({
+      ...bloco,
+      imagens: bloco.imagens.map((imagem) =>
+        imagem.url === url ? { ...imagem, visivel } : imagem
+      ),
+    })),
+  };
+}

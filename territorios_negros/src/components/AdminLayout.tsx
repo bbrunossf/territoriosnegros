@@ -71,6 +71,10 @@ export default function AdminLayout() {
           Páginas
         </Link>
 
+        <Link to="/admin/midias" className="admin-sidebar-btn">
+          Fotos e vídeos
+        </Link>
+
         <Link to="/admin/acessos" className="admin-sidebar-btn">
           Acessos
         </Link>
