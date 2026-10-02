@@ -80,6 +80,10 @@ export default function AdminLayout() {
           {naoLidas > 0 && <span className="admin-badge">{naoLidas}</span>}
         </Link>
 
+        <Link to="/admin/manual" className="admin-sidebar-btn">
+          Manual
+        </Link>
+
         <Link to="/" className="admin-sidebar-btn">
           Ver o app
         </Link>

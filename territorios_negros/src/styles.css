@@ -1633,6 +1633,97 @@ a, a:visited, a:hover, a:active {
   gap: 6px;
 }
 
+/* ── Manual do painel (aba "Manual") ──────────────────────────
+   Página só de leitura: índice com atalhos, seções separadas e as
+   linhas de exemplo do que se digita no painel × o que o visitante vê. */
+.manual h1 {
+  font-size: 24px;
+  margin: 0 0 6px;
+}
+
+.manual-indice {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  margin: 16px 0 6px;
+  padding: 14px 16px;
+
+  border: 1px solid #e3cf9f;
+  border-radius: 14px;
+  background: rgba(255, 253, 248, 0.7);
+}
+
+.manual-indice a {
+  color: #8c5d21;
+  font-size: 14.5px;
+}
+
+.manual-secao {
+  margin-top: 30px;
+}
+
+.manual-secao h2 {
+  font-size: 17px;
+  margin: 0 0 10px;
+}
+
+.manual-secao h3 {
+  margin-top: 18px;
+}
+
+.manual-secao p,
+.manual-secao li {
+  line-height: 1.55;
+  font-size: 15px;
+}
+
+.manual-secao ul {
+  margin: 10px 0 0;
+  padding-left: 20px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.manual-secao li {
+  text-align: left;
+}
+
+/* linha de exemplo: comando do painel → resultado na tela */
+.manual-exemplo {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  margin: 8px 0;
+  padding: 9px 12px;
+
+  border: 1px solid #e3cf9f;
+  border-radius: 10px;
+  background: rgba(255, 253, 248, 0.55);
+}
+
+.manual-comando {
+  font-size: 13.5px;
+  color: #6a452b;
+  background: rgba(197, 139, 42, 0.12);
+  border-radius: 6px;
+  padding: 2px 6px;
+}
+
+.manual-seta {
+  color: #9f6f2a;
+  font-weight: 900;
+}
+
+.manual-resultado {
+  font-size: 14.5px;
+  color: #3c2a1f;
+}
+
 /* rótulo curto para campos que dividem uma fileira com botões (bloco da página,
    link, botão): só o nome, sem dica, para a fileira não ficar alta */
 .admin-campo-compacto {
