@@ -19,12 +19,14 @@ import {
   fetchTerritorioBruto,
   fetchTerritorios,
   LIMITE_VIDEO_MB,
+  salvarConfig,
   salvarTerritorio,
   uploadFoto,
   uploadVideo,
 } from "../data/api";
 import type { Categoria, FotoTerritorio, Territorio, VideoTerritorio } from "../data/types";
 import PlayerVideo from "../components/PlayerVideo";
+import { useTerritorios } from "../context/useTerritorios";
 import { gerarSlug } from "../utils/catalogo";
 import { formatarDataHoraBR, idadeTexto } from "../utils/data";
 import {
@@ -33,6 +35,15 @@ import {
   trocarAlinhamento,
   type AlinhamentoParagrafo,
 } from "../data/descricao";
+import {
+  comOrdemDoTerritorio,
+  ehCartao,
+  moverBlocoFicha,
+  nomeDoBloco,
+  ORDEM_PADRAO,
+  ordemDoTerritorio,
+  type BlocoFichaId,
+} from "../data/fichaTerritorio";
 import { legendaDoArquivo } from "../utils/legendas";
 import {
   avisoDeApagamento,
@@ -104,6 +115,8 @@ const FORM_VAZIO = {
 // ── Componente ───────────────────────────────────────────────
 
 export default function TerritoriosAdmin() {
+  const { config, recarregar } = useTerritorios();
+
   const [territorios, setTerritorios] = useState<Territorio[]>([]);
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [editando, setEditando] = useState<string | null>(null);
@@ -124,6 +137,14 @@ export default function TerritoriosAdmin() {
    * grava na hora, então o "Salvar alterações" seguinte não pode desfazer.
    */
   const [camadasVisiveis, setCamadasVisiveis] = useState<Record<string, boolean>>({});
+
+  /**
+   * Ordem das informações na página do território. `null` = a ordem que está
+   * gravada no banco (config pública); qualquer valor = alteração local que a
+   * autoria ainda não publicou com "Salvar ordem".
+   */
+  const [ordemLocal, setOrdemLocal] = useState<BlocoFichaId[] | null>(null);
+  const [salvandoOrdem, setSalvandoOrdem] = useState(false);
 
   // há alteração no formulário que ainda não foi gravada?
   const [pendente, setPendente] = useState(false);
@@ -214,6 +235,7 @@ export default function TerritoriosAdmin() {
       visibilidadeDasCamadas[String(camada.ano)] = camada.visivel !== false;
     });
     setCamadasVisiveis(visibilidadeDasCamadas);
+    setOrdemLocal(null);
 
     setEditando(t.id);
     setPendente(false);
@@ -229,6 +251,7 @@ export default function TerritoriosAdmin() {
     setVideos([]);
     setLinkVideo("");
     setCamadasVisiveis({});
+    setOrdemLocal(null);
     setEditando(null);
     setPendente(false);
   }
@@ -600,6 +623,46 @@ export default function TerritoriosAdmin() {
   /** parágrafos da descrição, com o alinhamento de cada um (bloco de alinhamento) */
   const paragrafosDaDescricao = lerParagrafos(form.descricao);
 
+  // ── Ordem das informações na página do território ────────────
+
+  /** a ordem que vale agora: a alteração local ou a publicada para este território */
+  const ordemFicha = ordemLocal ?? ordemDoTerritorio(config.ficha_territorio, editando ?? "");
+
+  const ordemPendente =
+    ordemLocal !== null &&
+    ordemLocal.join("|") !== ordemDoTerritorio(config.ficha_territorio, editando ?? "").join("|");
+
+  function moverNaOrdem(id: BlocoFichaId, delta: number) {
+    setOrdemLocal(moverBlocoFicha(ordemFicha, id, delta));
+  }
+
+  async function salvarOrdem() {
+    if (!editando) return;
+
+    setErro("");
+    setOk("");
+    setSalvandoOrdem(true);
+
+    try {
+      await salvarConfig(
+        "ficha_territorio",
+        comOrdemDoTerritorio(config.ficha_territorio, editando, ordemFicha)
+      );
+
+      await recarregar();
+      setOrdemLocal(null);
+      setOk(
+        `Ordem das informações de “${form.nome}” publicada. ` +
+          "Ela vale só para este território; abra o app para ver a leitura na nova sequência."
+      );
+    } catch (e) {
+      console.error(e);
+      setErro(e instanceof Error ? e.message : "Falha ao salvar a ordem.");
+    } finally {
+      setSalvandoOrdem(false);
+    }
+  }
+
   async function alternarCamadaVisivel(ano: number, visivel: boolean) {
     if (!editando) return;
 
@@ -898,6 +961,87 @@ export default function TerritoriosAdmin() {
             </span>
           </span>
         </label>
+
+        {estaEditando && (
+          <>
+            <hr className="admin-divisor" />
+            <h3 className="admin-form-secao">Ordem das informações na página</h3>
+
+            <p className="admin-ajuda">
+              Esta é a sequência que o visitante lê em <b>{form.nome}</b>, de cima para
+              baixo — vale só para este território. Os <b>cartões</b> (Camadas, Contexto…)
+              saem agrupados na caixa “Informações rápidas”; as <b>seções de texto</b>
+              (Descrição, Para observar…) saem com título próprio. Use <b>↑ ↓</b> para
+              posicionar cada uma. Cartão sem conteúdo não aparece, sem deixar buraco na
+              leitura. Publica no <b>Salvar ordem</b>, que é independente do “Salvar
+              alterações” (esse é do conteúdo).
+            </p>
+
+            <div className="admin-ordem">
+              {ordemFicha.map((id, i) => (
+                <div key={id} className="admin-linha">
+                  <span className="admin-camada-nome">
+                    {i + 1}. {nomeDoBloco(id)}
+                    <span className="admin-campo-dica">
+                      {" "}
+                      · {ehCartao(id) ? "cartão" : "seção de texto"}
+                    </span>
+                  </span>
+
+                  <button
+                    type="button"
+                    className="outline"
+                    onClick={() => moverNaOrdem(id, -1)}
+                    disabled={i === 0}
+                    title="Mover para cima (aparece antes no app)"
+                  >
+                    ↑
+                  </button>
+
+                  <button
+                    type="button"
+                    className="outline"
+                    onClick={() => moverNaOrdem(id, 1)}
+                    disabled={i === ordemFicha.length - 1}
+                    title="Mover para baixo (aparece depois no app)"
+                  >
+                    ↓
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            <div className="admin-galeria-acoes">
+              <button type="button" className="btn" onClick={salvarOrdem} disabled={salvandoOrdem}>
+                {salvandoOrdem ? "Salvando..." : "Salvar ordem"}
+              </button>
+
+              <button
+                type="button"
+                className="outline"
+                onClick={() => setOrdemLocal(null)}
+                disabled={!ordemPendente}
+              >
+                Descartar mudanças
+              </button>
+
+              <button
+                type="button"
+                className="outline"
+                onClick={() => setOrdemLocal([...ORDEM_PADRAO])}
+              >
+                Voltar à ordem padrão
+              </button>
+            </div>
+
+            {ordemPendente && (
+              <p className="admin-ajuda">
+                <b>Ordem alterada e ainda não publicada</b> — clique em “Salvar ordem”
+                para valer no app.
+              </p>
+            )}
+          </>
+        )}
 
         <hr className="admin-divisor" />
         <h3 className="admin-form-secao">

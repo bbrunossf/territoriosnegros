@@ -3,11 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useTerritorios } from "../context/useTerritorios";
 import { pontosVisiveis } from "../utils/catalogo";
 import { somenteVisiveis } from "../utils/visibilidade";
-import { classeAlinhamento, lerParagrafos } from "../data/descricao";
 
-import InfoRapida from "../components/InfoRapida";
-import Inline from "../components/Inline";
-import Numbered from "../components/Numbered";
+import FichaTerritorio from "../components/FichaTerritorio";
 import Topic from "../components/Topic";
 import FotoAmpliavel from "../components/FotoAmpliavel";
 import PlayerVideo from "../components/PlayerVideo";
@@ -142,54 +139,12 @@ export default function Territorio() {
         </div>
       )}
 
-      <InfoRapida
+      {/* as informações da ficha (cartões + textos) saem na ordem escolhida no
+          painel para ESTE território; sem configuração, é a ordem de sempre */}
+      <FichaTerritorio
         territorio={territorio}
         idade={idade}
       />
-
-        <Topic
-          icon="✦"
-          title="O que é este território?"
-        >
-          {/* o texto sai igual ao que foi digitado no painel: linha em branco
-              separa parágrafos e a linha simples vira quebra de linha; a marca
-              [esq]/[centro]/[dir]/[just] no começo do parágrafo define o
-              alinhamento e NÃO aparece para o visitante */}
-          {lerParagrafos(territorio.descricao).map((paragrafo, i) => (
-            <p key={i} className={classeAlinhamento(paragrafo.alinhamento)}>
-              <Inline texto={paragrafo.texto} />
-            </p>
-          ))}
-        </Topic>
-
-        <Topic
-          icon="✓"
-          title="Para observar durante a visita"
-        >
-          <Numbered
-            items={territorio.observar || []}
-          />
-        </Topic>
-
-        <Topic
-          icon="?"
-          title="Para refletir"
-        >
-          <p>
-            <i>
-              <Inline texto={territorio.pergunta} />
-            </i>
-          </p>
-        </Topic>
-
-        <Topic
-          icon="🔑"
-          title="Palavra-chave"
-        >
-          <p className="territorio-palavra">
-            {territorio.palavra}
-          </p>
-        </Topic>
 
         {/* as imagens de apoio vêm por último, depois da palavra-chave */}
         {fotosApoio.length > 0 && (

@@ -1610,6 +1610,14 @@ a, a:visited, a:hover, a:active {
   font-size: 14px;
 }
 
+/* lista de ordem dos blocos da página do território (painel):
+   número + nome à esquerda, botões ↑ ↓ à direita */
+.admin-ordem {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
 /* rótulo curto para campos que dividem uma fileira com botões (bloco da página,
    link, botão): só o nome, sem dica, para a fileira não ficar alta */
 .admin-campo-compacto {
