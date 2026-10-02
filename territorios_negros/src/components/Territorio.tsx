@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useTerritorios } from "../context/useTerritorios";
 import { pontosVisiveis } from "../utils/catalogo";
 import { somenteVisiveis } from "../utils/visibilidade";
-import { paragrafosDe } from "../utils/texto";
+import { classeAlinhamento, lerParagrafos } from "../data/descricao";
 
 import InfoRapida from "../components/InfoRapida";
 import Inline from "../components/Inline";
@@ -152,10 +152,12 @@ export default function Territorio() {
           title="O que é este território?"
         >
           {/* o texto sai igual ao que foi digitado no painel: linha em branco
-              separa parágrafos e a linha simples vira quebra de linha */}
-          {paragrafosDe(territorio.descricao).map((paragrafo, i) => (
-            <p key={i}>
-              <Inline texto={paragrafo} />
+              separa parágrafos e a linha simples vira quebra de linha; a marca
+              [esq]/[centro]/[dir]/[just] no começo do parágrafo define o
+              alinhamento e NÃO aparece para o visitante */}
+          {lerParagrafos(territorio.descricao).map((paragrafo, i) => (
+            <p key={i} className={classeAlinhamento(paragrafo.alinhamento)}>
+              <Inline texto={paragrafo.texto} />
             </p>
           ))}
         </Topic>

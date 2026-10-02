@@ -27,6 +27,12 @@ import type { Categoria, FotoTerritorio, Territorio, VideoTerritorio } from "../
 import PlayerVideo from "../components/PlayerVideo";
 import { gerarSlug } from "../utils/catalogo";
 import { formatarDataHoraBR, idadeTexto } from "../utils/data";
+import {
+  alinharTodos,
+  lerParagrafos,
+  trocarAlinhamento,
+  type AlinhamentoParagrafo,
+} from "../data/descricao";
 import { legendaDoArquivo } from "../utils/legendas";
 import {
   avisoDeApagamento,
@@ -591,6 +597,9 @@ export default function TerritoriosAdmin() {
     (camada) => camadasVisiveis[String(camada.ano)] !== false
   ).length;
 
+  /** parágrafos da descrição, com o alinhamento de cada um (bloco de alinhamento) */
+  const paragrafosDaDescricao = lerParagrafos(form.descricao);
+
   async function alternarCamadaVisivel(ano: number, visivel: boolean) {
     if (!editando) return;
 
@@ -995,6 +1004,7 @@ export default function TerritoriosAdmin() {
             exatamente como você escreve aqui: <b>linha em branco</b> separa
             parágrafos, <b>Enter uma vez</b> quebra a linha no meio do parágrafo, e
             você pode destacar palavras com <b>**negrito**</b> ou <b>*itálico*</b>.
+            O alinhamento de cada parágrafo é escolhido no bloco logo abaixo.
           </span>
           <textarea
             placeholder="Escreva aqui o que o visitante lê sobre este território."
@@ -1003,6 +1013,85 @@ export default function TerritoriosAdmin() {
             required
           />
         </label>
+
+        {/* ─── Alinhamento dos parágrafos da descrição ─── */}
+        <div className="admin-fotos">
+          <b>Alinhamento dos parágrafos da descrição</b>
+
+          <p className="admin-ajuda">
+            No app a descrição aparece <b>centralizada</b> (padrão do app). Aqui você
+            escolhe parágrafo por parágrafo — por exemplo, o texto corrido à esquerda
+            e só uma frase no centro. Vale depois do <b>Salvar alterações</b>. O
+            painel escreve a marca no próprio texto (ex.: <b>[esq]</b> no começo do
+            parágrafo) e o visitante <b>não</b> vê essa marca; se preferir, você pode
+            digitá-la direto no texto. Estas marcas valem só para a descrição do
+            território.
+          </p>
+
+          {paragrafosDaDescricao.length === 0 && (
+            <p className="admin-ajuda">
+              Escreva a descrição no campo acima para poder escolher o alinhamento.
+            </p>
+          )}
+
+          {paragrafosDaDescricao.map((paragrafo, i) => (
+            <div key={i} className="admin-linha">
+              <span className="admin-camada-nome">
+                parágrafo {i + 1}: {paragrafo.texto.slice(0, 42)}
+                {paragrafo.texto.length > 42 ? "…" : ""}
+              </span>
+
+              <label className="admin-campo admin-campo-compacto">
+                <b>Alinhamento</b>
+                <select
+                  value={paragrafo.alinhamento}
+                  onChange={(e) =>
+                    setCampo(
+                      "descricao",
+                      trocarAlinhamento(
+                        form.descricao,
+                        i,
+                        e.target.value as AlinhamentoParagrafo
+                      )
+                    )
+                  }
+                >
+                  <option value="padrao">padrão do app (centralizado)</option>
+                  <option value="esquerda">à esquerda</option>
+                  <option value="centro">centralizado</option>
+                  <option value="direita">à direita</option>
+                  <option value="justificado">justificado</option>
+                </select>
+              </label>
+            </div>
+          ))}
+
+          {paragrafosDaDescricao.length > 1 && (
+            <div className="admin-galeria-acoes">
+              <button
+                type="button"
+                className="outline"
+                onClick={() => setCampo("descricao", alinharTodos(form.descricao, "esquerda"))}
+              >
+                Todos à esquerda
+              </button>
+              <button
+                type="button"
+                className="outline"
+                onClick={() => setCampo("descricao", alinharTodos(form.descricao, "justificado"))}
+              >
+                Todos justificados
+              </button>
+              <button
+                type="button"
+                className="outline"
+                onClick={() => setCampo("descricao", alinharTodos(form.descricao, "padrao"))}
+              >
+                Todos no padrão do app
+              </button>
+            </div>
+          )}
+        </div>
 
         <label className="admin-campo">
           <b>Para observar durante a visita</b>

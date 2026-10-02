@@ -1774,6 +1774,10 @@ a, a:visited, a:hover, a:active {
 }
 
 /* alinhamento */
+.alin-esquerda {
+  text-align: left;
+}
+
 .alin-centro {
   text-align: center;
 }
