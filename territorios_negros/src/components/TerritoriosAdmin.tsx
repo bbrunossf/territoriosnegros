@@ -44,6 +44,11 @@ import {
   ordemDoTerritorio,
   type BlocoFichaId,
 } from "../data/fichaTerritorio";
+import {
+  pendenciasDoTerritorio,
+  resumoDaRevisao,
+  territorioComPendencia,
+} from "../data/revisaoFicha";
 import { legendaDoArquivo } from "../utils/legendas";
 import {
   avisoDeApagamento,
@@ -145,6 +150,9 @@ export default function TerritoriosAdmin() {
    */
   const [ordemLocal, setOrdemLocal] = useState<BlocoFichaId[] | null>(null);
   const [salvandoOrdem, setSalvandoOrdem] = useState(false);
+
+  /** revisão das fichas: mostrar só quem tem pendência */
+  const [soPendentes, setSoPendentes] = useState(false);
 
   // há alteração no formulário que ainda não foi gravada?
   const [pendente, setPendente] = useState(false);
@@ -816,6 +824,12 @@ export default function TerritoriosAdmin() {
   // ── Render ──────────────────────────────────────────────────
 
   const estaEditando = editando !== null;
+
+  // Revisão das fichas: panorama dos territórios + o filtro "só com pendência"
+  const revisao = resumoDaRevisao(territorios);
+  const listaDaTabela = soPendentes
+    ? territorios.filter(territorioComPendencia)
+    : territorios;
 
   // Quantas mídias de apoio estão habilitadas: alimenta a linha "Situação" dos
   // dois blocos e a coluna da tabela.
@@ -1782,6 +1796,51 @@ export default function TerritoriosAdmin() {
         </div>
       </form>
 
+      {/* ─── Revisão das fichas (o que falta em cada território) ─── */}
+      <section className="revisao">
+        <h2>Revisão das fichas</h2>
+
+        <p className="admin-ajuda">
+          Confere os {revisao.territorios} territórios e mostra o que está <b>vazio</b> (para
+          você preencher) e o que parece <b>erro de digitação</b>: aspa ou asterisco sem par,
+          marca de alinhamento fora do começo do parágrafo, texto com “undefined” e ano fora
+          de faixa. É só o retrato do que está gravado — nada é alterado aqui. Para corrigir,
+          clique no ✏️ do território, ajuste e salve.
+        </p>
+
+        <div className="admin-fotos-estado">
+          <b>
+            {revisao.comPendencia} de {revisao.territorios}
+          </b>{" "}
+          território(s) com pendência · {revisao.essenciaisVazios} campo(s) essencial(is)
+          vazio(s) · {revisao.opcionaisVazios} opcional(is) vazio(s) · {revisao.avisos}{" "}
+          aviso(s)
+
+          <label className="admin-check">
+            <input
+              type="checkbox"
+              checked={soPendentes}
+              onChange={(e) => setSoPendentes(e.target.checked)}
+            />
+
+            <span className="admin-check-texto">
+              <b>Mostrar só as fichas com pendência</b>
+            </span>
+          </label>
+        </div>
+
+        {revisao.porCampo.length > 0 && (
+          <ul className="revisao-por-campo">
+            {revisao.porCampo.map((linha) => (
+              <li key={linha.campo}>
+                <b>{linha.campo}</b> — vazio em {linha.vazios} de {revisao.territorios}:{" "}
+                {linha.territorios.join(", ")}
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
       {/* ─── Tabela de territórios cadastrados ─── */}
       <table className="admin-table">
         <thead>
@@ -1792,12 +1851,16 @@ export default function TerritoriosAdmin() {
             <th>Visível (grava na hora)</th>
             <th>Fotos de apoio (grava na hora)</th>
             <th>Vídeos de apoio (grava na hora)</th>
+            <th>Revisão da ficha</th>
             <th>Ações</th>
           </tr>
         </thead>
 
         <tbody>
-          {territorios.map((t) => (
+          {listaDaTabela.map((t) => {
+            const pendencias = pendenciasDoTerritorio(t);
+
+            return (
             <tr key={t.id} className={t.ativo === false ? "admin-linha-inativa" : ""}>
               <td>
                 <b>{t.nome}</b>
@@ -1849,6 +1912,33 @@ export default function TerritoriosAdmin() {
                   desabilitar todos
                 </button>
               </td>
+              <td className="admin-revisao">
+                {pendencias.length === 0 ? (
+                  <span className="revisao-ok">nada pendente</span>
+                ) : (
+                  <ul className="revisao-lista">
+                    {pendencias.map((p, i) => (
+                      <li
+                        key={`${p.campo}-${i}`}
+                        className={
+                          p.tipo === "aviso"
+                            ? "revisao-aviso"
+                            : p.essencial
+                              ? "revisao-vazio"
+                              : "revisao-opcional"
+                        }
+                      >
+                        <b>{p.campo}</b>
+                        {p.tipo === "aviso"
+                          ? ` — ${p.detalhe}`
+                          : p.essencial
+                            ? " — vazio"
+                            : " — vazio (opcional)"}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </td>
               <td className="admin-acoes">
                 <button
                   className="outline"
@@ -1875,12 +1965,15 @@ export default function TerritoriosAdmin() {
                 </button>
               </td>
             </tr>
-          ))}
+            );
+          })}
 
-          {territorios.length === 0 && (
+          {listaDaTabela.length === 0 && (
             <tr>
-              <td colSpan={7} style={{ textAlign: "center", padding: 24 }}>
-                Nenhum território cadastrado.
+              <td colSpan={8} style={{ textAlign: "center", padding: 24 }}>
+                {soPendentes
+                  ? "Nenhuma ficha com pendência — está tudo preenchido."
+                  : "Nenhum território cadastrado."}
               </td>
             </tr>
           )}

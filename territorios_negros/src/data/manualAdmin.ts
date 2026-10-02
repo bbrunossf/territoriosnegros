@@ -138,6 +138,13 @@ export const MANUAL_PADRAO: SecaoManual[] = [
     ],
   },
   {
+    id: "revisao",
+    titulo: "Revisão das fichas: o que falta preencher",
+    texto:
+      "No fim da aba **Territórios** há o bloco **Revisão das fichas**: ele confere os territórios e mostra o que está **vazio** (para você preencher) e o que parece **erro de digitação** — aspa ou asterisco sem par, marca de alinhamento fora do começo do parágrafo, texto com “undefined” e ano fora de faixa.\n\nÉ só o retrato do que está gravado: nada é alterado ali. Para corrigir, clique no ✏️ do território, ajuste e clique em **Salvar alterações**.\n\nA caixa **Mostrar só as fichas com pendência** esconde quem já está completa, e a lista abaixo do resumo mostra campo por campo em quais territórios falta o quê. Campos essenciais são os que a ficha deve ter sempre; os opcionais (Observação, Idade das camadas de tempo, fotos e vídeos de apoio) aparecem marcados como **vazio (opcional)** — só entram quando fazem sentido.",
+    itens: [],
+  },
+  {
     id: "estatisticas",
     titulo: "Acessos: as estatísticas",
     texto:

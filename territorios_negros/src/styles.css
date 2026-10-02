@@ -1633,6 +1633,62 @@ a, a:visited, a:hover, a:active {
   gap: 6px;
 }
 
+/* ── Revisão das fichas (aba Territórios) ─────────────────────
+   Panorama do que está vazio/estranho em cada território. */
+.revisao {
+  margin-top: 28px;
+}
+
+.revisao-por-campo {
+  margin: 12px 0 0;
+  padding-left: 20px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.revisao-por-campo li {
+  font-size: 14px;
+  text-align: left;
+}
+
+.admin-revisao {
+  font-size: 13px;
+  text-align: left;
+}
+
+.revisao-lista {
+  margin: 0;
+  padding-left: 16px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.revisao-lista li {
+  text-align: left;
+  line-height: 1.4;
+}
+
+.revisao-vazio {
+  color: #8f4a1d;
+}
+
+.revisao-opcional {
+  color: #7a5a3a;
+  opacity: 0.85;
+}
+
+.revisao-aviso {
+  color: #8f2f2f;
+}
+
+.revisao-ok {
+  color: #4a6b3f;
+}
+
 /* ── Manual do painel (aba "Manual") ──────────────────────────
    Página só de leitura: índice com atalhos, seções separadas e as
    linhas de exemplo do que se digita no painel × o que o visitante vê. */
