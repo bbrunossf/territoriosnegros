@@ -28,9 +28,10 @@ import {
 } from "../data/paginas";
 import {
   gruposDasPaginas,
-  gruposDosTerritorios,
+  gruposDeTodosOsTerritorios,
   idDoItem,
   resumoDoGrupo,
+  temMidia,
   territoriosSemMidia,
   totalDasMidias,
   type GrupoMidias,
@@ -58,14 +59,25 @@ export default function MidiasAdmin() {
 
   // quais grupos estão abertos (o resto fica fechado: é o que deixa a lista curta)
   const [abertos, setAbertos] = useState<Record<string, boolean>>({});
+  // a lista traz todos os territórios; quem quiser a versão curta filtra
+  const [soComMidia, setSoComMidia] = useState(false);
   const [gravando, setGravando] = useState<string | null>(null);
   const [ok, setOk] = useState("");
   const [erro, setErro] = useState("");
 
   const paginas = useMemo(() => gruposDasPaginas(config), [config]);
-  const territoriosComMidia = useMemo(() => gruposDosTerritorios(territorios), [territorios]);
-  const total = totalDasMidias([...paginas, ...territoriosComMidia]);
+  const todosOsTerritorios = useMemo(
+    () => gruposDeTodosOsTerritorios(territorios),
+    [territorios]
+  );
+  const territoriosNaTela = soComMidia
+    ? todosOsTerritorios.filter(temMidia)
+    : todosOsTerritorios;
+  const total = totalDasMidias([...paginas, ...todosOsTerritorios]);
   const semMidia = useMemo(() => territoriosSemMidia(territorios), [territorios]);
+  const paginasSemImagem = PAGINAS_DO_APP.filter(
+    (definicao) => !paginas.some((grupo) => grupo.chave === definicao.chave)
+  ).map((definicao) => definicao.nome);
 
   function alternarAberto(chave: string) {
     setAbertos((mapa) => ({ ...mapa, [chave]: !mapa[chave] }));
@@ -190,6 +202,13 @@ export default function MidiasAdmin() {
 
         {aberto && (
           <div className="midias-corpo">
+            {!temMidia(grupo) && (
+              <p className="admin-ajuda">
+                Sem foto nem vídeo de apoio cadastrado. Para enviar, abra a aba{" "}
+                <Link to="/admin/territorios">Territórios</Link> e edite este território.
+              </p>
+            )}
+
             {(["foto", "video"] as TipoDeMidia[]).map((tipo) => {
               const itens = tipo === "foto" ? grupo.fotos : grupo.videos;
               if (itens.length === 0) return null;
@@ -281,11 +300,28 @@ export default function MidiasAdmin() {
         <button type="button" className="outline" onClick={atualizarLista}>
           atualizar lista
         </button>
-        <span className="admin-ajuda">
-          O que está “Habilitado” aparece para o visitante; “Desabilitado” fica guardado, fora
-          do app.
-        </span>
+
+        <label className="midias-filtro">
+          <input
+            type="checkbox"
+            checked={soComMidia}
+            onChange={(e) => setSoComMidia(e.target.checked)}
+          />
+          mostrar só os territórios que já têm mídia
+        </label>
       </div>
+
+      <p className="admin-ajuda">
+        O que está “Habilitado” aparece para o visitante; “Desabilitado” fica guardado, fora
+        do app.
+        {semMidia.length > 0 && (
+          <>
+            {" "}
+            <b>{semMidia.length}</b> dos {todosOsTerritorios.length} territórios ainda não têm
+            foto nem vídeo de apoio — eles aparecem na lista com essa indicação.
+          </>
+        )}
+      </p>
 
       {ok && <p className="admin-ok">{ok}</p>}
       {erro && <p className="admin-erro">{erro}</p>}
@@ -302,20 +338,22 @@ export default function MidiasAdmin() {
         paginas.map(bloco)
       )}
 
+      {paginasSemImagem.length > 0 && (
+        <p className="admin-ajuda">
+          Sem imagem: {paginasSemImagem.join(", ")}. Para enviar fotos em uma delas, abra a aba{" "}
+          <Link to="/admin/paginas">Páginas</Link>.
+        </p>
+      )}
+
       <hr className="admin-divisor" />
       <h2 className="admin-form-secao">Territórios</h2>
 
-      {territoriosComMidia.length === 0 ? (
-        <p className="admin-ajuda">Nenhum território está com foto ou vídeo de apoio.</p>
-      ) : (
-        territoriosComMidia.map(bloco)
-      )}
-
-      {semMidia.length > 0 && (
+      {territoriosNaTela.length === 0 ? (
         <p className="admin-ajuda">
-          <b>Sem foto nem vídeo de apoio:</b> {semMidia.join(", ")}. Para enviar mídia nova,
-          abra a aba <Link to="/admin/territorios">Territórios</Link>.
+          Nenhum território está com foto ou vídeo de apoio.
         </p>
+      ) : (
+        territoriosNaTela.map(bloco)
       )}
     </div>
   );

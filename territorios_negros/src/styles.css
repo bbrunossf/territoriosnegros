@@ -2697,6 +2697,22 @@ p.foto-credito {
   min-width: 220px;
 }
 
+.midias-filtro {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  /* alvo confortável para o dedo, sem virar um botão */
+  min-height: 40px;
+  padding: 4px 2px;
+  cursor: pointer;
+}
+
+.midias-filtro input {
+  width: auto;
+  margin: 0;
+}
+
 .midias-grupo {
   background: #fffaf1;
   border: 1px solid rgba(59, 36, 22, 0.18);

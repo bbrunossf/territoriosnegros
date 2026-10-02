@@ -111,6 +111,22 @@ export function gruposDasPaginas(config: Record<string, unknown>): GrupoMidias[]
 export function gruposDosTerritorios(
   territorios: Record<string, Territorio>
 ): GrupoMidias[] {
+  return gruposDeTodosOsTerritorios(territorios).filter(temMidia);
+}
+
+/** O grupo tem alguma mídia? (grupo de território sem mídia também é listado) */
+export function temMidia(grupo: GrupoMidias): boolean {
+  return grupo.fotos.length + grupo.videos.length > 0;
+}
+
+/**
+ * TODOS os territórios, na ordem da aba Territórios — inclusive os que ainda
+ * não têm mídia (a autoria precisa achá-los na lista para saber o que falta,
+ * sem contar com o resumo do fim da tela).
+ */
+export function gruposDeTodosOsTerritorios(
+  territorios: Record<string, Territorio>
+): GrupoMidias[] {
   const comOrdem = Object.values(territorios ?? {}).map((territorio) => ({
     grupo: {
       origem: "territorio" as const,
@@ -125,7 +141,6 @@ export function gruposDosTerritorios(
   }));
 
   return comOrdem
-    .filter(({ grupo }) => grupo.fotos.length + grupo.videos.length > 0)
     .sort((a, b) => a.ordem - b.ordem || a.grupo.nome.localeCompare(b.grupo.nome, "pt-BR"))
     .map(({ grupo }) => grupo);
 }
@@ -149,6 +164,9 @@ export function resumoDoGrupo(grupo: GrupoMidias): string {
         (ocultos > 0 ? ` (${ocultos} oculto${ocultos > 1 ? "s" : ""})` : "")
     );
   }
+
+  // território sem mídia também ganha grupo na lista: o resumo diz o que falta
+  if (partes.length === 0) return "sem foto nem vídeo de apoio";
 
   return partes.join(" · ");
 }
