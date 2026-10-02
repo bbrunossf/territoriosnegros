@@ -51,16 +51,18 @@ export default function AdminLayout() {
       <aside className="admin-sidebar">
         <h2>Painel</h2>
 
-        <Link to="/admin/territorios" className="admin-sidebar-btn">
-          Territórios
+        {/* A ordem aqui é a ordem do menu: primeiro o que a autoria usa durante
+            o guia (mídia), depois conteúdo, depois as ferramentas do fim. */}
+        <Link to="/admin/midias" className="admin-sidebar-btn">
+          Fotos e vídeos
         </Link>
 
         <Link to="/admin/roteiros" className="admin-sidebar-btn">
           Rotas
         </Link>
 
-        <Link to="/admin/categorias" className="admin-sidebar-btn">
-          Categorias
+        <Link to="/admin/territorios" className="admin-sidebar-btn">
+          Territórios
         </Link>
 
         <Link to="/admin/inicio" className="admin-sidebar-btn">
@@ -71,12 +73,8 @@ export default function AdminLayout() {
           Páginas
         </Link>
 
-        <Link to="/admin/midias" className="admin-sidebar-btn">
-          Fotos e vídeos
-        </Link>
-
-        <Link to="/admin/acessos" className="admin-sidebar-btn">
-          Acessos
+        <Link to="/admin/categorias" className="admin-sidebar-btn">
+          Categorias
         </Link>
 
         <Link to="/admin/mensagens" className="admin-sidebar-btn">
@@ -90,6 +88,10 @@ export default function AdminLayout() {
 
         <Link to="/" className="admin-sidebar-btn">
           Ver o app
+        </Link>
+
+        <Link to="/admin/acessos" className="admin-sidebar-btn">
+          Acessos
         </Link>
 
         <button onClick={sair}>

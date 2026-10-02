@@ -57,18 +57,19 @@ export const MANUAL_PADRAO: SecaoManual[] = [
   {
     id: "abas",
     titulo: "O que cada aba controla",
-    texto: "",
+    texto:
+      "As abas do menu estão nesta ordem (de cima para baixo): primeiro o que você usa durante o guia, depois o conteúdo e, no fim, as ferramentas de consulta.",
     itens: [
-      "**Territórios** — a ficha completa: identificação, cartões de “Informações rápidas” (Camadas, Contexto, Ano, Idade, Criação, Função, Transformações, Status, Observação), textos (Descrição, Para observar, Para refletir, Palavra-chave), ordem das informações, camadas de tempo, fotos e vídeos de apoio.",
+      "**Fotos e vídeos** — a lista curta para ligar e desligar mídia **durante o guia**, no celular: fotos e vídeos por página e por território, e os mapas das rotas, com um botão por mídia (ver a seção própria mais adiante).",
       "**Rotas** — roteiros e percurso: identificação da rota, textos, acessibilidade, mapas e logo. Os botões da tabela gravam na hora.",
-      "**Categorias** — as categorias que classificam os territórios.",
+      "**Territórios** — a ficha completa: identificação, cartões de “Informações rápidas” (Camadas, Contexto, Ano, Idade, Criação, Função, Transformações, Status, Observação), textos (Descrição, Para observar, Para refletir, Palavra-chave), ordem das informações, camadas de tempo, fotos e vídeos de apoio.",
       "**Página inicial** — aviso do próximo tour, título/data/local/informações e link da ficha, capa, selo e botões.",
       "**Páginas** — as telas de texto do app (conceito, intro e outras): blocos, destaques, imagens e links.",
-      "**Fotos e vídeos** — a lista curta para ligar e desligar mídia **durante o guia**, no celular: tudo o que tem foto ou vídeo, por página e por território, com um botão por mídia (ver a seção própria mais adiante).",
-      "**Acessos** — as estatísticas de uso do app (ver a seção própria mais adiante).",
+      "**Categorias** — as categorias que classificam os territórios.",
       "**Mensagens** — o que os visitantes enviam pelo formulário de contato.",
       "**Manual** — esta página. Edite quando quiser: botão **Editar o manual**.",
       "**Ver o app** — abre o app como o visitante vê, para conferir.",
+      "**Acessos** — as estatísticas de uso do app (ver a seção própria mais adiante).",
     ],
   },
   {
