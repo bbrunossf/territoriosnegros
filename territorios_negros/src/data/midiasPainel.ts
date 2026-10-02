@@ -14,15 +14,18 @@ import {
   type ImagemBloco,
   type PaginaConteudo,
 } from "./paginas";
-import type { Territorio } from "./types";
+import type { Roteiro, Territorio } from "./types";
 import { estaVisivel } from "../utils/visibilidade";
 
 export type TipoDeMidia = "foto" | "video";
 
+/** Onde a mídia mora: numa página de texto, na ficha de um território ou numa rota. */
+export type OrigemDaMidia = "pagina" | "territorio" | "rota";
+
 export interface ItemMidiaPainel {
   tipo: TipoDeMidia;
   url: string;
-  /** legenda cadastrada; vazia vira "foto 3"/"vídeo 1" para a lista não ficar cega */
+  /** legenda cadastrada; vazia vira "foto 3"/"mapa 1" para a lista não ficar cega */
   legenda: string;
   /** onde a mídia aparece: "seção O centro histórico" (página) ou "foto 3" */
   onde: string;
@@ -30,36 +33,41 @@ export interface ItemMidiaPainel {
 }
 
 export interface GrupoMidias {
-  /** onde vive a mídia: numa página de texto ou na ficha de um território */
-  origem: "pagina" | "territorio";
-  /** chave do registro no banco (ex.: pagina_vitoria, mucane) */
+  /** onde vive a mídia: numa página de texto, num território ou numa rota */
+  origem: OrigemDaMidia;
+  /** chave do registro no banco (ex.: pagina_vitoria, mucane, rota-1) */
   chave: string;
   nome: string;
   /** rota no app, para abrir e conferir */
   caminho?: string;
-  /** território fora do recorte de hoje: a mídia dele não aparece no app */
+  /** território ou rota desativados no painel: a mídia não aparece no app */
   foraDoAr?: boolean;
   fotos: ItemMidiaPainel[];
   videos: ItemMidiaPainel[];
 }
 
 /** Legenda vazia ganha um nome pela posição ("foto 3"), como nas galerias. */
-function legenda(legendaBruta: string | undefined, indice: number, tipo: TipoDeMidia): string {
+function legenda(
+  legendaBruta: string | undefined,
+  indice: number,
+  rotulo: "foto" | "vídeo" | "mapa"
+): string {
   const texto = (legendaBruta ?? "").trim();
   if (texto) return texto;
-  return `${tipo === "foto" ? "foto" : "vídeo"} ${indice + 1}`;
+  return `${rotulo} ${indice + 1}`;
 }
 
 function itensDasFotos(
   fotos: { url: string; legenda?: string; visivel?: boolean }[] | undefined,
-  onde: string
+  onde: string,
+  rotulo: "foto" | "mapa" = "foto"
 ): ItemMidiaPainel[] {
   return (fotos ?? [])
     .filter((foto) => !!foto?.url)
     .map((foto, i) => ({
       tipo: "foto" as TipoDeMidia,
       url: foto.url,
-      legenda: legenda(foto.legenda, i, "foto"),
+      legenda: legenda(foto.legenda, i, rotulo),
       onde,
       visivel: estaVisivel(foto),
     }));
@@ -73,7 +81,7 @@ function itensDosVideos(
     .map((video, i) => ({
       tipo: "video" as TipoDeMidia,
       url: video.url,
-      legenda: legenda(video.legenda, i, "video"),
+      legenda: legenda(video.legenda, i, "vídeo"),
       onde: "vídeo de apoio",
       visivel: estaVisivel(video),
     }));
@@ -148,12 +156,15 @@ export function gruposDeTodosOsTerritorios(
 /** "10 fotos (3 ocultas) · 1 vídeo" — o que está ligado e o que está desligado. */
 export function resumoDoGrupo(grupo: GrupoMidias): string {
   const partes: string[] = [];
+  const unidade = grupo.origem === "rota" ? "mapa" : "foto";
 
   if (grupo.fotos.length > 0) {
     const ocultas = grupo.fotos.filter((f) => !f.visivel).length;
     partes.push(
-      `${grupo.fotos.length} ${grupo.fotos.length === 1 ? "foto" : "fotos"}` +
-        (ocultas > 0 ? ` (${ocultas} oculta${ocultas > 1 ? "s" : ""})` : "")
+      `${grupo.fotos.length} ${unidade}${grupo.fotos.length === 1 ? "" : "s"}` +
+        (ocultas > 0
+          ? ` (${ocultas} ${grupo.origem === "rota" ? "oculto" : "oculta"}${ocultas > 1 ? "s" : ""})`
+          : "")
     );
   }
 
@@ -165,10 +176,35 @@ export function resumoDoGrupo(grupo: GrupoMidias): string {
     );
   }
 
-  // território sem mídia também ganha grupo na lista: o resumo diz o que falta
-  if (partes.length === 0) return "sem foto nem vídeo de apoio";
+  // território (ou rota) sem mídia também ganha grupo: o resumo diz o que falta
+  if (partes.length === 0) {
+    return grupo.origem === "rota" ? "sem mapa" : "sem foto nem vídeo de apoio";
+  }
 
   return partes.join(" · ");
+}
+
+/**
+ * Rotas com as imagens de mapa de cada uma, na ordem do painel — inclusive as
+ * que ainda não têm mapa (a autoria precisa achá-las na lista).
+ *
+ * A logo da rota NÃO entra: ela é um endereço só (`logo`), sem controle de
+ * visibilidade item por item — para tirá-la do ar existe o "Remover logo" na
+ * aba Rotas.
+ */
+export function gruposDasRotas(roteiros: Roteiro[] | undefined): GrupoMidias[] {
+  return (roteiros ?? [])
+    .slice()
+    .sort((a, b) => (a.ordem ?? 0) - (b.ordem ?? 0) || a.nome.localeCompare(b.nome, "pt-BR"))
+    .map((roteiro) => ({
+      origem: "rota" as const,
+      chave: roteiro.id,
+      nome: roteiro.nome,
+      caminho: `/percurso/${roteiro.id}`,
+      foraDoAr: roteiro.ativo === false,
+      fotos: itensDasFotos(roteiro.mapas, "mapa da rota", "mapa"),
+      videos: [],
+    }));
 }
 
 /** Todas as mídias do grupo, com a foto antes do vídeo (ordem de leitura). */

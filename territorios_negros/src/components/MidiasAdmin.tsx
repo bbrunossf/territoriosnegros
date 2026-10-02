@@ -3,8 +3,9 @@
 //
 // Para que serve: durante o guia, com o celular na mão, a autoria liga e desliga
 // as fotos e os vídeos de apoio SEM entrar na ficha do território (que é longa e
-// obriga a rolar muito no celular). Aqui é uma lista curta, agrupada por página e
-// por território, com um botão por mídia — e cada toque GRAVA NA HORA.
+// obriga a rolar muito no celular). Aqui é uma lista curta, agrupada por página,
+// por território e por rota (as imagens de mapa), com um botão por mídia — e cada
+// toque GRAVA NA HORA.
 //
 // A regra de visibilidade é a mesma do resto do painel: cada mídia tem o próprio
 // `visivel` (item por item); não existe mais um "conjunto" ligado/desligado.
@@ -16,8 +17,10 @@ import { Link } from "react-router-dom";
 
 import { useTerritorios } from "../context/useTerritorios";
 import {
+  definirVisibilidadeMapaDaRota,
   definirVisibilidadeMidia,
   definirVisibilidadeTodasMidias,
+  definirVisibilidadeTodosOsMapasDaRota,
   salvarConfig,
 } from "../data/api";
 import {
@@ -28,6 +31,7 @@ import {
 } from "../data/paginas";
 import {
   gruposDasPaginas,
+  gruposDasRotas,
   gruposDeTodosOsTerritorios,
   idDoItem,
   resumoDoGrupo,
@@ -44,22 +48,25 @@ function coluna(tipo: TipoDeMidia): "fotos" | "videos" {
   return tipo === "foto" ? "fotos" : "videos";
 }
 
-function nomeDoItem(item: ItemMidiaPainel): string {
-  return item.tipo === "foto" ? `Foto “${item.legenda}”` : `Vídeo “${item.legenda}”`;
+/** Como a mídia é chamada na mensagem de confirmação. */
+function nomeDoItem(grupo: GrupoMidias, item: ItemMidiaPainel): string {
+  if (item.tipo === "video") return `Vídeo “${item.legenda}”`;
+  return grupo.origem === "rota" ? `Mapa “${item.legenda}”` : `Foto “${item.legenda}”`;
 }
 
-/** "habilitada"/"habilitado" — foto é feminino, vídeo é masculino. */
-function participio(tipo: TipoDeMidia, visivel: boolean): string {
+/** "habilitada"/"habilitado" — foto é feminino; vídeo e mapa, masculinos. */
+function participio(grupo: GrupoMidias, tipo: TipoDeMidia, visivel: boolean): string {
   const verbo = visivel ? "habilitad" : "desabilitad";
-  return verbo + (tipo === "foto" ? "a" : "o");
+  const feminino = tipo === "foto" && grupo.origem !== "rota";
+  return verbo + (feminino ? "a" : "o");
 }
 
 export default function MidiasAdmin() {
-  const { territorios, config, recarregar, carregando } = useTerritorios();
+  const { territorios, todosRoteiros, config, recarregar, carregando } = useTerritorios();
 
   // quais grupos estão abertos (o resto fica fechado: é o que deixa a lista curta)
   const [abertos, setAbertos] = useState<Record<string, boolean>>({});
-  // a lista traz todos os territórios; quem quiser a versão curta filtra
+  // as listas trazem tudo; quem quiser a versão curta filtra
   const [soComMidia, setSoComMidia] = useState(false);
   const [gravando, setGravando] = useState<string | null>(null);
   const [ok, setOk] = useState("");
@@ -70,10 +77,14 @@ export default function MidiasAdmin() {
     () => gruposDeTodosOsTerritorios(territorios),
     [territorios]
   );
+  const rotas = useMemo(() => gruposDasRotas(todosRoteiros), [todosRoteiros]);
+
   const territoriosNaTela = soComMidia
     ? todosOsTerritorios.filter(temMidia)
     : todosOsTerritorios;
-  const total = totalDasMidias([...paginas, ...todosOsTerritorios]);
+  const rotasNaTela = soComMidia ? rotas.filter(temMidia) : rotas;
+
+  const total = totalDasMidias([...paginas, ...todosOsTerritorios, ...rotas]);
   const semMidia = useMemo(() => territoriosSemMidia(territorios), [territorios]);
   const paginasSemImagem = PAGINAS_DO_APP.filter(
     (definicao) => !paginas.some((grupo) => grupo.chave === definicao.chave)
@@ -102,7 +113,7 @@ export default function MidiasAdmin() {
     return { definicao, pagina: normalizarPagina(config[chave], definicao.padrao) };
   }
 
-  /** Liga/desliga UMA mídia (foto ou vídeo) e grava na hora. */
+  /** Liga/desliga UMA mídia (foto, vídeo ou mapa da rota) e grava na hora. */
   async function alternar(grupo: GrupoMidias, item: ItemMidiaPainel) {
     const novo = !item.visivel;
     const id = idDoItem(grupo, item);
@@ -114,6 +125,8 @@ export default function MidiasAdmin() {
     try {
       if (grupo.origem === "territorio") {
         await definirVisibilidadeMidia(grupo.chave, coluna(item.tipo), item.url, novo);
+      } else if (grupo.origem === "rota") {
+        await definirVisibilidadeMapaDaRota(grupo.chave, item.url, novo);
       } else {
         const { pagina } = paginaAtual(grupo.chave);
         await salvarConfig(
@@ -123,23 +136,26 @@ export default function MidiasAdmin() {
       }
 
       await recarregar();
-      setOk(`${nomeDoItem(item)} ${participio(item.tipo, novo)} para os visitantes (gravado).`);
+      setOk(
+        `${nomeDoItem(grupo, item)} ${participio(grupo, item.tipo, novo)} para os visitantes (gravado).`
+      );
     } catch (e) {
       console.error(e);
       setErro(
         e instanceof Error
           ? e.message
-          : `Falha ao ${novo ? "habilitar" : "desabilitar"} ${nomeDoItem(item)}.`
+          : `Falha ao ${novo ? "habilitar" : "desabilitar"} ${nomeDoItem(grupo, item)}.`
       );
     } finally {
       setGravando(null);
     }
   }
 
-  /** Liga/desliga TODAS as fotos (ou todos os vídeos) de um grupo, item por item. */
+  /** Liga/desliga TODAS as fotos (ou vídeos, ou mapas) de um grupo, item por item. */
   async function alternarTodas(grupo: GrupoMidias, tipo: TipoDeMidia, visivel: boolean) {
     const id = `${grupo.chave}|todas|${tipo}`;
-    const plural = tipo === "foto" ? "fotos" : "vídeos";
+    const plural =
+      grupo.origem === "rota" ? "mapas" : tipo === "foto" ? "fotos" : "vídeos";
 
     setErro("");
     setOk("");
@@ -152,6 +168,12 @@ export default function MidiasAdmin() {
         setOk(
           `${marcadas} ${plural} de ${grupo.nome} ${visivel ? "habilitadas" : "desabilitadas"} (gravado).`
         );
+      } else if (grupo.origem === "rota") {
+        const marcados = await definirVisibilidadeTodosOsMapasDaRota(grupo.chave, visivel);
+        await recarregar();
+        setOk(
+          `${marcados} ${plural} de ${grupo.nome} ${visivel ? "habilitados" : "desabilitados"} (gravado).`
+        );
       } else {
         const { pagina } = paginaAtual(grupo.chave);
         await salvarConfig(
@@ -163,7 +185,7 @@ export default function MidiasAdmin() {
       }
     } catch (e) {
       console.error(e);
-      setErro(e instanceof Error ? e.message : `Falha ao marcar as ${plural}.`);
+      setErro(e instanceof Error ? e.message : `Falha ao marcar os ${plural}.`);
     } finally {
       setGravando(null);
     }
@@ -178,9 +200,10 @@ export default function MidiasAdmin() {
     );
   }
 
-  /** Um grupo da lista: a página ou o território, com as mídias dentro. */
+  /** Um grupo da lista: a página, o território ou a rota, com as mídias dentro. */
   function bloco(grupo: GrupoMidias) {
     const aberto = !!abertos[grupo.chave];
+    const ehRota = grupo.origem === "rota";
 
     return (
       <div className={`midias-grupo${aberto ? " aberto" : ""}`} key={grupo.chave}>
@@ -195,7 +218,11 @@ export default function MidiasAdmin() {
             <span className="midias-resumo">{resumoDoGrupo(grupo)}</span>
           </span>
 
-          {grupo.foraDoAr && <span className="midias-etiqueta">fora do percurso de hoje</span>}
+          {grupo.foraDoAr && (
+            <span className="midias-etiqueta">
+              {ehRota ? "rota desativada" : "fora do percurso de hoje"}
+            </span>
+          )}
 
           <span className="midias-seta">{aberto ? "▾" : "▸"}</span>
         </button>
@@ -204,8 +231,12 @@ export default function MidiasAdmin() {
           <div className="midias-corpo">
             {!temMidia(grupo) && (
               <p className="admin-ajuda">
-                Sem foto nem vídeo de apoio cadastrado. Para enviar, abra a aba{" "}
-                <Link to="/admin/territorios">Territórios</Link> e edite este território.
+                {ehRota ? "Sem mapa cadastrado" : "Sem foto nem vídeo de apoio cadastrado"}. Para
+                enviar, abra a aba{" "}
+                <Link to={ehRota ? "/admin/roteiros" : "/admin/territorios"}>
+                  {ehRota ? "Rotas" : "Territórios"}
+                </Link>{" "}
+                e edite {ehRota ? "esta rota" : "este território"}.
               </p>
             )}
 
@@ -213,10 +244,13 @@ export default function MidiasAdmin() {
               const itens = tipo === "foto" ? grupo.fotos : grupo.videos;
               if (itens.length === 0) return null;
 
+              const titulo = tipo === "video" ? "Vídeos" : ehRota ? "Mapas" : "Fotos";
+              const alvo = ehRota ? "todos" : tipo === "foto" ? "todas" : "todos";
+
               return (
                 <div className="midias-bloco" key={tipo}>
                   <div className="midias-bloco-topo">
-                    <b>{tipo === "foto" ? "Fotos" : "Vídeos"}</b>
+                    <b>{titulo}</b>
                     <span className="midias-acoes">
                       <button
                         type="button"
@@ -224,7 +258,7 @@ export default function MidiasAdmin() {
                         disabled={gravando === `${grupo.chave}|todas|${tipo}`}
                         onClick={() => alternarTodas(grupo, tipo, true)}
                       >
-                        habilitar {tipo === "foto" ? "todas" : "todos"}
+                        habilitar {alvo}
                       </button>
                       <button
                         type="button"
@@ -232,7 +266,7 @@ export default function MidiasAdmin() {
                         disabled={gravando === `${grupo.chave}|todas|${tipo}`}
                         onClick={() => alternarTodas(grupo, tipo, false)}
                       >
-                        desabilitar {tipo === "foto" ? "todas" : "todos"}
+                        desabilitar {alvo}
                       </button>
                     </span>
                   </div>
@@ -286,13 +320,13 @@ export default function MidiasAdmin() {
       <h1>Fotos e vídeos</h1>
 
       <p className="admin-ajuda">
-        Ligue e desligue aqui o que o visitante vê em cada página e em cada território.
-        <b> Cada toque grava na hora</b> — não precisa clicar em “Salvar”. É a lista curta
-        para usar no celular durante o guia.
+        Ligue e desligue aqui o que o visitante vê em cada página, em cada território e nas
+        rotas (imagem de mapa). <b> Cada toque grava na hora</b> — não precisa clicar em
+        “Salvar”. É a lista curta para usar no celular durante o guia.
       </p>
 
       <p className="midias-total">
-        Neste app: <b>{total.fotos}</b> fotos, <b>{total.videos}</b> vídeos —{" "}
+        Neste app: <b>{total.fotos}</b> fotos e mapas, <b>{total.videos}</b> vídeos —{" "}
         <b>{total.ocultas}</b> desligado{total.ocultas === 1 ? "" : "s"}.
       </p>
 
@@ -307,7 +341,7 @@ export default function MidiasAdmin() {
             checked={soComMidia}
             onChange={(e) => setSoComMidia(e.target.checked)}
           />
-          mostrar só os territórios que já têm mídia
+          mostrar só os que já têm mídia
         </label>
       </div>
 
@@ -355,6 +389,23 @@ export default function MidiasAdmin() {
       ) : (
         territoriosNaTela.map(bloco)
       )}
+
+      <hr className="admin-divisor" />
+      <h2 className="admin-form-secao">Rotas</h2>
+
+      {rotasNaTela.length === 0 ? (
+        <p className="admin-ajuda">
+          Nenhuma rota está com imagem de mapa. Os mapas são enviados na aba{" "}
+          <Link to="/admin/roteiros">Rotas</Link>.
+        </p>
+      ) : (
+        rotasNaTela.map(bloco)
+      )}
+
+      <p className="admin-ajuda">
+        A <b>logo da rota</b> não tem liga/desliga: é uma imagem única — para tirá-la do ar, use
+        o botão <b>Remover logo</b> na aba <Link to="/admin/roteiros">Rotas</Link>.
+      </p>
     </div>
   );
 }

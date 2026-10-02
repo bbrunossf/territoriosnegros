@@ -245,6 +245,80 @@ export async function definirVisibilidadeTodasMidias(
 }
 
 /**
+ * Liga/desliga UMA imagem de mapa de uma rota, gravando na hora — é o botão da
+ * aba "Fotos e vídeos", para usar durante o guia, como o das fotos de apoio.
+ *
+ * Os mapas ficam na coluna `mapas` (jsonb) da rota e cada um tem o próprio
+ * `visivel`; o app mostra só os que não estão bloqueados.
+ */
+export async function definirVisibilidadeMapaDaRota(
+  id: string,
+  url: string,
+  visivel: boolean
+): Promise<boolean> {
+  const { data: linha, error: erroLeitura } = await supabase
+    .from("roteiros")
+    .select("mapas")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (erroLeitura) throw erroLeitura;
+
+  const bruto = (linha as { mapas?: unknown } | null)?.mapas;
+
+  const lista = Array.isArray(bruto)
+    ? bruto.map((item) => ({ ...(item as Record<string, unknown>) }))
+    : [];
+
+  const alvo = lista.findIndex((item) => item.url === url);
+  if (alvo < 0) return false;
+
+  lista[alvo] = { ...lista[alvo], visivel };
+
+  const { data, error } = await supabase
+    .from("roteiros")
+    .update({ mapas: lista })
+    .eq("id", id)
+    .select("id");
+
+  exigirLinhas(data as { id: string }[] | null, error, "alterar visibilidade (mapa da rota)");
+  return true;
+}
+
+/** Liga/desliga TODOS os mapas de uma rota de uma vez (item por item). */
+export async function definirVisibilidadeTodosOsMapasDaRota(
+  id: string,
+  visivel: boolean
+): Promise<number> {
+  const { data: linha, error: erroLeitura } = await supabase
+    .from("roteiros")
+    .select("mapas")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (erroLeitura) throw erroLeitura;
+
+  const bruto = (linha as { mapas?: unknown } | null)?.mapas;
+
+  const lista = Array.isArray(bruto)
+    ? bruto.map((item) => ({ ...(item as Record<string, unknown>) }))
+    : [];
+
+  const atualizada = lista.map((item) =>
+    typeof item.url === "string" && item.url ? { ...item, visivel } : item
+  );
+
+  const { data, error } = await supabase
+    .from("roteiros")
+    .update({ mapas: atualizada })
+    .eq("id", id)
+    .select("id");
+
+  exigirLinhas(data as { id: string }[] | null, error, "alterar visibilidade (mapas da rota)");
+  return atualizada.filter((item) => item.visivel === visivel).length;
+}
+
+/**
  * Liga/desliga UMA camada de tempo (idade das camadas), gravando na hora — é
  * botão de tour, como o habilitar/desabilitar das mídias de apoio.
  *
