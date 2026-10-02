@@ -169,7 +169,7 @@ export default function ManualAdmin() {
   }
 
   return (
-    <div className="admin-tela manual">
+    <div className="manual">
       <h1>Manual do painel</h1>
 
       {!editando && (

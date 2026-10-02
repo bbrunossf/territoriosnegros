@@ -1691,7 +1691,16 @@ a, a:visited, a:hover, a:active {
 
 /* ── Manual do painel (aba "Manual") ──────────────────────────
    Página só de leitura: índice com atalhos, seções separadas e as
-   linhas de exemplo do que se digita no painel × o que o visitante vê. */
+   linhas de exemplo do que se digita no painel × o que o visitante vê.
+   ATENÇÃO: NÃO usar aqui a classe .admin-tela — apesar do nome, ela é a
+   linha de "telas com caixinha de marcar" (display:flex, em fileira) e
+   deixava as seções do manual lado a lado, em colunas apertadas. */
+.manual {
+  display: block;
+  /* coluna de leitura: em tela larga, texto muito largo cansa a vista */
+  max-width: 820px;
+}
+
 .manual h1 {
   font-size: 24px;
   margin: 0 0 6px;
