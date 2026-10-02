@@ -1,20 +1,26 @@
 
+import type { ReactNode } from "react";
+
 import Topic from "../components/Topic";
 
 import { formatarInline } from "../utils/texto";
 import { idadeTexto } from "../utils/data";
-import type { IdadeCamada, Territorio } from "../data/types";
+import { estaVisivel } from "../utils/visibilidade";
+import type { Territorio } from "../data/types";
 
 type Props = {
   territorio: Territorio;
   idade: number | null;
 };
 
+/** [ícone, título, conteúdo, ocupa a largura toda?] */
+type Cartao = [string, string, ReactNode, boolean];
+
 export default function InfoRapida({
   territorio,
   idade,
 }: Props) {
-  const cards = [];
+  const cards: Cartao[] = [];
 
   if (territorio.camadas) {
     cards.push([
@@ -52,15 +58,22 @@ export default function InfoRapida({
     ]);
   }
 
-  if (territorio.idadeCamadas) {
-    territorio.idadeCamadas.forEach((c: IdadeCamada) =>
-      cards.push([
-        "📜",
-        "Camada temporal",
-        idadeTexto(c.ano, c.label),
-        true,
-      ])
-    );
+  // Camadas de tempo: UM cartão só, com o título uma vez e uma linha por
+  // camada (antes o título "Camada temporal" se repetia em cada caixa). Só
+  // entram as camadas habilitadas para os visitantes no painel.
+  const camadasVisiveis = (territorio.idadeCamadas ?? []).filter(estaVisivel);
+
+  if (camadasVisiveis.length > 0) {
+    cards.push([
+      "📜",
+      "Camada temporal",
+      <div className="info-rapida-camadas" key="camadas">
+        {camadasVisiveis.map((c, i) => (
+          <span key={`${c.ano}-${i}`}>{idadeTexto(c.ano, c.label) ?? c.label}</span>
+        ))}
+      </div>,
+      true,
+    ]);
   }
 
   if (territorio.criacao) {

@@ -3,6 +3,11 @@
 export interface IdadeCamada {
   ano: number;
   label: string;
+  /**
+   * false = camada escondida dos visitantes (o botão habilitar/desabilitar do
+   * painel, usado durante a visita guiada). Ausente = aparece.
+   */
+  visivel?: boolean;
 }
 
 /** Foto de apoio de um território (galeria liberada durante o tour) */

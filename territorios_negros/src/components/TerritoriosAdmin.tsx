@@ -10,7 +10,9 @@ import "../styles.css";
 import { useCallback, useEffect, useState } from "react";
 import {
   atualizarTerritorio,
+  definirVisibilidadeCamada,
   definirVisibilidadeMidia,
+  definirVisibilidadeTodasCamadas,
   definirVisibilidadeTodasMidias,
   excluirTerritorio,
   fetchCategorias,
@@ -24,7 +26,7 @@ import {
 import type { Categoria, FotoTerritorio, Territorio, VideoTerritorio } from "../data/types";
 import PlayerVideo from "../components/PlayerVideo";
 import { gerarSlug } from "../utils/catalogo";
-import { formatarDataHoraBR } from "../utils/data";
+import { formatarDataHoraBR, idadeTexto } from "../utils/data";
 import { legendaDoArquivo } from "../utils/legendas";
 import {
   avisoDeApagamento,
@@ -110,6 +112,13 @@ export default function TerritoriosAdmin() {
   /** link que a autoria colou para adicionar um vídeo (YouTube, Drive...) */
   const [linkVideo, setLinkVideo] = useState("");
 
+  /**
+   * Camadas de tempo: o texto fica no formulário ("ano: rótulo" por linha) e a
+   * visibilidade de cada uma fica aqui, por ano — o botão habilitar/desabilitar
+   * grava na hora, então o "Salvar alterações" seguinte não pode desfazer.
+   */
+  const [camadasVisiveis, setCamadasVisiveis] = useState<Record<string, boolean>>({});
+
   // há alteração no formulário que ainda não foi gravada?
   const [pendente, setPendente] = useState(false);
 
@@ -192,6 +201,14 @@ export default function TerritoriosAdmin() {
     setFotos(t.fotos ?? []);
     setVideos(t.videos ?? []);
     setLinkVideo("");
+
+    // visibilidade das camadas de tempo, por ano (ausente = aparece no app)
+    const visibilidadeDasCamadas: Record<string, boolean> = {};
+    (t.idadeCamadas ?? []).forEach((camada) => {
+      visibilidadeDasCamadas[String(camada.ano)] = camada.visivel !== false;
+    });
+    setCamadasVisiveis(visibilidadeDasCamadas);
+
     setEditando(t.id);
     setPendente(false);
     setOk("");
@@ -205,6 +222,7 @@ export default function TerritoriosAdmin() {
     setFotos([]);
     setVideos([]);
     setLinkVideo("");
+    setCamadasVisiveis({});
     setEditando(null);
     setPendente(false);
   }
@@ -234,7 +252,12 @@ export default function TerritoriosAdmin() {
       observar: textoParaArray(form.observar),
       pergunta: form.pergunta || null,
       video: form.video || null,
-      idade_camadas: textoParaIdadeCamadas(form.idadeCamadas),
+      // a visibilidade de cada camada vai junto: o botão de camada grava na
+      // hora, e sem isso o "Salvar alterações" seguinte desfaria a gravação
+      idade_camadas: textoParaIdadeCamadas(form.idadeCamadas).map((camada) => ({
+        ...camada,
+        visivel: camadasVisiveis[String(camada.ano)] !== false,
+      })),
       fotos,
       videos,
       imagem_credito: form.imagemCredito || null,
@@ -555,6 +578,81 @@ export default function TerritoriosAdmin() {
     } catch (e) {
       console.error(e);
       setErro(e instanceof Error ? e.message : "Falha ao alterar a visibilidade.");
+    }
+  }
+
+  // ── Camadas de tempo (idade das camadas) ─────────────────────
+  // Mesmo modelo das mídias de apoio: mostrar/esconder grava na hora, o texto
+  // continua pendente até "Salvar alterações".
+
+  /** quantas camadas do texto do formulário estão aparecendo no app */
+  const camadasDoTexto = textoParaIdadeCamadas(form.idadeCamadas);
+  const camadasAparecendo = camadasDoTexto.filter(
+    (camada) => camadasVisiveis[String(camada.ano)] !== false
+  ).length;
+
+  async function alternarCamadaVisivel(ano: number, visivel: boolean) {
+    if (!editando) return;
+
+    setErro("");
+    setOk("");
+
+    try {
+      const gravado = await definirVisibilidadeCamada(editando, ano, visivel);
+
+      if (!gravado) {
+        setErro(
+          "Esta camada ainda não está publicada no banco: clique em \"Salvar " +
+            "alterações\" e depois use o botão outra vez."
+        );
+        return;
+      }
+
+      setCamadasVisiveis((mapa) => ({ ...mapa, [String(ano)]: visivel }));
+      await carregar();
+      setOk(
+        `Camada ${ano} ${visivel ? "habilitada" : "desabilitada"} para os ` +
+          "visitantes (gravado)."
+      );
+    } catch (e) {
+      console.error(e);
+      setErro(e instanceof Error ? e.message : "Falha ao alterar a visibilidade da camada.");
+    }
+  }
+
+  async function alternarTodasCamadas(visivel: boolean) {
+    if (!editando) return;
+
+    setErro("");
+    setOk("");
+
+    try {
+      const marcadas = await definirVisibilidadeTodasCamadas(editando, visivel);
+
+      if (marcadas.length === 0) {
+        setErro(
+          "Nenhuma camada publicada ainda neste território: clique em \"Salvar " +
+            "alterações\" e depois use o botão outra vez."
+        );
+        return;
+      }
+
+      setCamadasVisiveis((mapa) => {
+        const novo = { ...mapa };
+        marcadas.forEach((ano) => {
+          novo[String(ano)] = visivel;
+        });
+        return novo;
+      });
+
+      await carregar();
+      setOk(
+        `Todas as ${marcadas.length} camada(s) de tempo foram ` +
+          `${visivel ? "habilitadas" : "desabilitadas"} para os visitantes (gravado).`
+      );
+    } catch (e) {
+      console.error(e);
+      setErro(e instanceof Error ? e.message : "Falha ao alterar a visibilidade das camadas.");
     }
   }
 
@@ -936,18 +1034,86 @@ export default function TerritoriosAdmin() {
         </label>
 
         <label className="admin-campo">
-          <b>Idade das camadas (cartões de tempo)</b>
+          <b>Idade das camadas de tempo</b>
           <span className="admin-campo-dica">
-            Uma linha por camada, no formato “ano: rótulo”. Cada linha vira um cartão
-            “Camada temporal” nas Informações rápidas.
+            Uma linha por camada, no formato “ano: rótulo” (ex.: <b>1912: do
+            edifício</b>). No app, as camadas saem num <b>cartão único</b> “Camada
+            temporal”, uma linha por camada, e a idade é calculada a partir do ano.
           </span>
           <textarea
-            placeholder={'Ex:\n1767: construção da igreja\n1890: ampliação da nave'}
+            placeholder={'Ex:\n1767: do edifício\n1890: do museu\n2011: PMV'}
             value={form.idadeCamadas}
             onChange={(e) => setCampo("idadeCamadas", e.target.value)}
             rows={3}
           />
         </label>
+
+        {/* ─── Exibição das camadas de tempo (grava na hora) ─── */}
+        <div className="admin-fotos">
+          <b>Quais camadas o visitante vê (grava na hora)</b>
+
+          <p className="admin-ajuda">
+            Cada camada tem o seu <b>Habilitar/Desabilitar</b>, e o{" "}
+            <b>Habilitar todas / Desabilitar todas</b> resolve de uma vez. Os dois{" "}
+            <b>gravam na hora</b>, sem precisar salvar — é o controle para usar
+            durante a visita guiada, mostrando cada camada só quando chegar a hora
+            dela. Desabilitada, a camada não aparece no app; se todas ficarem
+            desabilitadas, o cartão “Camada temporal” desaparece. Camada que você
+            acabou de digitar só entra aqui (e no app) depois do{" "}
+            <b>Salvar alterações</b>.
+          </p>
+
+          <div className="admin-fotos-estado">
+            <b>Situação:</b> <b>{camadasAparecendo}</b> de {camadasDoTexto.length}{" "}
+            camada(s) aparecendo no app{" "}
+            <button
+              type="button"
+              className={camadasAparecendo < camadasDoTexto.length ? "btn" : "outline"}
+              onClick={() => alternarTodasCamadas(true)}
+            >
+              Habilitar todas
+            </button>
+            <button
+              type="button"
+              className={camadasAparecendo > 0 ? "btn" : "outline"}
+              onClick={() => alternarTodasCamadas(false)}
+            >
+              Desabilitar todas
+            </button>
+          </div>
+
+          {camadasDoTexto.length === 0 && (
+            <p className="admin-ajuda">
+              Nenhuma camada informada ainda — escreva uma por linha no campo acima.
+            </p>
+          )}
+
+          {camadasDoTexto.map((camada) => {
+            const desabilitada = camadasVisiveis[String(camada.ano)] === false;
+
+            return (
+              <div key={camada.ano} className="admin-linha">
+                <span className="admin-camada-nome">
+                  <b>{camada.ano}</b> —{" "}
+                  {idadeTexto(camada.ano, camada.label) ?? camada.label}
+                </span>
+
+                <button
+                  type="button"
+                  className={desabilitada ? "btn" : "outline"}
+                  onClick={() => alternarCamadaVisivel(camada.ano, desabilitada)}
+                  title={
+                    desabilitada
+                      ? "Mostrar esta camada para os visitantes (grava na hora)"
+                      : "Esconder esta camada dos visitantes (grava na hora)"
+                  }
+                >
+                  {desabilitada ? "Habilitar" : "Desabilitar"}
+                </button>
+              </div>
+            );
+          })}
+        </div>
         <label className="admin-campo">
           <b>Vídeo no topo — opcional</b>
           <span className="admin-campo-dica">

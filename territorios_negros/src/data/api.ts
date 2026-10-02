@@ -244,6 +244,74 @@ export async function definirVisibilidadeTodasMidias(
   return atualizada.filter((item) => item.visivel === visivel).length;
 }
 
+/**
+ * Liga/desliga UMA camada de tempo (idade das camadas), gravando na hora — é
+ * botão de tour, como o habilitar/desabilitar das mídias de apoio.
+ *
+ * A camada é achada pelo ANO dentro da linha do banco (a lista do painel pode
+ * ter camada nova, que ainda não foi publicada com "Salvar alterações").
+ * Devolve false quando a camada ainda não existe no banco.
+ */
+export async function definirVisibilidadeCamada(
+  id: string,
+  ano: number,
+  visivel: boolean
+): Promise<boolean> {
+  const linha = await fetchTerritorioBruto(id);
+  const bruto = linha?.idade_camadas;
+
+  const lista = Array.isArray(bruto)
+    ? bruto.map((item) => ({ ...(item as Record<string, unknown>) }))
+    : [];
+
+  const alvo = lista.findIndex((item) => Number(item.ano) === ano);
+  if (alvo < 0) return false;
+
+  lista[alvo] = { ...lista[alvo], visivel };
+
+  const { data, error } = await supabase
+    .from("territorios")
+    .update({ idade_camadas: lista })
+    .eq("id", id)
+    .select("id");
+
+  exigirLinhas(data as { id: string }[] | null, error, "alterar visibilidade (camadas)");
+  return true;
+}
+
+/**
+ * Habilita/desabilita TODAS as camadas de tempo de uma vez, gravando na hora.
+ * Devolve os anos marcados (lista vazia = nenhuma camada publicada ainda, o
+ * painel pede "Salvar alterações").
+ */
+export async function definirVisibilidadeTodasCamadas(
+  id: string,
+  visivel: boolean
+): Promise<number[]> {
+  const linha = await fetchTerritorioBruto(id);
+  const bruto = linha?.idade_camadas;
+
+  const lista = Array.isArray(bruto)
+    ? bruto.map((item) => ({ ...(item as Record<string, unknown>) }))
+    : [];
+
+  if (lista.length === 0) return [];
+
+  const atualizada = lista.map((item) => ({ ...item, visivel }));
+
+  const { data, error } = await supabase
+    .from("territorios")
+    .update({ idade_camadas: atualizada })
+    .eq("id", id)
+    .select("id");
+
+  exigirLinhas(data as { id: string }[] | null, error, "alterar visibilidade (camadas)");
+
+  return atualizada
+    .map((item) => Number(item.ano))
+    .filter((ano) => !Number.isNaN(ano));
+}
+
 export async function excluirTerritorio(id: string): Promise<void> {
   const { data, error } = await supabase
     .from("territorios")
@@ -533,7 +601,7 @@ interface RawTerritorio {
   observar: string[];
   pergunta: string;
   video?: string;
-  idade_camadas?: { ano: number; label: string }[];
+  idade_camadas?: { ano: number; label: string; visivel?: boolean }[];
   categoria?: string | null;
   ativo?: boolean | null;
   ordem?: number | null;

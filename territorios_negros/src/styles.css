@@ -583,6 +583,15 @@ a, a:visited, a:hover, a:active {
   grid-column: span 2;
 }
 
+/* camadas de tempo: um cartão só, com o título uma vez e a idade de cada
+   camada numa linha — em coluna, cada linha é uma camada do território */
+.info-rapida-camadas {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 2px;
+}
+
 
 .fim {
   text-align: center;
@@ -1591,6 +1600,14 @@ a, a:visited, a:hover, a:active {
   display: flex;
   flex-direction: column;
   gap: 2px;
+}
+
+/* linha de uma camada de tempo no painel: nome da camada à esquerda, botão
+   habilitar/desabilitar à direita */
+.admin-camada-nome {
+  flex: 1 1 220px;
+  min-width: 150px;
+  font-size: 14px;
 }
 
 /* rótulo curto para campos que dividem uma fileira com botões (bloco da página,

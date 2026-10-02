@@ -15,7 +15,15 @@ export interface ItemComVisibilidade {
 export function somenteVisiveis<T extends ItemComVisibilidade>(
   itens: T[] | undefined | null
 ): T[] {
-  return (itens ?? []).filter((item) => item && item.url && item.visivel !== false);
+  return (itens ?? []).filter((item) => item && item.url && estaVisivel(item));
+}
+
+/**
+ * Regra sem a exigência de URL: vale para itens que não são imagem (ex.: as
+ * camadas de tempo do território, que só têm ano e rótulo).
+ */
+export function estaVisivel(item: ItemComVisibilidade | undefined | null): boolean {
+  return item?.visivel !== false;
 }
 
 /** true quando a imagem está bloqueada para os visitantes. */
