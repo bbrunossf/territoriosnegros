@@ -75,7 +75,7 @@ export default function PaginaConteudo({
         <Info>
           <div className={classesDestaque}>
             {destaque.map((p, i) => (
-              <p key={i}>
+              <p key={i} className="texto-paragrafo">
                 <Inline texto={p} />
               </p>
             ))}
@@ -113,7 +113,7 @@ export default function PaginaConteudo({
             titleClassName={classesEstilo(bloco.tituloEstilo, "titulo")}
           >
             {paragrafosDe(bloco.texto).map((p, j) => (
-              <p key={j}>
+              <p key={j} className="texto-paragrafo">
                 <Inline texto={p} />
               </p>
             ))}

@@ -682,6 +682,21 @@ a, a:visited, a:hover, a:active {
   margin-top: 28px;
 }
 
+/* Vão entre parágrafos dos textos que a autoria escreve (descrição do território,
+   blocos e destaques das páginas). O reset base do app zera a margem do <p>
+   (src/index.css), o que fazia a LINHA EM BRANCO digitada no painel não aparecer
+   na leitura — o texto saía colado. Aqui o vão vale uma linha de texto
+   (1.45em = line-height 1.45 do :root), então a linha em branco do painel vira
+   uma linha vazia de verdade, para destacar passagens e dar conforto de leitura.
+   A última não gera vão extra (senão a seção seguinte ficaria longe demais). */
+.texto-paragrafo {
+  margin: 0 0 1.45em;
+}
+
+.texto-paragrafo:last-child {
+  margin-bottom: 0;
+}
+
 .topic-title {
   display: flex;
   align-items: center;

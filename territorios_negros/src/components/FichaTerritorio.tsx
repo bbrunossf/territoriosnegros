@@ -178,7 +178,12 @@ export default function FichaTerritorio({ territorio, idade }: Props) {
                   separa parágrafos, a linha simples vira quebra e a marca
                   [esq]/[dir]/[just] define o alinhamento (o visitante não a vê) */}
               {lerParagrafos(territorio.descricao).map((paragrafo, j) => (
-                <p key={j} className={classeAlinhamento(paragrafo.alinhamento)}>
+                <p
+                  key={j}
+                  className={["texto-paragrafo", classeAlinhamento(paragrafo.alinhamento)]
+                    .filter(Boolean)
+                    .join(" ")}
+                >
                   <Inline texto={paragrafo.texto} />
                 </p>
               ))}
