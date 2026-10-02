@@ -64,6 +64,29 @@ export function ehCartao(id: BlocoFichaId): boolean {
 }
 
 /**
+ * Só estes dois cartões podem dividir a linha — os valores são curtos (um ano e
+ * uma idade). Todo o resto sai com a largura cheia, para o texto respirar.
+ */
+export const BLOCOS_MEIA_LINHA: BlocoFichaId[] = ["ano", "idade"];
+
+export function ehMeiaLinha(id: BlocoFichaId): boolean {
+  return BLOCOS_MEIA_LINHA.includes(id);
+}
+
+/**
+ * Diz, cartão por cartão, se ele ocupa a linha toda. Ano e Idade dividem a linha
+ * **só quando estão um ao lado do outro**; sozinho, o cartão ocupa a linha
+ * inteira (senão sobraria um buraco do lado dele).
+ */
+export function ocupaLinhaToda(ids: BlocoFichaId[]): boolean[] {
+  return ids.map((id, i) => {
+    if (!ehMeiaLinha(id)) return true;
+    const temParceiro = ehMeiaLinha(ids[i - 1]) || ehMeiaLinha(ids[i + 1]);
+    return !temParceiro;
+  });
+}
+
+/**
  * Aceita o que estiver gravado no banco e devolve sempre a lista completa:
  * ids desconhecidos são descartados, repetidos ficam uma vez só e o que faltar
  * entra no fim, na ordem padrão.

@@ -5,6 +5,10 @@
 // Camada temporal, Criação, Função, Transformações, Status, Observação) e as
 // seções de texto (Descrição, Para observar, Para refletir, Palavra-chave).
 //
+// Largura: TODO cartão sai com o mesmo enquadramento (largura cheia). A única
+// exceção é Ano e Idade, que dividem a linha quando estão um ao lado do outro —
+// assim dois cartões nunca aparecem dividindo a linha por acaso.
+//
 // Cartões seguidos saem numa caixa só; se a autoria colocar a descrição entre
 // eles, a caixa fecha e o que vier depois abre outra — sem repetir o título.
 // Cartão sem conteúdo não aparece (não deixa buraco na ordem).
@@ -17,6 +21,7 @@ import Numbered from "./Numbered";
 import { useTerritorios } from "../context/useTerritorios";
 import {
   faixasDaFicha,
+  ocupaLinhaToda,
   ordemDoTerritorio,
   type BlocoFichaId,
 } from "../data/fichaTerritorio";
@@ -26,8 +31,13 @@ import { idadeTexto } from "../utils/data";
 import { estaVisivel } from "../utils/visibilidade";
 import type { Territorio } from "../data/types";
 
-/** [ícone, título, conteúdo, ocupa a largura toda?] */
-type Cartao = [string, string, ReactNode, boolean];
+/** [ícone, título, conteúdo] */
+type Cartao = [string, string, ReactNode];
+
+interface ItemCartao {
+  id: BlocoFichaId;
+  cartao: Cartao;
+}
 
 /** Cartões que têm conteúdo agora, por id do bloco. */
 function cartoesDaFicha(
@@ -37,19 +47,19 @@ function cartoesDaFicha(
   const cartoes = new Map<BlocoFichaId, Cartao>();
 
   if (territorio.camadas) {
-    cartoes.set("camadas", ["🕰️", "Camadas", territorio.camadas, true]);
+    cartoes.set("camadas", ["🕰️", "Camadas", territorio.camadas]);
   }
 
   if (territorio.contexto) {
-    cartoes.set("contexto", ["🧭", "Contexto", territorio.contexto, true]);
+    cartoes.set("contexto", ["🧭", "Contexto", territorio.contexto]);
   }
 
   if (territorio.ano) {
-    cartoes.set("ano", ["📅", "Ano", territorio.ano, false]);
+    cartoes.set("ano", ["📅", "Ano", territorio.ano]);
   }
 
   if (idade !== null) {
-    cartoes.set("idade", ["⏳", "Idade", `${idade} anos`, false]);
+    cartoes.set("idade", ["⏳", "Idade", `${idade} anos`]);
   }
 
   // Camadas de tempo: um cartão só, com o título uma vez e uma linha por camada.
@@ -65,40 +75,42 @@ function cartoesDaFicha(
           <span key={`${c.ano}-${i}`}>{idadeTexto(c.ano, c.label) ?? c.label}</span>
         ))}
       </div>,
-      true,
     ]);
   }
 
   if (territorio.criacao) {
-    cartoes.set("criacao", ["👷", "Criação", territorio.criacao, false]);
+    cartoes.set("criacao", ["👷", "Criação", territorio.criacao]);
   }
 
   if (territorio.funcao) {
-    cartoes.set("funcao", ["🏛️", "Função", territorio.funcao, false]);
+    cartoes.set("funcao", ["🏛️", "Função", territorio.funcao]);
   }
 
   if (territorio.transformacoes) {
-    cartoes.set("transformacoes", ["🔄", "Transformações", territorio.transformacoes, true]);
+    cartoes.set("transformacoes", ["🔄", "Transformações", territorio.transformacoes]);
   }
 
   if (territorio.status) {
-    cartoes.set("status", ["📍", "Status", territorio.status, false]);
+    cartoes.set("status", ["📍", "Status", territorio.status]);
   }
 
   if (territorio.observacao) {
-    cartoes.set("observacao", ["📌", "Observação", territorio.observacao, true]);
+    cartoes.set("observacao", ["📌", "Observação", territorio.observacao]);
   }
 
   return cartoes;
 }
 
-function GradeCartoes({ cartoes, comTitulo }: { cartoes: Cartao[]; comTitulo: boolean }) {
+function GradeCartoes({ itens, comTitulo }: { itens: ItemCartao[]; comTitulo: boolean }) {
+  // largura cheia para todos; só Ano + Idade, lado a lado, dividem a linha
+  const linhasInteiras = ocupaLinhaToda(itens.map((item) => item.id));
+
   const grade = (
     <div className="info-rapida-grid">
-      {cartoes.map(([icon, label, value, wide], i) => (
+      {itens.map(({ id, cartao: [icon, label, value] }, i) => (
         <div
-          key={`${label}-${i}`}
-          className={`info-rapida-card ${wide ? "info-rapida-card-wide" : ""}`}
+          key={id}
+          className={`info-rapida-card ${linhasInteiras[i] ? "info-rapida-card-wide" : ""}`}
         >
           <b>
             {icon} {label}
@@ -144,16 +156,16 @@ export default function FichaTerritorio({ territorio, idade }: Props) {
     <>
       {faixas.map((faixa, i) => {
         if (faixa.tipo === "cartoes") {
-          const visiveis = faixa.ids
-            .map((id) => cartoes.get(id))
-            .filter((c): c is Cartao => !!c);
+          const itens = faixa.ids
+            .map((id) => ({ id, cartao: cartoes.get(id) }))
+            .filter((item): item is ItemCartao => !!item.cartao);
 
-          if (visiveis.length === 0) return null;
+          if (itens.length === 0) return null;
 
           return (
             <GradeCartoes
               key={`grade-${i}`}
-              cartoes={visiveis}
+              itens={itens}
               comTitulo={i === primeiraGrade}
             />
           );
