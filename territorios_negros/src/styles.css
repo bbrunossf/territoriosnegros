@@ -1691,14 +1691,16 @@ a, a:visited, a:hover, a:active {
   text-align: left;
 }
 
-/* linha de exemplo: comando do painel → resultado na tela */
-.manual-exemplo {
+/* item de exemplo: comando do painel → resultado na tela (sem marcador) */
+.manual-item-exemplo {
+  list-style: none;
+
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: 8px;
 
-  margin: 8px 0;
+  margin: 2px 0 2px -20px;
   padding: 9px 12px;
 
   border: 1px solid #e3cf9f;
