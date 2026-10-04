@@ -333,6 +333,11 @@ a, a:visited, a:hover, a:active {
   justify-content: space-between;
   align-items: flex-start;
   gap: 8px;
+
+  /* Título da rota, slogan e início/conclusão centralizados (pedido da autoria,
+     02/10/2026). As seções abaixo seguem alinhadas à esquerda: são listas e
+     texto corrido, que se leem melhor encostados na margem. */
+  text-align: center;
 }
 
 .roteiro-header > div {
