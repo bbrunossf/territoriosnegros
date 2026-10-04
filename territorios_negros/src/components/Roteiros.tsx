@@ -74,10 +74,10 @@ export default function Roteiros() {
             )}
 
             <button
-              className="btn roteiro-btn"
+              className="btn roteiro-btn roteiro-btn-principal"
               onClick={() => navigate(`/percurso/${r.id}`)}
             >
-              Iniciar percurso
+              Iniciar rota
             </button>
 
             {r.mapaUrl && (

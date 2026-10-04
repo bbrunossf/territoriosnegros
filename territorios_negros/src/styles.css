@@ -411,6 +411,15 @@ a, a:visited, a:hover, a:active {
   margin-top: 16px;
 }
 
+/* O botão de começar a rota é o mais importante do cartão: texto maior (o
+   ".btn" herda ~13px) e um pouco mais de altura, para ler e acertar o toque no
+   celular. Só ele — os links "Ver o traçado no mapa" e "Ficha de inscrição"
+   continuam com o texto normal. *(pedido da autoria, 02/10/2026)* */
+.roteiro-btn-principal {
+  font-size: 17px;
+  padding: 14px 16px;
+}
+
 
 
 .territorios-item {
