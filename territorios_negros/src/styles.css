@@ -1084,16 +1084,15 @@ a, a:visited, a:hover, a:active {
   cursor: pointer;
 }
 
-/* Botões secundários do app: eram translúcidos — praticamente a cor da página — e
-   por isso não pareciam clicáveis. Agora são cheios, em marrom escuro com texto
-   creme; o amarelo (".btn") continua marcando a ação principal de cada tela.
+/* Botões do app: TODOS na mesma cor de ação (o amarelo/ocre do ".btn"), cheios —
+   nenhum mais na cor da página ou translúcido. A autoria confirmou a padronização
+   numa única cor (02/10/2026), depois de ver a alternativa em marrom.
    A regra vale só para o APP do visitante (".app"): os botões do painel
-   administrativo e os da barra de zoom da foto ficam como estavam.
-   *(pedido da autoria, 02/10/2026)* */
+   administrativo continuam como estavam. */
 .app .outline {
-  background: #5c3a24;
-  border-color: #3f2412;
-  color: #fdf3e3;
+  background: #b8832c;
+  border-color: #8f611d;
+  color: #130b08;
 }
 
 /* Todo botão do app responde ao cursor/dedo — antes isso só valia nos botões de
@@ -2578,9 +2577,9 @@ p.foto-credito {
 }
 
 .foto-zoom-barra .outline {
-  color: #f7efdf;
-  border-color: #c79b52;
-  background: rgba(255, 249, 239, 0.08);
+  color: #130b08;
+  border-color: #8f611d;
+  background: #b8832c;
 }
 
 .foto-zoom-nivel {
