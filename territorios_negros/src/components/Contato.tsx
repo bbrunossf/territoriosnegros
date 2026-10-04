@@ -9,6 +9,7 @@
 //  · pergunta de soma ("você é uma pessoa?") que muda a cada envio
 //  · campo-armadilha invisível, que só robôs preenchem
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 import PaginaConteudo from "../components/PaginaConteudo";
 import { enviarMensagem } from "../data/api";
@@ -118,6 +119,20 @@ export default function Contato() {
 
   return (
     <PaginaConteudo pagina={pagina}>
+      {/* Saídas no topo da página (pedido da autoria, 02/10/2026): quem chegou
+          aqui por engano — clicou em "Enviar uma mensagem" sem querer — volta
+          para outra tela com um toque, sem depender do botão do navegador.
+          Sempre visíveis: não é item do painel. */}
+      <div className="pagina-botoes contato-atalhos">
+        <Link className="btn pagina-botao" to="/">
+          Ir para a página inicial
+        </Link>
+
+        <Link className="btn pagina-botao" to="/roteiros">
+          Ir para as rotas
+        </Link>
+      </div>
+
       <form className="admin-form contato-form" onSubmit={enviar}>
         <input
           type="text"
