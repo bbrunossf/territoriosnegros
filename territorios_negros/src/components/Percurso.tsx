@@ -2,6 +2,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useTerritorios } from "../context/useTerritorios";
 import { pontosVisiveis } from "../utils/catalogo";
 import { somenteVisiveis } from "../utils/visibilidade";
+import { sloganDaRota } from "../data/slogansRota";
+import { paragrafosDe } from "../utils/texto";
 
 import BotaoContato from "../components/BotaoContato";
 import FotoAmpliavel from "../components/FotoAmpliavel";
@@ -10,7 +12,7 @@ import Inline from "../components/Inline";
 export default function Percurso() {
   const { rotaId } = useParams<{ rotaId: string }>();
   const navigate = useNavigate();
-  const { territorios, roteiros, inscricaoUrl } = useTerritorios();
+  const { territorios, roteiros, inscricaoUrl, config } = useTerritorios();
 
   const roteiro = roteiros.find((r) => r.id === rotaId) || roteiros[0];
 
@@ -19,6 +21,9 @@ export default function Percurso() {
   // Só entram no percurso os territórios que estão habilitados no painel.
   const pontos = pontosVisiveis(roteiro.pontos, territorios);
   const inscricao = roteiro.inscricaoUrl || inscricaoUrl;
+
+  // slogan da rota (campo do painel, gravado na configuração do app)
+  const slogan = sloganDaRota(config, roteiro.id);
 
   // mapas bloqueados no painel não aparecem para os visitantes
   const mapasVisiveis = somenteVisiveis(roteiro.mapas);
@@ -35,6 +40,17 @@ export default function Percurso() {
           alt={`Logo ${roteiro.nome}`}
           className="percurso-logo"
         />
+      )}
+
+      {/* Slogan da rota: frase de abertura, entre a logo e o início/conclusão. */}
+      {slogan && (
+        <div className="percurso-slogan">
+          {paragrafosDe(slogan).map((paragrafo, i) => (
+            <p key={i}>
+              <Inline texto={paragrafo} />
+            </p>
+          ))}
+        </div>
       )}
 
       {roteiro.subtitulo && (

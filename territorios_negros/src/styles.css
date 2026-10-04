@@ -355,6 +355,31 @@ a, a:visited, a:hover, a:active {
   overflow-wrap: break-word;
 }
 
+/* Slogan da rota (campo do painel "Slogan"): frase de abertura logo abaixo do
+   nome. Fica em itálico e um pouco maior que o subtítulo (que traz início e
+   conclusão do percurso), para ler como frase, não como informação de logística. */
+.roteiro-slogan,
+.percurso-slogan {
+  margin: 7px 0 0;
+
+  font-size: 15px;
+  font-style: italic;
+  line-height: 1.5;
+
+  color: #4a2d1c;
+  overflow-wrap: break-word;
+}
+
+.roteiro-slogan p,
+.percurso-slogan p {
+  margin: 0;
+}
+
+.roteiro-slogan p + p,
+.percurso-slogan p + p {
+  margin-top: 10px;
+}
+
 .roteiro-level {
   background: #c58b2a;
 

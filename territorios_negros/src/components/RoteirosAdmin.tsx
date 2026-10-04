@@ -10,12 +10,20 @@ import { useCallback, useEffect, useState } from "react";
 import {
   atualizarRoteiro,
   excluirRoteiro,
+  fetchConfig,
   fetchRoteiros,
   fetchTerritorios,
+  salvarConfig,
   salvarRoteiro,
   uploadFoto,
 } from "../data/api";
 import type { FotoTerritorio, Roteiro, Territorio, TerritoriosMap } from "../data/types";
+import {
+  CHAVE_SLOGANS,
+  definirSlogan,
+  lerSlogans,
+  type SlogansDeRota,
+} from "../data/slogansRota";
 import { gerarSlug } from "../utils/catalogo";
 import { formatarDataHoraBR } from "../utils/data";
 import { legendaDoArquivo } from "../utils/legendas";
@@ -50,6 +58,7 @@ const FORM_VAZIO = {
   nome: "",
   nivel: "",
   subtitulo: "",
+  slogan: "",
   acessibilidade: "",
   experiencia: "",
   ativo: true,
@@ -64,6 +73,9 @@ export default function RoteirosAdmin() {
   const [roteiros, setRoteiros] = useState<Roteiro[]>([]);
   const [territorios, setTerritorios] = useState<TerritoriosMap>({});
   const [editando, setEditando] = useState<string | null>(null);
+
+  // slogan de cada rota (gravado em app_config, chave "roteiros_slogans")
+  const [slogans, setSlogans] = useState<SlogansDeRota>({});
 
   const [form, setForm] = useState(FORM_VAZIO);
   const [pontos, setPontos] = useState<string[]>([]);
@@ -81,9 +93,14 @@ export default function RoteirosAdmin() {
 
   const carregar = useCallback(async () => {
     try {
-      const [rs, ts] = await Promise.all([fetchRoteiros(), fetchTerritorios()]);
+      const [rs, ts, cfg] = await Promise.all([
+        fetchRoteiros(),
+        fetchTerritorios(),
+        fetchConfig(),
+      ]);
       setRoteiros(rs.sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR")));
       setTerritorios(ts);
+      setSlogans(lerSlogans(cfg[CHAVE_SLOGANS]));
     } catch (e) {
       console.error(e);
       setErro(e instanceof Error ? e.message : "Falha ao carregar as rotas.");
@@ -95,10 +112,15 @@ export default function RoteirosAdmin() {
 
     (async () => {
       try {
-        const [rs, ts] = await Promise.all([fetchRoteiros(), fetchTerritorios()]);
+        const [rs, ts, cfg] = await Promise.all([
+          fetchRoteiros(),
+          fetchTerritorios(),
+          fetchConfig(),
+        ]);
         if (!ativo) return;
         setRoteiros(rs.sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR")));
         setTerritorios(ts);
+        setSlogans(lerSlogans(cfg[CHAVE_SLOGANS]));
       } catch (e) {
         console.error(e);
         if (ativo) {
@@ -124,6 +146,7 @@ export default function RoteirosAdmin() {
       nome: r.nome,
       nivel: r.nivel,
       subtitulo: r.subtitulo,
+      slogan: slogans[r.id] ?? "",
       acessibilidade: r.acessibilidade,
       experiencia: arrayParaTexto(r.experiencia ?? []),
       ativo: r.ativo !== false,
@@ -260,6 +283,17 @@ export default function RoteirosAdmin() {
 
   // ── Salvar ──────────────────────────────────────────────
 
+  /**
+   * Grava o slogan da rota. Ele NÃO fica na tabela das rotas (isso exigiria
+   * alterar o banco): vai para app_config, na chave "roteiros_slogans", como
+   * { "<id-da-rota>": "texto" } — o app lê a mesma chave.
+   */
+  async function gravarSloganDaRota(idDaRota: string) {
+    const atualizado = definirSlogan(slogans, idDaRota, form.slogan);
+    await salvarConfig(CHAVE_SLOGANS, atualizado);
+    setSlogans(atualizado);
+  }
+
   async function salvar(e: React.FormEvent) {
     e.preventDefault();
     setErro("");
@@ -302,6 +336,9 @@ export default function RoteirosAdmin() {
 
           await salvarRoteiro(editando, semArquivos);
 
+          // o slogan é independente da logo/mapas: grava mesmo nesta janela
+          await gravarSloganDaRota(id);
+
           setEditando(id);
           setPendente(false);
           await carregar();
@@ -319,6 +356,7 @@ export default function RoteirosAdmin() {
 
       setEditando(id);
       setPendente(false);
+      await gravarSloganDaRota(id);
       await carregar();
       setOk(`Alterações publicadas em ${formatarDataHoraBR(new Date().toISOString())}.`);
     } catch (e) {
@@ -420,7 +458,7 @@ export default function RoteirosAdmin() {
           <label className="admin-campo">
             <b>Nível *</b>
             <span className="admin-campo-dica">
-              Selo no canto do cartão da rota, ao lado do nome.
+              Pílula acima do botão “Iniciar rota”, no cartão da rota.
             </span>
             <input
               type="text"
@@ -472,6 +510,24 @@ export default function RoteirosAdmin() {
             value={form.subtitulo}
             onChange={(e) => setCampo("subtitulo", e.target.value)}
             required
+          />
+        </label>
+
+        <label className="admin-campo">
+          <b>Slogan</b>
+          <span className="admin-campo-dica">
+            Frase de abertura da rota (slogan e/ou citação) — aparece logo abaixo do nome,
+            tanto no cartão da tela Percursos quanto no topo da página da rota. Não é
+            obrigatório: em branco, nada aparece. Linha em branco separa parágrafos,
+            **duas estrelas** deixam em negrito.
+          </span>
+          <textarea
+            placeholder={
+              "Ex:\nGirar para Conhecer\n“Nós somos o começo, o meio e o começo de novo. O fim nunca existe” — Nêgo Bispo"
+            }
+            value={form.slogan}
+            onChange={(e) => setCampo("slogan", e.target.value)}
+            rows={3}
           />
         </label>
 

@@ -61,7 +61,7 @@ export const MANUAL_PADRAO: SecaoManual[] = [
       "As abas do menu estão nesta ordem (de cima para baixo): primeiro o que você usa durante o guia, depois o conteúdo e, no fim, as ferramentas de consulta.",
     itens: [
       "**Fotos e vídeos** — a lista curta para ligar e desligar mídia **durante o guia**, no celular: fotos e vídeos por página e por território, e os mapas das rotas, com um botão por mídia (ver a seção própria mais adiante).",
-      "**Rotas** — roteiros e percurso: identificação da rota, textos, acessibilidade, mapas e logo. Os botões da tabela gravam na hora.",
+      "**Rotas** — roteiros e percurso: identificação da rota, textos, **slogan**, acessibilidade, mapas e logo. Os botões da tabela gravam na hora.",
       "**Territórios** — a ficha completa: identificação, cartões de “Informações rápidas” (Camadas, Contexto, Ano, Idade, Criação, Função, Transformações, Status, Observação), textos (Descrição, Para observar, Para refletir, Palavra-chave), ordem das informações, camadas de tempo, fotos e vídeos de apoio.",
       "**Página inicial** — aviso do próximo tour, título/data/local/informações e link da ficha, capa, selo e botões.",
       "**Páginas** — as telas de texto do app (conceito, intro e outras): blocos, destaques, imagens e links.",

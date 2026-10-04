@@ -3,10 +3,12 @@ import PageTitle from "../components/PageTitle";
 import BotaoContato from "../components/BotaoContato";
 import Inline from "../components/Inline";
 import { useTerritorios } from "../context/useTerritorios";
+import { sloganDaRota } from "../data/slogansRota";
+import { paragrafosDe } from "../utils/texto";
 
 export default function Roteiros() {
   const navigate = useNavigate();
-  const { roteiros, inscricaoUrl } = useTerritorios();
+  const { roteiros, inscricaoUrl, config } = useTerritorios();
 
   return (
     <>
@@ -18,6 +20,7 @@ export default function Roteiros() {
       {roteiros.map((r) => {
         const experiencias = Array.isArray(r.experiencia) ? r.experiencia : [];
         const inscricao = r.inscricaoUrl || inscricaoUrl;
+        const slogan = sloganDaRota(config, r.id);
 
         return (
           <article key={r.id} className="roteiro-card">
@@ -32,6 +35,19 @@ export default function Roteiros() {
             <div className="roteiro-header">
               <div>
                 <b className="roteiro-title">{r.nome}</b>
+
+                {/* Slogan da rota (campo do painel): frase de abertura, logo
+                    abaixo do nome — antes do início/conclusão do percurso. */}
+                {slogan && (
+                  <div className="roteiro-slogan">
+                    {paragrafosDe(slogan).map((paragrafo, i) => (
+                      <p key={i}>
+                        <Inline texto={paragrafo} />
+                      </p>
+                    ))}
+                  </div>
+                )}
+
                 <p className="roteiro-subtitle">
                   <Inline texto={r.subtitulo} />
                 </p>
