@@ -370,6 +370,16 @@ a, a:visited, a:hover, a:active {
   box-shadow: 0 4px 10px rgba(77, 49, 17, 0.12);
 }
 
+/* A pílula do nível fica sozinha na linha, logo acima do botão "Iniciar
+   percurso": aqui o flex evita que ela estique na largura toda e mantém o
+   formato de pílula, encostada à esquerda como o resto do texto do cartão. */
+.roteiro-nivel {
+  display: flex;
+  justify-content: flex-start;
+
+  margin-top: 14px;
+}
+
 .roteiro-section {
   margin-top: 14px;
 

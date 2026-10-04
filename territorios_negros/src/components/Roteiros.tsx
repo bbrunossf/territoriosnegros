@@ -36,7 +36,6 @@ export default function Roteiros() {
                   <Inline texto={r.subtitulo} />
                 </p>
               </div>
-              <span className="roteiro-level">{r.nivel}</span>
             </div>
 
             <div className="roteiro-section">
@@ -64,6 +63,15 @@ export default function Roteiros() {
             <div className="roteiro-count">
               <b>Quantidade de territórios:</b> {r.pontos?.length ?? 0}
             </div>
+
+            {/* Nível de dificuldade logo ACIMA do botão de iniciar (pedido da
+                autoria, 02/10/2026): antes ficava no topo, ao lado do título, e
+                a pessoa só via a informação depois de decidir começar. */}
+            {r.nivel && (
+              <div className="roteiro-nivel">
+                <span className="roteiro-level">{r.nivel}</span>
+              </div>
+            )}
 
             <button
               className="btn roteiro-btn"
