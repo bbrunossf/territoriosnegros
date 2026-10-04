@@ -1093,6 +1093,9 @@ a, a:visited, a:hover, a:active {
   background: #b8832c;
   border-color: #8f611d;
   color: #130b08;
+  /* mesma sombra do ".btn": sem ela o botão fica visualmente mais "chapado" que
+     o principal, e a padronização fica pela metade */
+  box-shadow: 0 6px 14px rgba(94, 60, 20, 0.14);
 }
 
 /* Todo botão do app responde ao cursor/dedo — antes isso só valia nos botões de
