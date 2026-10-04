@@ -1,5 +1,5 @@
 //Territorios.tsx
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useTerritorios } from "../context/useTerritorios";
 import { agruparPorCategoria } from "../utils/catalogo";
 
@@ -21,6 +21,15 @@ export default function Territorios() {
         title="Territórios"
         subtitle="Consulta individual dos pontos do guia."
       />
+
+      {/* Pedido da autoria (02/10/2026): o botão da cidade fica AQUI, logo abaixo
+          do subtítulo — é o passo anterior natural antes de descer para os
+          territórios. Antes ele ficava na tela "Antes de caminhar". */}
+      <div className="pagina-botoes">
+        <Link className="outline pagina-botao" to="/vitoria">
+          A cidade de Vitória - ES
+        </Link>
+      </div>
 
       {grupos.map((g) => (
         <section key={g.id}>

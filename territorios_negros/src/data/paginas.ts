@@ -195,7 +195,8 @@ export const INTRO_PADRAO: PaginaConteudo = {
   botoes: [
     { texto: "Ir para base teórica", url: "/conceito", estilo: "btn" },
     { texto: "Ir direto para os roteiros", url: "/roteiros", estilo: "outline" },
-    { texto: "A cidade de Vitória - ES", url: "/vitoria", estilo: "outline" },
+    // O botão "A cidade de Vitória - ES" saiu daqui em 02/10/2026: a autoria
+    // pediu que ele ficasse na tela de Territórios, abaixo do subtítulo.
   ],
 };
 
