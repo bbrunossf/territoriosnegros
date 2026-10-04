@@ -2361,6 +2361,18 @@ a, a:visited, a:hover, a:active {
   text-align: center;
 }
 
+/* Feedback de toque nos botões de página (a autoria apontou que o botão precisa
+   "induzir ao clique": o fundo cheio já diferencia da página, e aqui ele responde
+   ao passar o dedo/cursor). */
+.pagina-botao:hover {
+  filter: brightness(1.07);
+}
+
+.pagina-botao:active {
+  transform: translateY(1px);
+  filter: brightness(0.96);
+}
+
 .admin-bloco {
   border: 1px solid #e5d2a8;
   background: #fffdf8;

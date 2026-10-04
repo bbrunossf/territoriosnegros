@@ -24,9 +24,12 @@ export default function Territorios() {
 
       {/* Pedido da autoria (02/10/2026): o botão da cidade fica AQUI, logo abaixo
           do subtítulo — é o passo anterior natural antes de descer para os
-          territórios. Antes ele ficava na tela "Antes de caminhar". */}
+          territórios. Antes ele ficava na tela "Antes de caminhar".
+          Cor: usa o estilo cheio do app (".btn", o mesmo das chamadas principais),
+          porque o "outline" translúcido se confundia com o fundo da página e não
+          induzia ao clique. */}
       <div className="pagina-botoes">
-        <Link className="outline pagina-botao" to="/vitoria">
+        <Link className="btn pagina-botao" to="/vitoria">
           A cidade de Vitória - ES
         </Link>
       </div>
