@@ -317,7 +317,10 @@ export const CONCEITO_PADRAO: PaginaConteudo = {
   rodapeUrl: LINKS.tcc,
   botoes: [
     { texto: "Ir para os roteiros", url: "/roteiros", estilo: "btn" },
-    { texto: "Enviar uma mensagem", url: "/contato", estilo: "outline" },
+    { texto: "Ir para os territórios", url: "/territorios", estilo: "btn" },
+    // "Enviar uma mensagem" saiu desta lista: a tela já desenha o botão de
+    // contato automático no fim (config "botao_contato"), com o mesmo destino —
+    // com os dois, o botão aparecia duas vezes na página.
   ],
 };
 
