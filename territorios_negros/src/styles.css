@@ -1084,6 +1084,31 @@ a, a:visited, a:hover, a:active {
   cursor: pointer;
 }
 
+/* Botões secundários do app: eram translúcidos — praticamente a cor da página — e
+   por isso não pareciam clicáveis. Agora são cheios, em marrom escuro com texto
+   creme; o amarelo (".btn") continua marcando a ação principal de cada tela.
+   A regra vale só para o APP do visitante (".app"): os botões do painel
+   administrativo e os da barra de zoom da foto ficam como estavam.
+   *(pedido da autoria, 02/10/2026)* */
+.app .outline {
+  background: #5c3a24;
+  border-color: #3f2412;
+  color: #fdf3e3;
+}
+
+/* Todo botão do app responde ao cursor/dedo — antes isso só valia nos botões de
+   página, e os de dentro dos cartões não davam nenhum retorno. */
+.app .outline:hover,
+.app .btn:hover {
+  filter: brightness(1.08);
+}
+
+.app .outline:active,
+.app .btn:active {
+  transform: translateY(1px);
+  filter: brightness(0.96);
+}
+
 .icon {
   width: 26px;
   height: 26px;
