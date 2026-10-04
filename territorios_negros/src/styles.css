@@ -2438,6 +2438,26 @@ a, a:visited, a:hover, a:active {
   margin-top: 18px;
 }
 
+/* Caixa "habilitar tudo / desabilitar tudo", no alto da aba Fotos e vídeos. */
+.midias-tudo {
+  border: 1px solid #8f611d;
+  border-radius: 12px;
+  background: rgba(184, 131, 44, 0.1);
+  padding: 12px;
+  margin: 16px 0 4px;
+}
+
+.midias-tudo-botoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0 6px;
+}
+
+.midias-tudo-botoes .btn {
+  flex: 1 1 150px;
+}
+
 /* Atalhos de saída no topo da página "Fale com a autoria": servir para quem
    chegou ali por engano voltar a navegar (pedido da autoria, 02/10/2026). */
 .contato-atalhos {

@@ -34,10 +34,12 @@ import {
   gruposDasRotas,
   gruposDeTodosOsTerritorios,
   idDoItem,
+  operacoesDeTudo,
   resumoDoGrupo,
   temMidia,
   territoriosSemMidia,
   totalDasMidias,
+  totalDeTudo,
   type GrupoMidias,
   type ItemMidiaPainel,
   type TipoDeMidia,
@@ -85,6 +87,12 @@ export default function MidiasAdmin() {
   const rotasNaTela = soComMidia ? rotas.filter(temMidia) : rotas;
 
   const total = totalDasMidias([...paginas, ...todosOsTerritorios, ...rotas]);
+
+  // o que o botão "tudo" alcança (páginas + territórios + mapas das rotas)
+  const tudo = useMemo(() => {
+    const operacoes = operacoesDeTudo(paginas, todosOsTerritorios, rotas);
+    return { operacoes, ...totalDeTudo(operacoes) };
+  }, [paginas, todosOsTerritorios, rotas]);
   const semMidia = useMemo(() => territoriosSemMidia(territorios), [territorios]);
   const paginasSemImagem = PAGINAS_DO_APP.filter(
     (definicao) => !paginas.some((grupo) => grupo.chave === definicao.chave)
@@ -186,6 +194,58 @@ export default function MidiasAdmin() {
     } catch (e) {
       console.error(e);
       setErro(e instanceof Error ? e.message : `Falha ao marcar os ${plural}.`);
+    } finally {
+      setGravando(null);
+    }
+  }
+
+  /**
+   * Liga/desliga TUDO de uma vez — as fotos das páginas, as fotos e os vídeos de
+   * apoio de todos os territórios e os mapas de todas as rotas. Grava item por
+   * item, como os botões de cada grupo (é o `visivel` de cada mídia que o app
+   * lê); nada é apagado. Pedido da autoria (02/10/2026) para ligar/desligar tudo
+   * antes de começar um guia.
+   */
+  async function alternarTudo(visivel: boolean) {
+    setErro("");
+    setOk("");
+    setGravando("tudo");
+
+    try {
+      for (const operacao of tudo.operacoes) {
+        if (operacao.origem === "territorio") {
+          if (operacao.fotos > 0) {
+            await definirVisibilidadeTodasMidias(operacao.chave, "fotos", visivel);
+          }
+          if (operacao.videos > 0) {
+            await definirVisibilidadeTodasMidias(operacao.chave, "videos", visivel);
+          }
+        } else if (operacao.origem === "rota") {
+          await definirVisibilidadeTodosOsMapasDaRota(operacao.chave, visivel);
+        } else {
+          const { pagina } = paginaAtual(operacao.chave);
+          await salvarConfig(
+            operacao.chave,
+            definirVisibilidadeDeTodasAsImagens(pagina, visivel)
+          );
+        }
+      }
+
+      await recarregar();
+
+      setOk(
+        `Tudo ${visivel ? "habilitado" : "desabilitado"} (gravado): ` +
+          `${tudo.fotos} ${tudo.fotos === 1 ? "foto/mapa" : "fotos/mapas"} e ` +
+          `${tudo.videos} ${tudo.videos === 1 ? "vídeo" : "vídeos"}, ` +
+          `em ${tudo.operacoes.length} ${tudo.operacoes.length === 1 ? "grupo" : "grupos"}.`
+      );
+    } catch (e) {
+      console.error(e);
+      setErro(
+        e instanceof Error
+          ? e.message
+          : `Falha ao ${visivel ? "habilitar" : "desabilitar"} tudo.`
+      );
     } finally {
       setGravando(null);
     }
@@ -329,6 +389,41 @@ export default function MidiasAdmin() {
         Neste app: <b>{total.fotos}</b> fotos e mapas, <b>{total.videos}</b> vídeos —{" "}
         <b>{total.ocultas}</b> desligado{total.ocultas === 1 ? "" : "s"}.
       </p>
+
+      {/* Botão de tudo: um par para ligar/desligar de uma vez as páginas, os
+          territórios e as rotas (pedido da autoria, 02/10/2026). */}
+      <div className="midias-tudo">
+        <b>Ligar ou desligar tudo de uma vez</b>
+
+        <div className="midias-tudo-botoes">
+          <button
+            type="button"
+            className="btn"
+            disabled={gravando === "tudo"}
+            onClick={() => alternarTudo(true)}
+          >
+            {gravando === "tudo" ? "gravando..." : "habilitar tudo"}
+          </button>
+
+          <button
+            type="button"
+            className="btn"
+            disabled={gravando === "tudo"}
+            onClick={() => alternarTudo(false)}
+          >
+            {gravando === "tudo" ? "gravando..." : "desabilitar tudo"}
+          </button>
+        </div>
+
+        <p className="admin-ajuda">
+          Alcança <b>{tudo.fotos}</b> fotos e mapas e <b>{tudo.videos}</b>{" "}
+          {tudo.videos === 1 ? "vídeo" : "vídeos"}, em {tudo.operacoes.length}{" "}
+          {tudo.operacoes.length === 1 ? "grupo" : "grupos"}: as fotos de cada <b>página</b>, as
+          fotos e os vídeos de apoio de cada <b>território</b> e os mapas de cada <b>rota</b>.
+          Marca item por item — é o que o app lê — e <b>nada é apagado</b>: desligar só tira da
+          vista do visitante.
+        </p>
+      </div>
 
       <div className="midias-acoes-topo">
         <button type="button" className="outline" onClick={atualizarLista}>

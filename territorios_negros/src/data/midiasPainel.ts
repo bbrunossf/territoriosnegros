@@ -239,3 +239,51 @@ export function territoriosSemMidia(territorios: Record<string, Territorio>): st
 export function idDoItem(grupo: GrupoMidias, item: ItemMidiaPainel): string {
   return `${grupo.chave}|${item.tipo}|${item.url}`;
 }
+
+/** Uma etapa do "habilitar/desabilitar tudo": um grupo e o que ele tem de mídia. */
+export interface OperacaoDeTudo {
+  origem: OrigemDaMidia;
+  chave: string;
+  nome: string;
+  fotos: number;
+  videos: number;
+}
+
+/**
+ * O que o botão "tudo" da aba Fotos e vídeos alcança, na ordem das seções da
+ * tela: páginas, territórios e rotas.
+ *
+ * Só entram grupos que TÊM mídia daquele tipo — grupo vazio não vira gravação no
+ * banco. É função de dado puro (nenhuma tela, nenhum acesso ao banco), então dá
+ * para conferir o alcance do botão sem clicar em nada.
+ */
+export function operacoesDeTudo(
+  paginas: GrupoMidias[],
+  territorios: GrupoMidias[],
+  rotas: GrupoMidias[]
+): OperacaoDeTudo[] {
+  return [...paginas, ...territorios, ...rotas]
+    .map((grupo) => ({
+      origem: grupo.origem,
+      chave: grupo.chave,
+      nome: grupo.nome,
+      // nas rotas os mapas entram em `fotos` (é o mesmo controle de visibilidade)
+      fotos: grupo.fotos.length,
+      videos: grupo.videos.length,
+    }))
+    .filter((operacao) => operacao.fotos > 0 || operacao.videos > 0);
+}
+
+/** Quantas mídias o "tudo" alcança, por tipo (para a mensagem de confirmação). */
+export function totalDeTudo(operacoes: OperacaoDeTudo[]): {
+  fotos: number;
+  videos: number;
+} {
+  return operacoes.reduce(
+    (soma, operacao) => ({
+      fotos: soma.fotos + operacao.fotos,
+      videos: soma.videos + operacao.videos,
+    }),
+    { fotos: 0, videos: 0 }
+  );
+}
