@@ -2432,6 +2432,12 @@ a, a:visited, a:hover, a:active {
   margin-top: 22px;
 }
 
+/* Atalho do TCC logo abaixo do título, na Base teórica (pedido da autoria,
+   02/10/2026 — antes esse acesso só existia no fim da página). */
+.rodape-topo {
+  margin-top: 18px;
+}
+
 .pagina-botao {
   display: block;
   text-align: center;

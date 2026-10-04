@@ -42,6 +42,7 @@ export default function PaginaConteudo({
   pagina,
   children,
   tela,
+  rodapeNoTopo = false,
 }: {
   pagina: PaginaConteudo;
   children?: ReactNode;
@@ -50,9 +51,31 @@ export default function PaginaConteudo({
    * botão "Enviar uma mensagem" do fim da página. Sem tela, o botão não entra.
    */
   tela?: string;
+  /**
+   * Mostra a caixa do link final TAMBÉM logo abaixo do título. Pedido da autoria
+   * para a Base teórica: o acesso ao TCC completo ficava só no fim da página.
+   */
+  rodapeNoTopo?: boolean;
 }) {
   const destaque = paragrafosDe(pagina.destaque);
   const classesDestaque = classesEstilo(pagina.destaqueEstilo);
+
+  /** Caixa final: texto + link (ex.: "TCC completo: Acessar no Repositório da UFES"). */
+  const caixaDoRodape = pagina.rodapeUrl ? (
+    <Info>
+      <b>{pagina.rodapeTexto || "Link:"}</b>
+      <br />
+
+      <a
+        href={pagina.rodapeUrl}
+        target="_blank"
+        rel="noreferrer"
+        className="conceito-link"
+      >
+        <Inline texto={pagina.rodapeLinkTexto || "Abrir"} />
+      </a>
+    </Info>
+  ) : null;
 
   const conteudo = (
     <>
@@ -62,6 +85,11 @@ export default function PaginaConteudo({
         titleClassName={classesEstilo(pagina.tituloEstilo, "titulo")}
         subtitleClassName={classesEstilo(pagina.subtituloEstilo, "titulo")}
       />
+
+      {/* mesma caixa do fim da página, repetida no topo quando a tela pede */}
+      {rodapeNoTopo && caixaDoRodape && (
+        <div className="rodape-topo">{caixaDoRodape}</div>
+      )}
 
       {destaque.length === 1 && (
         <Info>
@@ -150,21 +178,7 @@ export default function PaginaConteudo({
         );
       })}
 
-      {pagina.rodapeUrl && (
-        <Info>
-          <b>{pagina.rodapeTexto || "Link:"}</b>
-          <br />
-
-          <a
-            href={pagina.rodapeUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="conceito-link"
-          >
-            <Inline texto={pagina.rodapeLinkTexto || "Abrir"} />
-          </a>
-        </Info>
-      )}
+      {pagina.rodapeUrl && caixaDoRodape}
 
       {pagina.botoes.length > 0 && (
         <div className="pagina-botoes">

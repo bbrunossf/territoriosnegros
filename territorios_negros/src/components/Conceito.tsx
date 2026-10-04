@@ -10,6 +10,9 @@ export default function Conceito() {
     <PaginaConteudo
       pagina={normalizarPagina(config.pagina_conceito, CONCEITO_PADRAO)}
       tela="conceito"
+      // o acesso ao TCC completo aparece também logo abaixo do título, e não só
+      // no fim da página (pedido da autoria, 02/10/2026)
+      rodapeNoTopo
     />
   );
 }
