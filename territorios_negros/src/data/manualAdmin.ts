@@ -162,6 +162,7 @@ export const MANUAL_PADRAO: SecaoManual[] = [
     itens: [
       "**Adicionar apoiador** cria um cartão novo, em branco, no fim da lista.",
       "**Nome** — da instituição, empresa, coletivo ou pessoa que apoia.",
+      "**Participação** — o que foi combinado: **Realização**, **Parceria**, **Apoio**, **Patrocínio** ou **Acolhimento** (quem recebe o grupo — a igreja ou o espaço que abre as portas). Aparece como **etiqueta no alto do cartão**, que é o que diferencia um patrocínio de um acolhimento. Sem escolha, o cartão sai sem etiqueta.",
       "**Logo ou imagem** — envie o arquivo pelo painel (combinado com quem apoia) ou cole um endereço pronto. A prévia aparece ao lado.",
       "**Contribuição** — uma frase curta: apoio à divulgação, acolhimento da visita, material educativo, transporte etc.",
       "**Link** — site ou Instagram oficial, opcional. Pode colar sem o “https://” que o app completa.",

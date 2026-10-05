@@ -11,6 +11,7 @@ import {
   apoiadoresVisiveis,
   lerApoiadores,
   linkUtilizavel,
+  nomeDoTipo,
   rotuloDoLink,
 } from "../data/apoiadores";
 import Inline from "./Inline";
@@ -41,6 +42,12 @@ export default function Apoiadores() {
         <div className="apoio-lista">
           {lista.map((apoiador) => (
             <div className="apoio-cartao" key={apoiador.id}>
+              {/* a participação combinada vem primeiro: é o que diferencia um
+                  patrocínio de um acolhimento */}
+              {nomeDoTipo(apoiador.tipo) && (
+                <span className="apoio-tipo">{nomeDoTipo(apoiador.tipo)}</span>
+              )}
+
               {apoiador.logo && (
                 <img
                   className="apoio-logo"

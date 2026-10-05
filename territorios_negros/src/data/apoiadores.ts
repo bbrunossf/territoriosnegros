@@ -23,11 +23,35 @@ export interface Apoiador {
   logo: string;
   /** uma frase curta: apoio à divulgação, acolhimento da visita, material, transporte… */
   contribuicao: string;
+  /**
+   * a participação combinada (ver TIPOS_DE_APOIO): realização, parceria, apoio,
+   * patrocínio ou acolhimento. Vazio = ainda não definida (o cartão sai sem
+   * etiqueta).
+   */
+  tipo: string;
   /** site ou Instagram oficial (opcional) */
   link: string;
   /** aparece para o visitante? */
   visivel: boolean;
 }
+
+/**
+ * As participações que o app reconhece, na ordem em que aparecem para a autoria
+ * escolher. Cada uma diz o que aquilo significa, porque a diferença importa para
+ * quem apoia: patrocínio é custeio, acolhimento é receber o grupo, e assim por
+ * diante.
+ */
+export const TIPOS_DE_APOIO: { valor: string; nome: string; explicacao: string }[] = [
+  { valor: "realizacao", nome: "Realização", explicacao: "quem realiza o projeto" },
+  { valor: "parceria", nome: "Parceria", explicacao: "quem caminha junto, com ação conjunta" },
+  { valor: "apoio", nome: "Apoio", explicacao: "quem contribui sem vínculo de patrocínio" },
+  { valor: "patrocinio", nome: "Patrocínio", explicacao: "quem custeia ou financia parte do projeto" },
+  {
+    valor: "acolhimento",
+    nome: "Acolhimento",
+    explicacao: "quem recebe o grupo — a igreja ou o espaço que abre as portas",
+  },
+];
 
 export interface PaginaApoiadores {
   titulo: string;
@@ -61,6 +85,7 @@ export function novoApoiador(): Apoiador {
     nome: "",
     logo: "",
     contribuicao: "",
+    tipo: "",
     link: "",
     visivel: true,
   };
@@ -85,6 +110,7 @@ export function lerApoiadores(valor: unknown): PaginaApoiadores {
         nome: texto(a.nome),
         logo: texto(a.logo),
         contribuicao: texto(a.contribuicao),
+        tipo: tipoValido(a.tipo),
         link: texto(a.link),
         // só fica escondido se a autoria esconder de propósito
         visivel: a.visivel !== false,
@@ -106,9 +132,29 @@ export function apoiadoresVisiveis(pagina: PaginaApoiadores): Apoiador[] {
 /** “Instituto X — apoio à divulgação”: resumo curto para a lista do painel. */
 export function resumoDoApoiador(apoiador: Apoiador): string {
   const nome = apoiador.nome || "sem nome ainda";
+  const tipo = nomeDoTipo(apoiador.tipo);
   const contribuicao = apoiador.contribuicao ? ` — ${apoiador.contribuicao}` : "";
 
-  return `${nome}${contribuicao}`;
+  return `${nome}${tipo ? ` — ${tipo}` : ""}${contribuicao}`;
+}
+
+/**
+ * A participação é uma das combinadas? Devolve o valor guardado quando sim e ""
+ * quando não (valor antigo, digitado à mão ou vazio não vira etiqueta errada).
+ */
+export function tipoValido(valor: unknown): string {
+  if (typeof valor !== "string") return "";
+
+  const limpo = valor.trim().toLowerCase();
+
+  return TIPOS_DE_APOIO.some((t) => t.valor === limpo) ? limpo : "";
+}
+
+/** Nome da participação para mostrar na tela (“Patrocínio”); "" quando não há. */
+export function nomeDoTipo(valor: unknown): string {
+  const tipo = tipoValido(valor);
+
+  return TIPOS_DE_APOIO.find((t) => t.valor === tipo)?.nome ?? "";
 }
 
 /** Endereço pronto para o link funcionar (completa o https quando falta). */

@@ -12,8 +12,8 @@ import { useEffect, useState } from "react";
 import { salvarConfig, uploadFoto } from "../data/api";
 import { useTerritorios } from "../context/useTerritorios";
 import {
-  APOIADORES_PADRAO,
   CHAVE_APOIADORES,
+  TIPOS_DE_APOIO,
   lerApoiadores,
   novoApoiador,
   quantosVisiveis,
@@ -24,9 +24,14 @@ import {
 export default function ApoiadoresAdmin() {
   const { config, recarregar } = useTerritorios();
 
-  const [titulo, setTitulo] = useState(APOIADORES_PADRAO.titulo);
-  const [texto, setTexto] = useState(APOIADORES_PADRAO.texto);
-  const [lista, setLista] = useState<Apoiador[]>([]);
+  // o estado começa já com o que está gravado (a lista aparece preenchida no
+  // primeiro desenho, sem piscar em branco) e o efeito abaixo ressincroniza
+  // quando o painel termina de carregar ou quando outra tela muda o config
+  const [titulo, setTitulo] = useState(() => lerApoiadores(config[CHAVE_APOIADORES]).titulo);
+  const [texto, setTexto] = useState(() => lerApoiadores(config[CHAVE_APOIADORES]).texto);
+  const [lista, setLista] = useState<Apoiador[]>(
+    () => lerApoiadores(config[CHAVE_APOIADORES]).lista
+  );
 
   const [ok, setOk] = useState("");
   const [erro, setErro] = useState("");
@@ -247,16 +252,23 @@ export default function ApoiadoresAdmin() {
               </label>
 
               <label className="admin-campo">
-                <b>Link (site ou Instagram)</b>
+                <b>Participação</b>
                 <span className="admin-campo-dica">
-                  Opcional. Pode colar sem o “https://” que o app completa. Vira um botão no cartão.
+                  O que foi combinado com quem apoia. Aparece como etiqueta no alto do cartão; sem
+                  escolha, o cartão sai sem etiqueta.
                 </span>
-                <input
-                  type="text"
-                  placeholder="Ex: instagram.com/institutoexemplo"
-                  value={apoiador.link}
-                  onChange={(e) => mudar(apoiador.id, "link", e.target.value)}
-                />
+                <select
+                  value={apoiador.tipo}
+                  onChange={(e) => mudar(apoiador.id, "tipo", e.target.value)}
+                >
+                  <option value="">— ainda não defini —</option>
+
+                  {TIPOS_DE_APOIO.map((tipo) => (
+                    <option key={tipo.valor} value={tipo.valor}>
+                      {tipo.nome} — {tipo.explicacao}
+                    </option>
+                  ))}
+                </select>
               </label>
             </div>
 
@@ -271,6 +283,19 @@ export default function ApoiadoresAdmin() {
                 placeholder="Ex: Acolhimento da visita guiada e apoio à divulgação."
                 value={apoiador.contribuicao}
                 onChange={(e) => mudar(apoiador.id, "contribuicao", e.target.value)}
+              />
+            </label>
+
+            <label className="admin-campo">
+              <b>Link (site ou Instagram)</b>
+              <span className="admin-campo-dica">
+                Opcional. Pode colar sem o “https://” que o app completa. Vira um botão no cartão.
+              </span>
+              <input
+                type="text"
+                placeholder="Ex: instagram.com/institutoexemplo"
+                value={apoiador.link}
+                onChange={(e) => mudar(apoiador.id, "link", e.target.value)}
               />
             </label>
 

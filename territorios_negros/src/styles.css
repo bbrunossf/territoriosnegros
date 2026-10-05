@@ -141,7 +141,8 @@ a, a:visited, a:hover, a:active {
 }
 
 .admin-form input,
-.admin-form textarea {
+.admin-form textarea,
+.admin-form select {
   padding: 12px;
 
   border: 1px solid #ccc;
@@ -2473,6 +2474,22 @@ a, a:visited, a:hover, a:active {
   max-width: 180px;
   max-height: 120px;
   object-fit: contain;
+}
+
+/* etiqueta da participação (Realização, Patrocínio, Apoio…), no alto do cartão */
+.apoio-tipo {
+  align-self: center;
+
+  padding: 3px 10px;
+  border-radius: 999px;
+
+  background: #b8832c;
+  color: #130b08;
+
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .apoio-nome {
