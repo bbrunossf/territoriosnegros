@@ -73,6 +73,10 @@ export default function AdminLayout() {
           Páginas
         </Link>
 
+        <Link to="/admin/apoiadores" className="admin-sidebar-btn">
+          Apoiadores
+        </Link>
+
         <Link to="/admin/categorias" className="admin-sidebar-btn">
           Categorias
         </Link>

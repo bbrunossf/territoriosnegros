@@ -65,6 +65,7 @@ export const MANUAL_PADRAO: SecaoManual[] = [
       "**Territórios** — a ficha completa: identificação, cartões de “Informações rápidas” (Camadas, Contexto, Ano, Idade, Criação, Função, Transformações, Status, Observação), textos (Descrição, Para observar, Para refletir, Palavra-chave), ordem das informações, camadas de tempo, fotos e vídeos de apoio.",
       "**Página inicial** — aviso do próximo tour, título/data/local/informações e link da ficha, capa, selo e botões.",
       "**Páginas** — as telas de texto do app (conceito, intro e outras): blocos, destaques, imagens e links.",
+      "**Apoiadores** — a página **Apoiadores** do app: título, texto de abertura e a lista de quem apoia o projeto (logo, nome, contribuição e link).",
       "**Categorias** — as categorias que classificam os territórios.",
       "**Mensagens** — o que os visitantes enviam pelo formulário de contato.",
       "**Manual** — esta página. Edite quando quiser: botão **Editar o manual**.",
@@ -151,6 +152,21 @@ export const MANUAL_PADRAO: SecaoManual[] = [
       "O link **abrir**, ao lado de cada mídia, mostra o arquivo original em outra aba, para você conferir do que se trata.",
       "**habilitar tudo / desabilitar tudo** (no alto desta aba) — alcança de uma vez as fotos das páginas, as fotos e os vídeos de apoio de **todos os territórios** e os **mapas de todas as rotas**. Marca item por item, como os botões de cada grupo: depois você ajusta um só, sem estragar os outros. Nada é apagado — desligar só tira da vista do visitante. É o botão para preparar o guia: desligue tudo e ligue só o que entra no roteiro do dia.",
       "**atualizar lista** recarrega o que está gravado — útil se você mexeu em outro aparelho.",
+    ],
+  },
+  {
+    id: "apoiadores",
+    titulo: "Apoiadores: quem apoia o projeto",
+    texto:
+      "A aba **Apoiadores** monta a página **Apoiadores** do app (endereço /apoiadores). O botão de acesso fica na tela **Antes de caminhar**, logo depois do botão que leva ao contato — e ele **só aparece para o visitante quando existe pelo menos um apoiador ligado** com nome ou logo. Enquanto a lista estiver vazia, o botão não aparece (e você continua abrindo a página pelo endereço /apoiadores, para conferir).\n\nCada apoiador vira um cartão na página, com a **logo**, o **nome**, uma frase sobre a **contribuição** e, quando houver, o **link** oficial (site ou Instagram) — que aparece como um botão. A ordem da lista aqui no painel é a ordem na página: use **subir** e **descer**.\n\nO título e o texto de abertura também são seus. Se apagar os dois, a página volta ao texto padrão (o mesmo que já está publicado).",
+    itens: [
+      "**Adicionar apoiador** cria um cartão novo, em branco, no fim da lista.",
+      "**Nome** — da instituição, empresa, coletivo ou pessoa que apoia.",
+      "**Logo ou imagem** — envie o arquivo pelo painel (combinado com quem apoia) ou cole um endereço pronto. A prévia aparece ao lado.",
+      "**Contribuição** — uma frase curta: apoio à divulgação, acolhimento da visita, material educativo, transporte etc.",
+      "**Link** — site ou Instagram oficial, opcional. Pode colar sem o “https://” que o app completa.",
+      "**Aparecendo no app** — desmarcado, o cadastro fica guardado e o visitante não vê. É item por item, como nas fotos de apoio: dá para preparar tudo e ligar na hora de publicar.",
+      "**remover** apaga o apoiador da lista. Nada vai ao ar sem **Salvar alterações**; **Descartar mudanças** volta ao que está publicado.",
     ],
   },
   {

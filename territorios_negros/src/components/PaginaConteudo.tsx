@@ -43,6 +43,7 @@ export default function PaginaConteudo({
   children,
   tela,
   rodapeNoTopo = false,
+  depoisDoContato,
 }: {
   pagina: PaginaConteudo;
   children?: ReactNode;
@@ -56,6 +57,11 @@ export default function PaginaConteudo({
    * para a Base teórica: o acesso ao TCC completo ficava só no fim da página.
    */
   rodapeNoTopo?: boolean;
+  /**
+   * Conteúdo extra logo DEPOIS do botão "Enviar uma mensagem" (ex.: o botão
+   * "Apoiadores" na tela "Antes de caminhar").
+   */
+  depoisDoContato?: ReactNode;
 }) {
   const destaque = paragrafosDe(pagina.destaque);
   const classesDestaque = classesEstilo(pagina.destaqueEstilo);
@@ -189,6 +195,8 @@ export default function PaginaConteudo({
       )}
 
       {tela && <BotaoContato tela={tela} botoes={pagina.botoes} />}
+
+      {depoisDoContato}
     </>
   );
 

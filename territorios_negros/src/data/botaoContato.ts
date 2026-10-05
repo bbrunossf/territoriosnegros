@@ -32,6 +32,7 @@ export const TELAS_BOTAO: { chave: string; nome: string }[] = [
   { chave: "territorio", nome: "Ficha de um território" },
   { chave: "evento", nome: "Próximo evento" },
   { chave: "fim", nome: "Fim do percurso" },
+  { chave: "apoiadores", nome: "Apoiadores" },
 ];
 
 export const BOTAO_CONTATO_PADRAO: BotaoContato = {

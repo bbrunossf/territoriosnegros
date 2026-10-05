@@ -626,6 +626,7 @@ export async function uploadFoto(
     | "eventos"
     | "paginas"
     | "capa"
+    | "apoiadores"
     | "videos" = "territorios"
 ): Promise<string> {
   const extensao = file.name.split(".").pop() ?? "jpg";

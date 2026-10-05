@@ -26,6 +26,7 @@ import MensagensAdmin from "./components/MensagensAdmin";
 import AcessosAdmin from "./components/AcessosAdmin";
 import ManualAdmin from "./components/ManualAdmin";
 import MidiasAdmin from "./components/MidiasAdmin";
+import ApoiadoresAdmin from "./components/ApoiadoresAdmin";
 import { Navigate } from "react-router-dom";
 
 
@@ -40,6 +41,7 @@ import Territorios from "./components/Territorios";
 import Territorio from "./components/Territorio";
 import ProximoEvento from "./components/ProximoEvento";
 import Fim from "./components/Fim";
+import Apoiadores from "./components/Apoiadores";
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -64,6 +66,8 @@ createRoot(document.getElementById('root')!).render(
               <Route path="territorio/:id" element={<Territorio />} />
               <Route path="evento" element={<ProximoEvento />} />
               <Route path="fim" element={<Fim />} />
+              {/* quem apoia o projeto — aberta pelo botão da tela "Antes de caminhar" */}
+              <Route path="apoiadores" element={<Apoiadores />} />
             </Route>
 
             <Route path="/login" element={<Login />} />
@@ -74,6 +78,7 @@ createRoot(document.getElementById('root')!).render(
               <Route path="categorias" element={<CategoriasAdmin />} />
               <Route path="inicio" element={<InicioAdmin />} />
               <Route path="paginas" element={<PaginasAdmin />} />
+              <Route path="apoiadores" element={<ApoiadoresAdmin />} />
               <Route path="mensagens" element={<MensagensAdmin />} />
               <Route path="acessos" element={<AcessosAdmin />} />
               <Route path="midias" element={<MidiasAdmin />} />
