@@ -1,22 +1,21 @@
 // src/components/BotaoApoiadores.tsx
 //
-// Botão "Apoiadores" da tela "Antes de caminhar", logo depois do botão de contato
-// (pedido da autoria, 02/10/2026).
+// Botão "Apoiadores" — quem apoia o projeto (pedido da autoria, 02/10/2026).
 //
-// Ele só aparece quando existe pelo menos um apoiador visível: assim o visitante
-// não cai numa página ainda vazia. Enquanto a lista estiver vazia, a autoria
-// continua conseguindo abrir a página pelo endereço /apoiadores.
+// Ele aparece em três telas, sempre no estilo das chamadas principais do app:
+//   · "Antes de caminhar" — abaixo do botão "Enviar uma mensagem";
+//   · "Territórios" — acima do botão "A cidade de Vitória - ES";
+//   · "Rotas" — abaixo do subtítulo da página.
+//
+// Aparece SEMPRE (mesmo sem ninguém cadastrado): a autoria precisa do acesso
+// visível para conferir e mostrar. A página, enquanto estiver vazia, explica que
+// ainda não há apoiadores e convida instituições a escrever.
+//
+// É fixo no app (não é item editável da página): o endereço é sempre
+// /apoiadores, e o conteúdo de lá é que é montado no painel, na aba Apoiadores.
 import { Link } from "react-router-dom";
 
-import { useTerritorios } from "../context/useTerritorios";
-import { CHAVE_APOIADORES, apoiadoresVisiveis, lerApoiadores } from "../data/apoiadores";
-
 export default function BotaoApoiadores() {
-  const { config } = useTerritorios();
-
-  const lista = apoiadoresVisiveis(lerApoiadores(config[CHAVE_APOIADORES]));
-  if (lista.length === 0) return null;
-
   return (
     <div className="pagina-botoes">
       <Link className="btn pagina-botao" to="/apoiadores">

@@ -5,6 +5,7 @@ import { agruparPorCategoria } from "../utils/catalogo";
 
 import PageTitle from "../components/PageTitle";
 import SectionHeader from "../components/SectionHeader";
+import BotaoApoiadores from "../components/BotaoApoiadores";
 import BotaoContato from "../components/BotaoContato";
 
 export default function Territorios() {
@@ -21,6 +22,9 @@ export default function Territorios() {
         title="Territórios"
         subtitle="Consulta individual dos pontos do guia."
       />
+
+      {/* Apoiadores acima do botão da cidade (pedido da autoria, 02/10/2026) */}
+      <BotaoApoiadores />
 
       {/* Pedido da autoria (02/10/2026): o botão da cidade fica AQUI, logo abaixo
           do subtítulo — é o passo anterior natural antes de descer para os

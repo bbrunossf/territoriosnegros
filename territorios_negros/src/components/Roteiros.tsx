@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import PageTitle from "../components/PageTitle";
+import BotaoApoiadores from "../components/BotaoApoiadores";
 import BotaoContato from "../components/BotaoContato";
 import Inline from "../components/Inline";
 import { useTerritorios } from "../context/useTerritorios";
@@ -16,6 +17,9 @@ export default function Roteiros() {
         title="Percursos"
         subtitle="Escolha a rota conforme o contexto da visita, o público e as condições do percurso."
       />
+
+      {/* Apoiadores abaixo do subtítulo da página (pedido da autoria, 02/10/2026) */}
+      <BotaoApoiadores />
 
       {roteiros.map((r) => {
         const experiencias = Array.isArray(r.experiencia) ? r.experiencia : [];
