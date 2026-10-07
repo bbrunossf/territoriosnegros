@@ -1,5 +1,6 @@
 import { useTerritorios } from "../context/useTerritorios";
 import { VITORIA_PADRAO, normalizarPagina } from "../data/paginas";
+import BotaoBaseTeorica from "./BotaoBaseTeorica";
 import BotaoTerritorios from "./BotaoTerritorios";
 import PaginaConteudo from "./PaginaConteudo";
 
@@ -11,8 +12,14 @@ export default function Vitoria() {
     <PaginaConteudo
       pagina={normalizarPagina(config.pagina_vitoria, VITORIA_PADRAO)}
       tela="vitoria"
-      // atalho fixo logo abaixo do subtítulo (pedido da autoria, 02/10/2026)
-      depoisDoTitulo={<BotaoTerritorios />}
+      // atalhos fixos logo abaixo do subtítulo (pedidos da autoria, 02/10/2026):
+      // primeiro a base teórica que sustenta a leitura, depois os territórios
+      depoisDoTitulo={
+        <>
+          <BotaoBaseTeorica />
+          <BotaoTerritorios />
+        </>
+      }
     />
   );
 }
