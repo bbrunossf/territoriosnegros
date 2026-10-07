@@ -82,6 +82,10 @@ export function lerNomes(bruto: unknown): Record<string, string> {
  * A lista que a tela mostra: os seis botões fixos, na ordem do app, com os nomes
  * da autoria (quando houver) e, depois, os botões que ela criou no painel para
  * outros endereços.
+ *
+ * Fica de fora o que repetiria um caminho já fixo — e também o botão para a
+ * página de contato, quando houver: o "Enviar uma mensagem" é desenhado pelo
+ * próprio app, FORA deste grupo e com um respiro maior, como a autoria pediu.
  */
 export function botoesDaIntro(
   doPainel: BotaoConteudo[] | undefined,
@@ -92,7 +96,7 @@ export function botoesDaIntro(
     texto: nomes[limpar(b.url)] ?? b.texto,
   }));
 
-  const usados = caminhosFixosDaIntro();
+  const usados = [...caminhosFixosDaIntro(), "/contato"];
   const extras = (doPainel ?? []).filter((b) => !usados.includes(limpar(b.url)));
 
   return [...fixos, ...extras];
