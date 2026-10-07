@@ -1,6 +1,10 @@
 // src/data/botoesIntro.ts
 //
-// Os botões da tela "Antes de caminhar" (pedido da autoria, 02/10/2026).
+// Os botões de navegação do app — os mesmos seis em dois lugares:
+//   · no fim da tela "Antes de caminhar"
+//   · no fim da página "Base teórica"
+// (o segundo, pedido da autoria em 02/10/2026, para o visitante não depender da
+// barra para seguir viagem depois de ler a fundamentação)
 //
 // A ORDEM e os DESTINOS são do app — é uma ordem de navegação, fixa, e assim não
 // depende do que estiver gravado no banco:
@@ -14,9 +18,10 @@
 //
 // e, separado por um respiro maior, o "Enviar uma mensagem" do fim da página.
 //
-// Os NOMES, porém, são da autoria: ela renomeia no painel (aba Botões) e o painel
-// grava em app_config, na chave "botoes_intro" — um objeto do tipo
+// Os NOMES são da autoria: ela renomeia no painel (aba Botões) e o painel grava
+// em app_config, na chave "botoes_intro" — um objeto do tipo
 // { "/conceito": "Base teórica", ... }. Nome em branco = volta ao nome padrão.
+// Os nomes valem nas duas telas que usam esta lista.
 //
 // Os botões que a autoria criar no painel para caminhos FORA desta lista
 // continuam aparecendo, logo depois destes: nada do painel é escondido.
