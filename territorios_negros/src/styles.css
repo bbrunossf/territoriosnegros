@@ -1217,13 +1217,76 @@ a, a:visited, a:hover, a:active {
   font-size: 20px;
 }
 
-/* o menu inferior agora tem 5 itens (Sobre entrou em Conceito) */
+/* o menu inferior tem 5 itens fixos + "Mais" (a lista de outras páginas) */
 .bottom-nav {
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(6, 1fr);
 }
 
 .bottom-nav-btn {
-  font-size: 11.5px;
+  font-size: 10.5px;
+}
+
+/* Submenu "Mais": páginas que não têm item próprio na barra (Apoiadores,
+   A cidade de Vitória, Base teórica, Enviar uma mensagem). Abre acima da barra. */
+.bottom-nav-submenu {
+  position: absolute;
+  right: 6px;
+  bottom: calc(100% + 10px);
+
+  min-width: 232px;
+
+  padding: 6px;
+
+  background: #fffaf1;
+  border: 1px solid rgba(155, 112, 46, 0.5);
+  border-radius: 14px;
+  box-shadow: 0 12px 26px rgba(20, 10, 5, 0.35);
+
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  z-index: 30;
+
+  text-align: left;
+}
+
+.bottom-nav-submenu a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 11px 12px;
+  border-radius: 10px;
+
+  color: #2a1c12;
+  text-decoration: none;
+
+  font-family: Georgia, serif;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.bottom-nav-submenu a:active {
+  background: rgba(184, 131, 44, 0.2);
+}
+
+.bottom-nav-submenu-icone {
+  width: 18px;
+
+  color: #8f611d;
+  text-align: center;
+}
+
+/* cobre a tela para fechar a lista ao toque fora (fica atrás dela) */
+.bottom-nav-fundo {
+  position: fixed;
+  inset: 0;
+
+  border: 0;
+  background: transparent;
+
+  z-index: 25;
 }
 
 /* links-botão de largura total */
