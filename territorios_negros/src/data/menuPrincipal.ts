@@ -21,5 +21,23 @@ export const PAGINAS_DO_MENU: PaginaDoMenu[] = [
   { nome: "Enviar uma mensagem", caminho: "/contato", icone: "✉" },
 ];
 
+/**
+ * Página do próximo evento: entra na lista SÓ quando há um evento agendado (é a
+ * informação com prazo — e sem evento a página só diria que não há nada).
+ */
+export const PAGINA_DO_EVENTO: PaginaDoMenu = {
+  nome: "Próximo evento",
+  caminho: "/evento",
+  icone: "★",
+};
+
+/**
+ * A lista como o visitante vê: as páginas fixas e, quando há evento agendado, o
+ * evento no topo (é o que tem data marcada).
+ */
+export function paginasDoMenu(temEvento: boolean): PaginaDoMenu[] {
+  return temEvento ? [PAGINA_DO_EVENTO, ...PAGINAS_DO_MENU] : [...PAGINAS_DO_MENU];
+}
+
 /** Nome do item da barra que abre a lista. */
 export const NOME_DO_ITEM = "Mais";

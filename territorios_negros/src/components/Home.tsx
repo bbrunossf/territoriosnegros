@@ -67,7 +67,7 @@ export default function Home() {
           </div>
         )}
 
-        <Link to="/Intro" className="btn home-start-btn">
+        <Link to="/intro" className="btn home-start-btn">
           {textos.botaoInicio}
         </Link>
 

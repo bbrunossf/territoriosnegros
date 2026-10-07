@@ -9,10 +9,15 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-import { NOME_DO_ITEM, PAGINAS_DO_MENU } from "../data/menuPrincipal";
+import { useTerritorios } from "../context/useTerritorios";
+import { NOME_DO_ITEM, paginasDoMenu } from "../data/menuPrincipal";
 
 export default function BottomNav() {
   const [aberto, setAberto] = useState(false);
+
+  // o próximo evento só entra na lista quando existe um agendado
+  const { proximoTour } = useTerritorios();
+  const paginas = paginasDoMenu(!!proximoTour);
 
   // Esc fecha a lista (teclado)
   useEffect(() => {
@@ -77,7 +82,7 @@ export default function BottomNav() {
 
         {aberto && (
           <div className="bottom-nav-submenu" role="menu" aria-label="outras páginas">
-            {PAGINAS_DO_MENU.map((pagina) => (
+            {paginas.map((pagina) => (
               <Link
                 key={pagina.caminho}
                 to={pagina.caminho}
