@@ -1341,15 +1341,18 @@ a, a:visited, a:hover, a:active {
   justify-content: space-between;
   gap: 10px;
 
-  padding: 13px 14px;
+  padding: 14px;
 
-  background: #fffaf1;
-  border: 1px solid rgba(155, 112, 46, 0.42);
+  /* fundo escuro sobre a página clara: o cartão salta aos olhos e o texto de
+     leitura da página não é confundido com o que é para abrir (pedido da
+     autoria: "a cor do fundo pode ser mais escura para melhorar a atenção") */
+  background: #5c3a24;
+  border: 1px solid rgba(19, 11, 8, 0.35);
   border-radius: 12px;
 
-  box-shadow: 0 4px 12px rgba(94, 60, 20, 0.1);
+  box-shadow: 0 6px 16px rgba(58, 32, 21, 0.24);
 
-  color: #4a2c17;
+  color: #fdf3e3;
 
   font-size: 16px;
   font-weight: 700;
@@ -1360,7 +1363,7 @@ a, a:visited, a:hover, a:active {
 
 .sobre-link-cartao:active {
   transform: translateY(1px);
-  filter: brightness(0.98);
+  filter: brightness(0.96);
 }
 
 .sobre-link-selo {
@@ -1370,9 +1373,9 @@ a, a:visited, a:hover, a:active {
 
   border-radius: 999px;
 
-  background: rgba(184, 131, 44, 0.18);
+  background: rgba(253, 243, 227, 0.16);
 
-  color: #7a4f14;
+  color: #f0c982;
 
   font-size: 11px;
   font-weight: 700;
