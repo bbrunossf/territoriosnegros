@@ -27,6 +27,7 @@ import AcessosAdmin from "./components/AcessosAdmin";
 import ManualAdmin from "./components/ManualAdmin";
 import MidiasAdmin from "./components/MidiasAdmin";
 import ApoiadoresAdmin from "./components/ApoiadoresAdmin";
+import MenuMaisAdmin from "./components/MenuMaisAdmin";
 import { Navigate } from "react-router-dom";
 
 
@@ -79,6 +80,7 @@ createRoot(document.getElementById('root')!).render(
               <Route path="inicio" element={<InicioAdmin />} />
               <Route path="paginas" element={<PaginasAdmin />} />
               <Route path="apoiadores" element={<ApoiadoresAdmin />} />
+              <Route path="menu-mais" element={<MenuMaisAdmin />} />
               <Route path="mensagens" element={<MensagensAdmin />} />
               <Route path="acessos" element={<AcessosAdmin />} />
               <Route path="midias" element={<MidiasAdmin />} />

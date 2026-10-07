@@ -66,6 +66,7 @@ export const MANUAL_PADRAO: SecaoManual[] = [
       "**Página inicial** — aviso do próximo tour, título/data/local/informações e link da ficha, capa, selo e botões.",
       "**Páginas** — as telas de texto do app (conceito, intro e outras): blocos, destaques, imagens e links.",
       "**Apoiadores** — a página **Apoiadores** do app: título, texto de abertura e a lista de quem apoia o projeto (logo, nome, contribuição e link).",
+      "**Menu Mais** — a lista que abre no item **Mais** da barra de navegação do app: quais páginas aparecem ali, com que nome, em que ordem — e quais ficam desligadas.",
       "**Categorias** — as categorias que classificam os territórios.",
       "**Mensagens** — o que os visitantes enviam pelo formulário de contato.",
       "**Manual** — esta página. Edite quando quiser: botão **Editar o manual**.",
@@ -158,7 +159,7 @@ export const MANUAL_PADRAO: SecaoManual[] = [
     id: "apoiadores",
     titulo: "Apoiadores: quem apoia o projeto",
     texto:
-      "A aba **Apoiadores** monta a página **Apoiadores** do app (endereço /apoiadores). O botão de acesso aparece em **três telas**, sempre no estilo das chamadas principais: em **Antes de caminhar** (abaixo do botão que leva ao contato), em **Territórios** (acima do botão “A cidade de Vitória - ES”) e em **Rotas** (abaixo do subtítulo da página). Além disso, a **barra de navegação** do app ganhou o item **Mais**, que abre a lista das páginas sem item próprio: Apoiadores, A cidade de Vitória - ES, Base teórica e Enviar uma mensagem — e, quando há um **evento agendado** (aba Página inicial), o **Próximo evento** entra no topo dessa lista. O botão aparece **sempre**, mesmo sem ninguém cadastrado — enquanto a lista estiver vazia, a página avisa que ainda não há apoiadores e convida instituições a escrever para a autoria.\n\nCada apoiador vira um cartão na página, com a **logo**, o **nome**, uma frase sobre a **contribuição** e, quando houver, o **link** oficial (site ou Instagram) — que aparece como um botão. A ordem da lista aqui no painel é a ordem na página: use **subir** e **descer**.\n\nO título e o texto de abertura também são seus. Se apagar os dois, a página volta ao texto padrão (o mesmo que já está publicado).",
+      "A aba **Apoiadores** monta a página **Apoiadores** do app (endereço /apoiadores). O botão de acesso aparece em **três telas**, sempre no estilo das chamadas principais: em **Antes de caminhar** (abaixo do botão que leva ao contato), em **Territórios** (acima do botão “A cidade de Vitória - ES”) e em **Rotas** (abaixo do subtítulo da página). Além disso, a **barra de navegação** do app ganhou o item **Mais**, que abre a lista das páginas sem item próprio: Apoiadores, A cidade de Vitória - ES, Base teórica e Enviar uma mensagem — e, quando há um **evento agendado** (aba Página inicial), o **Próximo evento** entra no topo dessa lista (essa lista é editável na aba **Menu Mais**). O botão aparece **sempre**, mesmo sem ninguém cadastrado — enquanto a lista estiver vazia, a página avisa que ainda não há apoiadores e convida instituições a escrever para a autoria.\n\nCada apoiador vira um cartão na página, com a **logo**, o **nome**, uma frase sobre a **contribuição** e, quando houver, o **link** oficial (site ou Instagram) — que aparece como um botão. A ordem da lista aqui no painel é a ordem na página: use **subir** e **descer**.\n\nO título e o texto de abertura também são seus. Se apagar os dois, a página volta ao texto padrão (o mesmo que já está publicado).",
     itens: [
       "**Adicionar apoiador** cria um cartão novo, em branco, no fim da lista.",
       "**Nome** — da instituição, empresa, coletivo ou pessoa que apoia.",
@@ -168,6 +169,22 @@ export const MANUAL_PADRAO: SecaoManual[] = [
       "**Link** — site ou Instagram oficial, opcional. Pode colar sem o “https://” que o app completa.",
       "**Aparecendo no app** — desmarcado, o cadastro fica guardado e o visitante não vê. É item por item, como nas fotos de apoio: dá para preparar tudo e ligar na hora de publicar.",
       "**remover** apaga o apoiador da lista. Nada vai ao ar sem **Salvar alterações**; **Descartar mudanças** volta ao que está publicado.",
+    ],
+  },
+  {
+    id: "menu-mais",
+    titulo: "Menu Mais: o acesso rápido na barra do app",
+    texto:
+      "No pé de cada tela do app há a barra: Início, Antes, Conceito, Rotas, Territórios e **Mais**. O **Mais** abre uma lista com as páginas que não têm item próprio na barra — é o atalho que evita o visitante ter de procurar o caminho dentro de outra tela.\n\nA aba **Menu Mais** é dona dessa lista: você escolhe **quais páginas aparecem**, com que **nome**, em que **ordem**, e pode **desligar** uma sem perdê-la. Como está publicado hoje, a lista tem cinco itens: Próximo evento, Apoiadores, A cidade de Vitória - ES, Base teórica e Enviar uma mensagem.\n\nNada vai ao ar sem **Salvar alterações**.",
+    itens: [
+      "**Página** — a escolha é entre páginas que existem no app. É de propósito: endereço escrito à mão poderia levar o visitante a uma tela em branco.",
+      "**Nome no menu** — o texto que o visitante lê. Em branco, fica o nome da página. Ao trocar a página, o nome acompanha enquanto ele ainda for o padrão; se você já escreveu um nome próprio, ele é mantido.",
+      "**Aparecendo no menu** — desmarcado, o item fica guardado aqui e sai da lista do app. É item por item, como nas fotos de apoio e nos apoiadores.",
+      "**subir** e **descer** mudam a ordem — a ordem aqui é a ordem que o visitante vê ao abrir a lista.",
+      "**remover** tira o item da lista. A página continua existindo no app; ela só deixa de ser oferecida nesse atalho.",
+      "**Acrescentar página** — o seletor mostra apenas as páginas que ainda não estão na lista.",
+      "**Próximo evento** tem uma regra do app: só aparece no menu quando há um **evento agendado** (aba **Página inicial**). Sem evento, o item fica guardado e não é preciso mexer — assim o visitante nunca cai numa tela sem conteúdo.",
+      "A lista **não deveria ficar vazia**: se nenhuma página estiver ligada, o painel avisa e o visitante abre o **Mais** para encontrar o nada.",
     ],
   },
   {

@@ -77,6 +77,10 @@ export default function AdminLayout() {
           Apoiadores
         </Link>
 
+        <Link to="/admin/menu-mais" className="admin-sidebar-btn">
+          Menu Mais
+        </Link>
+
         <Link to="/admin/categorias" className="admin-sidebar-btn">
           Categorias
         </Link>

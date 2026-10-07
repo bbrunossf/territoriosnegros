@@ -145,9 +145,9 @@ export default function ApoiadoresAdmin() {
 
       <p className="admin-ajuda">
         Aqui você monta a página <b>Apoiadores</b> do app (endereço <b>/apoiadores</b>), com quem
-        apoia o projeto. O botão de acesso fica na tela <b>Antes de caminhar</b>, logo abaixo do
-        botão de contato — e ele só aparece para o visitante quando houver <b>pelo menos um
-        apoiador ligado</b> com nome ou logo. Nada vai ao ar sem <b>Salvar alterações</b>.
+        apoia o projeto. O botão de acesso aparece em <b>três telas</b> do app e também no item{" "}
+        <b>Mais</b> da barra de navegação (que você ajusta na aba <b>Menu Mais</b>). Nada vai ao ar
+        sem <b>Salvar alterações</b>.
       </p>
 
       <p className="admin-ajuda">

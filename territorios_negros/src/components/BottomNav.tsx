@@ -10,14 +10,15 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { useTerritorios } from "../context/useTerritorios";
-import { NOME_DO_ITEM, paginasDoMenu } from "../data/menuPrincipal";
+import { CHAVE_MENU_MAIS, NOME_DO_ITEM, itensDoMenu } from "../data/menuPrincipal";
 
 export default function BottomNav() {
   const [aberto, setAberto] = useState(false);
 
-  // o próximo evento só entra na lista quando existe um agendado
-  const { proximoTour } = useTerritorios();
-  const paginas = paginasDoMenu(!!proximoTour);
+  // a lista é montada pela autoria no painel (aba Menu Mais); sem nada gravado,
+  // vale a lista padrão. O próximo evento só entra com evento agendado.
+  const { config, proximoTour } = useTerritorios();
+  const paginas = itensDoMenu(config[CHAVE_MENU_MAIS], !!proximoTour);
 
   // Esc fecha a lista (teclado)
   useEffect(() => {

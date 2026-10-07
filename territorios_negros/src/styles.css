@@ -1278,6 +1278,42 @@ a, a:visited, a:hover, a:active {
   text-align: center;
 }
 
+/* Submenu "Mais" da barra do app — aba do painel (Menu Mais, 02/10/2026) */
+.menu-admin-item {
+  margin-top: 14px;
+  padding: 12px;
+
+  border: 1px solid rgba(197, 139, 42, 0.35);
+  border-radius: 12px;
+
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.menu-admin-topo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+
+  margin-bottom: 10px;
+}
+
+/* aviso brando (não é erro): regra que o app aplica sozinho */
+.admin-aviso {
+  margin-top: 10px;
+  padding: 10px 12px;
+
+  border: 1px solid rgba(197, 139, 42, 0.45);
+  border-radius: 10px;
+
+  background: rgba(197, 139, 42, 0.12);
+
+  color: #f3e3c6;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
 /* cobre a tela para fechar a lista ao toque fora.
    ATENÇÃO: tem de ficar ABAIXO da barra (barra = z-index 20). A lista de páginas
    vive DENTRO da barra, e a barra forma um contexto próprio de empilhamento: por
