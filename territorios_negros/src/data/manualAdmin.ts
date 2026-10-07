@@ -68,6 +68,7 @@ export const MANUAL_PADRAO: SecaoManual[] = [
       "**Apoiadores** — a página **Apoiadores** do app: título, texto de abertura e a lista de quem apoia o projeto (logo, nome, contribuição e link).",
       "**Presença Negra** — a página **Presença Negra na Cidade**, aberta em /presenca-negra: nasceu do bloco “Uma cidade construída com presença negra”, que saiu de A Cidade de Vitória para ganhar aprofundamento próprio — é onde entram as biografias das personalidades negras de Vitória. Edita-se como as outras páginas: blocos de texto, destaques, listas, imagens e links; vídeo entra como link do YouTube.",
       "**Menu Mais** — a lista que abre no item **Mais** da barra de navegação do app: quais páginas aparecem ali, com que nome, em que ordem — e quais ficam desligadas.",
+      "**Botões** — os **nomes** dos seis botões da tela **Antes de caminhar** (Base teórica, A cidade de Vitória, Presença Negra, Roteiros, Territórios, Apoiadores). A ordem e para onde cada um leva são do app; aqui você só renomeia. Em branco, o nome volta ao padrão — ver a seção própria mais adiante.",
       "**Categorias** — as categorias que classificam os territórios.",
       "**Mensagens** — o que os visitantes enviam pelo formulário de contato.",
       "**Manual** — esta página. Edite quando quiser: botão **Editar o manual**.",
@@ -186,6 +187,18 @@ export const MANUAL_PADRAO: SecaoManual[] = [
       "**Acrescentar página** — o seletor mostra apenas as páginas que ainda não estão na lista.",
       "**Próximo evento** tem uma regra do app: só aparece no menu quando há um **evento agendado** (aba **Página inicial**). Sem evento, o item fica guardado e não é preciso mexer — assim o visitante nunca cai numa tela sem conteúdo.",
       "A lista **não deveria ficar vazia**: se nenhuma página estiver ligada, o painel avisa e o visitante abre o **Mais** para encontrar o nada.",
+    ],
+  },
+  {
+    id: "botoes",
+    titulo: "Botões: renomear os botões de navegação",
+    texto:
+      "A aba **Botões** cuida dos seis botões da tela **Antes de caminhar** — a porta de entrada do app. Nela você muda o **nome** de cada botão. A **ordem** e **para onde** cada um leva são do app, de propósito: assim a navegação não depende do que estiver gravado no banco, e um ajuste seu não deixa o visitante numa tela errada.\n\nDeixar um nome em branco faz o botão voltar ao nome padrão. Nada vai ao ar sem **Salvar alterações**.",
+    itens: [
+      "A ordem é: **Base teórica**, **A cidade de Vitória**, **Presença Negra**, **Roteiros**, **Territórios**, **Apoiadores** — e o **Enviar uma mensagem** fecha a tela, separado por um respiro maior.",
+      "Todos os botões ficam com a **mesma distância** entre si. Se quiser mais respiro entre eles, é um número no app.",
+      "Se você criar na aba **Páginas** um botão para um endereço que não está entre esses seis, ele continua aparecendo, no fim do grupo — nada do que você escreve é escondido.",
+      "Os nomes valem só nesta tela: nos outros lugares do app os botões seguem o nome padrão.",
     ],
   },
   {

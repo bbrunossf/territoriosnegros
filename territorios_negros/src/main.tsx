@@ -28,6 +28,7 @@ import ManualAdmin from "./components/ManualAdmin";
 import MidiasAdmin from "./components/MidiasAdmin";
 import ApoiadoresAdmin from "./components/ApoiadoresAdmin";
 import MenuMaisAdmin from "./components/MenuMaisAdmin";
+import BotoesAdmin from "./components/BotoesAdmin";
 import PresencaNegra from "./components/PresencaNegra";
 import { Navigate } from "react-router-dom";
 
@@ -83,6 +84,7 @@ createRoot(document.getElementById('root')!).render(
               <Route path="paginas" element={<PaginasAdmin />} />
               <Route path="apoiadores" element={<ApoiadoresAdmin />} />
               <Route path="menu-mais" element={<MenuMaisAdmin />} />
+              <Route path="botoes" element={<BotoesAdmin />} />
               <Route path="mensagens" element={<MensagensAdmin />} />
               <Route path="acessos" element={<AcessosAdmin />} />
               <Route path="midias" element={<MidiasAdmin />} />

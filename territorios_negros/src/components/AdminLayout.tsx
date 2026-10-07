@@ -81,6 +81,10 @@ export default function AdminLayout() {
           Menu Mais
         </Link>
 
+        <Link to="/admin/botoes" className="admin-sidebar-btn">
+          Botões
+        </Link>
+
         <Link to="/admin/categorias" className="admin-sidebar-btn">
           Categorias
         </Link>
