@@ -44,6 +44,7 @@ export default function PaginaConteudo({
   tela,
   rodapeNoTopo = false,
   depoisDoContato,
+  depoisDoTitulo,
 }: {
   pagina: PaginaConteudo;
   children?: ReactNode;
@@ -62,6 +63,11 @@ export default function PaginaConteudo({
    * "Apoiadores" na tela "Antes de caminhar").
    */
   depoisDoContato?: ReactNode;
+  /**
+   * Conteúdo extra logo ABAIXO do título/subtítulo (ex.: o botão que leva aos
+   * territórios, na página A cidade de Vitória). Entra antes do bloco destacado.
+   */
+  depoisDoTitulo?: ReactNode;
 }) {
   const destaque = paragrafosDe(pagina.destaque);
   const classesDestaque = classesEstilo(pagina.destaqueEstilo);
@@ -96,6 +102,10 @@ export default function PaginaConteudo({
       {rodapeNoTopo && caixaDoRodape && (
         <div className="rodape-topo">{caixaDoRodape}</div>
       )}
+
+      {/* conteúdo logo abaixo do título/subtítulo (ex.: o botão que leva aos
+          territórios, na página A cidade de Vitória) */}
+      {depoisDoTitulo}
 
       {destaque.length === 1 && (
         <Info>

@@ -64,7 +64,7 @@ export const MANUAL_PADRAO: SecaoManual[] = [
       "**Rotas** — roteiros e percurso: identificação da rota, textos, **slogan**, acessibilidade, mapas e logo. Os botões da tabela gravam na hora.",
       "**Territórios** — a ficha completa: identificação, cartões de “Informações rápidas” (Camadas, Contexto, Ano, Idade, Criação, Função, Transformações, Status, Observação), textos (Descrição, Para observar, Para refletir, Palavra-chave), ordem das informações, camadas de tempo, fotos e vídeos de apoio.",
       "**Página inicial** — aviso do próximo tour, título/data/local/informações e link da ficha, capa, selo e botões.",
-      "**Páginas** — as telas de texto do app (conceito, intro e outras): blocos, destaques, imagens e links.",
+      "**Páginas** — as telas de texto do app (conceito, intro e outras): blocos, destaques, imagens e links. A página **A cidade de Vitória** tem, logo abaixo do subtítulo, um botão fixo **Ir para os territórios** — é atalho de navegação, não texto editável.",
       "**Apoiadores** — a página **Apoiadores** do app: título, texto de abertura e a lista de quem apoia o projeto (logo, nome, contribuição e link).",
       "**Menu Mais** — a lista que abre no item **Mais** da barra de navegação do app: quais páginas aparecem ali, com que nome, em que ordem — e quais ficam desligadas.",
       "**Categorias** — as categorias que classificam os territórios.",
