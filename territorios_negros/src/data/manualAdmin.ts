@@ -198,7 +198,7 @@ export const MANUAL_PADRAO: SecaoManual[] = [
       "A ordem é: **Base teórica**, **A cidade de Vitória**, **Presença Negra**, **Roteiros**, **Territórios**, **Apoiadores** — e o **Enviar uma mensagem** fecha a tela, separado por um respiro maior.",
       "Todos os botões ficam com a **mesma distância** entre si. Se quiser mais respiro entre eles, é um número no app.",
       "Se você criar na aba **Páginas** um botão para um endereço que não está entre esses seis, ele continua aparecendo, no fim do grupo — nada do que você escreve é escondido.",
-      "Os nomes valem só nesta tela: nos outros lugares do app os botões seguem o nome padrão.",
+      "Os nomes valem nas duas telas que usam esta lista: o fim da tela Antes de caminhar e o fim da página Base teórica.",
     ],
   },
   {
