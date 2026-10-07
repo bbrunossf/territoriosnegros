@@ -12,6 +12,7 @@ import { imagensVisiveis, classesEstilo } from "../data/paginas";
 import type { BotaoConteudo, PaginaConteudo } from "../data/paginas";
 
 import { paragrafosDe } from "../utils/texto";
+import { rotuloDoSite } from "../utils/links";
 import BotaoContato from "./BotaoContato";
 
 function Botao({ botao }: { botao: BotaoConteudo }) {
@@ -133,6 +134,19 @@ export default function PaginaConteudo({
         // imagens que a autoria liberou para os visitantes
         const imagens = imagensVisiveis(bloco.imagens);
 
+        /**
+         * Bloco que é SÓ uma lista de links (ex.: "Produções associadas ao
+         * projeto", na Base teórica): sai como cartões, com o selo do site —
+         * para o visitante ver que são coisas para abrir, e não texto do app.
+         * Bloco com texto, itens, destaque ou imagem continua lista comum.
+         */
+        const soLinks =
+          paragrafosDe(bloco.texto).length === 0 &&
+          bloco.itens.length === 0 &&
+          bloco.destaque.trim() === "" &&
+          imagens.length === 0 &&
+          bloco.links.length > 0;
+
         const galeria =
           imagens.length > 0 ? (
             <div className="territorio-galeria bloco-galeria">
@@ -175,16 +189,20 @@ export default function PaginaConteudo({
             {bloco.posicaoImagens !== "aposTexto" && galeria}
 
             {bloco.links.length > 0 && (
-              <ul className="sobre-list">
+              <ul className={soLinks ? "sobre-list sobre-list-cartoes" : "sobre-list"}>
                 {bloco.links.map((link, k) => (
                   <li key={`${link.url}-${k}`}>
                     <a
                       href={link.url}
                       target="_blank"
                       rel="noreferrer"
-                      className="sobre-link"
+                      className={soLinks ? "sobre-link sobre-link-cartao" : "sobre-link"}
                     >
                       <Inline texto={link.texto} />
+
+                      {soLinks && rotuloDoSite(link.url) && (
+                        <span className="sobre-link-selo">{rotuloDoSite(link.url)}</span>
+                      )}
                     </a>
                   </li>
                 ))}

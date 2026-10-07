@@ -1314,6 +1314,72 @@ a, a:visited, a:hover, a:active {
   line-height: 1.45;
 }
 
+/* Bloco que é SÓ uma lista de links (ex.: "Produções associadas ao projeto", na
+   Base teórica). Sai como cartões, com o selo do site, para o visitante ver de
+   longe que são coisas para abrir — e não mais um trecho de texto do app.
+   O bloco que tem texto, itens, destaque ou imagem continua lista comum. */
+.sobre-list-cartoes {
+  list-style: none;
+
+  padding-left: 0;
+  margin-top: 14px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sobre-list-cartoes li {
+  margin: 0;
+
+  list-style: none;
+}
+
+.sobre-link-cartao {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+
+  padding: 13px 14px;
+
+  background: #fffaf1;
+  border: 1px solid rgba(155, 112, 46, 0.42);
+  border-radius: 12px;
+
+  box-shadow: 0 4px 12px rgba(94, 60, 20, 0.1);
+
+  color: #4a2c17;
+
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.3;
+
+  text-decoration: none;
+}
+
+.sobre-link-cartao:active {
+  transform: translateY(1px);
+  filter: brightness(0.98);
+}
+
+.sobre-link-selo {
+  flex: 0 0 auto;
+
+  padding: 3px 9px;
+
+  border-radius: 999px;
+
+  background: rgba(184, 131, 44, 0.18);
+
+  color: #7a4f14;
+
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
 /* cobre a tela para fechar a lista ao toque fora.
    ATENÇÃO: tem de ficar ABAIXO da barra (barra = z-index 20). A lista de páginas
    vive DENTRO da barra, e a barra forma um contexto próprio de empilhamento: por
