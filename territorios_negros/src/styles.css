@@ -1278,7 +1278,12 @@ a, a:visited, a:hover, a:active {
   text-align: center;
 }
 
-/* cobre a tela para fechar a lista ao toque fora (fica atrás dela) */
+/* cobre a tela para fechar a lista ao toque fora.
+   ATENÇÃO: tem de ficar ABAIXO da barra (barra = z-index 20). A lista de páginas
+   vive DENTRO da barra, e a barra forma um contexto próprio de empilhamento: por
+   mais alto que a lista esteja lá dentro, tudo o que está na barra fica abaixo de
+   qualquer coisa que passe de 20 — foi um fundo em 25 que engolia os toques nos
+   itens (a lista aparecia, mas o toque caía no fundo, que só fechava o menu). */
 .bottom-nav-fundo {
   position: fixed;
   inset: 0;
@@ -1286,7 +1291,7 @@ a, a:visited, a:hover, a:active {
   border: 0;
   background: transparent;
 
-  z-index: 25;
+  z-index: 15;
 }
 
 /* links-botão de largura total */

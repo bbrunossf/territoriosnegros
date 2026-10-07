@@ -31,6 +31,21 @@ export default function BottomNav() {
     return () => window.removeEventListener("keydown", fechar);
   }, [aberto]);
 
+  // toque fora da barra também fecha — pega os casos que o fundo não cobre,
+  // como o cabeçalho, que fica acima dele
+  useEffect(() => {
+    if (!aberto) return;
+
+    const fora = (e: PointerEvent) => {
+      const alvo = e.target as HTMLElement | null;
+      if (alvo && alvo.closest(".bottom-nav")) return;
+      setAberto(false);
+    };
+
+    document.addEventListener("pointerdown", fora);
+    return () => document.removeEventListener("pointerdown", fora);
+  }, [aberto]);
+
   return (
     <>
       {/* toque fora da lista fecha (fica atrás dela, cobrindo a tela) */}
@@ -44,27 +59,27 @@ export default function BottomNav() {
       )}
 
       <nav className="bottom-nav">
-        <Link to="/" className="bottom-nav-btn">
+        <Link to="/" className="bottom-nav-btn" onClick={() => setAberto(false)}>
           ⌂<br />
           Início
         </Link>
 
-        <Link to="/intro" className="bottom-nav-btn">
+        <Link to="/intro" className="bottom-nav-btn" onClick={() => setAberto(false)}>
           ⟲<br />
           Antes
         </Link>
 
-        <Link to="/conceito" className="bottom-nav-btn">
+        <Link to="/conceito" className="bottom-nav-btn" onClick={() => setAberto(false)}>
           ◎<br />
           Conceito
         </Link>
 
-        <Link to="/roteiros" className="bottom-nav-btn">
+        <Link to="/roteiros" className="bottom-nav-btn" onClick={() => setAberto(false)}>
           ▱<br />
           Rotas
         </Link>
 
-        <Link to="/territorios" className="bottom-nav-btn">
+        <Link to="/territorios" className="bottom-nav-btn" onClick={() => setAberto(false)}>
           ●<br />
           Territórios
         </Link>
