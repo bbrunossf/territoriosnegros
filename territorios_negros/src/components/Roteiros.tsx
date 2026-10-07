@@ -1,6 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import PageTitle from "../components/PageTitle";
 import BotaoApoiadores from "../components/BotaoApoiadores";
+import BotaoCidadeVitoria from "../components/BotaoCidadeVitoria";
+import BotaoPresencaNegra from "../components/BotaoPresencaNegra";
 import BotaoContato from "../components/BotaoContato";
 import Inline from "../components/Inline";
 import { useTerritorios } from "../context/useTerritorios";
@@ -18,7 +20,11 @@ export default function Roteiros() {
         subtitle="Escolha a rota conforme o contexto da visita, o público e as condições do percurso."
       />
 
-      {/* Apoiadores abaixo do subtítulo da página (pedido da autoria, 02/10/2026) */}
+      {/* Atalhos abaixo do subtítulo (pedidos da autoria, 02/10/2026), nesta
+          ordem: a cidade de Vitória, a Presença Negra na Cidade e, por fim, os
+          Apoiadores. */}
+      <BotaoCidadeVitoria />
+      <BotaoPresencaNegra />
       <BotaoApoiadores />
 
       {roteiros.map((r) => {

@@ -222,17 +222,6 @@ export const VITORIA_PADRAO: PaginaConteudo = {
         "hoje ligam os dois níveis.",
     }),
     bloco({
-      icone: "✦",
-      titulo: "Uma cidade construída com presença negra",
-      texto:
-        "A história de Vitória foi feita também pelo trabalho, pela fé e pela sociabilidade da " +
-        "população negra: irmandades religiosas, igrejas de homens pretos e pardos, o " +
-        "pelourinho, os mercados, as ruas de moradia popular, as escolas de samba, as bandas " +
-        "de congo e os quintais.\n\n" +
-        "Boa parte dessa presença foi apagada, renomeada ou naturalizada na narrativa oficial. " +
-        "Reencontrá-la no espaço é o que este guia propõe.",
-    }),
-    bloco({
       icone: "✓",
       titulo: "Como observar a cidade durante o percurso",
       itens: [
@@ -248,6 +237,37 @@ export const VITORIA_PADRAO: PaginaConteudo = {
   rodapeLinkTexto: "Abrir no mapa",
   rodapeUrl: "https://www.openstreetmap.org/#map=16/-20.3207/-40.3369",
   botoes: [{ texto: "Ir para os roteiros", url: "/roteiros", estilo: "btn" }],
+};
+
+// ──────────────────────────────────────────────── Presença Negra na Cidade
+
+/**
+ * Página própria (pedido da autoria, 02/10/2026): o bloco "Uma cidade construída
+ * com presença negra" saiu de A cidade de Vitória e virou esta página, para
+ * aprofundar e, mais adiante, receber as biografias das personalidades negras de
+ * Vitória.
+ *
+ * O texto abaixo é o MESMO que estava na página da cidade, palavra por palavra —
+ * nada foi reescrito. Daqui pra frente, tudo se edita no painel (aba Páginas).
+ */
+export const PRESENCA_PADRAO: PaginaConteudo = {
+  ...VAZIO,
+  titulo: "Presença Negra na Cidade",
+  subtitulo: "",
+  destaque: "",
+  blocos: [
+    bloco({
+      icone: "✦",
+      titulo: "Uma cidade construída com presença negra",
+      texto:
+        "A história de Vitória foi feita também pelo trabalho, pela fé e pela sociabilidade da " +
+        "população negra: irmandades religiosas, igrejas de homens pretos e pardos, o " +
+        "pelourinho, os mercados, as ruas de moradia popular, as escolas de samba, as bandas " +
+        "de congo e os quintais.\n\n" +
+        "Boa parte dessa presença foi apagada, renomeada ou naturalizada na narrativa oficial. " +
+        "Reencontrá-la no espaço é o que este guia propõe.",
+    }),
+  ],
 };
 
 // ─────────────────────────────────────────────────────── Base teórica
@@ -564,6 +584,17 @@ export interface DefinicaoPagina {
 export const PAGINAS_DO_APP: DefinicaoPagina[] = [
   { chave: "pagina_intro", nome: "Antes", caminho: "/intro", padrao: INTRO_PADRAO },
   { chave: "pagina_vitoria", nome: "Vitória", caminho: "/vitoria", padrao: VITORIA_PADRAO },
+  {
+    chave: "pagina_presenca_negra",
+    nome: "Presença Negra",
+    caminho: "/presenca-negra",
+    padrao: PRESENCA_PADRAO,
+    aviso:
+      "Página nova, feita para aprofundar a presença negra na cidade e, mais adiante, receber " +
+      "as biografias das personalidades negras de Vitória. Monte aqui como nas outras páginas: " +
+      "blocos de texto, destaques, listas, imagens e links. Vídeo entra como link do YouTube " +
+      "(quando o bloco tem só links, eles saem como cartões com o nome do site).",
+  },
   { chave: "pagina_conceito", nome: "Conceito", caminho: "/conceito", padrao: CONCEITO_PADRAO },
   { chave: "pagina_fim", nome: "Fim", caminho: "/fim", padrao: FIM_PADRAO },
   {

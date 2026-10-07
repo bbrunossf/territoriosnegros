@@ -46,6 +46,7 @@ export const CATALOGO_DE_PAGINAS: PaginaDoCatalogo[] = [
   { caminho: "/territorios", nome: "Territórios", icone: "●" },
   { caminho: "/conceito", nome: "Base teórica", icone: "◎" },
   { caminho: "/vitoria", nome: "A cidade de Vitória - ES", icone: "◈" },
+  { caminho: "/presenca-negra", nome: "Presença Negra na Cidade", icone: "✦" },
   { caminho: "/apoiadores", nome: "Apoiadores", icone: "✦" },
   {
     caminho: "/evento",
@@ -68,6 +69,13 @@ export const ITENS_PADRAO: ItemDoMenu[] = [
     nome: "A cidade de Vitória - ES",
     caminho: "/vitoria",
     icone: "◈",
+    visivel: true,
+  },
+  {
+    id: "menu-presenca-negra",
+    nome: "Presença Negra na Cidade",
+    caminho: "/presenca-negra",
+    icone: "✦",
     visivel: true,
   },
   { id: "menu-conceito", nome: "Base teórica", caminho: "/conceito", icone: "◎", visivel: true },

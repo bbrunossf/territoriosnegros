@@ -33,6 +33,7 @@ export const TELAS_BOTAO: { chave: string; nome: string }[] = [
   { chave: "evento", nome: "Próximo evento" },
   { chave: "fim", nome: "Fim do percurso" },
   { chave: "apoiadores", nome: "Apoiadores" },
+  { chave: "presenca-negra", nome: "Presença Negra na Cidade" },
 ];
 
 export const BOTAO_CONTATO_PADRAO: BotaoContato = {
@@ -80,9 +81,19 @@ export function mostrarBotaoContato(tela: string, valor: unknown): boolean {
   return !config.ocultar.includes(tela);
 }
 
+/** A página já tem um botão apontando para este endereço do app? */
+export function jaTemBotao(
+  botoes: { url?: string }[] | undefined,
+  caminho: string
+): boolean {
+  const alvo = caminho.replace(/\/+$/, "");
+
+  return (botoes ?? []).some((b) => (b?.url ?? "").replace(/\/+$/, "") === alvo);
+}
+
 /** A página já tem um botão apontando para a página de contato? */
 export function jaTemBotaoDeContato(
   botoes: { url?: string }[] | undefined
 ): boolean {
-  return (botoes ?? []).some((b) => (b?.url ?? "").replace(/\/+$/, "") === "/contato");
+  return jaTemBotao(botoes, "/contato");
 }

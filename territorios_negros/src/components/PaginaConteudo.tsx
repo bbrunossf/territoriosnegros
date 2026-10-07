@@ -46,6 +46,7 @@ export default function PaginaConteudo({
   rodapeNoTopo = false,
   depoisDoContato,
   depoisDoTitulo,
+  depoisDosBotoes,
 }: {
   pagina: PaginaConteudo;
   children?: ReactNode;
@@ -64,6 +65,12 @@ export default function PaginaConteudo({
    * "Apoiadores" na tela "Antes de caminhar").
    */
   depoisDoContato?: ReactNode;
+  /**
+   * Conteúdo extra logo DEPOIS dos botões da página (ex.: o atalho "Presença
+   * Negra na Cidade", na tela "Antes de caminhar"). Entra antes do botão de
+   * contato, para ficar junto dos outros botões da página.
+   */
+  depoisDosBotoes?: ReactNode;
   /**
    * Conteúdo extra logo ABAIXO do título/subtítulo (ex.: o botão que leva aos
    * territórios, na página A cidade de Vitória). Entra antes do bloco destacado.
@@ -221,6 +228,8 @@ export default function PaginaConteudo({
           ))}
         </div>
       )}
+
+      {depoisDosBotoes}
 
       {tela && <BotaoContato tela={tela} botoes={pagina.botoes} />}
 

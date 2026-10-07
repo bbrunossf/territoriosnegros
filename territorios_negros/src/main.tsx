@@ -28,6 +28,7 @@ import ManualAdmin from "./components/ManualAdmin";
 import MidiasAdmin from "./components/MidiasAdmin";
 import ApoiadoresAdmin from "./components/ApoiadoresAdmin";
 import MenuMaisAdmin from "./components/MenuMaisAdmin";
+import PresencaNegra from "./components/PresencaNegra";
 import { Navigate } from "react-router-dom";
 
 
@@ -69,6 +70,7 @@ createRoot(document.getElementById('root')!).render(
               <Route path="fim" element={<Fim />} />
               {/* quem apoia o projeto — aberta pelo botão da tela "Antes de caminhar" */}
               <Route path="apoiadores" element={<Apoiadores />} />
+              <Route path="presenca-negra" element={<PresencaNegra />} />
             </Route>
 
             <Route path="/login" element={<Login />} />

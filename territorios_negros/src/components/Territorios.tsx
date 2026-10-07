@@ -6,6 +6,7 @@ import { agruparPorCategoria } from "../utils/catalogo";
 import PageTitle from "../components/PageTitle";
 import SectionHeader from "../components/SectionHeader";
 import BotaoApoiadores from "../components/BotaoApoiadores";
+import BotaoPresencaNegra from "../components/BotaoPresencaNegra";
 import BotaoContato from "../components/BotaoContato";
 
 export default function Territorios() {
@@ -23,20 +24,21 @@ export default function Territorios() {
         subtitle="Consulta individual dos pontos do guia."
       />
 
-      {/* Apoiadores acima do botão da cidade (pedido da autoria, 02/10/2026) */}
-      <BotaoApoiadores />
-
       {/* Pedido da autoria (02/10/2026): o botão da cidade fica AQUI, logo abaixo
           do subtítulo — é o passo anterior natural antes de descer para os
           territórios. Antes ele ficava na tela "Antes de caminhar".
           Cor: usa o estilo cheio do app (".btn", o mesmo das chamadas principais),
           porque o "outline" translúcido se confundia com o fundo da página e não
-          induzia ao clique. */}
+          induzia ao clique. Depois dele vêm a Presença Negra na Cidade e os
+          Apoiadores (ordem pedida em 02/10/2026). */}
       <div className="pagina-botoes">
         <Link className="btn pagina-botao" to="/vitoria">
           A cidade de Vitória - ES
         </Link>
       </div>
+
+      <BotaoPresencaNegra />
+      <BotaoApoiadores />
 
       {grupos.map((g) => (
         <section key={g.id}>
