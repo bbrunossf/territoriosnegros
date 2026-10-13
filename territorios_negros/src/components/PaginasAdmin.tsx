@@ -27,6 +27,14 @@ import FormularioContatoAdmin from "./FormularioContatoAdmin";
 import BotaoContatoAdmin from "./BotaoContatoAdmin";
 import Inline from "./Inline";
 import { itensParaTexto, textoParaItens } from "../utils/itens";
+import {
+  CHAVE_SECAO_COPIADA,
+  clonarSecao,
+  descreverSecaoCopiada,
+  lerSecaoCopiada,
+  montarSecaoCopiada,
+  type SecaoCopiada,
+} from "../data/secaoCopiada";
 
 const BLOCO_NOVO: BlocoConteudo = {
   icone: "•",
@@ -169,6 +177,10 @@ export default function PaginasAdmin() {
   const [enviando, setEnviando] = useState<number | null>(null);
   const [ok, setOk] = useState("");
   const [erro, setErro] = useState("");
+  /** seção que a autoria copiou para colar em outra página (área de transferência) */
+  const [copiada, setCopiada] = useState<SecaoCopiada | null>(() =>
+    lerSecaoCopiada(config[CHAVE_SECAO_COPIADA])
+  );
 
   useEffect(() => {
     let ativo = true;
@@ -178,6 +190,7 @@ export default function PaginasAdmin() {
       if (!ativo) return;
 
       setPagina(normalizarPagina(config[definicao.chave], definicao.padrao));
+      setCopiada(lerSecaoCopiada(config[CHAVE_SECAO_COPIADA]));
       setPendente(false);
       setOk("");
       setErro("");
@@ -420,6 +433,54 @@ export default function PaginasAdmin() {
     setPendente(true);
   }
 
+  // ── copiar a seção para outra página (área de transferência) ──────────
+  // Copiar guarda a seção inteira em app_config.secao_copiada (texto, itens,
+  // caixa destacada, links, imagens e formatação) para a autoria levar o
+  // conteúdo a outra página COM a mesma estrutura. Nada entra em página nenhuma
+  // antes do "Salvar" daquela página.
+  async function copiarSecao(indiceBloco: number) {
+    const secao = pagina.blocos[indiceBloco];
+    if (!secao) return;
+
+    setOk("");
+    setErro("");
+
+    try {
+      const copia = montarSecaoCopiada(definicao.nome, secao);
+      await salvarConfig(CHAVE_SECAO_COPIADA, copia);
+      setCopiada(copia);
+      setOk(
+        `Seção copiada: “${copia.titulo}”. Agora troque para a página de destino, aqui em cima, e clique em “Colar nesta página”.`
+      );
+    } catch (err) {
+      console.error(err);
+      setErro(err instanceof Error ? err.message : "Falha ao copiar a seção.");
+    }
+  }
+
+  /** Traz a seção copiada para o fim desta página (só no rascunho). */
+  function colarSecao() {
+    if (!copiada) return;
+
+    const nova = clonarSecao(copiada);
+    setPagina((p) => ({ ...p, blocos: [...p.blocos, nova] }));
+    setPendente(true);
+    setOk(
+      `Seção colada no fim das seções (“${copiada.titulo}”). Confira e clique em Salvar para publicar nesta página.`
+    );
+  }
+
+  /** Esquece a cópia (a área de transferência do painel fica vazia). */
+  async function esquecerSecaoCopiada() {
+    setCopiada(null);
+
+    try {
+      await salvarConfig(CHAVE_SECAO_COPIADA, null);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   function adicionarLink(bloco: number) {
     setPagina((p) => ({
       ...p,
@@ -628,6 +689,18 @@ export default function PaginasAdmin() {
 
         <hr className="admin-divisor" />
         <h3 className="admin-form-secao">Seções da página</h3>
+
+        {copiada && (
+          <p className="admin-aviso">
+            <b>Seção copiada:</b> {descreverSecaoCopiada(copiada)}.{" "}
+            <button type="button" className="btn" onClick={colarSecao}>
+              Colar nesta página
+            </button>{" "}
+            <button type="button" className="outline" onClick={esquecerSecaoCopiada}>
+              Descartar a cópia
+            </button>
+          </p>
+        )}
 
         {pagina.blocos.length === 0 && (
           <p className="admin-ajuda">Nenhuma seção nesta página ainda.</p>
@@ -933,6 +1006,10 @@ export default function PaginasAdmin() {
               onClick={() => adicionarLink(i)}
             >
               + link nesta seção
+            </button>
+
+            <button type="button" className="outline" onClick={() => copiarSecao(i)}>
+              ⧉ Copiar esta seção para outra página
             </button>
           </div>
         ))}
