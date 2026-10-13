@@ -2,6 +2,7 @@
 import "../styles.css";
 
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { salvarConfig, uploadFoto } from "../data/api";
 import { useTerritorios } from "../context/useTerritorios";
 import {
@@ -167,7 +168,15 @@ function PreviaTitulo({
 export default function PaginasAdmin() {
   const { config, recarregar } = useTerritorios();
 
-  const [indice, setIndice] = useState(0);
+  // a guia escolhida na barra de cima vem no endereço (?p=conceito, ?p=antes…):
+  // assim o endereço pode ser guardado, e a guia certa abre já selecionada
+  const [parametros, setParametros] = useSearchParams();
+
+  /** a página aberta vem do endereço — não de um estado próprio */
+  const indice = Math.max(
+    0,
+    PAGINAS_DO_APP.findIndex((p) => p.slug === parametros.get("p"))
+  );
   const definicao = PAGINAS_DO_APP[indice];
 
   const [pagina, setPagina] = useState<PaginaConteudo>(definicao.padrao);
@@ -204,18 +213,22 @@ export default function PaginasAdmin() {
   // ── navegação entre as páginas ──────────────────────────
 
   function trocarPagina(novo: number) {
-    if (novo === indice) return;
+    /** o endereço é quem manda na página aberta — aqui ele é atualizado */
+    const sincronizar = (i: number) =>
+      setParametros({ p: PAGINAS_DO_APP[i]?.slug ?? "" }, { replace: true });
 
     if (
+      novo !== indice &&
       pendente &&
       !window.confirm(
         "Você tem alterações não salvas nesta página. Trocar de página e descartar?"
       )
     ) {
+      sincronizar(indice);
       return;
     }
 
-    setIndice(novo);
+    sincronizar(novo);
   }
 
   // ── edição ──────────────────────────────────────────────

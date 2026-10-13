@@ -2582,6 +2582,47 @@ a, a:visited, a:hover, a:active {
   margin: 14px 0 6px;
 }
 
+/* Barra de guias dentro da aba "Páginas" do painel (pedido da autoria,
+   02/10/2026): leva de Página Inicial a Contato sem voltar ao menu. */
+.admin-guias {
+  gap: 6px;
+  margin: 0 0 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.16);
+}
+
+.admin-guia {
+  display: inline-block;
+  padding: 7px 13px;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  color: inherit;
+  text-decoration: none;
+  font-size: 0.95rem;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.admin-guia:hover {
+  border-color: rgba(0, 0, 0, 0.45);
+}
+
+.admin-guia-ativa {
+  background: #b8832c;
+  border-color: #8f611d;
+  color: #130b08;
+  font-weight: 600;
+}
+
+@media (max-width: 760px) {
+  .admin-guias {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 10px;
+  }
+}
+
 .admin-linha {
   display: flex;
   gap: 6px;

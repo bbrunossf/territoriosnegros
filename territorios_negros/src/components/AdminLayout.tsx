@@ -1,13 +1,16 @@
 import "../styles.css";
 import { useEffect, useState } from "react";
-import { Outlet, Link, useNavigate } from "react-router-dom";
+import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { fetchMensagens } from "../data/api";
+import { dentroDasGuias } from "../data/guiasDoPainel";
+import GuiasDoPainel from "./GuiasDoPainel";
 
 const TITULO_PAINEL = "Painel · Territórios Negros";
 
 export default function AdminLayout() {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const [naoLidas, setNaoLidas] = useState(0);
 
   async function sair() {
@@ -51,8 +54,11 @@ export default function AdminLayout() {
       <aside className="admin-sidebar">
         <h2>Painel</h2>
 
-        {/* A ordem aqui é a ordem do menu: primeiro o que a autoria usa durante
-            o guia (mídia), depois conteúdo, depois as ferramentas do fim. */}
+        {/* A ordem aqui é a ordem do menu: o que a autoria usa durante o guia
+            (mídia), os conteúdos com lista própria (rotas e territórios) e, no
+            fim, as ferramentas. Desde 02/10/2026 o resto — Página inicial,
+            Apoiadores, Menu Mais, Personalidades, Botões e Categorias — vive
+            DENTRO da aba "Páginas", como guias (pedido da autoria). */}
         <Link to="/admin/midias" className="admin-sidebar-btn">
           Fotos e vídeos
         </Link>
@@ -65,32 +71,8 @@ export default function AdminLayout() {
           Territórios
         </Link>
 
-        <Link to="/admin/inicio" className="admin-sidebar-btn">
-          Página inicial
-        </Link>
-
         <Link to="/admin/paginas" className="admin-sidebar-btn">
           Páginas
-        </Link>
-
-        <Link to="/admin/apoiadores" className="admin-sidebar-btn">
-          Apoiadores
-        </Link>
-
-        <Link to="/admin/menu-mais" className="admin-sidebar-btn">
-          Menu Mais
-        </Link>
-
-        <Link to="/admin/personalidades" className="admin-sidebar-btn">
-          Personalidades Negras
-        </Link>
-
-        <Link to="/admin/botoes" className="admin-sidebar-btn">
-          Botões
-        </Link>
-
-        <Link to="/admin/categorias" className="admin-sidebar-btn">
-          Categorias
         </Link>
 
         <Link to="/admin/mensagens" className="admin-sidebar-btn">
@@ -116,6 +98,12 @@ export default function AdminLayout() {
       </aside>
 
       <main className="admin-content">
+        {/* A barra de guias aparece em todas as telas do grupo "Páginas"
+            (Página Inicial, Conceito, Vitória, Presença Negra, Personalidades,
+            Menu Mais, Antes, Apoiadores, Categorias, Botões, Fim e Contato),
+            na ordem de data/guiasDoPainel.ts. */}
+        {dentroDasGuias(pathname) && <GuiasDoPainel />}
+
         {naoLidas > 0 && (
           <p className="admin-aviso-mensagens">
             Você tem {naoLidas} {naoLidas > 1 ? "mensagens" : "mensagem"} ainda não{" "}

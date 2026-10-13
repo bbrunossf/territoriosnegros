@@ -579,29 +579,33 @@ export interface DefinicaoPagina {
   caminho: string;
   padrao: PaginaConteudo;
   aviso?: string;
+  /** nome curto usado no endereço da guia (?p=…), sem acento e sem barra */
+  slug?: string;
 }
 
 export const PAGINAS_DO_APP: DefinicaoPagina[] = [
-  { chave: "pagina_intro", nome: "Antes", caminho: "/intro", padrao: INTRO_PADRAO },
-  { chave: "pagina_vitoria", nome: "Vitória", caminho: "/vitoria", padrao: VITORIA_PADRAO },
+  { chave: "pagina_intro", nome: "Antes", caminho: "/intro", padrao: INTRO_PADRAO, slug: "antes" },
+  { chave: "pagina_vitoria", nome: "Vitória", caminho: "/vitoria", padrao: VITORIA_PADRAO, slug: "vitoria" },
   {
     chave: "pagina_presenca_negra",
     nome: "Presença Negra",
     caminho: "/presenca-negra",
     padrao: PRESENCA_PADRAO,
+    slug: "presenca-negra",
     aviso:
       "Página nova, feita para aprofundar a presença negra na cidade e, mais adiante, receber " +
       "as biografias das personalidades negras de Vitória. Monte aqui como nas outras páginas: " +
       "blocos de texto, destaques, listas, imagens e links. Vídeo entra como link do YouTube " +
       "(quando o bloco tem só links, eles saem como cartões com o nome do site).",
   },
-  { chave: "pagina_conceito", nome: "Conceito", caminho: "/conceito", padrao: CONCEITO_PADRAO },
-  { chave: "pagina_fim", nome: "Fim", caminho: "/fim", padrao: FIM_PADRAO },
+  { chave: "pagina_conceito", nome: "Conceito", caminho: "/conceito", padrao: CONCEITO_PADRAO, slug: "conceito" },
+  { chave: "pagina_fim", nome: "Fim", caminho: "/fim", padrao: FIM_PADRAO, slug: "fim" },
   {
     chave: "pagina_contato",
     nome: "Contato",
     caminho: "/contato",
     padrao: CONTATO_PADRAO,
+    slug: "contato",
     aviso:
       "Nesta página o formulário de mensagem aparece abaixo destes textos: aqui você " +
       "edita o título, o subtítulo e o texto de abertura — e, no fim da página, os " +
