@@ -107,8 +107,15 @@ export const GRUPOS_DE_BOTOES: GrupoDeBotoes[] = [
       "Os botões fixos que aparecem no alto de algumas telas para o visitante seguir viagem. Cada um leva para a sua página; aqui você muda só o nome.",
     itens: [
       {
+        id: "inicio",
+        padrao: "Início",
+        destino: "/",
+        onde: "no topo ou no final de uma tela (voltar ao começo)",
+        exemplo: "Ex: Começo",
+      },
+      {
         id: "ir-para-base-teorica",
-        padrao: "Ir para base teórica",
+        padrao: "Base teórica",
         destino: "/conceito",
         onde: TOPO_DA_CIDADE,
         exemplo: "Ex: Ver a base teórica",

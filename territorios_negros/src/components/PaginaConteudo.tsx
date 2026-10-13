@@ -10,6 +10,8 @@ import FotoAmpliavel from "../components/FotoAmpliavel";
 
 import { imagensVisiveis, classesEstilo } from "../data/paginas";
 import type { BotaoConteudo, PaginaConteudo } from "../data/paginas";
+import { rotuloDeBotaoDaPagina } from "../data/botoesPorTela";
+import { useTerritorios } from "../context/useTerritorios";
 
 import { paragrafosDe } from "../utils/texto";
 import { itensComTexto } from "../utils/itens";
@@ -80,6 +82,19 @@ export default function PaginaConteudo({
 }) {
   const destaque = paragrafosDe(pagina.destaque);
   const classesDestaque = classesEstilo(pagina.destaqueEstilo);
+
+  const { config } = useTerritorios();
+
+  /**
+   * Os botões da página, com o rótulo no padrão do app (pedido da autoria,
+   * 02/10/2026): nada de "Ir para…" sobrando. Botão que leva a um destino do
+   * catálogo (a Base teórica, as Rotas, o Início…) recebe o NOME do catálogo —
+   * o mesmo que aparece nas outras telas; o resto perde o "Ir para" do começo.
+   */
+  const botoesComNomePadrao = pagina.botoes.map((b) => ({
+    ...b,
+    texto: rotuloDeBotaoDaPagina(config, b.url, b.texto),
+  }));
 
   /** Caixa final: texto + link (ex.: "TCC completo: Acessar no Repositório da UFES"). */
   const caixaDoRodape = pagina.rodapeUrl ? (
@@ -222,10 +237,10 @@ export default function PaginaConteudo({
 
       {pagina.rodapeUrl && caixaDoRodape}
 
-      {pagina.botoes.length > 0 && (
+      {botoesComNomePadrao.length > 0 && (
         <div className="pagina-botoes">
-          {pagina.botoes.map((botao, i) => (
-            <Botao key={`${botao.texto}-${i}`} botao={botao} />
+          {botoesComNomePadrao.map((botao, i) => (
+            <Botao key={`${botao.url}-${i}`} botao={botao} />
           ))}
         </div>
       )}

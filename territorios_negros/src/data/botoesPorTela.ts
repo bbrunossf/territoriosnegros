@@ -46,6 +46,13 @@ export interface BotaoDoCatalogo {
  */
 export const CATALOGO_DE_NAVEGACAO: BotaoDoCatalogo[] = [
   {
+    id: "inicio",
+    padrao: "Início",
+    destino: "/",
+    idDoNome: "inicio",
+    exemplo: "Ex: Começo",
+  },
+  {
     id: "base-teorica",
     padrao: "Base teórica",
     destino: "/conceito",
@@ -108,9 +115,11 @@ export function catalogoPorId(id: string): BotaoDoCatalogo | undefined {
 
 /** O botão de navegação que leva a este endereço (se houver). */
 export function catalogoPeloDestino(destino: string): BotaoDoCatalogo | undefined {
-  const alvo = destino.replace(/\/+$/, "").toLowerCase() || "/";
+  const limpar = (valor: string) => (valor ?? "").replace(/\/+$/, "").toLowerCase();
 
-  return CATALOGO_DE_NAVEGACAO.find((b) => b.destino.replace(/\/+$/, "").toLowerCase() === alvo);
+  const alvo = limpar(destino);
+
+  return CATALOGO_DE_NAVEGACAO.find((b) => limpar(b.destino) === alvo);
 }
 
 export interface TelaDoApp {
@@ -328,6 +337,39 @@ export function semBotao(lista: string[], id: string): string[] {
   return lista.filter((i) => i !== id);
 }
 
+/**
+ * O nome de um botão que veio do painel (Páginas), já no padrão do app:
+ *   · se ele leva a um destino do catálogo, vale o NOME do catálogo (é o que faz
+ *     o botão ficar igual aos da Base teórica — nada de "Ir para…" sobrando);
+ *   · se leva a outro lugar, tira o "Ir para…" do começo e deixa a inicial
+ *     maiúscula ("Ir para a linha do tempo" → "Linha do tempo").
+ */
+export function rotuloDeBotaoDaPagina(
+  config: Record<string, unknown> | undefined,
+  url: string,
+  texto: string
+): string {
+  const doCatalogo = catalogoPeloDestino(url ?? "");
+
+  if (doCatalogo) return nomeDoCatalogo(config, doCatalogo);
+
+  return semIrPara(texto ?? "");
+}
+
+/** Tira o "Ir para…" do começo do rótulo, sem deixar artigo solto. */
+export function semIrPara(texto: string): string {
+  const limpo = (texto ?? "").trim();
+
+  const semPrefixo = limpo
+    .replace(/^\s*ir\s+para\s+(o\s+|a\s+|os\s+|as\s+|ao\s+|à\s+)?/i, "")
+    .trim();
+
+  if (!semPrefixo || semPrefixo === limpo) return limpo;
+
+  // devolve a inicial maiúscula e, com ela, acentuação que a autoria já escreveu
+  return semPrefixo.charAt(0).toUpperCase() + semPrefixo.slice(1);
+}
+
 /** Quantos lugares (telas × topo/final) usam este botão — resumo do painel. */
 export function ondeAparece(
   config: Record<string, unknown> | undefined,
@@ -401,13 +443,20 @@ export function botoesDaPagina(
     .filter((e): e is BotaoDoCatalogo => !!e)
     .map((e) => ({ texto: nomeDoCatalogo(config, e), url: e.destino, estilo: "btn" as const }));
 
-  const destinos = fixos.map((b) => b.url);
+  // um botão do painel que repetiria um destino que já está na tela (no topo ou
+  // no final) não entra de novo — o visitante não vê dois botões iguais
+  const jaNaTela = [
+    ...fixos.map((b) => b.url),
+    ...atalhosDaTela(config, tela, "topo")
+      .map((id) => catalogoPorId(id)?.destino ?? "")
+      .filter(Boolean),
+  ];
 
   const outros = (extras ?? []).filter((b) => {
     const destino = (b.url ?? "").trim().toLowerCase();
 
     if (!destino || destino === "/contato") return false;
-    if (destinos.some((d) => d.toLowerCase() === destino)) return false;
+    if (jaNaTela.some((d) => d.toLowerCase() === destino)) return false;
 
     return true;
   });

@@ -25,6 +25,7 @@ import {
   catalogoPorId,
   filtrarPropriaTela,
   nomeDoCatalogo,
+  rotuloDeBotaoDaPagina,
 } from "../data/botoesPorTela";
 import { normalizarTexto } from "../data/personalidades";
 import BotaoApoiadores from "./BotaoApoiadores";
@@ -114,7 +115,7 @@ export default function BotoesDaTela({ tela, posicao = "final", extras = [] }: P
           className={b.estilo === "outline" ? "outline pagina-botao" : "btn pagina-botao"}
           to={b.url}
         >
-          {b.texto?.trim() || nomes[b.url] || b.url}
+          {rotuloDeBotaoDaPagina(config, b.url ?? "", b.texto?.trim() || nomes[b.url] || b.url)}
         </Link>
       ))}
     </div>
