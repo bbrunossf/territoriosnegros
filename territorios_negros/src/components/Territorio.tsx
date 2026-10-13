@@ -9,6 +9,7 @@ import Topic from "../components/Topic";
 import FotoAmpliavel from "../components/FotoAmpliavel";
 import PlayerVideo from "../components/PlayerVideo";
 import BotaoContato from "../components/BotaoContato";
+import PersonalidadesDoTerritorio from "../components/PersonalidadesDoTerritorio";
 
 import { calcularIdade } from "../utils/data";
 
@@ -191,6 +192,11 @@ export default function Territorio() {
             </div>
           </Topic>
         )}
+
+        {/* personalidades ligadas a este território (pedido da autoria,
+            02/10/2026): é o outro lado do vínculo cadastrado na personalidade —
+            sem ninguém ligado, não aparece nada */}
+        <PersonalidadesDoTerritorio territorioId={territorio.id} />
 
         <BotaoContato tela="territorio" />
       </>

@@ -149,6 +149,13 @@ export const GRUPOS_DE_BOTOES: GrupoDeBotoes[] = [
         exemplo: "Ex: Voltar para a cidade",
       },
       {
+        id: "personalidades",
+        padrao: "Personalidades",
+        destino: "/personalidades",
+        onde: "no topo da página Presença Negra na Cidade",
+        exemplo: "Ex: Trajetórias negras",
+      },
+      {
         id: "apoiadores",
         padrao: "Apoiadores",
         destino: "/apoiadores",

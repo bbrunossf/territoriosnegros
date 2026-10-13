@@ -12,6 +12,7 @@ import { ordenarIds } from "../utils/ordem";
 import BotaoApoiadores from "./BotaoApoiadores";
 import BotaoBaseTeorica from "./BotaoBaseTeorica";
 import BotaoCidadeVitoria from "./BotaoCidadeVitoria";
+import BotaoPersonalidades from "./BotaoPersonalidades";
 import BotaoPresencaNegra from "./BotaoPresencaNegra";
 import BotaoTerritorios from "./BotaoTerritorios";
 
@@ -43,6 +44,9 @@ function Atalho({ id }: { id: string }) {
 
     case "apoiadores":
       return <BotaoApoiadores />;
+
+    case "personalidades":
+      return <BotaoPersonalidades />;
 
     default:
       return null;

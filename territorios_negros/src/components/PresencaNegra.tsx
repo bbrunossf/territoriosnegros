@@ -40,7 +40,7 @@ export default function PresencaNegra() {
       tela="presenca-negra"
       // no topo, o caminho de volta para A cidade de Vitória — a página de que
       // esta nasceu (pedido da autoria, 02/10/2026)
-      depoisDoTitulo={<AtalhosDaTela ids={["cidade-no-topo-da-presenca"]} />}
+      depoisDoTitulo={<AtalhosDaTela ids={["cidade-no-topo-da-presenca", "personalidades"]} />}
     />
   );
 }

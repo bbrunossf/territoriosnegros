@@ -29,6 +29,9 @@ import MidiasAdmin from "./components/MidiasAdmin";
 import ApoiadoresAdmin from "./components/ApoiadoresAdmin";
 import MenuMaisAdmin from "./components/MenuMaisAdmin";
 import BotoesAdmin from "./components/BotoesAdmin";
+import PersonalidadesAdmin from "./components/PersonalidadesAdmin";
+import Personalidades from "./components/Personalidades";
+import PersonalidadePagina from "./components/PersonalidadePagina";
 import PresencaNegra from "./components/PresencaNegra";
 import { Navigate } from "react-router-dom";
 
@@ -72,6 +75,11 @@ createRoot(document.getElementById('root')!).render(
               {/* quem apoia o projeto — aberta pelo botão da tela "Antes de caminhar" */}
               <Route path="apoiadores" element={<Apoiadores />} />
               <Route path="presenca-negra" element={<PresencaNegra />} />
+              {/* Personalidades negras: listagem e página de cada uma, com
+                  endereço permanente (/personalidade/<slug>) — pedido da autoria,
+                  02/10/2026 */}
+              <Route path="personalidades" element={<Personalidades />} />
+              <Route path="personalidade/:slug" element={<PersonalidadePagina />} />
             </Route>
 
             <Route path="/login" element={<Login />} />
@@ -85,6 +93,7 @@ createRoot(document.getElementById('root')!).render(
               <Route path="apoiadores" element={<ApoiadoresAdmin />} />
               <Route path="menu-mais" element={<MenuMaisAdmin />} />
               <Route path="botoes" element={<BotoesAdmin />} />
+              <Route path="personalidades" element={<PersonalidadesAdmin />} />
               <Route path="mensagens" element={<MensagensAdmin />} />
               <Route path="acessos" element={<AcessosAdmin />} />
               <Route path="midias" element={<MidiasAdmin />} />

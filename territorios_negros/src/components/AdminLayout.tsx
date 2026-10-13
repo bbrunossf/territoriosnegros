@@ -81,6 +81,10 @@ export default function AdminLayout() {
           Menu Mais
         </Link>
 
+        <Link to="/admin/personalidades" className="admin-sidebar-btn">
+          Personalidades Negras
+        </Link>
+
         <Link to="/admin/botoes" className="admin-sidebar-btn">
           Botões
         </Link>
