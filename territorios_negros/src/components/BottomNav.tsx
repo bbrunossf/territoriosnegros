@@ -2,10 +2,14 @@
 //
 // Barra de navegação do app (fixa, no pé da tela).
 //
-// Itens fixos: Início · Antes · Conceito · Rotas · Territórios.
+// Itens fixos: Início · Vitória Negra · Conceito · Rotas · Territórios.
 // O último item, "Mais", abre uma lista com as páginas que não têm item próprio
 // na barra (ver data/menuPrincipal.ts) — antes só se chegava a elas navegando
 // dentro de outras telas (pedido da autoria, 02/10/2026).
+//
+// "Antes de caminhar" saiu da barra e passou a viver dentro do "Mais", abrindo
+// lugar para "Vitória Negra" — que leva à página Presença Negra na Cidade de
+// Vitória (pedido da autoria, 02/10/2026).
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -65,9 +69,13 @@ export default function BottomNav() {
           Início
         </Link>
 
-        <Link to="/intro" className="bottom-nav-btn" onClick={() => setAberto(false)}>
-          ⟲<br />
-          Antes
+        <Link
+          to="/presenca-negra"
+          className="bottom-nav-btn"
+          onClick={() => setAberto(false)}
+        >
+          ✦<br />
+          Vitória Negra
         </Link>
 
         <Link to="/conceito" className="bottom-nav-btn" onClick={() => setAberto(false)}>

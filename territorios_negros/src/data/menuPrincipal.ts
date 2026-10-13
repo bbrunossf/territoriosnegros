@@ -63,6 +63,13 @@ export const NOME_DO_ITEM = "Mais";
 /** A lista como está publicada hoje (é o ponto de partida de quem abre a aba). */
 export const ITENS_PADRAO: ItemDoMenu[] = [
   { id: "menu-evento", nome: "Próximo evento", caminho: "/evento", icone: "★", visivel: true },
+  {
+    id: "menu-intro",
+    nome: "Antes de caminhar",
+    caminho: "/intro",
+    icone: "⟲",
+    visivel: true,
+  },
   { id: "menu-apoiadores", nome: "Apoiadores", caminho: "/apoiadores", icone: "✦", visivel: true },
   {
     id: "menu-vitoria",

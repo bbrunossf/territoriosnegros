@@ -12,6 +12,7 @@
 import { useTerritorios } from "../context/useTerritorios";
 import { PRESENCA_PADRAO, normalizarPagina } from "../data/paginas";
 import { CHAVE_BOTOES_INTRO, botoesDaIntro, lerNomes } from "../data/botoesIntro";
+import BotaoCidadeVitoria from "./BotaoCidadeVitoria";
 import PaginaConteudo from "./PaginaConteudo";
 
 export default function PresencaNegra() {
@@ -28,5 +29,13 @@ export default function PresencaNegra() {
     botoes: botoesDaIntro(doPainel.botoes, lerNomes(config[CHAVE_BOTOES_INTRO])),
   };
 
-  return <PaginaConteudo pagina={pagina} tela="presenca-negra" />;
+  return (
+    <PaginaConteudo
+      pagina={pagina}
+      tela="presenca-negra"
+      // no topo, o caminho de volta para A cidade de Vitória — a página de que
+      // esta nasceu (pedido da autoria, 02/10/2026)
+      depoisDoTitulo={<BotaoCidadeVitoria texto="A cidade de Vitória" />}
+    />
+  );
 }
