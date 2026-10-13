@@ -55,6 +55,19 @@ export const MANUAL_PADRAO: SecaoManual[] = [
     itens: [],
   },
   {
+    id: "menu-e-guias",
+    titulo: "O menu do painel e as guias de Páginas",
+    texto:
+      "O menu da esquerda ficou curto, só com o que você usa o tempo todo: **Fotos e vídeos**, **Rotas**, **Territórios**, **Páginas**, **Mensagens**, **Manual**, **Ver o app** e **Acessos** (e **Sair** no fim).\n\nTudo o que era item separado no menu — Página inicial, Conceito, Vitória, Presença Negra, Personalidades, Menu Mais, Antes, Apoiadores, Categorias, Botões, Fim e Contato — agora vive **dentro de Páginas**, numa barra de guias no alto da tela. Clicar numa guia troca a tela ali mesmo, sem voltar ao menu.",
+    itens: [
+      "A ordem das guias é: Página Inicial, Conceito, Vitória, Presença Negra, Personalidades, Menu Mais, Antes, Apoiadores, Categorias, Botões, Fim e Contato.",
+      "A guia aberta fica destacada em dourado.",
+      "Cada guia tem o seu endereço: se você guardar nos favoritos, ela abre direto. Exemplo → …/admin/paginas?p=conceito abre o Conceito; …/admin/paginas?p=antes abre o Antes.",
+      "Trocar de página com alterações não salvas continua pedindo confirmação, como antes.",
+      "Fora das guias continuam Fotos e vídeos, Rotas, Territórios, Mensagens, Manual, Ver o app e Acessos — são listas e ferramentas, não páginas de texto.",
+    ],
+  },
+  {
     id: "abas",
     titulo: "O que cada aba controla",
     texto:
