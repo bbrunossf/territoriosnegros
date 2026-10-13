@@ -36,6 +36,17 @@ export interface MarcosDoApp {
 /** Chave única em app_config. */
 export const CHAVE_MARCOS = "marcos_conexoes";
 
+/**
+ * Exibir ou ocultar a seção no app (gravado no banco, vale para todos).
+ * Ausente = aparece. O conteúdo cadastrado nunca é apagado por este controle.
+ */
+export const CHAVE_MARCOS_VISIVEL = "marcos_visivel";
+
+/** A seção está liberada para aparecer no app? (padrão: sim) */
+export function marcosVisiveis(config: Record<string, unknown> | undefined): boolean {
+  return config?.[CHAVE_MARCOS_VISIVEL] !== false;
+}
+
 /** Como a seção se chama na interface — nada de "roteiro", "lembrete" ou "anotação". */
 export const TITULO_MARCOS = "Marcos e Conexões";
 

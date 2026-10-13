@@ -87,53 +87,6 @@
   word-break: break-word;
 }
 
-/* ── controle da autoria (só aparece com sessão aberta) ─────────────────── */
-
-.controle-expansao {
-  position: fixed;
-  left: 12px;
-  right: 12px;
-  bottom: 84px;
-  z-index: 30;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-
-  padding: 10px 12px;
-
-  border: 1px solid #8f611d;
-  border-radius: 12px;
-
-  background: rgba(19, 11, 8, 0.94);
-  color: #f7efdf;
-
-  box-shadow: 0 8px 20px rgba(19, 11, 8, 0.35);
-}
-
-.controle-expansao-rotulo {
-  font-size: 0.85rem;
-  line-height: 1.25;
-}
-
-.controle-expansao-botao {
-  flex: none;
-  min-height: 38px;
-  padding: 8px 14px;
-
-  border: 2px solid #b8832c;
-  border-radius: 10px;
-
-  background: transparent;
-  color: #f7efdf;
-
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.controle-expansao-botao.ligado {
-  background: #b8832c;
-  border-color: #8f611d;
-  color: #130b08;
-}
+/* ── a seção no app do visitante ──────────────────────────────────────────
+   Não há nenhum controle dentro do app: exibir/ocultar e permitir a expansão
+   ficam no painel (guia "Marcos e Conexões"). */

@@ -15,7 +15,7 @@ import Topic from "./Topic";
 import Inline from "./Inline";
 import { useTerritorios } from "../context/useTerritorios";
 import { useExpansao } from "../context/useExpansao";
-import { TITULO_MARCOS, marcosDaPagina, type Marco } from "../data/marcos";
+import { TITULO_MARCOS, marcosDaPagina, marcosVisiveis, type Marco } from "../data/marcos";
 
 /**
  * A preferência de expansão deste aparelho (ver context/useExpansao.ts).
@@ -49,6 +49,9 @@ export default function MarcosConexoes({ chaveDaPagina }: { chaveDaPagina: strin
   const marcos = marcosDaPagina(config, chaveDaPagina);
   const [permitir] = useExpansao();
   const [abertos, setAbertos] = useState<string[]>([]);
+
+  // "Exibir Marcos e Conexões" desligado no painel: não aparece em página nenhuma
+  if (!marcosVisiveis(config)) return null;
 
   // sem tópico preenchido não existe seção — nem vazia, nem provisória
   if (marcos.length === 0) return null;

@@ -4,14 +4,41 @@
 // está cadastrado e onde cadastrar cada grupo de páginas.
 
 import "../styles.css";
+import { useState } from "react";
 import { useTerritorios } from "../context/useTerritorios";
 import { useExpansao } from "../context/useExpansao";
-import { resumoDosMarcos } from "../data/marcos";
+import { salvarConfig } from "../data/api";
+import { CHAVE_MARCOS_VISIVEL, marcosVisiveis, resumoDosMarcos } from "../data/marcos";
 import { lerPersonalidades } from "../data/personalidades";
 
 export default function MarcosAdmin() {
-  const { config, territorios } = useTerritorios();
+  const { config, territorios, recarregar } = useTerritorios();
   const [permitir, definir] = useExpansao();
+  const [gravando, setGravando] = useState(false);
+  const [aviso, setAviso] = useState("");
+
+  const visivel = marcosVisiveis(config);
+
+  async function alternarVisivel() {
+    setGravando(true);
+    setAviso("");
+
+    try {
+      await salvarConfig(CHAVE_MARCOS_VISIVEL, !visivel);
+      await recarregar();
+
+      setAviso(
+        visivel
+          ? "Marcos e Conexões está escondida no app. O conteúdo continua guardado — nada foi apagado."
+          : "Marcos e Conexões voltou a aparecer no app."
+      );
+    } catch (e) {
+      console.error(e);
+      setAviso(e instanceof Error ? e.message : "Falha ao salvar.");
+    } finally {
+      setGravando(false);
+    }
+  }
 
   const resumo = resumoDosMarcos(config);
   const nomeDoTerritorio = (id: string) => territorios[id]?.nome ?? id;
@@ -32,12 +59,37 @@ export default function MarcosAdmin() {
       </p>
 
       <div className="admin-bloco">
-        <h3>Permitir expansão de Marcos e Conexões</h3>
+        <h3>Exibir ou ocultar a seção no app</h3>
 
         <p className="admin-ajuda">
-          Vale para <b>todas as páginas deste aparelho</b>, ao mesmo tempo — não é preciso
-          configurar página por página. Fica guardada no navegador, então continua valendo depois
-          de navegar, recarregar ou fechar o app. Os visitantes continuam vendo apenas os títulos.
+          Vale para o <b>app inteiro</b> — é o que o visitante vê. Escondendo, Marcos e Conexões não
+          aparece em página nenhuma; <b>o conteúdo cadastrado continua guardado</b> e volta inteiro
+          quando você exibir de novo.
+        </p>
+
+        <div className="admin-linha">
+          <button type="button" className="outline" onClick={alternarVisivel} disabled={gravando}>
+            {visivel ? "Aparecendo — toque para ocultar" : "Oculta — toque para exibir"}
+          </button>
+
+          <span className="admin-dica">
+            {visivel
+              ? "quem abrir o app agora vê os títulos dos tópicos"
+              : "ninguém vê a seção enquanto estiver oculta"}
+          </span>
+        </div>
+
+        {aviso && <p className="admin-ok">{aviso}</p>}
+      </div>
+
+      <div className="admin-bloco">
+        <h3>Permitir expansão das explicações</h3>
+
+        <p className="admin-ajuda">
+          Aqui é só para o seu aparelho: vale para <b>todas as páginas deste aparelho</b>, ao mesmo
+          tempo — não é preciso configurar página por página. Fica guardado no navegador, então
+          continua valendo depois de navegar, recarregar ou fechar o app. Os visitantes continuam
+          vendo apenas os títulos, sem setas.
         </p>
 
         <div className="admin-linha">
@@ -47,19 +99,18 @@ export default function MarcosAdmin() {
             aria-pressed={permitir}
             onClick={() => definir(!permitir)}
           >
-            {permitir ? "Ligada — toque para desligar" : "Desligada — toque para ligar"}
+            {permitir ? "Expandindo — toque para não expandir" : "Não expande — toque para expandir"}
           </button>
 
           <span className="admin-dica">
             {permitir
-              ? "no app, os títulos abrem e fecham ao toque"
-              : "no app, os títulos ficam sem expansão e sem setas"}
+              ? "no app deste aparelho, os títulos abrem e fecham ao toque"
+              : "no app deste aparelho, os títulos ficam sem expansão e sem setas"}
           </span>
         </div>
 
         <p className="admin-ajuda">
-          Com a sessão aberta, o mesmo controle aparece no app, numa faixa discreta embaixo — só
-          para você. O visitante nunca vê esse controle.
+          Este controle é <b>só seu</b> e fica no painel: nada aparece no app do visitante.
         </p>
       </div>
 
