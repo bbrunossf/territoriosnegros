@@ -61,6 +61,7 @@ export const MANUAL_PADRAO: SecaoManual[] = [
       "O menu da esquerda ficou curto, só com o que você usa o tempo todo: **Fotos e vídeos**, **Rotas**, **Territórios**, **Páginas**, **Mensagens**, **Manual**, **Ver o app** e **Acessos** (e **Sair** no fim).\n\nTudo o que era item separado no menu — Página inicial, Conceito, Vitória, Presença Negra, Personalidades, Menu Mais, Antes, Apoiadores, Categorias, Botões, Fim e Contato — agora vive **dentro de Páginas**, numa barra de guias no alto da tela. Clicar numa guia troca a tela ali mesmo, sem voltar ao menu.",
     itens: [
       "A ordem das guias é: Página Inicial, Conceito, Vitória, Presença Negra, Personalidades, Menu Mais, Antes, Apoiadores, Categorias, Botões, Fim e Contato.",
+      "Na tela das Páginas a barra fica logo abaixo do título **Páginas** — no mesmo lugar das antigas abas, e agora sem duplicar nada: as abas de páginas saíram.",
       "A guia aberta fica destacada em dourado.",
       "Cada guia tem o seu endereço: se você guardar nos favoritos, ela abre direto. Exemplo → …/admin/paginas?p=conceito abre o Conceito; …/admin/paginas?p=antes abre o Antes.",
       "Trocar de página com alterações não salvas continua pedindo confirmação, como antes.",

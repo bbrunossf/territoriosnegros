@@ -60,8 +60,15 @@ export function guiaAberta(caminho: string, busca: string): GuiaDoPainel | undef
   const soCaminho = (caminho ?? "").split("?")[0];
   const comBusca = `${soCaminho}${busca ?? ""}`;
 
-  return (
-    GUIAS_DO_PAINEL.find((g) => g.rota === comBusca) ??
-    GUIAS_DO_PAINEL.find((g) => g.rota.split("?")[0] === soCaminho && !g.rota.includes("?"))
-  );
+  const exata = GUIAS_DO_PAINEL.find((g) => g.rota === comBusca);
+
+  if (exata) return exata;
+
+  // sem parâmetro, a tela das Páginas abre na primeira página (Antes): a guia
+  // do Antes fica marcada, para o destaque não sumir
+  if (soCaminho === "/admin/paginas" && !/[?&]p=/.test(comBusca)) {
+    return GUIAS_DO_PAINEL.find((g) => g.id === "antes");
+  }
+
+  return GUIAS_DO_PAINEL.find((g) => g.rota.split("?")[0] === soCaminho && !g.rota.includes("?"));
 }

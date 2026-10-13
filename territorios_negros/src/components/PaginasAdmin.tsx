@@ -24,6 +24,7 @@ import {
 } from "../data/paginas";
 import { formatarDataHoraBR } from "../utils/data";
 import { legendaDoArquivo } from "../utils/legendas";
+import GuiasDoPainel from "./GuiasDoPainel";
 import FormularioContatoAdmin from "./FormularioContatoAdmin";
 import BotaoContatoAdmin from "./BotaoContatoAdmin";
 import Inline from "./Inline";
@@ -168,9 +169,9 @@ function PreviaTitulo({
 export default function PaginasAdmin() {
   const { config, recarregar } = useTerritorios();
 
-  // a guia escolhida na barra de cima vem no endereço (?p=conceito, ?p=antes…):
-  // assim o endereço pode ser guardado, e a guia certa abre já selecionada
-  const [parametros, setParametros] = useSearchParams();
+  // a guia escolhida na barra de guias vem no endereço (?p=conceito, ?p=antes…):
+  // assim o endereço pode ser guardado, e a guia certa abre já destacada
+  const [parametros] = useSearchParams();
 
   /** a página aberta vem do endereço — não de um estado próprio */
   const indice = Math.max(
@@ -209,27 +210,6 @@ export default function PaginasAdmin() {
       ativo = false;
     };
   }, [config, definicao.chave, definicao.padrao]);
-
-  // ── navegação entre as páginas ──────────────────────────
-
-  function trocarPagina(novo: number) {
-    /** o endereço é quem manda na página aberta — aqui ele é atualizado */
-    const sincronizar = (i: number) =>
-      setParametros({ p: PAGINAS_DO_APP[i]?.slug ?? "" }, { replace: true });
-
-    if (
-      novo !== indice &&
-      pendente &&
-      !window.confirm(
-        "Você tem alterações não salvas nesta página. Trocar de página e descartar?"
-      )
-    ) {
-      sincronizar(indice);
-      return;
-    }
-
-    sincronizar(novo);
-  }
 
   // ── edição ──────────────────────────────────────────────
 
@@ -595,18 +575,18 @@ export default function PaginasAdmin() {
         de clicar em <b>Salvar</b>.
       </p>
 
-      <div className="admin-abas">
-        {PAGINAS_DO_APP.map((p, i) => (
-          <button
-            key={p.chave}
-            type="button"
-            className={i === indice ? "btn" : "outline"}
-            onClick={() => trocarPagina(i)}
-          >
-            {p.nome}
-          </button>
-        ))}
-      </div>
+      {/* As guias ficam exatamente onde ficavam as abas das páginas (pedido da
+          autoria, 02/10/2026): logo abaixo do título "Páginas". Agora são as
+          MESMAS guias do painel, numa barra só — as abas antigas de páginas
+          saíram, que era o que duplicava Vitória, Antes e Fim. */}
+      <GuiasDoPainel
+        aoNavegar={() =>
+          !pendente ||
+          window.confirm(
+            "Você tem alterações não salvas nesta página. Sair e descartar?"
+          )
+        }
+      />
 
       {definicao.aviso && <p className="admin-ajuda">{definicao.aviso}</p>}
 

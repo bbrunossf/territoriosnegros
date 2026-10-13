@@ -98,11 +98,10 @@ export default function AdminLayout() {
       </aside>
 
       <main className="admin-content">
-        {/* A barra de guias aparece em todas as telas do grupo "Páginas"
-            (Página Inicial, Conceito, Vitória, Presença Negra, Personalidades,
-            Menu Mais, Antes, Apoiadores, Categorias, Botões, Fim e Contato),
-            na ordem de data/guiasDoPainel.ts. */}
-        {dentroDasGuias(pathname) && <GuiasDoPainel />}
+        {/* A barra de guias aparece nas telas do grupo "Páginas" — na tela das
+            Páginas ela é desenhada pela própria tela, logo abaixo do título
+            (como eram as abas antigas), para não haver duas barras iguais. */}
+        {pathname !== "/admin/paginas" && dentroDasGuias(pathname) && <GuiasDoPainel />}
 
         {naoLidas > 0 && (
           <p className="admin-aviso-mensagens">
