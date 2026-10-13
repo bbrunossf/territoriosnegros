@@ -1,6 +1,7 @@
 import { useTerritorios } from "../context/useTerritorios";
 import { CONCEITO_PADRAO, normalizarPagina } from "../data/paginas";
 import { botoesDaPagina } from "../data/botoesPorTela";
+import BotoesDaTela from "./BotoesDaTela";
 import PaginaConteudo from "./PaginaConteudo";
 
 // Texto editável no painel (aba Páginas) — chave: pagina_conceito
@@ -26,6 +27,8 @@ export default function Conceito() {
       // o acesso ao TCC completo aparece também logo abaixo do título, e não só
       // no fim da página (pedido da autoria, 02/10/2026)
       rodapeNoTopo
+      // botões escolhidos para o topo da Base teórica (aba Botões, "Em cada tela")
+      depoisDoTitulo={<BotoesDaTela tela="conceito" posicao="topo" />}
     />
   );
 }

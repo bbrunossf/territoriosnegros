@@ -133,6 +133,9 @@ export default function Roteiros() {
         </p>
       )}
 
+      {/* botões escolhidos para o final das Rotas (aba Botões, "Em cada tela") */}
+      <BotoesDaTela tela="roteiros" posicao="final" />
+
       <BotaoContato tela="roteiros" />
     </>
   );

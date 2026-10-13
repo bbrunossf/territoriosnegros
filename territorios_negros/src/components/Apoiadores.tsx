@@ -29,6 +29,9 @@ export default function Apoiadores() {
     <>
       <PageTitle title={pagina.titulo} />
 
+      {/* botões que a autoria escolheu para o topo (aba Botões, "Em cada tela") */}
+      <BotoesDaTela tela="apoiadores" posicao="topo" />
+
       <div className="apoio-abertura">
         <Inline texto={pagina.texto} />
       </div>

@@ -9,8 +9,7 @@
 //  · pergunta de soma ("você é uma pessoa?") que muda a cada envio
 //  · campo-armadilha invisível, que só robôs preenchem
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { rotuloDoCatalogo } from "../data/botoesPorTela";
+import BotoesDaTela from "./BotoesDaTela";
 
 import PaginaConteudo from "../components/PaginaConteudo";
 import { enviarMensagem } from "../data/api";
@@ -119,21 +118,17 @@ export default function Contato() {
   }
 
   return (
-    <PaginaConteudo pagina={pagina}>
+    <PaginaConteudo
+      pagina={pagina}
+      // botões escolhidos para o final da página (aba Botões, "Em cada tela")
+      depoisDosBotoes={<BotoesDaTela tela="contato" posicao="final" />}
+    >
       {/* Saídas no topo da página (pedido da autoria, 02/10/2026): quem chegou
           aqui por engano — clicou em "Enviar uma mensagem" sem querer — volta
           para outra tela com um toque, sem depender do botão do navegador.
-          Desde 02/10/2026 os nomes seguem o padrão do app (nada de "Ir para…"):
-          são os nomes do catálogo, editáveis no painel, na aba Botões. */}
-      <div className="pagina-botoes contato-atalhos">
-        <Link className="btn pagina-botao" to="/">
-          {rotuloDoCatalogo(config, "inicio", "Início")}
-        </Link>
-
-        <Link className="btn pagina-botao" to="/roteiros">
-          {rotuloDoCatalogo(config, "roteiros", "Roteiros")}
-        </Link>
-      </div>
+          Desde 02/10/2026 os dois que vêm por padrão (Início e Roteiros) são do
+          catálogo: a autoria adiciona, tira e reordena na aba Botões. */}
+      <BotoesDaTela tela="contato" posicao="topo" />
 
       <form className="admin-form contato-form" onSubmit={enviar}>
         <input

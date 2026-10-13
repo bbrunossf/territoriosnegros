@@ -69,6 +69,13 @@ function Botao({ id }: { id: string }) {
         </Link>
       );
 
+    case "inicio":
+      return (
+        <Link className="btn pagina-botao" to="/">
+          {nomeDoCatalogo(config, entrada)}
+        </Link>
+      );
+
     default:
       return null;
   }

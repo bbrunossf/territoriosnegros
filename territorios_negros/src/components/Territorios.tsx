@@ -66,6 +66,9 @@ export default function Territorios() {
         </p>
       )}
 
+      {/* botões escolhidos para o final dos Territórios (aba Botões, "Em cada tela") */}
+      <BotoesDaTela tela="territorios" posicao="final" />
+
       <BotaoContato tela="territorios" />
     </>
   );

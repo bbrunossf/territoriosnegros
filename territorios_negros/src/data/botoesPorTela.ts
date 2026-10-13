@@ -126,14 +126,20 @@ export interface TelaDoApp {
   id: string;
   nome: string;
   onde: string;
-  /** onde os botões cabem nesta tela (o painel mostra só estes lugares) */
+  /** onde os botões cabem nesta tela (hoje, todas aceitam topo e final) */
   slots: ("topo" | "final")[];
 }
 
-/** As telas do app que podem receber botões de navegação. */
+/**
+ * As telas do app que podem receber botões de navegação.
+ * TODAS aceitam botões no topo e no final (pedido da autoria, 02/10/2026: "em
+ * todas as paginas eu preciso ter esta possibilidade de add ou remover botoes no
+ * topo ou no final da pagina"). As telas do passeio guiado (percurso, evento,
+ * fim) ficam de fora — lá o caminho é o próprio passeio.
+ */
 export const TELAS_DO_APP: TelaDoApp[] = [
   { id: "intro", nome: "Antes de caminhar", onde: "página de abertura do passeio", slots: ["topo", "final"] },
-  { id: "conceito", nome: "Base teórica", onde: "o texto que sustenta o projeto", slots: ["final"] },
+  { id: "conceito", nome: "Base teórica", onde: "o texto que sustenta o projeto", slots: ["topo", "final"] },
   { id: "vitoria", nome: "A cidade de Vitória", onde: "a página da cidade", slots: ["topo", "final"] },
   {
     id: "presenca-negra",
@@ -141,15 +147,16 @@ export const TELAS_DO_APP: TelaDoApp[] = [
     onde: "a página da presença negra",
     slots: ["topo", "final"],
   },
-  { id: "roteiros", nome: "Rotas", onde: "a lista de rotas", slots: ["topo"] },
-  { id: "territorios", nome: "Territórios", onde: "a lista de territórios", slots: ["topo"] },
+  { id: "roteiros", nome: "Rotas", onde: "a lista de rotas", slots: ["topo", "final"] },
+  { id: "territorios", nome: "Territórios", onde: "a lista de territórios", slots: ["topo", "final"] },
   {
     id: "personalidades",
     nome: "Personalidades",
     onde: "a lista de personalidades negras",
-    slots: ["final"],
+    slots: ["topo", "final"],
   },
-  { id: "apoiadores", nome: "Apoiadores", onde: "quem apoia o projeto", slots: ["final"] },
+  { id: "apoiadores", nome: "Apoiadores", onde: "quem apoia o projeto", slots: ["topo", "final"] },
+  { id: "contato", nome: "Contato", onde: "a página de contato", slots: ["topo", "final"] },
 ];
 
 export interface ListaDaTela {
@@ -209,7 +216,7 @@ export const PADRAO_POR_TELA: Record<string, ListaDaTela> = {
   },
   personalidades: { topo: [], final: [] },
   apoiadores: { topo: [], final: [] },
-  contato: { topo: [], final: [] },
+  contato: { topo: ["inicio", "roteiros"], final: [] },
 };
 
 /** O nome do botão: o que a autoria gravou (na aba Botões) ou o padrão. */

@@ -62,6 +62,9 @@ export default function Personalidades() {
         subtitle="Trajetórias de pessoas negras importantes para a história de Vitória e do Espírito Santo."
       />
 
+      {/* botões que a autoria escolheu para o topo (aba Botões, "Em cada tela") */}
+      <BotoesDaTela tela="personalidades" posicao="topo" />
+
       {publicadas.length > 0 && (
         <div className="personalidades-busca">
           <input
