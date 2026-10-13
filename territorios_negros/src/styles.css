@@ -2582,6 +2582,25 @@ a, a:visited, a:hover, a:active {
   margin: 14px 0 6px;
 }
 
+/* Painel: os botões de contorno ficavam quase invisíveis sobre o fundo da
+   página (reclamação da autoria, 02/10/2026: "há apenas um contorno fino e o
+   fundo é da cor da página, então fica quase imperceptível"). Aqui eles ganham
+   fundo próprio, contorno de 2px e letra um pouco maior e em negrito.
+   Vale só dentro do painel — o app do visitante segue como está. */
+.admin-content .outline {
+  border: 2px solid #7d5518;
+  background: #fffaf0;
+  color: #130b08;
+  font-size: 1.02rem;
+  font-weight: 700;
+  box-shadow: 0 2px 6px rgba(94, 60, 20, 0.12);
+}
+
+.admin-content .outline:hover {
+  border-color: #5d3f11;
+  background: #ffffff;
+}
+
 /* Barra de guias dentro da aba "Páginas" do painel (pedido da autoria,
    02/10/2026): leva de Página Inicial a Contato sem voltar ao menu. */
 .admin-guias {
@@ -2593,25 +2612,30 @@ a, a:visited, a:hover, a:active {
 
 .admin-guia {
   display: inline-block;
-  padding: 7px 13px;
+  padding: 9px 15px;
   border-radius: 999px;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  color: inherit;
+  border: 2px solid #7d5518;
+  background: #fffaf0;
+  color: #130b08;
   text-decoration: none;
-  font-size: 0.95rem;
+  font-size: 1.02rem;
+  font-weight: 700;
   line-height: 1.2;
   white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(94, 60, 20, 0.12);
 }
 
 .admin-guia:hover {
-  border-color: rgba(0, 0, 0, 0.45);
+  border-color: #5d3f11;
+  background: #ffffff;
 }
 
 .admin-guia-ativa {
   background: #b8832c;
   border-color: #8f611d;
   color: #130b08;
-  font-weight: 600;
+  font-weight: 900;
+  box-shadow: 0 4px 10px rgba(94, 60, 20, 0.24);
 }
 
 @media (max-width: 760px) {
@@ -3259,12 +3283,13 @@ p.foto-credito {
 
 .midias-acao {
   font: inherit;
-  font-size: 12px;
+  font-size: 13px;
+  font-weight: 700;
   min-height: 34px;
   padding: 7px 10px;
-  border: 1px solid rgba(59, 36, 22, 0.3);
+  border: 2px solid #7d5518;
   border-radius: 8px;
-  background: none;
+  background: #fffaf0;
   color: inherit;
   cursor: pointer;
 }
