@@ -190,6 +190,23 @@ export const MANUAL_PADRAO: SecaoManual[] = [
     ],
   },
   {
+    id: "personalidades",
+    titulo: "Personalidades Negras: trajetórias ligadas aos territórios",
+    texto:
+      "Aqui ficam as trajetórias de pessoas negras importantes para a história de Vitória e do Espírito Santo. Cada cadastro vira uma página com endereço próprio (/personalidade/nome-da-pessoa) e aparece na seção Personalidades do app, aberta pelo botão dentro da página Vitória Negra (o nome do botão muda na aba Botões).\n\nRascunho NÃO aparece para o visitante: nem na listagem, nem na busca. Publique quando estiver pronto, pelo botão publicar na lista ou pela Situação dentro do cadastro. Para tirar do ar sem apagar, use despublicar.",
+    itens: [
+      "Identificação: nome (obrigatório), outros nomes, breve apresentação e as datas e locais de nascimento e falecimento — todos opcionais e podendo ser aproximados, como “cerca de 1870” ou “início do século XX”.",
+      "Biografia: um texto corrido e quantos blocos você quiser (título + texto). Cada bloco pode ser marcado como informação documentada, proveniente de relato oral ou ainda em pesquisa — a marca aparece ao lado do título no app.",
+      "Linha do tempo: acontecimentos com data ou período, título e descrição. Sem acontecimentos, a seção não aparece.",
+      "Fotos: uma de capa e quantas quiser na galeria. Cada uma tem legenda, crédito, fonte e texto alternativo, e pode ser reordenada, removida ou escondida do visitante. Sem foto, o app mostra as iniciais do nome numa moldura — nunca um retrato inventado.",
+      "Vídeos: vários por link (YouTube, Vimeo, Drive ou arquivo enviado), com título, descrição e crédito. Quando a plataforma não deixa incorporar, o app mostra o botão de abrir em nova guia.",
+      "Fontes e pesquisa: livros, artigos, documentos, sites, acervos e relatos orais, com título, autor ou instituição, data, endereço (opcional) e observações. Referência sem link é bem-vinda. Há também o link do material completo, que vira um botão no fim da página.",
+      "Territórios vinculados: marque um ou mais territórios do app e explique a relação (“morou aqui”, “nome da rua é homenagem”, “atuou na escola”). O mesmo vínculo aparece dos dois lados: na página da pessoa, em Territórios relacionados, e na página do território, em Personalidades relacionadas, com o botão Conheça sua história. Tirar o vínculo em um lugar tira no outro.",
+      "Uma personalidade pode estar ligada a vários territórios, e um território a várias personalidades. Também dá para publicar sem nenhum território.",
+      "Antes de excluir, o painel pede confirmação — e avisa se você sair com alterações não salvas. Fotos, vídeos, referências e vínculos continuam no cadastro quando você o reabre.",
+    ],
+  },
+  {
     id: "botoes",
     titulo: "Botões: renomear os botões de navegação",
     texto:
