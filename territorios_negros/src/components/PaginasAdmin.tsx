@@ -25,6 +25,8 @@ import {
 import { formatarDataHoraBR } from "../utils/data";
 import { legendaDoArquivo } from "../utils/legendas";
 import GuiasDoPainel from "./GuiasDoPainel";
+import EditorDeMarcos from "./EditorDeMarcos";
+import { CHAVE_CIDADE, CHAVE_PRESENCA_NEGRA } from "../data/marcos";
 import FormularioContatoAdmin from "./FormularioContatoAdmin";
 import BotaoContatoAdmin from "./BotaoContatoAdmin";
 import Inline from "./Inline";
@@ -1183,6 +1185,17 @@ export default function PaginasAdmin() {
 
       {/* o formulário "Fale com a autoria" é editado junto da página Contato */}
       {definicao.chave === "pagina_contato" && <FormularioContatoAdmin />}
+
+      {/* Marcos e Conexões das páginas do app (pedido da autoria, 02/10/2026):
+          entra depois dos blocos de texto e antes das fontes e dos botões finais
+          no app. Só nas páginas que recebem a seção. */}
+      {definicao.chave === "pagina_vitoria" && (
+        <EditorDeMarcos chaveDaPagina={CHAVE_CIDADE} onde={definicao.nome} />
+      )}
+
+      {definicao.chave === "pagina_presenca_negra" && (
+        <EditorDeMarcos chaveDaPagina={CHAVE_PRESENCA_NEGRA} onde={definicao.nome} />
+      )}
 
       {/* botão de ação que aparece no fim das telas (vale para o app inteiro) */}
       <BotaoContatoAdmin />

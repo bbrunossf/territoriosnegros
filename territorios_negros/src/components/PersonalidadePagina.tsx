@@ -32,6 +32,8 @@ import FotoAmpliavel from "./FotoAmpliavel";
 import Inline from "./Inline";
 import PlayerVideo from "./PlayerVideo";
 import Topic from "./Topic";
+import MarcosConexoes from "./MarcosConexoes";
+import { chaveDaPersonalidade } from "../data/marcos";
 
 /** Texto que, no celular, começa resumido e abre no "Ler tudo". */
 function Trecho({ texto, limite = 520 }: { texto: string; limite?: number }) {
@@ -253,6 +255,10 @@ export default function PersonalidadePagina({ dados }: { dados?: Personalidade }
           </div>
         </Topic>
       )}
+
+      {/* Marcos e Conexões entra depois do último bloco de conteúdo e antes de
+          "Fontes e pesquisa" (pedido da autoria, 02/10/2026). */}
+      <MarcosConexoes chaveDaPagina={chaveDaPersonalidade(personalidade.slug)} />
 
       {personalidade.fontes.length > 0 && (
         <Topic icon="✎" title="Fontes e pesquisa">

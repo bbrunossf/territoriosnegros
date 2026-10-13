@@ -14,6 +14,8 @@ import { PRESENCA_PADRAO, normalizarPagina } from "../data/paginas";
 import { botoesDaPagina } from "../data/botoesPorTela";
 import BotoesDaTela from "./BotoesDaTela";
 import PaginaConteudo from "./PaginaConteudo";
+import MarcosConexoes from "./MarcosConexoes";
+import { CHAVE_PRESENCA_NEGRA } from "../data/marcos";
 
 export default function PresencaNegra() {
   const { config } = useTerritorios();
@@ -33,6 +35,7 @@ export default function PresencaNegra() {
     <PaginaConteudo
       pagina={pagina}
       tela="presenca-negra"
+      depoisDosBlocos={<MarcosConexoes chaveDaPagina={CHAVE_PRESENCA_NEGRA} />}
       // no topo, o caminho de volta para A cidade de Vitória — a página de que
       // esta nasceu (pedido da autoria, 02/10/2026)
       depoisDoTitulo={<BotoesDaTela tela="presenca-negra" posicao="topo" />}

@@ -26,6 +26,8 @@ import {
 } from "../data/api";
 import type { Categoria, FotoTerritorio, Territorio, VideoTerritorio } from "../data/types";
 import PlayerVideo from "../components/PlayerVideo";
+import EditorDeMarcos from "../components/EditorDeMarcos";
+import { chaveDoTerritorio } from "../data/marcos";
 import { useTerritorios } from "../context/useTerritorios";
 import { gerarSlug } from "../utils/catalogo";
 import { formatarDataHoraBR, idadeTexto } from "../utils/data";
@@ -1904,6 +1906,13 @@ export default function TerritoriosAdmin() {
           )}
         </div>
       </form>
+
+      {/* Marcos e Conexões desta ficha (pedido da autoria, 02/10/2026): depois
+          do conteúdo do território, antes do "Enviar uma mensagem" no app.
+          Tem botão de salvar próprio, para não depender do "Salvar alterações". */}
+      {editando && (
+        <EditorDeMarcos chaveDaPagina={chaveDoTerritorio(editando)} onde={form.nome} />
+      )}
 
       {/* ─── Revisão das fichas (o que falta em cada território) ─── */}
       <section className="revisao">

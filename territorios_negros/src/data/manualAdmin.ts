@@ -69,6 +69,22 @@ export const MANUAL_PADRAO: SecaoManual[] = [
     ],
   },
   {
+    id: "marcos-e-conexoes",
+    titulo: "Marcos e Conexões",
+    texto:
+      "Cada página pode ter uma lista de tópicos — **título**, **explicação breve** e **fonte** — para dar contexto complementar ao visitante e sustentar a sua fala durante os tours. O título fica sempre visível no app; a explicação e a fonte só aparecem quando a expansão está permitida.\n\nOs tópicos são cadastrados dentro da própria página: **Territórios** (abra a ficha), **Páginas** (A cidade de Vitória e Presença Negra) e **Personalidades** (abra a pessoa). Cada editor tem o seu próprio botão de salvar.",
+    itens: [
+      "O conteúdo é independente por página: o que você cadastra num território vale só para ele.",
+      "Sem nenhum tópico com título, a seção não aparece no app — nem vazia, nem provisória.",
+      "O que combina com esta seção: datas, acontecimentos, pessoas e relações que você desenvolve oralmente, como aprofundamento complementar.",
+      "O que NÃO vai para cá: o que é essencial para entender a territorialidade negra ou os apagamentos — isso continua no conteúdo principal da página, em destaque.",
+      "Permitir expansão de Marcos e Conexões → na guia **Marcos e Conexões** do painel: liga a abertura das explicações em todas as páginas deste aparelho, de uma vez. Fica guardada no navegador e continua valendo depois de navegar, recarregar ou fechar o app.",
+      "Desligada, o visitante vê só os títulos, sem setas nem ícones de abrir. Ligada, você toca no título para abrir e fechar os detalhes — e pode deixar vários abertos ao mesmo tempo.",
+      "Com a sessão aberta, o mesmo controle aparece no app, numa faixa discreta embaixo — só para você. O visitante nunca vê esse controle.",
+      "É um recurso de apresentação, não uma proteção: o conteúdo continua no app, apenas fechado.",
+    ],
+  },
+  {
     id: "abas",
     titulo: "O que cada aba controla",
     texto:

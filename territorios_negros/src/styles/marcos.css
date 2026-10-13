@@ -1,0 +1,139 @@
+/* marcos.css — seção "Marcos e Conexões" (app do visitante e controle da autoria).
+   A seção usa o mesmo componente de seção do resto do app (Topic), então herda
+   ícone, divisória e espaçamento. Aqui só entram a lista, os títulos e o corpo. */
+
+.marcos-lista {
+  list-style: none;
+
+  margin: 0;
+  padding: 0;
+}
+
+.marco + .marco {
+  margin-top: 10px;
+}
+
+/* título do tópico: alinhado à esquerda, curto, sempre visível */
+.marco-titulo {
+  margin: 0;
+
+  text-align: left;
+
+  font-weight: 700;
+  color: #130b08;
+  line-height: 1.35;
+}
+
+/* quando a expansão está permitida, o título vira um alvo grande de toque */
+.marco-titulo-clicavel {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+
+  border: 1px solid #d9c39a;
+  border-radius: 10px;
+
+  background: #fffaf0;
+  color: #130b08;
+
+  font: inherit;
+  font-weight: 700;
+  text-align: left;
+
+  cursor: pointer;
+}
+
+.marco-titulo-clicavel:hover {
+  border-color: #b8832c;
+}
+
+.marco-seta {
+  flex: none;
+  width: 1em;
+
+  color: #8f611d;
+}
+
+.marco-titulo-texto {
+  flex: 1 1 auto;
+}
+
+.marco-corpo {
+  margin-top: 8px;
+  padding: 0 12px 2px 12px;
+
+  text-align: left;
+}
+
+.marco-corpo p {
+  margin: 0 0 8px;
+}
+
+.marco-fonte {
+  font-size: 0.9rem;
+  color: #5b4a38;
+}
+
+.marco-fonte-rotulo {
+  font-weight: 700;
+}
+
+.marco-fonte a {
+  color: #8f611d;
+  word-break: break-word;
+}
+
+/* ── controle da autoria (só aparece com sessão aberta) ─────────────────── */
+
+.controle-expansao {
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  bottom: 84px;
+  z-index: 30;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+
+  padding: 10px 12px;
+
+  border: 1px solid #8f611d;
+  border-radius: 12px;
+
+  background: rgba(19, 11, 8, 0.94);
+  color: #f7efdf;
+
+  box-shadow: 0 8px 20px rgba(19, 11, 8, 0.35);
+}
+
+.controle-expansao-rotulo {
+  font-size: 0.85rem;
+  line-height: 1.25;
+}
+
+.controle-expansao-botao {
+  flex: none;
+  min-height: 38px;
+  padding: 8px 14px;
+
+  border: 2px solid #b8832c;
+  border-radius: 10px;
+
+  background: transparent;
+  color: #f7efdf;
+
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.controle-expansao-botao.ligado {
+  background: #b8832c;
+  border-color: #8f611d;
+  color: #130b08;
+}

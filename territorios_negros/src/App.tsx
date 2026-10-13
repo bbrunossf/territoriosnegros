@@ -2,6 +2,7 @@ import { Outlet, useLocation } from "react-router-dom";
 import Header from "./components/Header";
 import BottomNav from "./components/BottomNav";
 import RegistrarAcesso from "./components/RegistrarAcesso";
+import ControleDeExpansao from "./components/ControleDeExpansao";
 import { useTerritorios } from "./context/useTerritorios";
 
 export default function App() {
@@ -45,6 +46,11 @@ export default function App() {
             <Outlet />
           </main>
           <BottomNav />
+
+          {/* Controle da autoria (só aparece com a sessão aberta): permitir a
+              expansão de "Marcos e Conexões" neste aparelho. O visitante nunca
+              vê este controle. */}
+          <ControleDeExpansao />
         </div>
       </div>
   );

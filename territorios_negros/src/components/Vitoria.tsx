@@ -1,6 +1,8 @@
 import { useTerritorios } from "../context/useTerritorios";
 import { VITORIA_PADRAO, normalizarPagina } from "../data/paginas";
 import { botoesDaPagina } from "../data/botoesPorTela";
+import MarcosConexoes from "./MarcosConexoes";
+import { CHAVE_CIDADE } from "../data/marcos";
 import BotoesDaTela from "./BotoesDaTela";
 import PaginaConteudo from "./PaginaConteudo";
 
@@ -22,6 +24,7 @@ export default function Vitoria() {
     <PaginaConteudo
       pagina={pagina}
       tela="vitoria"
+      depoisDosBlocos={<MarcosConexoes chaveDaPagina={CHAVE_CIDADE} />}
       // atalhos fixos logo abaixo do subtítulo (pedidos da autoria, 02/10/2026):
       // primeiro a base teórica que sustenta a leitura, depois a página da
       // presença negra na cidade e, por fim, os territórios — nesta ordem padrão,

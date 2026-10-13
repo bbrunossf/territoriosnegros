@@ -14,6 +14,8 @@ import { useEffect, useState } from "react";
 
 import { salvarConfig, uploadFoto } from "../data/api";
 import { useTerritorios } from "../context/useTerritorios";
+import EditorDeMarcos from "./EditorDeMarcos";
+import { chaveDaPersonalidade } from "../data/marcos";
 import {
   CHAVE_PERSONALIDADES,
   NATUREZAS,
@@ -1048,6 +1050,23 @@ export default function PersonalidadesAdmin() {
               </button>
             </div>
           </form>
+        )}
+
+        {/* Marcos e Conexões desta personalidade (pedido da autoria, 02/10/2026):
+            depois do conteúdo principal e antes de "Fontes e pesquisa" no app.
+            Precisa do cadastro salvo — a chave usa o endereço permanente. */}
+        {editando && editando.slug ? (
+          <EditorDeMarcos
+            chaveDaPagina={chaveDaPersonalidade(editando.slug)}
+            onde={editando.nome}
+          />
+        ) : (
+          editando && (
+            <p className="admin-ajuda">
+              Salve o cadastro desta personalidade para cadastrar os <b>Marcos e Conexões</b>
+              {" "}dela — a seção se liga ao endereço permanente da página.
+            </p>
+          )
         )}
       </div>
     );

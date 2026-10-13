@@ -35,6 +35,9 @@ export const GUIAS_DO_PAINEL: GuiaDoPainel[] = [
   { id: "botoes", rotulo: "Botões", rota: "/admin/botoes" },
   { id: "fim", rotulo: "Fim", rota: "/admin/paginas?p=fim" },
   { id: "contato", rotulo: "Contato", rota: "/admin/paginas?p=contato" },
+  // acrescentada em 02/10/2026, a pedido da autoria: reúne o controle de expansão
+  // e o resumo dos tópicos de "Marcos e Conexões" (o cadastro fica em cada página)
+  { id: "marcos", rotulo: "Marcos e Conexões", rota: "/admin/marcos" },
 ];
 
 /** As guias que abrem uma página do app dentro da tela das Páginas. */

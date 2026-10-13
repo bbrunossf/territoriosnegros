@@ -1,0 +1,97 @@
+// MarcosConexoes.tsx — a seção "Marcos e Conexões" no app do visitante.
+//
+// Os títulos ficam SEMPRE visíveis (quando há conteúdo cadastrado). As
+// explicações só abrem quando a autoria permitiu a expansão no aparelho dela —
+// e, nesse caso, o controle aparece para ela poder abrir os detalhes durante o
+// tour. Sem a permissão, não há botão, seta nem ícone de abrir: só os títulos.
+//
+// Vários tópicos podem ficar abertos ao mesmo tempo. Ao desligar a expansão, os
+// corpos simplesmente deixam de ser desenhados (fecham na hora, sem apagar
+// nada); ao religar, tudo começa fechado.
+
+import { useState } from "react";
+import "../styles/marcos.css";
+import Topic from "./Topic";
+import Inline from "./Inline";
+import { useTerritorios } from "../context/useTerritorios";
+import { useExpansao } from "../context/useExpansao";
+import { TITULO_MARCOS, marcosDaPagina, type Marco } from "../data/marcos";
+
+/**
+ * A preferência de expansão deste aparelho (ver context/useExpansao.ts).
+ */
+
+/** Uma linha de fonte: link quando tem endereço, texto quando não tem. */
+function FonteDoMarco({ marco }: { marco: Marco }) {
+  const rotulo = marco.fonte.trim() || marco.fonteUrl.trim();
+
+  if (!rotulo) return null;
+
+  const endereco = marco.fonteUrl.trim();
+
+  return (
+    <p className="marco-fonte">
+      <span className="marco-fonte-rotulo">Fonte: </span>
+
+      {endereco ? (
+        <a href={endereco} target="_blank" rel="noreferrer">
+          {rotulo}
+        </a>
+      ) : (
+        rotulo
+      )}
+    </p>
+  );
+}
+
+export default function MarcosConexoes({ chaveDaPagina }: { chaveDaPagina: string }) {
+  const { config } = useTerritorios();
+  const marcos = marcosDaPagina(config, chaveDaPagina);
+  const [permitir] = useExpansao();
+  const [abertos, setAbertos] = useState<string[]>([]);
+
+  // sem tópico preenchido não existe seção — nem vazia, nem provisória
+  if (marcos.length === 0) return null;
+
+  const alternar = (id: string) =>
+    setAbertos((lista) => (lista.includes(id) ? lista.filter((x) => x !== id) : [...lista, id]));
+
+  return (
+    <Topic icon="◇" title={TITULO_MARCOS}>
+      <ul className="marcos-lista">
+        {marcos.map((marco) => {
+          const aberto = permitir && abertos.includes(marco.id);
+
+          return (
+            <li key={marco.id} className="marco">
+              {permitir ? (
+                <button
+                  type="button"
+                  className="marco-titulo marco-titulo-clicavel"
+                  aria-expanded={aberto}
+                  onClick={() => alternar(marco.id)}
+                >
+                  <span className="marco-seta" aria-hidden="true">
+                    {aberto ? "▾" : "▸"}
+                  </span>
+
+                  <span className="marco-titulo-texto">{marco.titulo}</span>
+                </button>
+              ) : (
+                <p className="marco-titulo">{marco.titulo}</p>
+              )}
+
+              {aberto && (
+                <div className="marco-corpo">
+                  {marco.explicacao.trim() !== "" && <Inline texto={marco.explicacao} />}
+
+                  <FonteDoMarco marco={marco} />
+                </div>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    </Topic>
+  );
+}

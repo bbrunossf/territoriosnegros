@@ -30,6 +30,7 @@ import ApoiadoresAdmin from "./components/ApoiadoresAdmin";
 import MenuMaisAdmin from "./components/MenuMaisAdmin";
 import BotoesAdmin from "./components/BotoesAdmin";
 import PersonalidadesAdmin from "./components/PersonalidadesAdmin";
+import MarcosAdmin from "./components/MarcosAdmin";
 import Personalidades from "./components/Personalidades";
 import PersonalidadePagina from "./components/PersonalidadePagina";
 import PresencaNegra from "./components/PresencaNegra";
@@ -94,6 +95,7 @@ createRoot(document.getElementById('root')!).render(
               <Route path="menu-mais" element={<MenuMaisAdmin />} />
               <Route path="botoes" element={<BotoesAdmin />} />
               <Route path="personalidades" element={<PersonalidadesAdmin />} />
+              <Route path="marcos" element={<MarcosAdmin />} />
               <Route path="mensagens" element={<MensagensAdmin />} />
               <Route path="acessos" element={<AcessosAdmin />} />
               <Route path="midias" element={<MidiasAdmin />} />

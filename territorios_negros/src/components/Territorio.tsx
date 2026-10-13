@@ -10,6 +10,8 @@ import FotoAmpliavel from "../components/FotoAmpliavel";
 import PlayerVideo from "../components/PlayerVideo";
 import BotaoContato from "../components/BotaoContato";
 import PersonalidadesDoTerritorio from "../components/PersonalidadesDoTerritorio";
+import MarcosConexoes from "../components/MarcosConexoes";
+import { chaveDoTerritorio } from "../data/marcos";
 
 import { calcularIdade } from "../utils/data";
 
@@ -197,6 +199,11 @@ export default function Territorio() {
             02/10/2026): é o outro lado do vínculo cadastrado na personalidade —
             sem ninguém ligado, não aparece nada */}
         <PersonalidadesDoTerritorio territorioId={territorio.id} />
+
+        {/* Marcos e Conexões: depois da palavra-chave e das personalidades
+            relacionadas, antes do "Enviar uma mensagem" (pedido da autoria,
+            02/10/2026). Sem tópico cadastrado, não aparece nada. */}
+        <MarcosConexoes chaveDaPagina={chaveDoTerritorio(territorio.id)} />
 
         <BotaoContato tela="territorio" />
       </>

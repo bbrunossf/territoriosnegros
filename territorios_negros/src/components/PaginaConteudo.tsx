@@ -50,6 +50,7 @@ export default function PaginaConteudo({
   depoisDoContato,
   depoisDoTitulo,
   depoisDosBotoes,
+  depoisDosBlocos,
 }: {
   pagina: PaginaConteudo;
   children?: ReactNode;
@@ -79,6 +80,12 @@ export default function PaginaConteudo({
    * territórios, na página A cidade de Vitória). Entra antes do bloco destacado.
    */
   depoisDoTitulo?: ReactNode;
+  /**
+   * Conteúdo extra logo DEPOIS do último bloco de conteúdo e ANTES das fontes e
+   * dos botões finais — é onde entra "Marcos e Conexões" (pedido da autoria,
+   * 02/10/2026): o conteúdo central e as reflexões primeiro, o complemento depois.
+   */
+  depoisDosBlocos?: ReactNode;
 }) {
   const destaque = paragrafosDe(pagina.destaque);
   const classesDestaque = classesEstilo(pagina.destaqueEstilo);
@@ -234,6 +241,8 @@ export default function PaginaConteudo({
           </Topic>
         );
       })}
+
+      {depoisDosBlocos}
 
       {pagina.rodapeUrl && caixaDoRodape}
 
