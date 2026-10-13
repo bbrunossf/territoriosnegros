@@ -11,9 +11,8 @@
 // Os nomes dos botões de navegação: painel, aba Botões (chave: botoes_intro).
 import { useTerritorios } from "../context/useTerritorios";
 import { PRESENCA_PADRAO, normalizarPagina } from "../data/paginas";
-import { CHAVE_BOTOES_INTRO, botoesDaIntro, lerNomes } from "../data/botoesIntro";
-import { CHAVE_ORDEM_BOTOES, lerOrdemDoGrupo } from "../data/botoesDoApp";
-import AtalhosDaTela from "./AtalhosDaTela";
+import { botoesDaPagina } from "../data/botoesPorTela";
+import BotoesDaTela from "./BotoesDaTela";
 import PaginaConteudo from "./PaginaConteudo";
 
 export default function PresencaNegra() {
@@ -27,11 +26,7 @@ export default function PresencaNegra() {
   // "Enviar uma mensagem". Ver data/botoesIntro.ts.
   const pagina = {
     ...doPainel,
-    botoes: botoesDaIntro(
-      doPainel.botoes,
-      lerNomes(config[CHAVE_BOTOES_INTRO]),
-      lerOrdemDoGrupo(config[CHAVE_ORDEM_BOTOES], "paginas")
-    ),
+    botoes: botoesDaPagina(config, "presenca-negra", doPainel.botoes),
   };
 
   return (
@@ -40,7 +35,7 @@ export default function PresencaNegra() {
       tela="presenca-negra"
       // no topo, o caminho de volta para A cidade de Vitória — a página de que
       // esta nasceu (pedido da autoria, 02/10/2026)
-      depoisDoTitulo={<AtalhosDaTela ids={["cidade-no-topo-da-presenca", "personalidades"]} />}
+      depoisDoTitulo={<BotoesDaTela tela="presenca-negra" posicao="topo" />}
     />
   );
 }

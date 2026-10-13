@@ -26,6 +26,7 @@ import {
   type GrupoDeBotoes,
 } from "../data/botoesDoApp";
 import { moverNaLista } from "../utils/ordem";
+import BotoesPorTelaAdmin from "./BotoesPorTelaAdmin";
 
 type NomesPorGrupo = Record<string, Record<string, string>>;
 
@@ -232,6 +233,9 @@ export default function BotoesAdmin() {
           </button>
         </div>
       </form>
+
+      {/* quais botões existem e em que telas eles aparecem (02/10/2026) */}
+      <BotoesPorTelaAdmin />
     </div>
   );
 }

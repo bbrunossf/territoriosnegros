@@ -22,6 +22,7 @@ import {
   type Personalidade,
 } from "../data/personalidades";
 import PageTitle from "./PageTitle";
+import BotoesDaTela from "./BotoesDaTela";
 import { iniciaisDe } from "../utils/nomes";
 
 export default function Personalidades() {
@@ -114,6 +115,8 @@ export default function Personalidades() {
           Nenhuma personalidade encontrada com esse filtro. Tente outro nome ou outro território.
         </p>
       )}
+
+      <BotoesDaTela tela="personalidades" posicao="final" />
     </div>
   );
 }

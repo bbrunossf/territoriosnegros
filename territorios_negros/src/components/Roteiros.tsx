@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import PageTitle from "../components/PageTitle";
 import BotaoContato from "../components/BotaoContato";
-import AtalhosDaTela from "../components/AtalhosDaTela";
+import BotoesDaTela from "../components/BotoesDaTela";
 import Inline from "../components/Inline";
 import { useTerritorios } from "../context/useTerritorios";
 import { sloganDaRota } from "../data/slogansRota";
@@ -21,7 +21,7 @@ export default function Roteiros() {
       {/* Atalhos abaixo do subtítulo (pedidos da autoria, 02/10/2026): a cidade de
           Vitória, a Presença Negra na Cidade e, por fim, os Apoiadores — nesta
           ordem padrão, que a autoria pode mudar na aba Botões. */}
-      <AtalhosDaTela ids={["cidade-de-vitoria", "presenca-negra", "apoiadores"]} />
+      <BotoesDaTela tela="roteiros" posicao="topo" />
 
       {roteiros.map((r) => {
         const experiencias = Array.isArray(r.experiencia) ? r.experiencia : [];

@@ -1,42 +1,23 @@
 // src/components/BotaoPresencaNegra.tsx
 //
-// Botão "Presença Negra na Cidade" (pedido da autoria, 02/10/2026).
-//
-// Entra nas telas ao lado dos outros atalhos fixos: em Rotas e em Territórios,
-// acima do botão Apoiadores; em "Antes de caminhar", logo depois dos botões da
-// própria página.
-//
-// `jaExiste`: quando a página já tem um botão apontando para /presenca-negra
-// (editado no painel), este não entra — para o visitante não ver dois botões
-// iguais. Mesma regra do botão de contato.
-//
-// `texto`: o nome padrão do botão. Na página "A cidade de Vitória" ele sai por
-// extenso — "Presença Negra na Cidade de Vitória" (pedido da autoria, 02/10/2026).
-// O nome é editável no painel, na aba Botões (chave app_config.atalhos_paginas):
-// `id` diz qual botão do grupo este é.
+// Botão para a página Presença Negra na Cidade. Nome e telas vêm do painel
+// (aba Botões); `id` diz qual botão do catálogo este é.
 import { Link } from "react-router-dom";
 
 import { useTerritorios } from "../context/useTerritorios";
-import { CHAVE_ATALHOS_PAGINAS, rotuloDe } from "../data/botoesDoApp";
+import { rotuloDoCatalogo } from "../data/botoesPorTela";
 
-export default function BotaoPresencaNegra({
-  jaExiste = false,
-  id = "presenca-negra",
-  texto = "Presença Negra na Cidade",
-}: {
-  jaExiste?: boolean;
+type Props = {
   id?: string;
   texto?: string;
-}) {
+};
+
+export default function BotaoPresencaNegra({ id = "presenca-negra", texto }: Props) {
   const { config } = useTerritorios();
 
-  if (jaExiste) return null;
-
   return (
-    <div className="pagina-botoes">
-      <Link className="btn pagina-botao" to="/presenca-negra">
-        {rotuloDe(config, CHAVE_ATALHOS_PAGINAS, id, texto)}
-      </Link>
-    </div>
+    <Link className="btn pagina-botao" to="/presenca-negra">
+      {texto?.trim() || rotuloDoCatalogo(config, id, "Presença Negra")}
+    </Link>
   );
 }

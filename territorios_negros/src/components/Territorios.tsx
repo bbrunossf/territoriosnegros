@@ -5,7 +5,7 @@ import { agruparPorCategoria } from "../utils/catalogo";
 
 import PageTitle from "../components/PageTitle";
 import SectionHeader from "../components/SectionHeader";
-import AtalhosDaTela from "../components/AtalhosDaTela";
+import BotoesDaTela from "../components/BotoesDaTela";
 import BotaoContato from "../components/BotaoContato";
 
 export default function Territorios() {
@@ -30,7 +30,7 @@ export default function Territorios() {
           porque o "outline" translúcido se confundia com o fundo da página e não
           induzia ao clique. Depois dele vêm a Presença Negra na Cidade e os
           Apoiadores (ordem pedida em 02/10/2026). */}
-      <AtalhosDaTela ids={["cidade-de-vitoria", "presenca-negra", "apoiadores"]} />
+      <BotoesDaTela tela="territorios" posicao="topo" />
 
       {grupos.map((g) => (
         <section key={g.id}>

@@ -1,0 +1,72 @@
+/* src/styles/botoes-telas.css — a seção "Botões em cada tela" do painel. */
+
+.botoes-telas .botoes-telas-tela {
+  padding: 12px 14px;
+
+  border: 1px solid rgba(197, 139, 42, 0.35);
+  border-radius: 12px;
+}
+
+.botoes-telas .botoes-telas-local {
+  margin-top: 10px;
+}
+
+.botoes-telas .botoes-telas-local h4 {
+  margin: 0 0 6px;
+
+  color: #f0d9a9;
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.botoes-telas .botoes-telas-linha {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+
+  margin-bottom: 6px;
+}
+
+.botoes-telas .botoes-telas-linha b {
+  flex: 1;
+}
+
+.botoes-telas .botoes-telas-vazio {
+  margin: 0;
+
+  color: #d9c7a5;
+  font-size: 13px;
+}
+
+.botoes-telas .botoes-telas-add {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+
+  margin-top: 8px;
+}
+
+.botoes-telas .botoes-telas-add select {
+  flex: 1;
+}
+
+.botoes-telas .botoes-telas-liga {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+
+  padding: 8px 10px;
+
+  border: 1px dashed rgba(197, 139, 42, 0.35);
+  border-radius: 10px;
+}
+
+.botoes-telas .botoes-telas-liga b {
+  flex: 1;
+}
+
+.botoes-telas .botoes-telas-onde {
+  color: #d9c7a5;
+  font-size: 12.5px;
+}

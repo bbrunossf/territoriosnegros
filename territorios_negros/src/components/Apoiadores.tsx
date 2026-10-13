@@ -6,6 +6,7 @@
 // O conteúdo é editável no painel, na aba Apoiadores (chave app_config
 // "apoiadores"). O visitante só vê os apoiadores ligados e com nome ou logo.
 import { useTerritorios } from "../context/useTerritorios";
+import BotoesDaTela from "./BotoesDaTela";
 import {
   CHAVE_APOIADORES,
   apoiadoresVisiveis,
@@ -79,6 +80,8 @@ export default function Apoiadores() {
           ))}
         </div>
       )}
+
+      <BotoesDaTela tela="apoiadores" posicao="final" />
 
       <BotaoContato tela="apoiadores" />
     </>

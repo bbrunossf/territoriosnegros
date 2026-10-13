@@ -1,6 +1,6 @@
 import { useTerritorios } from "../context/useTerritorios";
 import { VITORIA_PADRAO, normalizarPagina } from "../data/paginas";
-import AtalhosDaTela from "./AtalhosDaTela";
+import BotoesDaTela from "./BotoesDaTela";
 import PaginaConteudo from "./PaginaConteudo";
 
 // Texto editável no painel (aba Páginas) — chave: pagina_vitoria
@@ -15,11 +15,7 @@ export default function Vitoria() {
       // primeiro a base teórica que sustenta a leitura, depois a página da
       // presença negra na cidade e, por fim, os territórios — nesta ordem padrão,
       // que a autoria pode mudar na aba Botões
-      depoisDoTitulo={
-        <AtalhosDaTela
-          ids={["ir-para-base-teorica", "presenca-na-cidade-de-vitoria", "ir-para-os-territorios"]}
-        />
-      }
+      depoisDoTitulo={<BotoesDaTela tela="vitoria" posicao="topo" />}
     />
   );
 }

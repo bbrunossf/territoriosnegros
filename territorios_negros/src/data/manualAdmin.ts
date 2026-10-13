@@ -190,6 +190,19 @@ export const MANUAL_PADRAO: SecaoManual[] = [
     ],
   },
   {
+    id: "botoes-por-tela",
+    titulo: "Em cada tela: quais botões aparecem, e quais existem no app",
+    texto:
+      "Os botões de navegação podem ficar no topo ou no final de cada tela. Aqui você liga e desliga cada botão e escolhe, página por página, o que aparece e em que ordem. Nada muda no app até você salvar.",
+    itens: [
+      "Quais botões existem: uma lista de ligar/desligar. Botão desligado não aparece em tela nenhuma do app, mesmo que esteja escolhido numa delas. Ao lado de cada um, o painel diz para onde ele leva e em que telas ele aparece hoje.",
+      "Em cada tela: escolha quais botões aparecem no topo e quais aparecem no final daquela página, na ordem que quiser (↑ ↓ para reordenar, ✕ para tirar). Para pôr um botão numa tela onde ele ainda não está, use “+ adicionar botão”. Um botão que levaria para a tela em que o visitante já está não aparece — o app tira sozinho.",
+      "A ordem começa igual ao que está publicado hoje: nada muda até você salvar.",
+      "As telas cobertas: Antes de caminhar, Base teórica, A cidade de Vitória, Presença Negra na Cidade, Rotas, Territórios, Personalidades e Apoiadores. As telas de contato e as do passeio guiado (percurso e fim) ficam de fora.",
+      "Os nomes continuam na lista acima (Identificação, Barra de navegação, Atalhos dentro das telas) — e o nome de um botão vale em todos os lugares onde ele aparece.",
+    ],
+  },
+  {
     id: "personalidades",
     titulo: "Personalidades Negras: trajetórias ligadas aos territórios",
     texto:

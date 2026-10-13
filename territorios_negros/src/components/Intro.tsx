@@ -1,7 +1,7 @@
 import { useTerritorios } from "../context/useTerritorios";
 import { INTRO_PADRAO, normalizarPagina } from "../data/paginas";
-import { CHAVE_BOTOES_INTRO, botoesDaIntro, lerNomes } from "../data/botoesIntro";
-import { CHAVE_ORDEM_BOTOES, lerOrdemDoGrupo } from "../data/botoesDoApp";
+import { botoesDaPagina } from "../data/botoesPorTela";
+import BotoesDaTela from "./BotoesDaTela";
 import PaginaConteudo from "./PaginaConteudo";
 
 // Texto editável no painel (aba Páginas) — chave: pagina_intro
@@ -16,12 +16,14 @@ export default function Intro() {
   // do painel (aba Botões). Ver data/botoesIntro.ts.
   const pagina = {
     ...doPainel,
-    botoes: botoesDaIntro(
-      doPainel.botoes,
-      lerNomes(config[CHAVE_BOTOES_INTRO]),
-      lerOrdemDoGrupo(config[CHAVE_ORDEM_BOTOES], "paginas")
-    ),
+    botoes: botoesDaPagina(config, "intro", doPainel.botoes),
   };
 
-  return <PaginaConteudo pagina={pagina} tela="intro" />;
+  return (
+    <PaginaConteudo
+      pagina={pagina}
+      tela="intro"
+      depoisDoTitulo={<BotoesDaTela tela="intro" posicao="topo" />}
+    />
+  );
 }

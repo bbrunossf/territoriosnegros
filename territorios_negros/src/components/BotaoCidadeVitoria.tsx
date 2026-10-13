@@ -1,33 +1,23 @@
 // src/components/BotaoCidadeVitoria.tsx
 //
-// Botão "A cidade de Vitória - ES" (pedido da autoria, 02/10/2026).
-//
-// Mesmo atalho que já existe na tela Territórios; em Rotas ele passa a abrir a
-// lista de atalhos da página, ao lado do botão da Presença Negra na Cidade.
-//
-// `texto`: o nome do botão. No topo da página "Presença Negra na Cidade de
-// Vitória" ele sai como "A cidade de Vitória" — o caminho de volta (02/10/2026).
-// O nome é editável no painel, na aba Botões (chave app_config.atalhos_paginas):
-// `id` diz qual botão do grupo este é.
+// Botão para A cidade de Vitória. O nome vem do painel (aba Botões); `id` diz
+// qual botão do catálogo este é (aceita os ids antigos, por compatibilidade).
 import { Link } from "react-router-dom";
 
 import { useTerritorios } from "../context/useTerritorios";
-import { CHAVE_ATALHOS_PAGINAS, rotuloDe } from "../data/botoesDoApp";
+import { rotuloDoCatalogo } from "../data/botoesPorTela";
 
-export default function BotaoCidadeVitoria({
-  id = "cidade-de-vitoria",
-  texto = "A cidade de Vitória - ES",
-}: {
+type Props = {
   id?: string;
   texto?: string;
-}) {
+};
+
+export default function BotaoCidadeVitoria({ id = "cidade-de-vitoria", texto }: Props) {
   const { config } = useTerritorios();
 
   return (
-    <div className="pagina-botoes">
-      <Link className="btn pagina-botao" to="/vitoria">
-        {rotuloDe(config, CHAVE_ATALHOS_PAGINAS, id, texto)}
-      </Link>
-    </div>
+    <Link className="btn pagina-botao" to="/vitoria">
+      {texto?.trim() || rotuloDoCatalogo(config, id, "A cidade de Vitória")}
+    </Link>
   );
 }
