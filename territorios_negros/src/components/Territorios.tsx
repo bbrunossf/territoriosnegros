@@ -1,12 +1,11 @@
 //Territorios.tsx
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useTerritorios } from "../context/useTerritorios";
 import { agruparPorCategoria } from "../utils/catalogo";
 
 import PageTitle from "../components/PageTitle";
 import SectionHeader from "../components/SectionHeader";
-import BotaoApoiadores from "../components/BotaoApoiadores";
-import BotaoPresencaNegra from "../components/BotaoPresencaNegra";
+import AtalhosDaTela from "../components/AtalhosDaTela";
 import BotaoContato from "../components/BotaoContato";
 
 export default function Territorios() {
@@ -31,14 +30,7 @@ export default function Territorios() {
           porque o "outline" translúcido se confundia com o fundo da página e não
           induzia ao clique. Depois dele vêm a Presença Negra na Cidade e os
           Apoiadores (ordem pedida em 02/10/2026). */}
-      <div className="pagina-botoes">
-        <Link className="btn pagina-botao" to="/vitoria">
-          A cidade de Vitória - ES
-        </Link>
-      </div>
-
-      <BotaoPresencaNegra />
-      <BotaoApoiadores />
+      <AtalhosDaTela ids={["cidade-de-vitoria", "presenca-negra", "apoiadores"]} />
 
       {grupos.map((g) => (
         <section key={g.id}>

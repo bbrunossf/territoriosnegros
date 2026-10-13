@@ -26,6 +26,7 @@
 // Os botões que a autoria criar no painel para caminhos FORA desta lista
 // continuam aparecendo, logo depois destes: nada do painel é escondido.
 import type { BotaoConteudo } from "./paginas";
+import { ordenarIds } from "../utils/ordem";
 
 /** Chave em app_config onde ficam os nomes escolhidos pela autoria. */
 export const CHAVE_BOTOES_INTRO = "botoes_intro";
@@ -79,9 +80,9 @@ export function lerNomes(bruto: unknown): Record<string, string> {
 }
 
 /**
- * A lista que a tela mostra: os seis botões fixos, na ordem do app, com os nomes
- * da autoria (quando houver) e, depois, os botões que ela criou no painel para
- * outros endereços.
+ * A lista que a tela mostra: os seis botões fixos, na ordem do app (ou na ordem
+ * que a autoria gravou no painel, aba Botões), com os nomes da autoria (quando
+ * houver) e, depois, os botões que ela criou no painel para outros endereços.
  *
  * Fica de fora o que repetiria um caminho já fixo — e também o botão para a
  * página de contato, quando houver: o "Enviar uma mensagem" é desenhado pelo
@@ -89,12 +90,19 @@ export function lerNomes(bruto: unknown): Record<string, string> {
  */
 export function botoesDaIntro(
   doPainel: BotaoConteudo[] | undefined,
-  nomes: Record<string, string> = {}
+  nomes: Record<string, string> = {},
+  ordem: string[] = []
 ): BotaoConteudo[] {
-  const fixos = BOTOES_DA_INTRO.map((b) => ({
-    ...b,
-    texto: nomes[limpar(b.url)] ?? b.texto,
-  }));
+  const naOrdem = ordenarIds(
+    BOTOES_DA_INTRO.map((b) => limpar(b.url)),
+    ordem
+  );
+
+  const fixos = naOrdem.map((caminho) => {
+    const botao = BOTOES_DA_INTRO.find((b) => limpar(b.url) === caminho) as BotaoConteudo;
+
+    return { ...botao, texto: nomes[caminho] ?? botao.texto };
+  });
 
   const usados = [...caminhosFixosDaIntro(), "/contato"];
   const extras = (doPainel ?? []).filter((b) => !usados.includes(limpar(b.url)));

@@ -13,6 +13,7 @@
 // errada). O que a autoria muda é o NOME de cada botão.
 //
 // Nome em branco = volta ao padrão. Nada é gravado sem "Salvar alterações".
+import { ordenarIds } from "../utils/ordem";
 import { BOTOES_DA_INTRO, CHAVE_BOTOES_INTRO } from "./botoesIntro";
 
 export { CHAVE_BOTOES_INTRO };
@@ -22,6 +23,15 @@ export const CHAVE_BARRA_NAVEGACAO = "barra_navegacao";
 
 /** Nomes dos atalhos fixos dentro das telas. */
 export const CHAVE_ATALHOS_PAGINAS = "atalhos_paginas";
+
+/**
+ * A ORDEM dos botões, por grupo (pedido da autoria, 02/10/2026): ela move os
+ * botões com ↑ ↓ na aba Botões e o app desenha naquela ordem.
+ * Formato: { paginas: ["/roteiros", "/conceito", ...], barra: [...], atalhos: [...] }
+ * Id que não estiver na lista entra depois dos listados, na ordem padrão — nada
+ * desaparece por causa de uma ordem antiga.
+ */
+export const CHAVE_ORDEM_BOTOES = "ordem_botoes";
 
 export interface ItemDeBotoes {
   /** o que fica gravado em app_config (chave do item dentro do grupo) */
@@ -192,4 +202,41 @@ export function rotuloDe(
   padrao: string
 ): string {
   return nomeDoBotao(lerNomesDeBotoes(config?.[chave]), id, padrao);
+}
+
+/** A ordem gravada para um grupo (lista de ids). Vazio = ordem padrão. */
+export function lerOrdemDoGrupo(bruto: unknown, grupoId: string): string[] {
+  if (!bruto || typeof bruto !== "object" || Array.isArray(bruto)) return [];
+
+  const valor = (bruto as Record<string, unknown>)[grupoId];
+
+  if (!Array.isArray(valor)) return [];
+
+  const ids: string[] = [];
+
+  valor.forEach((id) => {
+    if (typeof id === "string") {
+      const limpo = id.trim();
+      if (limpo && !ids.includes(limpo)) ids.push(limpo);
+    }
+  });
+
+  return ids;
+}
+
+/** Os itens de um grupo, já na ordem gravada. */
+export function itensNaOrdem(grupo: GrupoDeBotoes, ordem: string[]): ItemDeBotoes[] {
+  const ids = ordenarIds(
+    grupo.itens.map((i) => i.id),
+    ordem
+  );
+
+  return ids
+    .map((id) => grupo.itens.find((i) => i.id === id))
+    .filter((i): i is ItemDeBotoes => !!i);
+}
+
+/** A ordem dos itens de um grupo, partindo da ordem padrão. */
+export function ordemPadraoDoGrupo(grupo: GrupoDeBotoes): string[] {
+  return grupo.itens.map((i) => i.id);
 }

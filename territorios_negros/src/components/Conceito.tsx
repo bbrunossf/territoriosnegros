@@ -1,6 +1,7 @@
 import { useTerritorios } from "../context/useTerritorios";
 import { CONCEITO_PADRAO, normalizarPagina } from "../data/paginas";
 import { CHAVE_BOTOES_INTRO, botoesDaIntro, lerNomes } from "../data/botoesIntro";
+import { CHAVE_ORDEM_BOTOES, lerOrdemDoGrupo } from "../data/botoesDoApp";
 import PaginaConteudo from "./PaginaConteudo";
 
 // Texto editável no painel (aba Páginas) — chave: pagina_conceito
@@ -16,7 +17,11 @@ export default function Conceito() {
   // data/botoesIntro.ts (a mesma lista, com os nomes vindos do painel).
   const pagina = {
     ...doPainel,
-    botoes: botoesDaIntro(doPainel.botoes, lerNomes(config[CHAVE_BOTOES_INTRO])),
+    botoes: botoesDaIntro(
+      doPainel.botoes,
+      lerNomes(config[CHAVE_BOTOES_INTRO]),
+      lerOrdemDoGrupo(config[CHAVE_ORDEM_BOTOES], "paginas")
+    ),
   };
 
   return (

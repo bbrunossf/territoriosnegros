@@ -16,11 +16,16 @@ import { useEffect, useState } from "react";
 import { salvarConfig } from "../data/api";
 import { useTerritorios } from "../context/useTerritorios";
 import {
+  CHAVE_ORDEM_BOTOES,
   GRUPOS_DE_BOTOES,
+  itensNaOrdem,
   lerNomesDeBotoes,
+  lerOrdemDoGrupo,
   nomeDoBotao,
+  ordemPadraoDoGrupo,
   type GrupoDeBotoes,
 } from "../data/botoesDoApp";
+import { moverNaLista } from "../utils/ordem";
 
 type NomesPorGrupo = Record<string, Record<string, string>>;
 
@@ -35,9 +40,29 @@ function lerTudo(config: Record<string, unknown> | undefined): NomesPorGrupo {
   return tudo;
 }
 
-/** Frase de prévia: como o visitante vai ler aquele grupo. */
-function comoFica(grupo: GrupoDeBotoes, nomes: Record<string, string>): string {
-  return grupo.itens.map((item) => nomeDoBotao(nomes, item.id, item.padrao)).join(" · ");
+/**
+ * A ordem de cada grupo: a que a autoria gravou (já com os botões que ela não
+ * listou no fim, na ordem padrão). Sem nada gravado, é a ordem padrão.
+ */
+function ordensIniciais(config: Record<string, unknown> | undefined): Record<string, string[]> {
+  const gravada = config?.[CHAVE_ORDEM_BOTOES];
+  const ordens: Record<string, string[]> = {};
+
+  GRUPOS_DE_BOTOES.forEach((grupo) => {
+    const daAutoria = lerOrdemDoGrupo(gravada, grupo.id);
+    const base = daAutoria.length > 0 ? daAutoria : ordemPadraoDoGrupo(grupo);
+
+    ordens[grupo.id] = itensNaOrdem(grupo, base).map((item) => item.id);
+  });
+
+  return ordens;
+}
+
+/** Frase de prévia: como o visitante vai ler aquele grupo, na ordem da tela. */
+function comoFica(grupo: GrupoDeBotoes, nomes: Record<string, string>, ordem: string[]): string {
+  return itensNaOrdem(grupo, ordem)
+    .map((item) => nomeDoBotao(nomes, item.id, item.padrao))
+    .join(" · ");
 }
 
 export default function BotoesAdmin() {
@@ -45,6 +70,7 @@ export default function BotoesAdmin() {
 
   // o estado começa já com o que está gravado, para a tela não piscar vazia
   const [nomes, setNomes] = useState<NomesPorGrupo>(() => lerTudo(config));
+  const [ordem, setOrdem] = useState<Record<string, string[]>>(() => ordensIniciais(config));
 
   const [ok, setOk] = useState("");
   const [erro, setErro] = useState("");
@@ -59,6 +85,7 @@ export default function BotoesAdmin() {
       if (!ativo) return;
 
       setNomes(lerTudo(config));
+      setOrdem(ordensIniciais(config));
     })();
 
     return () => {
@@ -80,8 +107,17 @@ export default function BotoesAdmin() {
     });
   }
 
+  /** Sobe (delta -1) ou desce (delta +1) um botão dentro do grupo. */
+  function mover(grupoId: string, itemId: string, delta: number) {
+    setOrdem((atual) => ({
+      ...atual,
+      [grupoId]: moverNaLista(atual[grupoId] ?? [], itemId, delta),
+    }));
+  }
+
   function descartar() {
     setNomes(lerTudo(config));
+    setOrdem(ordensIniciais(config));
     setErro("");
     setOk("Mostrando o que está publicado — o que não foi salvo saiu da tela.");
   }
@@ -99,8 +135,11 @@ export default function BotoesAdmin() {
         await salvarConfig(grupo.chave, nomes[grupo.id] ?? {});
       }
 
+      // a ordem de todos os grupos vive numa chave só
+      await salvarConfig(CHAVE_ORDEM_BOTOES, ordem);
+
       await recarregar();
-      setOk("Nomes dos botões salvos — já valem no app.");
+      setOk("Nomes e ordem dos botões salvos — já valem no app.");
     } catch (err) {
       console.error(err);
       setErro(err instanceof Error ? err.message : "Falha ao salvar os nomes.");
@@ -114,9 +153,10 @@ export default function BotoesAdmin() {
       <h1>Botões</h1>
 
       <p className="admin-ajuda">
-        Aqui você muda os <b>nomes</b> de todos os botões que são do app. A <b>ordem</b> e{" "}
-        <b>para onde</b> cada um leva são do app: não mudam por aqui. Deixar um nome em branco
-        faz ele voltar ao padrão. Nada vai ao ar sem <b>Salvar alterações</b>.
+        Aqui você muda os <b>nomes</b> e a <b>ordem</b> de todos os botões que são do app. Para
+        mudar a ordem, use <b>↑</b> e <b>↓</b> em cada botão; <b>para onde</b> cada um leva é do
+        app. Deixar um nome em branco faz ele voltar ao padrão. Nada vai ao ar sem{" "}
+        <b>Salvar alterações</b>.
       </p>
 
       <p className="admin-ajuda">
@@ -136,25 +176,48 @@ export default function BotoesAdmin() {
             <p className="admin-ajuda">{grupo.ajuda}</p>
 
             <p className="admin-ajuda">
-              Como o visitante vai ler: <b>{comoFica(grupo, nomes[grupo.id] ?? {})}</b>
+              Como o visitante vai ler:{" "}
+              <b>{comoFica(grupo, nomes[grupo.id] ?? {}, ordem[grupo.id] ?? [])}</b>
             </p>
 
-            {grupo.itens.map((item, i) => (
-              <label className="admin-campo" key={item.id}>
-                <b>
-                  {i + 1}. {item.padrao}
-                </b>
-                <span className="admin-campo-dica">
-                  Leva para <b>{item.destino}</b> — {item.onde}. Em branco, volta ao nome “
-                  {item.padrao}”.
-                </span>
-                <input
-                  type="text"
-                  placeholder={item.exemplo ?? "Ex: outro nome para este botão"}
-                  value={(nomes[grupo.id] ?? {})[item.id] ?? ""}
-                  onChange={(e) => mudar(grupo.id, item.id, e.target.value)}
-                />
-              </label>
+            {itensNaOrdem(grupo, ordem[grupo.id] ?? []).map((item, i) => (
+              <div className="admin-linha" key={item.id}>
+                <label className="admin-campo">
+                  <b>
+                    {i + 1}. {item.padrao}
+                  </b>
+                  <span className="admin-campo-dica">
+                    Leva para <b>{item.destino}</b> — {item.onde}. Em branco, volta ao nome “
+                    {item.padrao}”.
+                  </span>
+                  <input
+                    type="text"
+                    placeholder={item.exemplo ?? "Ex: outro nome para este botão"}
+                    value={(nomes[grupo.id] ?? {})[item.id] ?? ""}
+                    onChange={(e) => mudar(grupo.id, item.id, e.target.value)}
+                  />
+                </label>
+
+                <button
+                  type="button"
+                  className="outline"
+                  onClick={() => mover(grupo.id, item.id, -1)}
+                  disabled={i === 0}
+                  title="subir este botão"
+                >
+                  ↑
+                </button>
+
+                <button
+                  type="button"
+                  className="outline"
+                  onClick={() => mover(grupo.id, item.id, 1)}
+                  disabled={i === itensNaOrdem(grupo, ordem[grupo.id] ?? []).length - 1}
+                  title="descer este botão"
+                >
+                  ↓
+                </button>
+              </div>
             ))}
           </section>
         ))}

@@ -15,7 +15,13 @@ import { Link } from "react-router-dom";
 
 import { useTerritorios } from "../context/useTerritorios";
 import { CHAVE_MENU_MAIS, NOME_DO_ITEM, itensDoMenu } from "../data/menuPrincipal";
-import { CHAVE_BARRA_NAVEGACAO, rotuloDe } from "../data/botoesDoApp";
+import {
+  CHAVE_BARRA_NAVEGACAO,
+  CHAVE_ORDEM_BOTOES,
+  lerOrdemDoGrupo,
+  rotuloDe,
+} from "../data/botoesDoApp";
+import { ordenarIds } from "../utils/ordem";
 
 export default function BottomNav() {
   const [aberto, setAberto] = useState(false);
@@ -24,6 +30,22 @@ export default function BottomNav() {
   // vale a lista padrão. O próximo evento só entra com evento agendado.
   const { config, proximoTour } = useTerritorios();
   const paginas = itensDoMenu(config[CHAVE_MENU_MAIS], !!proximoTour);
+
+  // Os itens fixos da barra, na ordem que a autoria gravou (aba Botões, grupo
+  // "Barra de navegação"). O "Mais" entra na ordem também — mas ele fecha a
+  // lista de páginas, então nunca deixa de existir.
+  const fixos = [
+    { id: "/", caminho: "/", icone: "⌂", padrao: "Início" },
+    { id: "/presenca-negra", caminho: "/presenca-negra", icone: "✦", padrao: "Vitória Negra" },
+    { id: "/conceito", caminho: "/conceito", icone: "◎", padrao: "Conceito" },
+    { id: "/roteiros", caminho: "/roteiros", icone: "▱", padrao: "Rotas" },
+    { id: "/territorios", caminho: "/territorios", icone: "●", padrao: "Territórios" },
+  ];
+
+  const naOrdem = ordenarIds(
+    [...fixos.map((f) => f.id), "mais"],
+    lerOrdemDoGrupo(config[CHAVE_ORDEM_BOTOES], "barra")
+  );
 
   // Esc fecha a lista (teclado)
   useEffect(() => {
@@ -65,45 +87,39 @@ export default function BottomNav() {
       )}
 
       <nav className="bottom-nav">
-        <Link to="/" className="bottom-nav-btn" onClick={() => setAberto(false)}>
-          ⌂<br />
-          {rotuloDe(config, CHAVE_BARRA_NAVEGACAO, "/", "Início")}
-        </Link>
+        {naOrdem.map((id) => {
+          if (id === "mais") {
+            return (
+              <button
+                key="mais"
+                type="button"
+                className="bottom-nav-btn bottom-nav-mais"
+                aria-haspopup="true"
+                aria-expanded={aberto}
+                onClick={() => setAberto((v) => !v)}
+              >
+                ⋮<br />
+                {rotuloDe(config, CHAVE_BARRA_NAVEGACAO, "mais", NOME_DO_ITEM)}
+              </button>
+            );
+          }
 
-        <Link
-          to="/presenca-negra"
-          className="bottom-nav-btn"
-          onClick={() => setAberto(false)}
-        >
-          ✦<br />
-          {rotuloDe(config, CHAVE_BARRA_NAVEGACAO, "/presenca-negra", "Vitória Negra")}
-        </Link>
+          const item = fixos.find((f) => f.id === id);
+          if (!item) return null;
 
-        <Link to="/conceito" className="bottom-nav-btn" onClick={() => setAberto(false)}>
-          ◎<br />
-          {rotuloDe(config, CHAVE_BARRA_NAVEGACAO, "/conceito", "Conceito")}
-        </Link>
-
-        <Link to="/roteiros" className="bottom-nav-btn" onClick={() => setAberto(false)}>
-          ▱<br />
-          {rotuloDe(config, CHAVE_BARRA_NAVEGACAO, "/roteiros", "Rotas")}
-        </Link>
-
-        <Link to="/territorios" className="bottom-nav-btn" onClick={() => setAberto(false)}>
-          ●<br />
-          {rotuloDe(config, CHAVE_BARRA_NAVEGACAO, "/territorios", "Territórios")}
-        </Link>
-
-        <button
-          type="button"
-          className="bottom-nav-btn bottom-nav-mais"
-          aria-haspopup="true"
-          aria-expanded={aberto}
-          onClick={() => setAberto((v) => !v)}
-        >
-          ⋮<br />
-          {rotuloDe(config, CHAVE_BARRA_NAVEGACAO, "mais", NOME_DO_ITEM)}
-        </button>
+          return (
+            <Link
+              key={item.id}
+              to={item.caminho}
+              className="bottom-nav-btn"
+              onClick={() => setAberto(false)}
+            >
+              {item.icone}
+              <br />
+              {rotuloDe(config, CHAVE_BARRA_NAVEGACAO, item.id, item.padrao)}
+            </Link>
+          );
+        })}
 
         {aberto && (
           <div className="bottom-nav-submenu" role="menu" aria-label="outras páginas">
