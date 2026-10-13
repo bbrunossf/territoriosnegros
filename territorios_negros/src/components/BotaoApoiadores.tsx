@@ -13,13 +13,20 @@
 //
 // É fixo no app (não é item editável da página): o endereço é sempre
 // /apoiadores, e o conteúdo de lá é que é montado no painel, na aba Apoiadores.
+// O NOME do botão é editável no painel, na aba Botões (grupo "Atalhos dentro das
+// telas", chave app_config.atalhos_paginas).
 import { Link } from "react-router-dom";
 
+import { useTerritorios } from "../context/useTerritorios";
+import { CHAVE_ATALHOS_PAGINAS, rotuloDe } from "../data/botoesDoApp";
+
 export default function BotaoApoiadores() {
+  const { config } = useTerritorios();
+
   return (
     <div className="pagina-botoes">
       <Link className="btn pagina-botao" to="/apoiadores">
-        Apoiadores
+        {rotuloDe(config, CHAVE_ATALHOS_PAGINAS, "apoiadores", "Apoiadores")}
       </Link>
     </div>
   );

@@ -15,6 +15,7 @@ import { Link } from "react-router-dom";
 
 import { useTerritorios } from "../context/useTerritorios";
 import { CHAVE_MENU_MAIS, NOME_DO_ITEM, itensDoMenu } from "../data/menuPrincipal";
+import { CHAVE_BARRA_NAVEGACAO, rotuloDe } from "../data/botoesDoApp";
 
 export default function BottomNav() {
   const [aberto, setAberto] = useState(false);
@@ -66,7 +67,7 @@ export default function BottomNav() {
       <nav className="bottom-nav">
         <Link to="/" className="bottom-nav-btn" onClick={() => setAberto(false)}>
           ⌂<br />
-          Início
+          {rotuloDe(config, CHAVE_BARRA_NAVEGACAO, "/", "Início")}
         </Link>
 
         <Link
@@ -75,22 +76,22 @@ export default function BottomNav() {
           onClick={() => setAberto(false)}
         >
           ✦<br />
-          Vitória Negra
+          {rotuloDe(config, CHAVE_BARRA_NAVEGACAO, "/presenca-negra", "Vitória Negra")}
         </Link>
 
         <Link to="/conceito" className="bottom-nav-btn" onClick={() => setAberto(false)}>
           ◎<br />
-          Conceito
+          {rotuloDe(config, CHAVE_BARRA_NAVEGACAO, "/conceito", "Conceito")}
         </Link>
 
         <Link to="/roteiros" className="bottom-nav-btn" onClick={() => setAberto(false)}>
           ▱<br />
-          Rotas
+          {rotuloDe(config, CHAVE_BARRA_NAVEGACAO, "/roteiros", "Rotas")}
         </Link>
 
         <Link to="/territorios" className="bottom-nav-btn" onClick={() => setAberto(false)}>
           ●<br />
-          Territórios
+          {rotuloDe(config, CHAVE_BARRA_NAVEGACAO, "/territorios", "Territórios")}
         </Link>
 
         <button
@@ -101,7 +102,7 @@ export default function BottomNav() {
           onClick={() => setAberto((v) => !v)}
         >
           ⋮<br />
-          {NOME_DO_ITEM}
+          {rotuloDe(config, CHAVE_BARRA_NAVEGACAO, "mais", NOME_DO_ITEM)}
         </button>
 
         {aberto && (

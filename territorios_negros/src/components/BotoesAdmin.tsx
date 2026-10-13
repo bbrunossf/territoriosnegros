@@ -1,12 +1,14 @@
 // BotoesAdmin.tsx — aba "Botões" do painel.
 //
-// Aqui a autoria muda os NOMES dos seis botões de navegação da tela "Antes de
-// caminhar". A ordem e os destinos são do app (não mudam por aqui) — o que muda
-// é só o texto que o visitante lê.
+// Aqui a autoria muda os NOMES de todos os botões que são do app, em três
+// grupos (ver data/botoesDoApp.ts):
 //
-// Grava em app_config, na chave "botoes_intro", num objeto do tipo
-// { "/conceito": "Base teórica", ... }. Nome em branco = volta ao nome padrão.
-// Nada vai ao ar sem "Salvar alterações".
+//   · os seis que fecham as páginas de leitura   → app_config.botoes_intro
+//   · os itens da barra do pé da tela            → app_config.barra_navegacao
+//   · os atalhos fixos dentro das telas          → app_config.atalhos_paginas
+//
+// A ordem e para onde cada um leva são do app: não mudam por aqui. Nome em
+// branco = volta ao nome padrão. Nada vai ao ar sem "Salvar alterações".
 import "../styles.css";
 
 import { useEffect, useState } from "react";
@@ -14,20 +16,35 @@ import { useEffect, useState } from "react";
 import { salvarConfig } from "../data/api";
 import { useTerritorios } from "../context/useTerritorios";
 import {
-  BOTOES_DA_INTRO,
-  CHAVE_BOTOES_INTRO,
-  botoesDaIntro,
-  lerNomes,
-  nomePadraoDoBotao,
-} from "../data/botoesIntro";
+  GRUPOS_DE_BOTOES,
+  lerNomesDeBotoes,
+  nomeDoBotao,
+  type GrupoDeBotoes,
+} from "../data/botoesDoApp";
+
+type NomesPorGrupo = Record<string, Record<string, string>>;
+
+/** Lê do config os nomes de todos os grupos. */
+function lerTudo(config: Record<string, unknown> | undefined): NomesPorGrupo {
+  const tudo: NomesPorGrupo = {};
+
+  GRUPOS_DE_BOTOES.forEach((grupo) => {
+    tudo[grupo.id] = lerNomesDeBotoes(config?.[grupo.chave]);
+  });
+
+  return tudo;
+}
+
+/** Frase de prévia: como o visitante vai ler aquele grupo. */
+function comoFica(grupo: GrupoDeBotoes, nomes: Record<string, string>): string {
+  return grupo.itens.map((item) => nomeDoBotao(nomes, item.id, item.padrao)).join(" · ");
+}
 
 export default function BotoesAdmin() {
   const { config, recarregar } = useTerritorios();
 
   // o estado começa já com o que está gravado, para a tela não piscar vazia
-  const [nomes, setNomes] = useState<Record<string, string>>(() =>
-    lerNomes(config[CHAVE_BOTOES_INTRO])
-  );
+  const [nomes, setNomes] = useState<NomesPorGrupo>(() => lerTudo(config));
 
   const [ok, setOk] = useState("");
   const [erro, setErro] = useState("");
@@ -41,7 +58,7 @@ export default function BotoesAdmin() {
       await Promise.resolve();
       if (!ativo) return;
 
-      setNomes(lerNomes(config[CHAVE_BOTOES_INTRO]));
+      setNomes(lerTudo(config));
     })();
 
     return () => {
@@ -49,22 +66,22 @@ export default function BotoesAdmin() {
     };
   }, [config]);
 
-  function mudar(caminho: string, valor: string) {
+  function mudar(grupoId: string, itemId: string, valor: string) {
     setNomes((atual) => {
-      const copia = { ...atual };
+      const doGrupo = { ...(atual[grupoId] ?? {}) };
 
       if (valor.trim()) {
-        copia[caminho] = valor;
+        doGrupo[itemId] = valor;
       } else {
-        delete copia[caminho];
+        delete doGrupo[itemId];
       }
 
-      return copia;
+      return { ...atual, [grupoId]: doGrupo };
     });
   }
 
   function descartar() {
-    setNomes(lerNomes(config[CHAVE_BOTOES_INTRO]));
+    setNomes(lerTudo(config));
     setErro("");
     setOk("Mostrando o que está publicado — o que não foi salvo saiu da tela.");
   }
@@ -77,7 +94,11 @@ export default function BotoesAdmin() {
     setSalvando(true);
 
     try {
-      await salvarConfig(CHAVE_BOTOES_INTRO, nomes);
+      // um grupo por vez: cada um vive na sua chave em app_config
+      for (const grupo of GRUPOS_DE_BOTOES) {
+        await salvarConfig(grupo.chave, nomes[grupo.id] ?? {});
+      }
+
       await recarregar();
       setOk("Nomes dos botões salvos — já valem no app.");
     } catch (err) {
@@ -88,44 +109,54 @@ export default function BotoesAdmin() {
     }
   }
 
-  const comoFica = botoesDaIntro([], nomes).map((b) => b.texto);
-
   return (
     <div className="botoes-admin">
       <h1>Botões</h1>
 
       <p className="admin-ajuda">
-        Aqui você muda os <b>nomes</b> dos botões da tela <b>Antes de caminhar</b>. A{" "}
-        <b>ordem</b> e <b>para onde</b> cada um leva são do app: não mudam por aqui. Deixar um
-        nome em branco faz ele voltar ao padrão. Nada vai ao ar sem <b>Salvar alterações</b>.
+        Aqui você muda os <b>nomes</b> de todos os botões que são do app. A <b>ordem</b> e{" "}
+        <b>para onde</b> cada um leva são do app: não mudam por aqui. Deixar um nome em branco
+        faz ele voltar ao padrão. Nada vai ao ar sem <b>Salvar alterações</b>.
       </p>
 
       <p className="admin-ajuda">
-        Como o visitante vai ler, de cima para baixo: <b>{comoFica.join(" · ")}</b> — e, no fim,
-        o botão <b>Enviar uma mensagem</b>, separado por um respiro maior.
+        Os botões que <b>você cria</b> nas páginas continuam sendo editados na aba{" "}
+        <b>Páginas</b>, dentro de cada seção; e o botão <b>Enviar uma mensagem</b> tem a seção
+        dele na aba Páginas também.
       </p>
 
       {ok && <p className="admin-ok">{ok}</p>}
       {erro && <p className="admin-erro">{erro}</p>}
 
       <form className="admin-form" onSubmit={salvar}>
-        <h2>Nome de cada botão</h2>
+        {GRUPOS_DE_BOTOES.map((grupo) => (
+          <section key={grupo.id} className="admin-grupo-botoes">
+            <h2>{grupo.titulo}</h2>
 
-        {BOTOES_DA_INTRO.map((botao, i) => (
-          <label className="admin-campo" key={botao.url}>
-            <b>
-              {i + 1}. {nomePadraoDoBotao(botao.url)}
-            </b>
-            <span className="admin-campo-dica">
-              Abre a página <b>{botao.url}</b>. Em branco, volta ao nome “{botao.texto}”.
-            </span>
-            <input
-              type="text"
-              placeholder="Ex: Teoria e fundamentos"
-              value={nomes[botao.url] ?? ""}
-              onChange={(e) => mudar(botao.url, e.target.value)}
-            />
-          </label>
+            <p className="admin-ajuda">{grupo.ajuda}</p>
+
+            <p className="admin-ajuda">
+              Como o visitante vai ler: <b>{comoFica(grupo, nomes[grupo.id] ?? {})}</b>
+            </p>
+
+            {grupo.itens.map((item, i) => (
+              <label className="admin-campo" key={item.id}>
+                <b>
+                  {i + 1}. {item.padrao}
+                </b>
+                <span className="admin-campo-dica">
+                  Leva para <b>{item.destino}</b> — {item.onde}. Em branco, volta ao nome “
+                  {item.padrao}”.
+                </span>
+                <input
+                  type="text"
+                  placeholder={item.exemplo ?? "Ex: outro nome para este botão"}
+                  value={(nomes[grupo.id] ?? {})[item.id] ?? ""}
+                  onChange={(e) => mudar(grupo.id, item.id, e.target.value)}
+                />
+              </label>
+            ))}
+          </section>
         ))}
 
         <div className="admin-form-botoes">

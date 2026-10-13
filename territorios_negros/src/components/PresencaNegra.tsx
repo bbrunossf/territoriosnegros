@@ -35,7 +35,7 @@ export default function PresencaNegra() {
       tela="presenca-negra"
       // no topo, o caminho de volta para A cidade de Vitória — a página de que
       // esta nasceu (pedido da autoria, 02/10/2026)
-      depoisDoTitulo={<BotaoCidadeVitoria texto="A cidade de Vitória" />}
+      depoisDoTitulo={<BotaoCidadeVitoria id="cidade-no-topo-da-presenca" texto="A cidade de Vitória" />}
     />
   );
 }

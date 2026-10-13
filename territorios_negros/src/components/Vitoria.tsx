@@ -19,7 +19,10 @@ export default function Vitoria() {
       depoisDoTitulo={
         <>
           <BotaoBaseTeorica />
-          <BotaoPresencaNegra texto="Presença Negra na Cidade de Vitória" />
+          <BotaoPresencaNegra
+            id="presenca-na-cidade-de-vitoria"
+            texto="Presença Negra na Cidade de Vitória"
+          />
           <BotaoTerritorios />
         </>
       }
