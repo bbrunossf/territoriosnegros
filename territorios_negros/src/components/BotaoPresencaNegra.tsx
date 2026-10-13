@@ -9,15 +9,24 @@
 // `jaExiste`: quando a página já tem um botão apontando para /presenca-negra
 // (editado no painel), este não entra — para o visitante não ver dois botões
 // iguais. Mesma regra do botão de contato.
+//
+// `texto`: o nome do botão. Na página "A cidade de Vitória" ele sai por extenso
+// — "Presença Negra na Cidade de Vitória" (pedido da autoria, 02/10/2026).
 import { Link } from "react-router-dom";
 
-export default function BotaoPresencaNegra({ jaExiste = false }: { jaExiste?: boolean }) {
+export default function BotaoPresencaNegra({
+  jaExiste = false,
+  texto = "Presença Negra na Cidade",
+}: {
+  jaExiste?: boolean;
+  texto?: string;
+}) {
   if (jaExiste) return null;
 
   return (
     <div className="pagina-botoes">
       <Link className="btn pagina-botao" to="/presenca-negra">
-        Presença Negra na Cidade
+        {texto}
       </Link>
     </div>
   );

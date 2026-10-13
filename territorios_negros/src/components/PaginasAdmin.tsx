@@ -637,16 +637,35 @@ export default function PaginasAdmin() {
         <PreviaEstilo estilo={pagina.destaqueEstilo} texto={pagina.destaque} />
 
         <hr className="admin-divisor" />
-        <h3 className="admin-form-secao">Blocos da página</h3>
+        <h3 className="admin-form-secao">Seções da página</h3>
 
         {pagina.blocos.length === 0 && (
-          <p className="admin-ajuda">Nenhum bloco nesta página ainda.</p>
+          <p className="admin-ajuda">Nenhuma seção nesta página ainda.</p>
+        )}
+
+        {pagina.blocos.length > 0 && (
+          <p className="admin-ajuda">
+            Seções desta página, na ordem em que o visitante lê:{" "}
+            {pagina.blocos
+              .map(
+                (b, i) =>
+                  `${i + 1}. ${b.titulo.trim() || "sem título"} (${
+                    b.links.length === 1 ? "1 link" : `${b.links.length} links`
+                  })`
+              )
+              .join(" · ")}
+            <br />
+            Cada seção tem os <b>seus</b> links, logo abaixo do texto dela: para pôr um link na
+            seção “O centro histórico”, acrescente o link dentro <b>desta</b> seção (cada uma tem
+            o seu botão “+ link nesta seção”). Para mudar a ordem em que as seções aparecem no app,
+            use <b>↑</b> e <b>↓</b>.
+          </p>
         )}
 
         {pagina.blocos.map((bloco, i) => (
           <div key={i} className="admin-bloco">
             <div className="admin-bloco-topo">
-              <span className="admin-bloco-num">bloco {i + 1}</span>
+              <span className="admin-bloco-num">seção {i + 1}</span>
 
               <label className="admin-campo admin-campo-compacto admin-bloco-icone">
                 <b>Ícone</b>
@@ -883,7 +902,8 @@ export default function PaginasAdmin() {
 
             {bloco.links.length > 0 && (
               <p className="admin-ajuda">
-                <b>Links desta seção:</b> o <b>texto</b> é o que o visitante clica e o{" "}
+                <b>Links desta seção{bloco.titulo.trim() ? ` — ${bloco.titulo.trim()}` : ""}:</b> o{" "}
+                <b>texto</b> é o que o visitante clica e o{" "}
                 <b>endereço</b> é para onde ele vai (começando por https://).
               </p>
             )}
@@ -921,13 +941,13 @@ export default function PaginasAdmin() {
               className="outline"
               onClick={() => adicionarLink(i)}
             >
-              + link neste bloco
+              + link nesta seção
             </button>
           </div>
         ))}
 
         <button type="button" className="outline" onClick={adicionarBloco}>
-          + Adicionar bloco
+          + Adicionar seção
         </button>
 
         {totalImagens > 0 && (
