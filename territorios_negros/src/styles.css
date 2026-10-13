@@ -713,6 +713,12 @@ a, a:visited, a:hover, a:active {
   text-align: left;
 }
 
+/* Linha em branco digitada no painel: um respiro entre grupos de itens (não
+   sai travessão solto). Mesma ideia do parágrafo nos textos. */
+.numbered-respiro {
+  height: 10px;
+}
+
 .numbered-dash {
   width: 18px;
   height: 24px;

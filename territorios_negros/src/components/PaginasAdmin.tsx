@@ -26,6 +26,7 @@ import { legendaDoArquivo } from "../utils/legendas";
 import FormularioContatoAdmin from "./FormularioContatoAdmin";
 import BotaoContatoAdmin from "./BotaoContatoAdmin";
 import Inline from "./Inline";
+import { itensParaTexto, textoParaItens } from "../utils/itens";
 
 const BLOCO_NOVO: BlocoConteudo = {
   icone: "•",
@@ -39,17 +40,6 @@ const BLOCO_NOVO: BlocoConteudo = {
   estilo: ESTILO_PADRAO,
   tituloEstilo: ESTILO_PADRAO,
 };
-
-function itensParaTexto(itens: string[]): string {
-  return itens.join("\n");
-}
-
-function textoParaItens(txt: string): string[] {
-  return txt
-    .split("\n")
-    .map((s) => s.trim())
-    .filter(Boolean);
-}
 
 /**
  * Os três seletores de formatação (tamanho, alinhamento e cor) usados tanto
@@ -739,8 +729,9 @@ export default function PaginasAdmin() {
             <label className="admin-campo">
               <b>Lista de itens (opcional)</b>
               <span className="admin-campo-dica">
-                Uma linha por item: cada linha vira um item da lista com travessão.
-                Deixe vazio se esta seção não tem lista.
+                Uma linha por item: cada linha vira um item da lista, com travessão.
+                A linha em branco separa grupos de itens (sai como um respiro entre
+                eles). Deixe vazio se esta seção não tem lista.
               </span>
               <textarea
                 placeholder={"Ex:\nUso do espaço público\nMemória do lugar"}

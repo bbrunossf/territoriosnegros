@@ -12,6 +12,7 @@ import { imagensVisiveis, classesEstilo } from "../data/paginas";
 import type { BotaoConteudo, PaginaConteudo } from "../data/paginas";
 
 import { paragrafosDe } from "../utils/texto";
+import { itensComTexto } from "../utils/itens";
 import { rotuloDoSite } from "../utils/links";
 import BotaoContato from "./BotaoContato";
 
@@ -149,7 +150,7 @@ export default function PaginaConteudo({
          */
         const soLinks =
           paragrafosDe(bloco.texto).length === 0 &&
-          bloco.itens.length === 0 &&
+          itensComTexto(bloco.itens).length === 0 &&
           bloco.destaque.trim() === "" &&
           imagens.length === 0 &&
           bloco.links.length > 0;
@@ -185,7 +186,7 @@ export default function PaginaConteudo({
 
             {bloco.posicaoImagens === "aposTexto" && galeria}
 
-            {bloco.itens.length > 0 && <Numbered items={bloco.itens} />}
+            {itensComTexto(bloco.itens).length > 0 && <Numbered items={bloco.itens} />}
 
             {bloco.destaque && (
               <Info>
