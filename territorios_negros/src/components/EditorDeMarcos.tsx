@@ -184,7 +184,16 @@ export default function EditorDeMarcos({
       {topicos.map((marco, i) => (
         <div className="marco-editor-item" key={marco.id}>
           <div className="marco-editor-cabecalho">
-            <b>Tópico {i + 1}</b>
+            {/* O cabeçalho mostra o TÍTULO do tópico (pedido da autoria,
+                02/10/2026): numa tela que cresce muito, é o que permite achar
+                de relance o que já está cadastrado, sem ler campo por campo. */}
+            <span className="marco-editor-nome">
+              <span className="marco-editor-numero">{i + 1}</span>
+
+              <span className="marco-editor-titulo">
+                {marco.titulo.trim() || "Tópico ainda sem título"}
+              </span>
+            </span>
 
             <div className="admin-linha">
               <button
