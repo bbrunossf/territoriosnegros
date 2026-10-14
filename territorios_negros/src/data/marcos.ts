@@ -26,6 +26,12 @@ export interface Marco {
   fonte: string;
   /** link da fonte, quando houver */
   fonteUrl: string;
+  /**
+   * Habilitado/desabilitado no painel, como as fotos e os vídeos: desabilitado,
+   * o tópico não aparece no app (o conteúdo continua guardado). Ausente = vale
+   * como habilitado, para não esconder nada do que já estava cadastrado.
+   */
+  visivel?: boolean;
 }
 
 /** Todos os marcos do app, por chave de página. */
@@ -104,7 +110,13 @@ export function novoMarco(): Marco {
     explicacao: "",
     fonte: "",
     fonteUrl: "",
+    visivel: true,
   };
+}
+
+/** O tópico aparece no app? Desabilitado no painel = não aparece. */
+export function marcoExibivel(marco: Marco | undefined): boolean {
+  return marco?.visivel !== false;
 }
 
 /** Lê a chave inteira, tolerando lixo — nunca derruba a tela. */
@@ -127,6 +139,8 @@ export function normalizarMarcos(valor: unknown): MarcosDoApp {
           explicacao: texto(bruto.explicacao),
           fonte: texto(bruto.fonte),
           fonteUrl: texto(bruto.fonteUrl),
+          // ausente = habilitado (nada do que já existe é escondido sozinho)
+          visivel: bruto.visivel !== false,
         };
       });
 
@@ -146,15 +160,46 @@ export function marcosDaPagina(
   return (todos[chaveDaPagina] ?? []).filter(marcoPreenchido);
 }
 
-/** Quantos tópicos cada página tem (resumo do painel). */
+/**
+ * Quantos tópicos cada página tem, e quantos estão desabilitados — o resumo que
+ * aparece no painel, no mesmo espírito de "10 fotos (7 ocultas)".
+ */
 export function resumoDosMarcos(
   config: Record<string, unknown> | undefined
-): { chave: string; quantos: number }[] {
+): { chave: string; quantos: number; desabilitados: number }[] {
   const todos = normalizarMarcos(config?.[CHAVE_MARCOS]);
 
   return Object.keys(todos)
-    .map((chave) => ({ chave, quantos: todos[chave].filter(marcoPreenchido).length }))
+    .map((chave) => {
+      const daPagina = todos[chave].filter(marcoPreenchido);
+
+      return {
+        chave,
+        quantos: daPagina.length,
+        desabilitados: daPagina.filter((m) => !marcoExibivel(m)).length,
+      };
+    })
     .filter((linha) => linha.quantos > 0);
+}
+
+/**
+ * Marca a visibilidade de todos os tópicos — de uma página ou do app inteiro.
+ * Usado pelos botões "habilitar todas" / "desabilitar todas", que apenas marcam
+ * item por item (como nas fotos e vídeos); nada é apagado.
+ */
+export function marcarVisibilidade(
+  todos: MarcosDoApp,
+  visivel: boolean,
+  chaveDaPagina?: string
+): MarcosDoApp {
+  const saida: MarcosDoApp = {};
+
+  for (const [chave, lista] of Object.entries(todos)) {
+    saida[chave] =
+      !chaveDaPagina || chave === chaveDaPagina ? lista.map((m) => ({ ...m, visivel })) : lista;
+  }
+
+  return saida;
 }
 
 /** Move um item de posição (usado nas setas ↑ ↓ do painel). */

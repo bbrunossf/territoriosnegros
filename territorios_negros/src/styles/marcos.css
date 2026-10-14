@@ -226,6 +226,112 @@
   background: #fffaf0;
 }
 
+/* ── painéis por página (como nas Fotos e vídeos) ─────────────────────────── */
+
+.marcos-painel {
+  margin-top: 14px;
+
+  border: 2px solid #c9a86a;
+  border-radius: 12px;
+
+  background: #fffdf7;
+  overflow: hidden;
+}
+
+.marcos-painel-topo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  width: 100%;
+  padding: 11px 13px;
+
+  border: 0;
+
+  background: #f4e6c8;
+  color: #130b08;
+
+  font: inherit;
+  font-size: 1.02rem;
+  text-align: left;
+
+  cursor: pointer;
+}
+
+.marcos-painel-seta {
+  flex: none;
+  color: #8f611d;
+}
+
+.marcos-painel-nome {
+  flex: 1 1 auto;
+  font-weight: 800;
+}
+
+.marcos-painel-conta {
+  flex: none;
+  font-size: 0.92rem;
+  color: #5b4a38;
+}
+
+.marcos-painel-corpo {
+  padding: 12px 13px 14px;
+}
+
+.marcos-painel-lista {
+  list-style: none;
+
+  margin: 12px 0 0;
+  padding: 0;
+}
+
+.marcos-painel-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 10px 0;
+
+  border-top: 1px solid #e8dcc2;
+}
+
+.marcos-painel-numero {
+  flex: none;
+
+  min-width: 26px;
+  height: 26px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 999px;
+
+  background: #efe0bd;
+  color: #130b08;
+
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+.marcos-painel-titulo {
+  flex: 1 1 auto;
+
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.marcos-liga {
+  flex: none;
+  min-width: 132px;
+}
+
+.marcos-liga.habilitado {
+  border-color: #8f611d;
+  background: #b8832c;
+  font-weight: 900;
+}
+
 /* ── a seção no app do visitante ──────────────────────────────────────────
    Não há nenhum controle dentro do app: exibir/ocultar e permitir a expansão
    ficam no painel (guia "Marcos e Conexões"). */

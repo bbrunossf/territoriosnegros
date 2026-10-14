@@ -19,6 +19,7 @@ import { useExpansao } from "../context/useExpansao";
 import {
   TITULO_MARCOS,
   explicacoesPublicas,
+  marcoExibivel,
   marcosDaPagina,
   marcosVisiveis,
   type Marco,
@@ -65,8 +66,11 @@ export default function MarcosConexoes({ chaveDaPagina }: { chaveDaPagina: strin
   // "Exibir Marcos e Conexões" desligado no painel: não aparece em página nenhuma
   if (!marcosVisiveis(config)) return null;
 
-  // sem tópico preenchido não existe seção — nem vazia, nem provisória
-  if (marcos.length === 0) return null;
+  // sem tópico preenchido não existe seção — nem vazia, nem provisória.
+  // Tópico desabilitado no painel (como foto oculta) também não aparece.
+  const publicos = marcos.filter(marcoExibivel);
+
+  if (publicos.length === 0) return null;
 
   const alternar = (id: string) =>
     setAbertos((lista) => (lista.includes(id) ? lista.filter((x) => x !== id) : [...lista, id]));
@@ -74,7 +78,7 @@ export default function MarcosConexoes({ chaveDaPagina }: { chaveDaPagina: strin
   return (
     <Topic icon="◇" title={TITULO_MARCOS}>
       <ul className="marcos-lista">
-        {marcos.map((marco) => {
+        {publicos.map((marco) => {
           const aberto = permitir && abertos.includes(marco.id);
 
           return (
