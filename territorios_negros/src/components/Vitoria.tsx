@@ -24,7 +24,7 @@ export default function Vitoria() {
     <PaginaConteudo
       pagina={pagina}
       tela="vitoria"
-      depoisDosBlocos={<MarcosConexoes chaveDaPagina={CHAVE_CIDADE} />}
+      antesDosBotoes={<MarcosConexoes chaveDaPagina={CHAVE_CIDADE} />}
       // atalhos fixos logo abaixo do subtítulo (pedidos da autoria, 02/10/2026):
       // primeiro a base teórica que sustenta a leitura, depois a página da
       // presença negra na cidade e, por fim, os territórios — nesta ordem padrão,

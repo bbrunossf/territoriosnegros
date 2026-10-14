@@ -51,6 +51,7 @@ export default function PaginaConteudo({
   depoisDoTitulo,
   depoisDosBotoes,
   depoisDosBlocos,
+  antesDosBotoes,
 }: {
   pagina: PaginaConteudo;
   children?: ReactNode;
@@ -86,6 +87,12 @@ export default function PaginaConteudo({
    * 02/10/2026): o conteúdo central e as reflexões primeiro, o complemento depois.
    */
   depoisDosBlocos?: ReactNode;
+  /**
+   * Conteúdo extra logo ANTES dos botões da página — depois das fontes e do
+   * "depoisDosBlocos". É onde entra "Marcos e Conexões": sempre no fim, antes dos
+   * botões de ação.
+   */
+  antesDosBotoes?: ReactNode;
 }) {
   const destaque = paragrafosDe(pagina.destaque);
   const classesDestaque = classesEstilo(pagina.destaqueEstilo);
@@ -245,6 +252,12 @@ export default function PaginaConteudo({
       {depoisDosBlocos}
 
       {pagina.rodapeUrl && caixaDoRodape}
+
+      {/* Conteúdo extra que fecha a página: entra depois das fontes (link final)
+          e imediatamente ANTES dos botões de ação. Pedido da autoria para
+          "Marcos e Conexões": sempre no fim, depois das fotos e das fontes, e
+          antes dos botões. */}
+      {antesDosBotoes}
 
       {botoesComNomePadrao.length > 0 && (
         <div className="pagina-botoes">

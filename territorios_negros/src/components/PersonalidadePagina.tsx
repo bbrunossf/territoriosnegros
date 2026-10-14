@@ -256,9 +256,10 @@ export default function PersonalidadePagina({ dados }: { dados?: Personalidade }
         </Topic>
       )}
 
-      {/* Marcos e Conexões entra depois do último bloco de conteúdo e antes de
-          "Fontes e pesquisa" (pedido da autoria, 02/10/2026). */}
-      <MarcosConexoes chaveDaPagina={chaveDaPersonalidade(personalidade.slug)} />
+      {/* Marcos e Conexões fica no FIM da página (pedido da autoria, 02/10/2026):
+          depois da galeria, dos vídeos, dos territórios relacionados, das fontes
+          e do material completo — imediatamente antes do link que fecha a
+          página. Ver o bloco no fim deste arquivo. */}
 
       {personalidade.fontes.length > 0 && (
         <Topic icon="✎" title="Fontes e pesquisa">
@@ -292,6 +293,10 @@ export default function PersonalidadePagina({ dados }: { dados?: Personalidade }
           </p>
         </Topic>
       )}
+
+      {/* Marcos e Conexões SEMPRE no fim da página — depois de tudo e antes do
+          link que fecha a personalidade (pedido da autoria, 02/10/2026). */}
+      <MarcosConexoes chaveDaPagina={chaveDaPersonalidade(personalidade.slug)} />
 
       <p style={{ marginTop: 22 }}>
         <Link className="outline" to="/personalidades">

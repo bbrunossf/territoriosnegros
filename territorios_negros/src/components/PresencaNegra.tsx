@@ -35,7 +35,7 @@ export default function PresencaNegra() {
     <PaginaConteudo
       pagina={pagina}
       tela="presenca-negra"
-      depoisDosBlocos={<MarcosConexoes chaveDaPagina={CHAVE_PRESENCA_NEGRA} />}
+      antesDosBotoes={<MarcosConexoes chaveDaPagina={CHAVE_PRESENCA_NEGRA} />}
       // no topo, o caminho de volta para A cidade de Vitória — a página de que
       // esta nasceu (pedido da autoria, 02/10/2026)
       depoisDoTitulo={<BotoesDaTela tela="presenca-negra" posicao="topo" />}
