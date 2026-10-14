@@ -13,9 +13,24 @@
   margin-top: 10px;
 }
 
+/* o tópico é sempre uma caixa destacada do fundo da página — com ou sem a
+   expansão liberada (pedido da autoria, 02/10/2026: o título não pode ficar
+   parecido com texto corrido quando as explicações estão bloqueadas) */
+.marco {
+  border: 1px solid #d9c39a;
+  border-radius: 10px;
+
+  background: #fffaf0;
+}
+
+.marco:hover {
+  border-color: #b8832c;
+}
+
 /* título do tópico: alinhado à esquerda, curto, sempre visível */
 .marco-titulo {
   margin: 0;
+  padding: 10px 12px;
 
   text-align: left;
 
@@ -24,7 +39,8 @@
   line-height: 1.35;
 }
 
-/* quando a expansão está permitida, o título vira um alvo grande de toque */
+/* quando a expansão está permitida, o título vira um alvo grande de toque —
+   na mesma caixa, sem borda nem fundo próprios */
 .marco-titulo-clicavel {
   display: flex;
   align-items: flex-start;
@@ -34,10 +50,10 @@
   min-height: 44px;
   padding: 10px 12px;
 
-  border: 1px solid #d9c39a;
+  border: 0;
   border-radius: 10px;
 
-  background: #fffaf0;
+  background: transparent;
   color: #130b08;
 
   font: inherit;
@@ -45,10 +61,6 @@
   text-align: left;
 
   cursor: pointer;
-}
-
-.marco-titulo-clicavel:hover {
-  border-color: #b8832c;
 }
 
 .marco-seta {
@@ -63,8 +75,7 @@
 }
 
 .marco-corpo {
-  margin-top: 8px;
-  padding: 0 12px 2px 12px;
+  padding: 0 12px 12px 12px;
 
   text-align: left;
 }

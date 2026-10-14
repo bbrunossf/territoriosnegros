@@ -1,9 +1,10 @@
 // MarcosConexoes.tsx — a seção "Marcos e Conexões" no app do visitante.
 //
-// Os títulos ficam SEMPRE visíveis (quando há conteúdo cadastrado). As
-// explicações só abrem quando a autoria permitiu a expansão no aparelho dela —
-// e, nesse caso, o controle aparece para ela poder abrir os detalhes durante o
-// tour. Sem a permissão, não há botão, seta nem ícone de abrir: só os títulos.
+// Os títulos ficam SEMPRE visíveis (quando há conteúdo cadastrado), cada um na
+// sua caixa destacada — a MESMA caixa com ou sem a expansão liberada; o que
+// muda é só a possibilidade de abrir: com a permissão, o título é um alvo de
+// toque com seta ▸/▾ (o controle de quem guia abre os detalhes durante o tour);
+// sem a permissão, é só o título, sem botão, seta ou ícone de abrir.
 //
 // Vários tópicos podem ficar abertos ao mesmo tempo. Ao desligar a expansão, os
 // corpos simplesmente deixam de ser desenhados (fecham na hora, sem apagar
