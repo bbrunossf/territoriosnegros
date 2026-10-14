@@ -102,6 +102,20 @@
   word-break: break-word;
 }
 
+/* linha de exibição do cadastro (habilitar/desabilitar todos desta página) */
+.marcos-editor-exibicao {
+  align-items: center;
+  flex-wrap: wrap;
+
+  margin: 10px 0 4px;
+  padding: 10px 12px;
+
+  border: 1px solid #d9c39a;
+  border-radius: 10px;
+
+  background: #fffaf0;
+}
+
 /* caixas de texto do cadastro: crescem com o conteúdo e podem ser esticadas à
    mão; sem barra de rolagem interna escondendo o que já está escrito */
 .marcos-editor textarea {

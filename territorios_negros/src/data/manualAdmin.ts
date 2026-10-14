@@ -82,6 +82,7 @@ export const MANUAL_PADRAO: SecaoManual[] = [
       "Não existe mais controle por aparelho. A exibição das explicações vale para o app inteiro e é gravada no banco — o que você liga no painel vale em qualquer celular ou computador, sem depender do navegador daquele aparelho.",
       "Como nas **Fotos e vídeos**, cada tópico pode ser habilitado ou desabilitado — e há os botões **habilitar todas** e **desabilitar todas**, tanto para todas as páginas de uma vez quanto para cada página. Desabilitado, o tópico não aparece no app; o conteúdo continua guardado e nada é apagado.",
       "A lista fica em painéis por página — abra o painel da página para ver os tópicos dela, com a contagem de quantos estão desabilitados.",
+      "Os mesmos comandos aparecem **dentro do cadastro da página** (na ficha do território, nas páginas e nas personalidades): cada tópico tem o botão **Habilitado/Desabilitado**, e há **habilitar todos** e **desabilitar todos** desta página — tudo grava na hora, sem depender de outro botão de salvar.",
       "Com **Explicações e fontes** liberado, os títulos viram botões com seta e qualquer visitante pode abrir a explicação e a fonte — vários tópicos abertos ao mesmo tempo. Sem a liberação, o visitante vê só os títulos dos tópicos habilitados.",
       "Os dois controles ficam SÓ no painel: nada de controle na tela do visitante.",
       "É um recurso de apresentação, não uma proteção: o conteúdo continua no app, apenas fechado.",

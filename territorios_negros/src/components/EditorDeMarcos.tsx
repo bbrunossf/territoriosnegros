@@ -11,6 +11,7 @@ import { salvarConfig } from "../data/api";
 import { useTerritorios } from "../context/useTerritorios";
 import {
   CHAVE_MARCOS,
+  marcoExibivel,
   marcoPreenchido,
   mover,
   novoMarco,
@@ -132,6 +133,54 @@ export default function EditorDeMarcos({
   }
 
   const quantos = topicos.filter(marcoPreenchido).length;
+  const desabilitados = topicos.filter((m) => !marcoExibivel(m)).length;
+
+  /**
+   * Liga/desliga a exibição de um tópico — grava na hora, como nas fotos e
+   * vídeos (a autoria reclamou que faltavam estes comandos dentro do cadastro do
+   * território). Salva a lista inteira, preservando o que está digitado na tela.
+   */
+  async function gravarExibicao(lista: Marco[], recado: string) {
+    setTopicos(lista);
+    setPendente(false);
+    setSalvando(true);
+    setErro("");
+
+    try {
+      const todos = normalizarMarcos(config[CHAVE_MARCOS]);
+
+      await salvarConfig(CHAVE_MARCOS, { ...todos, [chaveDaPagina]: lista });
+      await recarregar();
+
+      setOk(recado);
+    } catch (e) {
+      console.error(e);
+      setErro(e instanceof Error ? e.message : "Falha ao salvar.");
+    } finally {
+      setSalvando(false);
+    }
+  }
+
+  const alternarTopico = (id: string) => {
+    const lista = topicos.map((m) => (m.id === id ? { ...m, visivel: !marcoExibivel(m) } : m));
+    const alvo = lista.find((m) => m.id === id);
+    const nome = alvo?.titulo.trim() || "Tópico";
+
+    return gravarExibicao(
+      lista,
+      marcoExibivel(alvo)
+        ? `“${nome}” habilitado — passa a aparecer no app.`
+        : `“${nome}” desabilitado — sai do app, e o conteúdo continua guardado.`
+    );
+  };
+
+  const marcarTodos = (novo: boolean) =>
+    gravarExibicao(
+      topicos.map((m) => ({ ...m, visivel: novo })),
+      novo
+        ? "Todos os tópicos desta página estão habilitados — aparecem no app."
+        : "Todos os tópicos desta página estão desabilitados — a seção não aparece no app. Nada foi apagado."
+    );
 
   return (
     <div className="admin-bloco marcos-editor">
@@ -142,6 +191,38 @@ export default function EditorDeMarcos({
         para o visitante quando o tópico está habilitado; a <b>explicação</b> e a <b>fonte</b> só
         aparecem quando <b>Explicações e fontes</b> está liberado no menu <b>Marcos e Conexões</b>.
       </p>
+
+      {topicos.length > 0 && (
+        <div className="admin-linha marcos-editor-exibicao">
+          <b>Exibição no app:</b>
+
+          <button
+            type="button"
+            className="outline"
+            onClick={() => marcarTodos(true)}
+            disabled={salvando}
+          >
+            habilitar todos
+          </button>
+
+          <button
+            type="button"
+            className="outline"
+            onClick={() => marcarTodos(false)}
+            disabled={salvando}
+          >
+            desabilitar todos
+          </button>
+
+          <span className="admin-dica">
+            {desabilitados === 0
+              ? "todos os tópicos desta página aparecem no app"
+              : `${desabilitados} de ${topicos.length} ${
+                  desabilitados === 1 ? "está desabilitado" : "estão desabilitados"
+                } — estes não aparecem no app`}
+          </span>
+        </div>
+      )}
 
       {topicos.length === 0 && (
         <p className="admin-ajuda">
@@ -164,6 +245,21 @@ export default function EditorDeMarcos({
             </span>
 
             <div className="admin-linha">
+              <button
+                type="button"
+                className={
+                  marcoExibivel(marco)
+                    ? "outline marcos-liga habilitado"
+                    : "outline marcos-liga"
+                }
+                aria-pressed={marcoExibivel(marco)}
+                onClick={() => alternarTopico(marco.id)}
+                disabled={salvando}
+                title="aparece ou não aparece no app"
+              >
+                {marcoExibivel(marco) ? "Habilitado" : "Desabilitado"}
+              </button>
+
               <button
                 type="button"
                 className="outline"
