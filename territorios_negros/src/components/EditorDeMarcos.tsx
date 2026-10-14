@@ -5,7 +5,7 @@
 // O conteúdo é independente por página; cada editor grava só a sua chave dentro
 // de app_config.marcos_conexoes.
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "../styles/marcos.css";
 import { salvarConfig } from "../data/api";
 import { useTerritorios } from "../context/useTerritorios";
@@ -19,6 +19,48 @@ import {
   type Marco,
 } from "../data/marcos";
 
+/**
+ * Caixa de texto que cresce conforme o que está escrito.
+ *
+ * Pedido da autoria (02/10/2026): a referência da fonte precisa aceitar mais de
+ * uma linha (livro, documento, acervo…) e ela tem que LER a citação inteira sem
+ * caçar o cursor dentro de uma área de rolagem. Vale para a explicação também.
+ */
+function CaixaQueCresce({
+  valor,
+  exemplo,
+  aoMudar,
+  linhas = 2,
+}: {
+  valor: string;
+  exemplo: string;
+  aoMudar: (texto: string) => void;
+  linhas?: number;
+}) {
+  const caixa = useRef<HTMLTextAreaElement>(null);
+
+  const ajustar = () => {
+    const el = caixa.current;
+    if (!el) return;
+
+    el.style.height = "auto";
+    el.style.height = `${el.scrollHeight}px`;
+  };
+
+  useEffect(ajustar, [valor]);
+
+  return (
+    <textarea
+      ref={caixa}
+      value={valor}
+      rows={linhas}
+      placeholder={exemplo}
+      onInput={ajustar}
+      onChange={(e) => aoMudar(e.target.value)}
+    />
+  );
+}
+
 export default function EditorDeMarcos({
   chaveDaPagina,
   onde,
@@ -31,7 +73,9 @@ export default function EditorDeMarcos({
   const { config, recarregar } = useTerritorios();
   const [permitirExpansao, definirExpansao] = useExpansao();
 
-  const [topicos, setTopicos] = useState<Marco[]>([]);
+  const [topicos, setTopicos] = useState<Marco[]>(
+    () => normalizarMarcos(config[CHAVE_MARCOS])[chaveDaPagina] ?? []
+  );
   const [pendente, setPendente] = useState(false);
   const [salvando, setSalvando] = useState(false);
   const [ok, setOk] = useState("");
@@ -202,22 +246,25 @@ export default function EditorDeMarcos({
               o que você desenvolve oralmente durante o tour. Vale a marcação do app:
               **negrito**, *itálico* e linha em branco entre parágrafos
             </span>
-            <textarea
-              value={marco.explicacao}
-              placeholder="Ex: A carta de doação registra a entrega do terreno à irmandade; é o documento que sustenta a presença negra naquele ponto da cidade."
-              onChange={(e) => mudar(i, "explicacao", e.target.value)}
+            <CaixaQueCresce
+              valor={marco.explicacao}
+              linhas={3}
+              exemplo="Ex: A carta de doação registra a entrega do terreno à irmandade; é o documento que sustenta a presença negra naquele ponto da cidade."
+              aoMudar={(texto) => mudar(i, "explicacao", texto)}
             />
           </label>
 
           <div className="admin-form-grid admin-form-grid-2">
             <label className="admin-campo">
               <b>Referência da fonte</b>
-              <span className="admin-dica">livro, documento, acervo, relato — como você cita</span>
-              <input
-                type="text"
-                value={marco.fonte}
-                placeholder="Ex: Livro de tombo da Irmandade do Rosário"
-                onChange={(e) => mudar(i, "fonte", e.target.value)}
+              <span className="admin-dica">
+                livro, documento, acervo, relato — como você cita. Pode usar várias linhas; a
+                caixa cresce sozinha, sem esconder o que já está escrito
+              </span>
+              <CaixaQueCresce
+                valor={marco.fonte}
+                exemplo={"Ex: SILVA, João. Devoção e território.\nVitória: Editora, 2004, p. 45-52."}
+                aoMudar={(texto) => mudar(i, "fonte", texto)}
               />
             </label>
 
