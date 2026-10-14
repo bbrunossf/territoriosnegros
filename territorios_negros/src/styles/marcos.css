@@ -77,7 +77,12 @@
 .marco-corpo {
   padding: 0 12px 12px 12px;
 
-  text-align: left;
+  /* textos de Marcos e Conexões justificados (pedido da autoria, 02/10/2026);
+     com a separação de sílabas para o texto justificado não abrir "rios" */
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: auto;
+  -webkit-hyphens: auto;
 }
 
 .marco-corpo p {
@@ -91,6 +96,12 @@
   /* a referência pode ter várias linhas (livro, documento, acervo) e as quebras
      que a autoria digitou no painel precisam aparecer no app */
   white-space: pre-line;
+
+  /* a referência fica alinhada à esquerda, mesmo com a explicação justificada:
+     citação com recuo irregular justificado atrapalha a leitura */
+  text-align: left;
+  hyphens: none;
+  -webkit-hyphens: none;
 }
 
 .marco-fonte-rotulo {
