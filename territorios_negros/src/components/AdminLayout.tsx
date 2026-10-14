@@ -55,12 +55,18 @@ export default function AdminLayout() {
         <h2>Painel</h2>
 
         {/* A ordem aqui é a ordem do menu: o que a autoria usa durante o guia
-            (mídia), os conteúdos com lista própria (rotas e territórios) e, no
-            fim, as ferramentas. Desde 02/10/2026 o resto — Página inicial,
-            Apoiadores, Menu Mais, Personalidades, Botões e Categorias — vive
-            DENTRO da aba "Páginas", como guias (pedido da autoria). */}
+            (mídia e Marcos e Conexões), os conteúdos com lista própria (rotas e
+            territórios) e, no fim, as ferramentas. Desde 02/10/2026 o resto —
+            Página inicial, Apoiadores, Menu Mais, Personalidades, Botões e
+            Categorias — vive DENTRO da aba "Páginas", como guias (pedido da
+            autoria). Marcos e Conexões ficou logo abaixo de Fotos e vídeos
+            porque é o outro controle que ela aciona durante a caminhada. */}
         <Link to="/admin/midias" className="admin-sidebar-btn">
           Fotos e vídeos
+        </Link>
+
+        <Link to="/admin/marcos" className="admin-sidebar-btn">
+          Marcos e Conexões
         </Link>
 
         <Link to="/admin/roteiros" className="admin-sidebar-btn">
