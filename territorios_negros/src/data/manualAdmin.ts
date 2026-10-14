@@ -78,7 +78,7 @@ export const MANUAL_PADRAO: SecaoManual[] = [
       "Sem nenhum tópico com título, a seção não aparece no app — nem vazia, nem provisória.",
       "O que combina com esta seção: datas, acontecimentos, pessoas e relações que você desenvolve oralmente, como aprofundamento complementar.",
       "O que NÃO vai para cá: o que é essencial para entender a territorialidade negra ou os apagamentos — isso continua no conteúdo principal da página, em destaque.",
-      "Permitir expansão de Marcos e Conexões → no alto da guia **Marcos e Conexões** do painel: liga a abertura das explicações em todas as páginas deste aparelho, de uma vez. Fica guardada no navegador e continua valendo depois de navegar, recarregar ou fechar o app.",
+      "Permitir expansão de Marcos e Conexões → no alto da guia **Marcos e Conexões** do painel — e também no bloco de cadastro da própria página, do lado dos tópicos: libera ou bloqueia a exibição das **explicações e fontes** em todas as páginas deste aparelho, de uma vez. Fica guardado no navegador e continua valendo depois de navegar, recarregar ou fechar o app.",
       "Exibir ou ocultar a seção no app → no mesmo lugar, logo acima: esconde Marcos e Conexões do app inteiro (para todos) ou mostra de novo. O conteúdo cadastrado nunca é apagado — volta inteiro.",
       "Desligada a expansão, o visitante vê só os títulos, sem setas nem ícones de abrir. Ligada, você toca no título para abrir e fechar os detalhes — e pode deixar vários abertos ao mesmo tempo.",
       "Os dois controles ficam SÓ no painel: nada de controle na tela do visitante.",

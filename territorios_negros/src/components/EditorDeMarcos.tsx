@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import "../styles/marcos.css";
 import { salvarConfig } from "../data/api";
 import { useTerritorios } from "../context/useTerritorios";
+import { useExpansao } from "../context/useExpansao";
 import {
   CHAVE_MARCOS,
   marcoPreenchido,
@@ -28,6 +29,7 @@ export default function EditorDeMarcos({
   onde: string;
 }) {
   const { config, recarregar } = useTerritorios();
+  const [permitirExpansao, definirExpansao] = useExpansao();
 
   const [topicos, setTopicos] = useState<Marco[]>([]);
   const [pendente, setPendente] = useState(false);
@@ -96,8 +98,37 @@ export default function EditorDeMarcos({
       <p className="admin-ajuda">
         Tópicos de apoio à sua fala durante os tours, em <b>{onde}</b>. O <b>título</b> fica
         sempre visível para o visitante; a <b>explicação</b> e a <b>fonte</b> só aparecem quando a
-        expansão está permitida no seu aparelho (guia <b>Marcos e Conexões</b>). Sem tópico com
-        título, a seção não aparece no app.
+        expansão está permitida.
+      </p>
+
+      {/* Controle pedido pela autoria (02/10/2026): liberar e bloquear a exibição
+          das explicações e fontes SEM sair da tela de cadastro. É o mesmo
+          controle da guia "Marcos e Conexões" — a preferência é do aparelho e
+          vale para todas as páginas, de uma vez. */}
+      <div className="admin-linha marcos-editor-expansao">
+        <b>Explicações e fontes:</b>
+
+        <button
+          type="button"
+          className="outline"
+          aria-pressed={permitirExpansao}
+          onClick={() => definirExpansao(!permitirExpansao)}
+        >
+          {permitirExpansao
+            ? "Podem ser exibidas — toque para bloquear"
+            : "Bloqueadas — toque para liberar"}
+        </button>
+
+        <span className="admin-dica">
+          {permitirExpansao
+            ? "no app deste aparelho, os títulos abrem e fecham ao toque"
+            : "sem expansão, o visitante vê só os títulos — sem setas nem ícones de abrir"}
+        </span>
+      </div>
+
+      <p className="admin-dica marcos-editor-expansao-nota">
+        Vale para todas as páginas deste aparelho, ao mesmo tempo, e fica guardado no navegador. O
+        mesmo controle está na guia <b>Marcos e Conexões</b>.
       </p>
 
       {topicos.length === 0 && (
