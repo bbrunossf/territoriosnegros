@@ -149,6 +149,11 @@ export default function Territorio() {
         idade={idade}
       />
 
+      {/* "Marcos e Conexões" logo depois da Palavra-chave (posição pedida pela
+          autoria): antes ficava no fim absoluto da ficha, depois da galeria e
+          dos vídeos de apoio — ela criou tópicos e não achou a seção no app. */}
+      <MarcosConexoes chaveDaPagina={chaveDoTerritorio(territorio.id)} />
+
         {/* as imagens de apoio vêm por último, depois da palavra-chave */}
         {fotosApoio.length > 0 && (
           <Topic
@@ -203,8 +208,6 @@ export default function Territorio() {
         {/* Marcos e Conexões: depois da palavra-chave e das personalidades
             relacionadas, antes do "Enviar uma mensagem" (pedido da autoria,
             02/10/2026). Sem tópico cadastrado, não aparece nada. */}
-        <MarcosConexoes chaveDaPagina={chaveDoTerritorio(territorio.id)} />
-
         <BotaoContato tela="territorio" />
       </>
     );
