@@ -102,25 +102,6 @@
   word-break: break-word;
 }
 
-/* ── controle de expansão dentro do cadastro da página (pedido da autoria,
-   02/10/2026: liberar e bloquear as explicações e fontes sem sair da tela) ── */
-
-.marcos-editor-expansao {
-  align-items: center;
-
-  margin: 10px 0 4px;
-  padding: 10px 12px;
-
-  border: 1px solid #d9c39a;
-  border-radius: 10px;
-
-  background: #fffaf0;
-}
-
-.marcos-editor-expansao-nota {
-  margin: 0 0 14px;
-}
-
 /* caixas de texto do cadastro: crescem com o conteúdo e podem ser esticadas à
    mão; sem barra de rolagem interna escondendo o que já está escrito */
 .marcos-editor textarea {

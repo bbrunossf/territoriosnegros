@@ -10,7 +10,6 @@
 import "../styles.css";
 import { useState } from "react";
 import { useTerritorios } from "../context/useTerritorios";
-import { useExpansao } from "../context/useExpansao";
 import { salvarConfig } from "../data/api";
 import {
   CHAVE_MARCOS,
@@ -32,7 +31,6 @@ import { lerPersonalidades } from "../data/personalidades";
 
 export default function MarcosAdmin() {
   const { config, territorios, recarregar } = useTerritorios();
-  const [permitir, definir] = useExpansao();
   const [gravando, setGravando] = useState(false);
   const [aviso, setAviso] = useState("");
   const [abertos, setAbertos] = useState<string[]>([]);
@@ -157,7 +155,7 @@ export default function MarcosAdmin() {
         <h3>Controle rápido — vale para todas as páginas de uma vez</h3>
 
         <p className="admin-ajuda">
-          Você <b>não precisa abrir cada página</b> para isso: os três controles abaixo valem para
+          Você <b>não precisa abrir cada página</b> para isso: os dois controles abaixo valem para
           Marcos e Conexões inteiro, com um toque. Nada aqui apaga conteúdo.
         </p>
 
@@ -195,35 +193,16 @@ export default function MarcosAdmin() {
           <span className="admin-dica">
             {explicacoes
               ? "em todas as páginas, qualquer visitante pode abrir a explicação e a fonte"
-              : "os visitantes veem só os títulos; as explicações abrem apenas no seu aparelho"}
-          </span>
-        </div>
-
-        {/* 3. a expansão no aparelho da autoria */}
-        <div className="admin-linha marcos-controle">
-          <b>Neste aparelho (o meu):</b>
-
-          <button
-            type="button"
-            className="outline"
-            aria-pressed={permitir}
-            onClick={() => definir(!permitir)}
-          >
-            {permitir ? "Expandindo — toque para não expandir" : "Não expande — toque para expandir"}
-          </button>
-
-          <span className="admin-dica">
-            {permitir
-              ? "no app deste aparelho, os títulos abrem e fecham ao toque"
-              : "no app deste aparelho, os títulos ficam sem expansão e sem setas"}
+              : "os visitantes veem só os títulos dos tópicos habilitados"}
           </span>
         </div>
 
         {aviso && <p className="admin-ok">{aviso}</p>}
 
         <p className="admin-ajuda">
-          Os dois primeiros valem para <b>todos</b> e ficam guardados no banco; o terceiro é{" "}
-          <b>só seu</b>, neste aparelho, e fica guardado no navegador.
+          Os dois controles valem para <b>todos</b> e ficam guardados no banco: o que você liga aqui
+          vale no app inteiro, em qualquer aparelho. Não existe controle dentro da tela do
+          visitante.
         </p>
       </div>
 

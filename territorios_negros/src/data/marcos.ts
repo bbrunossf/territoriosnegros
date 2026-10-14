@@ -54,9 +54,8 @@ export function marcosVisiveis(config: Record<string, unknown> | undefined): boo
 }
 
 /**
- * Explicações e fontes liberadas para TODO MUNDO (controle rápido do painel).
- * Padrão: desligado — o visitante vê só os títulos. Diferente da preferência do
- * aparelho da autoria (useExpansao), esta vale para o app inteiro.
+ * Explicações e fontes liberadas para os visitantes (gravado no banco, vale
+ * para o app inteiro). Padrão: desligado — o visitante vê só os títulos.
  */
 export const CHAVE_MARCOS_EXPLICACOES = "marcos_explicacoes";
 
@@ -215,26 +214,8 @@ export function mover<T>(lista: T[], de: number, para: number): T[] {
   return copia;
 }
 
-// ── expansão: preferência do aparelho da autoria ────────────────────────────
-
-/** Evento avisando que a preferência mudou (a seção e o controle escutam). */
-export const EVENTO_EXPANSAO = "marcos-expansao-mudou";
-
-const CHAVE_EXPANSAO = "marcos_expansao";
-
-/** Desabilitada por padrão — no primeiro uso, os tópicos ficam só com o título. */
-export function lerExpansao(): boolean {
-  try {
-    return window.localStorage.getItem(CHAVE_EXPANSAO) === "sim";
-  } catch {
-    return false;
-  }
-}
-
-export function guardarExpansao(permitir: boolean): void {
-  try {
-    window.localStorage.setItem(CHAVE_EXPANSAO, permitir ? "sim" : "nao");
-  } catch {
-    // navegador sem armazenamento: a preferência vale só nesta tela
-  }
-}
+// ── fim do módulo ───────────────────────────────────────────────────────────
+// A expansão das explicações e fontes é uma decisão do app inteiro, gravada no
+// banco e tomada na tela "Marcos e Conexões" do painel. Não existe preferência
+// por aparelho: ela dependia do navegador daquela aba e não chegava ao app em
+// outro aparelho — a autoria relatou que, ligada, não funcionava como esperado.

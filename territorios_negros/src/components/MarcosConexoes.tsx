@@ -1,21 +1,19 @@
 // MarcosConexoes.tsx — a seção "Marcos e Conexões" no app do visitante.
 //
-// Os títulos ficam SEMPRE visíveis (quando há conteúdo cadastrado), cada um na
-// sua caixa destacada — a MESMA caixa com ou sem a expansão liberada; o que
-// muda é só a possibilidade de abrir: com a permissão, o título é um alvo de
-// toque com seta ▸/▾ (o controle de quem guia abre os detalhes durante o tour);
-// sem a permissão, é só o título, sem botão, seta ou ícone de abrir.
+// Os títulos ficam visíveis (quando há tópico habilitado e com título), cada um
+// na sua caixa destacada — a MESMA caixa com ou sem a expansão liberada; o que
+// muda é só a possibilidade de abrir: com "Explicações e fontes" liberado no
+// painel, o título é um alvo de toque com seta ▸/▾; sem a liberação, é só o
+// título, sem botão, seta ou ícone de abrir.
 //
-// Vários tópicos podem ficar abertos ao mesmo tempo. Ao desligar a expansão, os
-// corpos simplesmente deixam de ser desenhados (fecham na hora, sem apagar
-// nada); ao religar, tudo começa fechado.
+// Vários tópicos podem ficar abertos ao mesmo tempo. A expansão é do app inteiro
+// (gravada no banco), decidida no painel — não há controle na tela do visitante.
 
 import { useState } from "react";
 import "../styles/marcos.css";
 import Topic from "./Topic";
 import Inline from "./Inline";
 import { useTerritorios } from "../context/useTerritorios";
-import { useExpansao } from "../context/useExpansao";
 import {
   TITULO_MARCOS,
   explicacoesPublicas,
@@ -24,10 +22,6 @@ import {
   marcosVisiveis,
   type Marco,
 } from "../data/marcos";
-
-/**
- * A preferência de expansão deste aparelho (ver context/useExpansao.ts).
- */
 
 /** Uma linha de fonte: link quando tem endereço, texto quando não tem. */
 function FonteDoMarco({ marco }: { marco: Marco }) {
@@ -55,13 +49,12 @@ function FonteDoMarco({ marco }: { marco: Marco }) {
 export default function MarcosConexoes({ chaveDaPagina }: { chaveDaPagina: string }) {
   const { config } = useTerritorios();
   const marcos = marcosDaPagina(config, chaveDaPagina);
-  const [permitirAparelho] = useExpansao();
   const [abertos, setAbertos] = useState<string[]>([]);
 
-  // As explicações abrem quando a autoria permitiu NESTE aparelho (o controle
-  // dela, para o tour) ou quando o controle rápido do painel liberou as
-  // explicações e fontes para todo mundo.
-  const permitir = permitirAparelho || explicacoesPublicas(config);
+  // As explicações e as fontes abrem quando a autoria libera no painel
+  // ("Explicações e fontes — Exibidas para todos"). Tópico habilitado aparece
+  // com o título; desabilitado não aparece.
+  const permitir = explicacoesPublicas(config);
 
   // "Exibir Marcos e Conexões" desligado no painel: não aparece em página nenhuma
   if (!marcosVisiveis(config)) return null;
