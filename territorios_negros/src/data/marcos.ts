@@ -47,6 +47,17 @@ export function marcosVisiveis(config: Record<string, unknown> | undefined): boo
   return config?.[CHAVE_MARCOS_VISIVEL] !== false;
 }
 
+/**
+ * Explicações e fontes liberadas para TODO MUNDO (controle rápido do painel).
+ * Padrão: desligado — o visitante vê só os títulos. Diferente da preferência do
+ * aparelho da autoria (useExpansao), esta vale para o app inteiro.
+ */
+export const CHAVE_MARCOS_EXPLICACOES = "marcos_explicacoes";
+
+export function explicacoesPublicas(config: Record<string, unknown> | undefined): boolean {
+  return config?.[CHAVE_MARCOS_EXPLICACOES] === true;
+}
+
 /** Como a seção se chama na interface — nada de "roteiro", "lembrete" ou "anotação". */
 export const TITULO_MARCOS = "Marcos e Conexões";
 

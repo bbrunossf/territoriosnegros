@@ -212,6 +212,20 @@
   padding: 0 14px;
 }
 
+/* linhas do "controle rápido" da guia Marcos e Conexões */
+.marcos-controle {
+  align-items: center;
+  flex-wrap: wrap;
+
+  margin-top: 12px;
+  padding: 10px 12px;
+
+  border: 1px solid #d9c39a;
+  border-radius: 10px;
+
+  background: #fffaf0;
+}
+
 /* ── a seção no app do visitante ──────────────────────────────────────────
    Não há nenhum controle dentro do app: exibir/ocultar e permitir a expansão
    ficam no painel (guia "Marcos e Conexões"). */

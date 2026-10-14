@@ -171,8 +171,9 @@ export default function EditorDeMarcos({
       </div>
 
       <p className="admin-dica marcos-editor-expansao-nota">
-        Vale para todas as páginas deste aparelho, ao mesmo tempo, e fica guardado no navegador. O
-        mesmo controle está na guia <b>Marcos e Conexões</b>.
+        Vale para todas as páginas deste aparelho, ao mesmo tempo, e fica guardado no navegador. Para
+        liberar as explicações e fontes a <b>todos os visitantes</b>, use o <b>Controle rápido</b> da
+        guia <b>Marcos e Conexões</b>.
       </p>
 
       {topicos.length === 0 && (

@@ -8,7 +8,13 @@ import { useState } from "react";
 import { useTerritorios } from "../context/useTerritorios";
 import { useExpansao } from "../context/useExpansao";
 import { salvarConfig } from "../data/api";
-import { CHAVE_MARCOS_VISIVEL, marcosVisiveis, resumoDosMarcos } from "../data/marcos";
+import {
+  CHAVE_MARCOS_EXPLICACOES,
+  CHAVE_MARCOS_VISIVEL,
+  explicacoesPublicas,
+  marcosVisiveis,
+  resumoDosMarcos,
+} from "../data/marcos";
 import { lerPersonalidades } from "../data/personalidades";
 
 export default function MarcosAdmin() {
@@ -18,20 +24,17 @@ export default function MarcosAdmin() {
   const [aviso, setAviso] = useState("");
 
   const visivel = marcosVisiveis(config);
+  const explicacoes = explicacoesPublicas(config);
 
-  async function alternarVisivel() {
+  /** Grava uma chave do controle rápido e mantém o que já existe em app_config. */
+  async function gravar(chave: string, valor: unknown, recado: string) {
     setGravando(true);
     setAviso("");
 
     try {
-      await salvarConfig(CHAVE_MARCOS_VISIVEL, !visivel);
+      await salvarConfig(chave, valor);
       await recarregar();
-
-      setAviso(
-        visivel
-          ? "Marcos e Conexões está escondida no app. O conteúdo continua guardado — nada foi apagado."
-          : "Marcos e Conexões voltou a aparecer no app."
-      );
+      setAviso(recado);
     } catch (e) {
       console.error(e);
       setAviso(e instanceof Error ? e.message : "Falha ao salvar.");
@@ -39,6 +42,24 @@ export default function MarcosAdmin() {
       setGravando(false);
     }
   }
+
+  const alternarVisivel = () =>
+    gravar(
+      CHAVE_MARCOS_VISIVEL,
+      !visivel,
+      visivel
+        ? "Marcos e Conexões está escondida no app. O conteúdo continua guardado — nada foi apagado."
+        : "Marcos e Conexões voltou a aparecer no app."
+    );
+
+  const alternarExplicacoes = () =>
+    gravar(
+      CHAVE_MARCOS_EXPLICACOES,
+      !explicacoes,
+      explicacoes
+        ? "Voltou ao padrão: os visitantes veem só os títulos, e as explicações abrem apenas no seu aparelho."
+        : "Explicações e fontes liberadas para todos os visitantes, em todas as páginas — com as setas de abrir."
+    );
 
   const resumo = resumoDosMarcos(config);
   const nomeDoTerritorio = (id: string) => territorios[id]?.nome ?? id;
@@ -59,40 +80,55 @@ export default function MarcosAdmin() {
       </p>
 
       <div className="admin-bloco">
-        <h3>Exibir ou ocultar a seção no app</h3>
+        <h3>Controle rápido — vale para todas as páginas de uma vez</h3>
 
         <p className="admin-ajuda">
-          Vale para o <b>app inteiro</b> — é o que o visitante vê. Escondendo, Marcos e Conexões não
-          aparece em página nenhuma; <b>o conteúdo cadastrado continua guardado</b> e volta inteiro
-          quando você exibir de novo.
+          Você <b>não precisa abrir cada página</b> para isso: os três controles abaixo valem para
+          Marcos e Conexões inteiro, com um toque. Nada aqui apaga conteúdo.
         </p>
 
-        <div className="admin-linha">
+        {/* 1. a seção aparece no app? */}
+        <div className="admin-linha marcos-controle">
+          <b>Seção no app:</b>
+
           <button type="button" className="outline" onClick={alternarVisivel} disabled={gravando}>
             {visivel ? "Aparecendo — toque para ocultar" : "Oculta — toque para exibir"}
           </button>
 
           <span className="admin-dica">
             {visivel
-              ? "quem abrir o app agora vê os títulos dos tópicos"
+              ? "quem abrir o app vê os títulos dos tópicos"
               : "ninguém vê a seção enquanto estiver oculta"}
           </span>
         </div>
 
-        {aviso && <p className="admin-ok">{aviso}</p>}
-      </div>
+        {/* 2. as explicações e fontes aparecem para os visitantes? */}
+        <div className="admin-linha marcos-controle">
+          <b>Explicações e fontes:</b>
 
-      <div className="admin-bloco">
-        <h3>Permitir expansão das explicações</h3>
+          <button
+            type="button"
+            className="outline"
+            aria-pressed={explicacoes}
+            onClick={alternarExplicacoes}
+            disabled={gravando}
+          >
+            {explicacoes
+              ? "Exibidas para todos — toque para deixar só os títulos"
+              : "Só os títulos — toque para exibir para todos"}
+          </button>
 
-        <p className="admin-ajuda">
-          Aqui é só para o seu aparelho: vale para <b>todas as páginas deste aparelho</b>, ao mesmo
-          tempo — não é preciso configurar página por página. Fica guardado no navegador, então
-          continua valendo depois de navegar, recarregar ou fechar o app. Os visitantes continuam
-          vendo apenas os títulos, sem setas.
-        </p>
+          <span className="admin-dica">
+            {explicacoes
+              ? "em todas as páginas, qualquer visitante pode abrir a explicação e a fonte"
+              : "os visitantes veem só os títulos; as explicações abrem apenas no seu aparelho"}
+          </span>
+        </div>
 
-        <div className="admin-linha">
+        {/* 3. a expansão no aparelho da autoria */}
+        <div className="admin-linha marcos-controle">
+          <b>Neste aparelho (o meu):</b>
+
           <button
             type="button"
             className="outline"
@@ -109,8 +145,11 @@ export default function MarcosAdmin() {
           </span>
         </div>
 
+        {aviso && <p className="admin-ok">{aviso}</p>}
+
         <p className="admin-ajuda">
-          Este controle é <b>só seu</b> e fica no painel: nada aparece no app do visitante.
+          Os dois primeiros valem para <b>todos</b> e ficam guardados no banco; o terceiro é{" "}
+          <b>só seu</b>, neste aparelho, e fica guardado no navegador.
         </p>
       </div>
 
