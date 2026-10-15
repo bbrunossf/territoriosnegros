@@ -8,6 +8,10 @@
 //
 // Vários tópicos podem ficar abertos ao mesmo tempo. A expansão é do app inteiro
 // (gravada no banco), decidida no painel — não há controle na tela do visitante.
+//
+// Mas só UM título fica aberto por vez (pedido da autoria, 02/10/2026): ao abrir
+// um tópico novo, o que estava aberto recolhe sozinho. Em página com muitos
+// tópicos, a tela não vira um bloco de texto e o visitante lê o que interessa.
 
 import { useState } from "react";
 import "../styles/marcos.css";
@@ -49,7 +53,10 @@ function FonteDoMarco({ marco }: { marco: Marco }) {
 export default function MarcosConexoes({ chaveDaPagina }: { chaveDaPagina: string }) {
   const { config } = useTerritorios();
   const marcos = marcosDaPagina(config, chaveDaPagina);
-  const [abertos, setAbertos] = useState<string[]>([]);
+
+  // id do tópico aberto — UM só. Abrir outro recolhe o anterior; tocar no mesmo
+  // fecha. (Antes era uma lista, e vários ficavam abertos ao mesmo tempo.)
+  const [aberto, setAberto] = useState<string | null>(null);
 
   // As explicações e as fontes abrem quando a autoria libera no painel
   // ("Explicações e fontes — Exibidas para todos"). Tópico habilitado aparece
@@ -65,14 +72,13 @@ export default function MarcosConexoes({ chaveDaPagina }: { chaveDaPagina: strin
 
   if (publicos.length === 0) return null;
 
-  const alternar = (id: string) =>
-    setAbertos((lista) => (lista.includes(id) ? lista.filter((x) => x !== id) : [...lista, id]));
+  const alternar = (id: string) => setAberto((atual) => (atual === id ? null : id));
 
   return (
     <Topic icon="◇" title={TITULO_MARCOS}>
       <ul className="marcos-lista">
         {publicos.map((marco) => {
-          const aberto = permitir && abertos.includes(marco.id);
+          const estaAberto = permitir && aberto === marco.id;
 
           return (
             <li key={marco.id} className="marco">
@@ -80,11 +86,11 @@ export default function MarcosConexoes({ chaveDaPagina }: { chaveDaPagina: strin
                 <button
                   type="button"
                   className="marco-titulo marco-titulo-clicavel"
-                  aria-expanded={aberto}
+                  aria-expanded={estaAberto}
                   onClick={() => alternar(marco.id)}
                 >
                   <span className="marco-seta" aria-hidden="true">
-                    {aberto ? "▾" : "▸"}
+                    {estaAberto ? "▾" : "▸"}
                   </span>
 
                   <span className="marco-titulo-texto">{marco.titulo}</span>
@@ -93,7 +99,7 @@ export default function MarcosConexoes({ chaveDaPagina }: { chaveDaPagina: strin
                 <p className="marco-titulo">{marco.titulo}</p>
               )}
 
-              {aberto && (
+              {estaAberto && (
                 <div className="marco-corpo">
                   {marco.explicacao.trim() !== "" && <Inline texto={marco.explicacao} />}
 
