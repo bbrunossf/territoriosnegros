@@ -1091,6 +1091,21 @@ a, a:visited, a:hover, a:active {
   cursor: pointer;
 }
 
+/* Links que a autoria escreve no TEXTO das páginas: antes saíam no azul padrão
+   do navegador (sem cor do app). Agora usam a paleta do projeto. O :not([class])
+   deixa de fora os links que são botões (que têm estilo próprio). */
+.app p a:not([class]) {
+  color: #7d5518;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* Título de página: em tela de celular um nome longo de evento tomava a tela
+   inteira. O tamanho passa a acompanhar a largura, com teto de 32px. */
+.app .page-title {
+  font-size: clamp(23px, 6.2vw, 32px);
+}
+
 /* Botões do app: TODOS na mesma cor de ação (o amarelo/ocre do ".btn"), cheios —
    nenhum mais na cor da página ou translúcido. A autoria confirmou a padronização
    numa única cor (02/10/2026), depois de ver a alternativa em marrom.
