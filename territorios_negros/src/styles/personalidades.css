@@ -287,6 +287,32 @@
   background: rgba(255, 241, 214, 0.03);
 }
 
+/* As seções de texto da personalidade (biografia e blocos) usam as MESMAS
+   classes dos tópicos de Marcos e Conexões: caixa dourada, título clicável com
+   seta, texto justificado ao abrir. Pedido da autoria, 02/10/2026. */
+.personalidade .marco {
+  background: #fffaf0;
+  border: 1px solid #d9c39a;
+  border-radius: 10px;
+}
+
+.personalidade-blocos .marco,
+.personalidade .marco + .marco {
+  margin-top: 10px;
+}
+
+.personalidade .marco-titulo {
+  font-size: 16px;
+}
+
+.personalidade .marco-corpo .texto-paragrafo {
+  margin: 0 0 10px;
+}
+
+.personalidade .marco-corpo .texto-paragrafo:last-child {
+  margin-bottom: 0;
+}
+
 .personalidade-bloco h3 {
   margin: 0 0 6px;
 

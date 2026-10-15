@@ -12,6 +12,8 @@
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
+// as seções de texto usam as classes dos tópicos (.marco/.marco-titulo/.marco-corpo)
+import "../styles/marcos.css";
 import "../styles/personalidades.css";
 
 import { useTerritorios } from "../context/useTerritorios";
@@ -36,36 +38,74 @@ import Topic from "./Topic";
 import MarcosConexoes from "./MarcosConexoes";
 import { chaveDaPersonalidade } from "../data/marcos";
 
-/** Texto que, no celular, começa resumido e abre no "Ler tudo". */
-function Trecho({ texto, limite = 520 }: { texto: string; limite?: number }) {
-  const [aberto, setAberto] = useState(false);
-  const paragrafos = paragrafosDe(texto);
-
+/**
+ * Uma seção de texto com a MESMA exibição dos tópicos de Marcos e Conexões
+ * (pedido da autoria, 02/10/2026): o título é o alvo do toque e o texto abre e
+ * recolhe. Usa as classes .marco/.marco-titulo/.marco-corpo — o visual é o
+ * mesmo, e um só fica aberto por vez.
+ */
+function SecaoDeTexto({
+  icone,
+  titulo,
+  marca,
+  texto,
+  aberto,
+  aoAlternar,
+}: {
+  icone?: string;
+  titulo: string;
+  marca?: string;
+  texto: string;
+  aberto: boolean;
+  aoAlternar: () => void;
+}) {
   if (texto.trim() === "") return null;
 
-  const longo = texto.length > limite;
-  const mostrados = !longo || aberto ? paragrafos : paragrafos.slice(0, 1);
-
   return (
-    <div className="personalidade-dobra">
-      {mostrados.map((p, i) => (
-        <p key={i} className="texto-paragrafo">
-          <Inline texto={p} />
-        </p>
-      ))}
+    <section className="marco">
+      <button
+        type="button"
+        className="marco-titulo marco-titulo-clicavel"
+        aria-expanded={aberto}
+        onClick={aoAlternar}
+      >
+        <span className="marco-seta" aria-hidden="true">
+          {aberto ? "▾" : "▸"}
+        </span>
 
-      {longo && (
-        <button type="button" className="outline" onClick={() => setAberto((v) => !v)}>
-          {aberto ? "Recolher" : "Ler tudo"}
-        </button>
+        {icone && (
+          <span className="marco-icone" aria-hidden="true">
+            {icone}
+          </span>
+        )}
+
+        <span className="marco-titulo-texto">{titulo}</span>
+
+        {marca && <span className="personalidade-marca">{marca}</span>}
+      </button>
+
+      {aberto && (
+        <div className="marco-corpo">
+          {paragrafosDe(texto).map((p, i) => (
+            <p key={i} className="texto-paragrafo">
+              <Inline texto={p} />
+            </p>
+          ))}
+        </div>
       )}
-    </div>
+    </section>
   );
 }
 
 export default function PersonalidadePagina({ dados }: { dados?: Personalidade }) {
   const { slug } = useParams();
   const { config, territorios } = useTerritorios();
+
+  // qual seção de texto está aberta — uma só, como nos tópicos de Marcos e
+  // Conexões. Tocar no título abre; tocar de novo fecha; abrir outra recolhe.
+  // (Declarado antes de qualquer saída antecipada: regra dos hooks.)
+  const [secaoAberta, setSecaoAberta] = useState<string | null>(null);
+  const alternarSecao = (id: string) => setSecaoAberta((atual) => (atual === id ? null : id));
 
   const publicadas = personalidadesPublicadas(lerPersonalidades(config[CHAVE_PERSONALIDADES]));
   const personalidade = dados ?? (slug ? porSlug(publicadas, slug) : undefined);
@@ -90,6 +130,7 @@ export default function PersonalidadePagina({ dados }: { dados?: Personalidade }
   const capa = capaVisivel(personalidade);
   const galeria = galeriaVisivel(personalidade);
   const vida = linhaDeVida(personalidade);
+
   const locais = [
     personalidade.localNascimento.trim() && `nasceu em ${personalidade.localNascimento.trim()}`,
     personalidade.localFalecimento.trim() && `faleceu em ${personalidade.localFalecimento.trim()}`,
@@ -148,26 +189,26 @@ export default function PersonalidadePagina({ dados }: { dados?: Personalidade }
       {locais && <p className="personalidade-credito">{locais}</p>}
 
       {personalidade.biografia.trim() && (
-        <Topic icon="✦" title="Biografia">
-          <Trecho texto={personalidade.biografia} />
-        </Topic>
+        <SecaoDeTexto
+          icone="✦"
+          titulo="Biografia"
+          texto={personalidade.biografia}
+          aberto={secaoAberta === "biografia"}
+          aoAlternar={() => alternarSecao("biografia")}
+        />
       )}
 
       {personalidade.blocos.length > 0 && (
         <div className="personalidade-blocos">
           {personalidade.blocos.map((bloco) => (
-            <section key={bloco.id} className="personalidade-bloco">
-              {bloco.titulo.trim() && (
-                <h3>
-                  {bloco.titulo}
-                  {marcaDaNatureza(bloco.natureza) && (
-                    <span className="personalidade-marca">{marcaDaNatureza(bloco.natureza)}</span>
-                  )}
-                </h3>
-              )}
-
-              <Trecho texto={bloco.texto} limite={380} />
-            </section>
+            <SecaoDeTexto
+              key={bloco.id}
+              titulo={bloco.titulo.trim() || "Texto"}
+              marca={marcaDaNatureza(bloco.natureza)}
+              texto={bloco.texto}
+              aberto={secaoAberta === bloco.id}
+              aoAlternar={() => alternarSecao(bloco.id)}
+            />
           ))}
         </div>
       )}
