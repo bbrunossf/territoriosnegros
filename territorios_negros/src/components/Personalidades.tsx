@@ -3,11 +3,13 @@
 // A listagem pública das personalidades negras (pedido da autoria, 02/10/2026),
 // aberta pelo botão "Personalidades" dentro da página Vitória Negra.
 //
-// Só aparece o que está PUBLICADO no painel. Tem busca por nome e filtro por
-// território vinculado — e, quando não há retrato, o cartão usa a inicial do
-// nome numa moldura: o app não inventa rosto.
-import { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+// Só aparece o que está PUBLICADO no painel. A lista suspensa traz todas as
+// publicadas em ordem alfabética (e o toque no nome abre a página dela); o
+// território vinculado NÃO aparece na listagem — quem quiser saber lê na
+// biografia, na página da pessoa. Quando não há retrato, o cartão usa a inicial
+// do nome numa moldura: o app não inventa rosto.
+import { useMemo } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 import "../styles/personalidades.css";
 
@@ -15,11 +17,9 @@ import { useTerritorios } from "../context/useTerritorios";
 import {
   CHAVE_PAGINA_PERSONALIDADES,
   CHAVE_PERSONALIDADES,
-  buscarPorNome,
   lerPaginaPersonalidades,
   lerPersonalidades,
   personalidadesPublicadas,
-  territoriosComPersonalidades,
   type Personalidade,
 } from "../data/personalidades";
 import PageTitle from "./PageTitle";
@@ -27,34 +27,28 @@ import BotoesDaTela from "./BotoesDaTela";
 import { iniciaisDe } from "../utils/nomes";
 
 export default function Personalidades() {
-  const { config, territorios } = useTerritorios();
-
-  const [busca, setBusca] = useState("");
-  const [territorio, setTerritorio] = useState("");
+  const { config } = useTerritorios();
+  const navegar = useNavigate();
 
   const publicadas = useMemo(
     () => personalidadesPublicadas(lerPersonalidades(config[CHAVE_PERSONALIDADES])),
     [config]
   );
 
-  const comTerritorio = useMemo(
+  /**
+   * A lista suspensa: todas as publicadas, em ordem alfabética pelo nome — quem
+   * escolhe um nome vai direto para a página da pessoa. A grade abaixo continua
+   * na ordem que a autoria definiu no painel.
+   */
+  const emOrdemAlfabetica = useMemo(
     () =>
-      territoriosComPersonalidades(publicadas).map((id) => ({
-        id,
-        nome: territorios[id]?.nome ?? id,
-      })),
-    [publicadas, territorios]
+      [...publicadas].sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR", { sensitivity: "base" })),
+    [publicadas]
   );
 
-  const encontradas = useMemo(() => {
-    const porNome = buscarPorNome(publicadas, busca);
-
-    if (!territorio) return porNome;
-
-    return porNome.filter((p) => p.territorios.some((v) => v.territorioId === territorio));
-  }, [publicadas, busca, territorio]);
-
-  const filtrando = busca.trim() !== "" || territorio !== "";
+  const abrir = (slug: string) => {
+    if (slug) navegar(`/personalidade/${slug}`);
+  };
 
   // o título e a linha de apresentação desta página são editáveis no painel
   // (aba Personalidades › Página Personalidades)
@@ -67,30 +61,29 @@ export default function Personalidades() {
       {/* botões que a autoria escolheu para o topo (aba Botões, "Em cada tela") */}
       <BotoesDaTela tela="personalidades" posicao="topo" />
 
-      {publicadas.length > 0 && (
+      {/* Em vez do campo de busca: a lista suspensa com TODAS as personalidades
+          publicadas, em ordem alfabética. O território vinculado não aparece
+          aqui — quem quiser saber abre a página da pessoa e lê a biografia.
+          (pedido da autoria, 02/10/2026) */}
+      {emOrdemAlfabetica.length > 0 && (
         <div className="personalidades-busca">
-          <input
-            type="search"
-            value={busca}
-            onChange={(e) => setBusca(e.target.value)}
-            placeholder="Buscar pelo nome"
-            aria-label="Buscar personalidade pelo nome"
-          />
+          <label className="personalidades-escolha">
+            <span>Escolha pelo nome</span>
 
-          {comTerritorio.length > 0 && (
             <select
-              value={territorio}
-              onChange={(e) => setTerritorio(e.target.value)}
-              aria-label="Filtrar por território"
+              value=""
+              onChange={(e) => abrir(e.target.value)}
+              aria-label="Abrir a página de uma personalidade pelo nome"
             >
-              <option value="">Todos os territórios</option>
-              {comTerritorio.map((t) => (
-                <option key={t.id} value={t.id}>
-                  {t.nome}
+              <option value="">Escolha uma personalidade…</option>
+
+              {emOrdemAlfabetica.map((p) => (
+                <option key={p.id} value={p.slug}>
+                  {p.nome}
                 </option>
               ))}
             </select>
-          )}
+          </label>
         </div>
       )}
 
@@ -102,24 +95,15 @@ export default function Personalidades() {
       )}
 
       {publicadas.length > 0 && (
-        <p className="personalidades-conta">
-          {filtrando
-            ? `${encontradas.length} de ${publicadas.length} personalidade(s)`
-            : `${publicadas.length} personalidade(s)`}
-        </p>
+        <p className="personalidades-conta">{publicadas.length} personalidade(s)</p>
       )}
 
+      {/* a grade continua na ordem definida no painel */}
       <div className="personalidades-grade">
-        {encontradas.map((p) => (
+        {publicadas.map((p) => (
           <Cartao key={p.id} personalidade={p} />
         ))}
       </div>
-
-      {publicadas.length > 0 && encontradas.length === 0 && (
-        <p className="personalidades-conta">
-          Nenhuma personalidade encontrada com esse filtro. Tente outro nome ou outro território.
-        </p>
-      )}
 
       <BotoesDaTela tela="personalidades" posicao="final" />
     </div>
