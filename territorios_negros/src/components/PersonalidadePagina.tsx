@@ -30,76 +30,14 @@ import {
   relacaoCom,
   type Personalidade,
 } from "../data/personalidades";
-import { paragrafosDe } from "../utils/texto";
 import FotoAmpliavel from "./FotoAmpliavel";
 import Inline from "./Inline";
 import PlayerVideo from "./PlayerVideo";
 import Topic from "./Topic";
+import SecaoDeTexto from "./SecaoDeTexto";
 import MarcosConexoes from "./MarcosConexoes";
 import BotaoContato from "./BotaoContato";
 import { chaveDaPersonalidade } from "../data/marcos";
-
-/**
- * Uma seção de texto com a MESMA exibição dos tópicos de Marcos e Conexões
- * (pedido da autoria, 02/10/2026): o título é o alvo do toque e o texto abre e
- * recolhe. Usa as classes .marco/.marco-titulo/.marco-corpo — o visual é o
- * mesmo, e um só fica aberto por vez.
- */
-function SecaoDeTexto({
-  icone,
-  titulo,
-  marca,
-  texto = "",
-  children,
-  aberto,
-  aoAlternar,
-}: {
-  icone?: string;
-  titulo: string;
-  marca?: string;
-  texto?: string;
-  children?: React.ReactNode;
-  aberto: boolean;
-  aoAlternar: () => void;
-}) {
-  if (texto.trim() === "" && !children) return null;
-
-  return (
-    <section className="marco">
-      <button
-        type="button"
-        className="marco-titulo marco-titulo-clicavel"
-        aria-expanded={aberto}
-        onClick={aoAlternar}
-      >
-        <span className="marco-seta" aria-hidden="true">
-          {aberto ? "▾" : "▸"}
-        </span>
-
-        {icone && (
-          <span className="marco-icone" aria-hidden="true">
-            {icone}
-          </span>
-        )}
-
-        <span className="marco-titulo-texto">{titulo}</span>
-
-        {marca && <span className="personalidade-marca">{marca}</span>}
-      </button>
-
-      {aberto && (
-        <div className="marco-corpo">
-          {children ??
-            paragrafosDe(texto).map((p, i) => (
-              <p key={i} className="texto-paragrafo">
-                <Inline texto={p} />
-              </p>
-            ))}
-        </div>
-      )}
-    </section>
-  );
-}
 
 export default function PersonalidadePagina({ dados }: { dados?: Personalidade }) {
   const { slug } = useParams();
