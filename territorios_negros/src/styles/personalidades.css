@@ -453,27 +453,6 @@
   margin-top: 10px;
 }
 
-/* ── o bloco dentro da página do território ──────────────────────── */
-
-/* Tópico expansível (fechado por padrão): só o nome de quem é ligado ao
-   território, e o nome JÁ É o link para a página da pessoa. Sem foto, sem
-   resumo e sem botão — a página do território fica com as informações do
-   território (pedido da autoria, 14/10/2026). */
-.territorio-personalidades {
-  list-style: none;
-
-  margin: 0;
-  padding: 0;
-}
-
-.territorio-personalidades li + li {
-  margin-top: 10px;
-}
-
-.territorio-personalidades .personalidade-vinculo-nome {
-  font-size: 16px;
-}
-
 /* ── os textos da página que agrupa as personalidades (aba Personalidades) ── */
 .personalidades-admin-pagina {
   margin: 16px 0 0;

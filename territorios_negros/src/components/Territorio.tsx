@@ -9,16 +9,22 @@ import Topic from "../components/Topic";
 import FotoAmpliavel from "../components/FotoAmpliavel";
 import PlayerVideo from "../components/PlayerVideo";
 import BotaoContato from "../components/BotaoContato";
-import PersonalidadesDoTerritorio from "../components/PersonalidadesDoTerritorio";
 import MarcosConexoes from "../components/MarcosConexoes";
 import { chaveDoTerritorio } from "../data/marcos";
+import {
+  CHAVE_PERSONALIDADES,
+  lerPersonalidades,
+  personalidadesDoTerritorio,
+  personalidadesPublicadas,
+  relacaoCom,
+} from "../data/personalidades";
 
 import { calcularIdade } from "../utils/data";
 
 export default function Territorio() {
   const { rotaId, indice: indiceStr, id } = useParams();
   const navigate = useNavigate();
-  const { territorios, roteiros, ordemTerritoriosVisual } = useTerritorios();
+  const { territorios, roteiros, ordemTerritoriosVisual, config } = useTerritorios();
 
   const dentroDeRota = !!rotaId && rotaId !== "todos";
 
@@ -37,6 +43,21 @@ export default function Territorio() {
     : lista.findIndex((t) => t.id === id);
 
   const territorio = lista[indice];
+
+  // Personalidades ligadas a este território: cada uma vira um tópico em
+  // Marcos e Conexões (pedido da autoria, 14/10/2026) — e o tópico leva à
+  // página dela. O vínculo é um só, cadastrado na pessoa, no painel.
+  const ligadas = territorio
+    ? personalidadesDoTerritorio(
+        personalidadesPublicadas(lerPersonalidades(config[CHAVE_PERSONALIDADES])),
+        territorio.id
+      ).map((pessoa) => ({
+        id: pessoa.id,
+        nome: pessoa.nome,
+        slug: pessoa.slug,
+        relacao: relacaoCom(pessoa, territorio.id),
+      }))
+    : [];
 
   if (!territorio) {
     // existe no banco, mas está desabilitado no painel (fora do recorte de hoje)
@@ -195,15 +216,12 @@ export default function Territorio() {
           </Topic>
         )}
 
-        {/* personalidades ligadas a este território (pedido da autoria,
-            02/10/2026): é o outro lado do vínculo cadastrado na personalidade —
-            sem ninguém ligado, não aparece nada */}
-        <PersonalidadesDoTerritorio territorioId={territorio.id} />
-
-      {/* Marcos e Conexões SEMPRE no fim da página: depois das fotos, dos vídeos
-          e das personalidades relacionadas, e imediatamente antes dos botões de
-          ação (pedido da autoria, 02/10/2026). Sem tópico, não aparece nada. */}
-      <MarcosConexoes chaveDaPagina={chaveDoTerritorio(territorio.id)} />
+        {/* Marcos e Conexões SEMPRE no fim da página: depois das fotos e dos
+            vídeos, e imediatamente antes dos botões de ação (pedido da autoria,
+            02/10/2026) — e as personalidades ligadas a este território entram
+            aqui como tópicos (14/10/2026). Sem tópico e sem vínculo, não
+            aparece nada. */}
+        <MarcosConexoes chaveDaPagina={chaveDoTerritorio(territorio.id)} personalidades={ligadas} />
 
       <BotaoContato tela="territorio" />
       </>

@@ -74,6 +74,28 @@
   flex: 1 1 auto;
 }
 
+/* Personalidades ligadas à página, como tópico desta seção (pedido da autoria,
+   14/10/2026): a caixa é a mesma dos outros tópicos — é o que faz entender que
+   é clicável. Aqui o toque NAVEGA (seta "›") para a página da pessoa, então não
+   há sublinhado nem seta de abrir. */
+.marco-personalidade .marco-titulo-clicavel {
+  text-decoration: none;
+}
+
+.marco-personalidade-texto {
+  display: grid;
+  gap: 2px;
+
+  flex: 1 1 auto;
+}
+
+.marco-personalidade-relacao {
+  color: #7d5518;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
 .marco-corpo {
   padding: 0 12px 12px 12px;
 

@@ -12,8 +12,14 @@
 // Mas só UM título fica aberto por vez (pedido da autoria, 02/10/2026): ao abrir
 // um tópico novo, o que estava aberto recolhe sozinho. Em página com muitos
 // tópicos, a tela não vira um bloco de texto e o visitante lê o que interessa.
+//
+// Personalidades ligadas à página (pedido da autoria, 14/10/2026): cada pessoa
+// associada a um território entra aqui como um tópico, na mesma caixa dos outros
+// — assim se entende que é clicável. Nesse tópico o clique é o próprio link para
+// a página da pessoa, e a seta é "›" (navega) em vez de "▸/▾" (expande).
 
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import "../styles/marcos.css";
 import Topic from "./Topic";
 import Inline from "./Inline";
@@ -26,6 +32,14 @@ import {
   marcosVisiveis,
   type Marco,
 } from "../data/marcos";
+
+/** Personalidade ligada à página (o vínculo é cadastrado na própria pessoa). */
+export type PersonalidadeLigada = {
+  id: string;
+  nome: string;
+  slug: string;
+  relacao: string;
+};
 
 /** Uma linha de fonte: link quando tem endereço, texto quando não tem. */
 function FonteDoMarco({ marco }: { marco: Marco }) {
@@ -50,7 +64,13 @@ function FonteDoMarco({ marco }: { marco: Marco }) {
   );
 }
 
-export default function MarcosConexoes({ chaveDaPagina }: { chaveDaPagina: string }) {
+export default function MarcosConexoes({
+  chaveDaPagina,
+  personalidades = [],
+}: {
+  chaveDaPagina: string;
+  personalidades?: PersonalidadeLigada[];
+}) {
   const { config } = useTerritorios();
   const marcos = marcosDaPagina(config, chaveDaPagina);
 
@@ -70,7 +90,7 @@ export default function MarcosConexoes({ chaveDaPagina }: { chaveDaPagina: strin
   // Tópico desabilitado no painel (como foto oculta) também não aparece.
   const publicos = marcos.filter(marcoExibivel);
 
-  if (publicos.length === 0) return null;
+  if (publicos.length === 0 && personalidades.length === 0) return null;
 
   const alternar = (id: string) => setAberto((atual) => (atual === id ? null : id));
 
@@ -109,6 +129,26 @@ export default function MarcosConexoes({ chaveDaPagina }: { chaveDaPagina: strin
             </li>
           );
         })}
+
+        {/* cada personalidade ligada vira um tópico: a caixa é a mesma dos
+            outros, e o toque leva à página dela */}
+        {personalidades.map((pessoa) => (
+          <li key={pessoa.id} className="marco marco-personalidade">
+            <Link className="marco-titulo marco-titulo-clicavel" to={`/personalidade/${pessoa.slug}`}>
+              <span className="marco-seta" aria-hidden="true">
+                ›
+              </span>
+
+              <span className="marco-personalidade-texto">
+                <span className="marco-titulo-texto">{pessoa.nome}</span>
+
+                {pessoa.relacao.trim() !== "" && (
+                  <span className="marco-personalidade-relacao">{pessoa.relacao}</span>
+                )}
+              </span>
+            </Link>
+          </li>
+        ))}
       </ul>
     </Topic>
   );
