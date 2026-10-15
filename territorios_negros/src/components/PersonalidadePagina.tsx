@@ -36,6 +36,7 @@ import Inline from "./Inline";
 import PlayerVideo from "./PlayerVideo";
 import Topic from "./Topic";
 import MarcosConexoes from "./MarcosConexoes";
+import BotaoContato from "./BotaoContato";
 import { chaveDaPersonalidade } from "../data/marcos";
 
 /**
@@ -356,9 +357,19 @@ export default function PersonalidadePagina({ dados }: { dados?: Personalidade }
         </SecaoDeTexto>
       )}
 
-      {/* Marcos e Conexões SEMPRE no fim da página — depois de tudo e antes do
-          que fecha a personalidade (pedido da autoria, 02/10/2026). */}
+      {/* Marcos e Conexões SEMPRE no fim da página — depois de tudo e antes dos
+          botões de ação (pedido da autoria, 02/10/2026). */}
       <MarcosConexoes chaveDaPagina={chaveDaPersonalidade(personalidade.slug)} />
+
+      {/* depois dos links, os dois botões de ação (pedido da autoria,
+          02/10/2026): voltar para a lista e enviar uma mensagem */}
+      <div className="personalidade-fim">
+        <Link className="outline pagina-botao" to="/personalidades">
+          Personalidades
+        </Link>
+
+        <BotaoContato tela="personalidade" />
+      </div>
     </div>
   );
 }
