@@ -81,6 +81,8 @@ export interface Personalidade {
   /** outros nomes pelos quais é conhecida */
   outrosNomes: string;
   apresentacao: string;
+  /** frase curta que aparece embaixo da foto na listagem (digitada pela autoria) */
+  frase: string;
 
   nascimento: string;
   localNascimento: string;
@@ -170,6 +172,7 @@ export function personalidadeVazia(): Personalidade {
     nome: "",
     outrosNomes: "",
     apresentacao: "",
+    frase: "",
     nascimento: "",
     localNascimento: "",
     falecimento: "",
@@ -360,6 +363,7 @@ function lerUma(bruto: unknown, indice: number): Personalidade | null {
     nome,
     outrosNomes: texto(o.outrosNomes, 300),
     apresentacao: texto(o.apresentacao, 1200),
+    frase: texto(o.frase, 200),
     nascimento: texto(o.nascimento, 120),
     localNascimento: texto(o.localNascimento, 300),
     falecimento: texto(o.falecimento, 120),

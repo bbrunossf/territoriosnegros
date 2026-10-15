@@ -55,13 +55,27 @@
 .personalidade-cartao {
   display: grid;
   gap: 12px;
+  justify-items: center;
 
-  padding: 14px;
+  padding: 16px 14px 12px;
 
-  border: 1px solid rgba(197, 139, 42, 0.45);
-  border-radius: 14px;
+  /* moldura trabalhada, no espírito do cartão que a autoria enviou como
+     referência (02/10/2026): faixa trançada em volta de todo o cartão */
+  border: 9px solid transparent;
+  border-image: repeating-linear-gradient(
+      45deg,
+      #7d5518 0 4px,
+      #e8d3a4 4px 8px,
+      #a8762a 8px 12px,
+      #e8d3a4 12px 16px
+    )
+    9;
 
-  background: rgba(197, 139, 42, 0.07);
+  /* fundo levemente quadriculado, como o papel do cartão de referência */
+  background-color: #fffaf0;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(125, 85, 24, 0.07) 0 1px, transparent 1px 16px),
+    repeating-linear-gradient(90deg, rgba(125, 85, 24, 0.07) 0 1px, transparent 1px 16px);
 
   /* o cartão inteiro é o link para a página da personalidade */
   color: inherit;
@@ -71,8 +85,69 @@
 }
 
 .personalidade-cartao:hover {
-  border-color: rgba(125, 85, 24, 0.7);
-  background: rgba(197, 139, 42, 0.13);
+  background-color: #fff6e4;
+}
+
+/* nome em cima, em caixa alta e com o risco embaixo — como no cartão */
+.personalidade-cartao-nome {
+  width: 100%;
+
+  margin: 0;
+  padding-bottom: 8px;
+
+  border-bottom: 2px solid #c58b2a;
+
+  color: #2b1a0f;
+  font-family: Georgia, serif;
+  font-size: 19px;
+  font-weight: 900;
+  line-height: 1.2;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+/* a moldura branca da foto, como uma fotografia revelada */
+.personalidade-cartao-moldura {
+  width: 100%;
+
+  padding: 8px;
+
+  background: #fffdf7;
+  box-shadow: 0 6px 16px rgba(43, 26, 15, 0.18);
+}
+
+.personalidade-cartao-foto,
+.personalidade-cartao-semfoto {
+  display: block;
+
+  width: 100%;
+  aspect-ratio: 1 / 1;
+
+  object-fit: cover;
+}
+
+.personalidade-cartao-semfoto {
+  display: grid;
+  place-items: center;
+
+  background: rgba(197, 139, 42, 0.14);
+
+  color: #8a6116;
+  font-family: Georgia, serif;
+  font-size: 42px;
+  font-weight: 900;
+}
+
+/* a frase digitada pela autoria, embaixo da foto */
+.personalidade-cartao-frase {
+  margin: 0;
+
+  color: #7d5518;
+  font-family: Georgia, serif;
+  font-size: 15px;
+  line-height: 1.4;
+  text-align: center;
 }
 
 .personalidade-cartao-abrir {
@@ -82,7 +157,7 @@
   font-family: Georgia, serif;
   font-size: 13px;
   font-weight: 700;
-  text-align: right;
+  text-align: center;
 }
 
 .personalidade-voltar {
@@ -116,25 +191,6 @@
   word-break: break-word;
 }
 
-.personalidade-cartao-topo {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-}
-
-.personalidade-cartao-foto,
-.personalidade-cartao-semfoto {
-  width: 74px;
-  height: 74px;
-
-  flex-shrink: 0;
-
-  border: 1px solid rgba(197, 139, 42, 0.5);
-  border-radius: 12px;
-
-  object-fit: cover;
-}
-
 /* Sem foto não se inventa retrato: entra a inicial do nome, em moldura. */
 .personalidade-cartao-semfoto,
 .personalidade-hero-semfoto {
@@ -149,28 +205,6 @@
   letter-spacing: 0.04em;
 }
 
-.personalidade-cartao-semfoto {
-  font-size: 28px;
-}
-
-.personalidade-cartao-nome {
-  margin: 0;
-
-  color: #2b1a0f;
-  font-family: Georgia, serif;
-  font-size: 17px;
-  line-height: 1.25;
-}
-
-.personalidade-cartao-vida,
-.personalidade-cartao-outros {
-  margin: 3px 0 0;
-
-  color: #d9c7a5;
-  font-family: Georgia, serif;
-  font-size: 12.5px;
-}
-
 .personalidade-cartao-texto {
   margin: 0;
 
@@ -178,12 +212,6 @@
   font-family: Georgia, serif;
   font-size: 14.5px;
   line-height: 1.55;
-}
-
-.personalidade-cartao-acoes {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
 }
 
 /* ── página de cada personalidade ─────────────────────────────────── */

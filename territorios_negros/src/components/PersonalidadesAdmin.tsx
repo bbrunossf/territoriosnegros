@@ -446,13 +446,26 @@ export default function PersonalidadesAdmin() {
             <label className="admin-campo">
               <b>Breve apresentação</b>
               <span className="admin-campo-dica">
-                Dois ou três períodos: é o que aparece no cartão da listagem e no destaque da
-                página dela.
+                Dois ou três períodos: é o que aparece no destaque da página dela, abaixo do nome.
               </span>
               <textarea
                 rows={4}
                 value={editando.apresentacao}
                 onChange={(e) => mudar("apresentacao", e.target.value)}
+              />
+            </label>
+
+            <label className="admin-campo">
+              <b>Frase da listagem</b>
+              <span className="admin-campo-dica">
+                Uma frase curta, embaixo da foto, na página Personalidades — é o que o visitante lê
+                antes de abrir a página dela. Sem ela, o cartão fica só com o nome e a foto.
+              </span>
+              <input
+                type="text"
+                value={editando.frase}
+                onChange={(e) => mudar("frase", e.target.value)}
+                placeholder="Ex: maior escritor da literatura brasileira"
               />
             </label>
 

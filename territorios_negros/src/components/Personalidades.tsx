@@ -17,7 +17,6 @@ import {
   buscarPorNome,
   lerPersonalidades,
   personalidadesPublicadas,
-  resumoDe,
   territoriosComPersonalidades,
   type Personalidade,
 } from "../data/personalidades";
@@ -124,22 +123,24 @@ export default function Personalidades() {
   );
 }
 
-/** O cartão de cada personalidade na listagem. */
+/**
+ * O cartão de cada personalidade na listagem.
+ *
+ * Layout pedido pela autoria (02/10/2026): o nome em cima, a foto emoldurada no
+ * meio e, embaixo, UMA frase curta digitada no painel. O cartão não mostra
+ * informação biográfica — isso é assunto da página da pessoa.
+ */
 export function Cartao({ personalidade }: { personalidade: Personalidade }) {
-  const capa = personalidade.fotoCapa && personalidade.fotoCapa.visivel !== false
-    ? personalidade.fotoCapa
-    : null;
-
-  const vida = [
-    personalidade.nascimento.trim() && `nascimento: ${personalidade.nascimento.trim()}`,
-    personalidade.falecimento.trim() && `falecimento: ${personalidade.falecimento.trim()}`,
-  ]
-    .filter(Boolean)
-    .join(" · ");
+  const capa =
+    personalidade.fotoCapa && personalidade.fotoCapa.visivel !== false
+      ? personalidade.fotoCapa
+      : null;
 
   return (
     <Link className="personalidade-cartao" to={`/personalidade/${personalidade.slug}`}>
-      <div className="personalidade-cartao-topo">
+      <h2 className="personalidade-cartao-nome">{personalidade.nome}</h2>
+
+      <div className="personalidade-cartao-moldura">
         {capa ? (
           <img
             className="personalidade-cartao-foto"
@@ -152,24 +153,12 @@ export function Cartao({ personalidade }: { personalidade: Personalidade }) {
             {iniciaisDe(personalidade.nome)}
           </div>
         )}
-
-        <div>
-          <h2 className="personalidade-cartao-nome">{personalidade.nome}</h2>
-
-          {personalidade.outrosNomes.trim() && (
-            <p className="personalidade-cartao-outros">também conhecida como {personalidade.outrosNomes}</p>
-          )}
-
-          {vida && <p className="personalidade-cartao-vida">{vida}</p>}
-        </div>
       </div>
 
-      {resumoDe(personalidade) && (
-        <p className="personalidade-cartao-texto">{resumoDe(personalidade)}</p>
+      {personalidade.frase.trim() && (
+        <p className="personalidade-cartao-frase">{personalidade.frase}</p>
       )}
 
-      {/* o cartão inteiro é o alvo do toque (pedido da autoria, 02/10/2026):
-          foto + nome + um toque abrem a página da personalidade */}
       <p className="personalidade-cartao-abrir" aria-hidden="true">
         abrir a página ›
       </p>
