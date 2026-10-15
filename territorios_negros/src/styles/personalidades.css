@@ -332,6 +332,21 @@
   font-size: 15.5px;
 }
 
+/* o nome do território relacionado é o link para a página dele: fica com a cor
+   de link do app e sublinhado, para o toque ser óbvio (pedido da autoria,
+   02/10/2026) */
+.personalidade-vinculo-nome {
+  color: #7d5518;
+  text-decoration: underline;
+  text-decoration-color: rgba(125, 85, 24, 0.45);
+  text-underline-offset: 2px;
+}
+
+.personalidade-vinculo-nome:hover {
+  color: #5d3f11;
+  text-decoration-color: rgba(93, 63, 17, 0.8);
+}
+
 .personalidade-linha {
   display: grid;
   gap: 10px;

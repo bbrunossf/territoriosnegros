@@ -256,19 +256,22 @@ export default function PersonalidadePagina({ dados }: { dados?: Personalidade }
 
               return (
                 <article key={vinculo.territorioId} className="personalidade-bloco">
-                  <h3>{territorio.nome}</h3>
+                  {/* o nome do território é o próprio link — sem botão
+                      "abrir o território" (pedido da autoria, 02/10/2026) */}
+                  <h3>
+                    <Link
+                      className="personalidade-vinculo-nome"
+                      to={`/territorio/${vinculo.territorioId}`}
+                    >
+                      {territorio.nome}
+                    </Link>
+                  </h3>
 
                   {relacaoCom(personalidade, vinculo.territorioId).trim() && (
                     <p className="personalidade-cartao-texto">
                       <Inline texto={relacaoCom(personalidade, vinculo.territorioId)} />
                     </p>
                   )}
-
-                  <p>
-                    <Link className="outline" to={`/territorio/${vinculo.territorioId}`}>
-                      abrir o território
-                    </Link>
-                  </p>
                 </article>
               );
             })}
