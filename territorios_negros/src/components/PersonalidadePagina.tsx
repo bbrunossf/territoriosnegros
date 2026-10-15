@@ -73,13 +73,6 @@ export default function PersonalidadePagina({ dados }: { dados?: Personalidade }
   const galeria = galeriaVisivel(personalidade);
   const vida = linhaDeVida(personalidade);
 
-  const locais = [
-    personalidade.localNascimento.trim() && `nasceu em ${personalidade.localNascimento.trim()}`,
-    personalidade.localFalecimento.trim() && `faleceu em ${personalidade.localFalecimento.trim()}`,
-  ]
-    .filter(Boolean)
-    .join(" · ");
-
   const territoriosLigados = personalidade.territorios.filter((v) => !!territorios[v.territorioId]);
 
   return (
@@ -118,18 +111,10 @@ export default function PersonalidadePagina({ dados }: { dados?: Personalidade }
       </div>
 
       {(capa?.legenda || capa?.credito || capa?.fonte) && (
-        <p className="personalidade-credito">
+        <p className="personalidade-credito-somente-leitor">
           {[capa?.legenda, capa?.credito, capa?.fonte].filter(Boolean).join(" · ")}
         </p>
       )}
-
-      {personalidade.apresentacao.trim() && (
-        <p className="personalidade-apresentacao">
-          <Inline texto={personalidade.apresentacao} />
-        </p>
-      )}
-
-      {locais && <p className="personalidade-credito">{locais}</p>}
 
       {personalidade.biografia.trim() && (
         <SecaoDeTexto

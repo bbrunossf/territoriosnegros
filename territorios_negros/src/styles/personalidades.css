@@ -192,6 +192,12 @@
   margin-top: 36px;
 }
 
+/* O botão do TOPO abre a página: não leva o respiro dos blocos do fim — era
+   ele que deixava um vão grande entre a barra e o botão (autoria, 14/10/2026). */
+.personalidade > .personalidade-topo {
+  margin-top: 0;
+}
+
 .personalidade-links {
   margin: 0;
   padding-left: 18px;
@@ -308,6 +314,26 @@
   font-family: Georgia, serif;
   font-size: 12px;
   text-align: center;
+}
+
+/* A legenda/crédito que a autoria anota na foto de capa NÃO se exibe na página
+   (pedido de 14/10/2026: abaixo do nome, só as datas). O texto continua no
+   cadastro e segue disponível para quem lê com leitor de tela. */
+.personalidade-credito-somente-leitor {
+  position: absolute;
+
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+
+  border: 0;
+
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+
+  white-space: nowrap;
 }
 
 .personalidade-marca {
