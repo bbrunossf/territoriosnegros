@@ -370,13 +370,9 @@
 
   margin-top: 14px;
 
+  /* uma foto por linha sempre: em duas colunas a imagem fica apertada e a
+     legenda não cabe (pedido da autoria, 02/10/2026) */
   grid-template-columns: 1fr;
-}
-
-@media (min-width: 620px) {
-  .personalidade-galeria {
-    grid-template-columns: 1fr 1fr;
-  }
 }
 
 .personalidade-fonte {
@@ -384,7 +380,7 @@
 
   padding-left: 14px;
 
-  color: #f4e7cf;
+  color: #6b573b;
   font-family: Georgia, serif;
   font-size: 14px;
   line-height: 1.5;
