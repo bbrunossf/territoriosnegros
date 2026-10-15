@@ -403,15 +403,15 @@ export default function PersonalidadesAdmin() {
     };
   }
 
-  async function salvar() {
-    if (!editando) return;
+  async function salvar(): Promise<boolean> {
+    if (!editando) return false;
 
     const nome = editando.nome.trim();
 
     if (!nome) {
       setErro("Dê um nome à personalidade antes de salvar.");
       setOk("");
-      return;
+      return false;
     }
 
     const cadastro = prepararParaSalvar(editando);
@@ -438,6 +438,28 @@ export default function PersonalidadesAdmin() {
         partes.length ? partes.join(", ") : "nada ainda"
       }.`
     );
+
+    return true;
+  }
+
+  /**
+   * Salva o cadastro aberto e já começa outro em branco.
+   *
+   * Pedido da autoria (14/10/2026): depois de salvar uma personalidade nova, a
+   * opção de inserir outra só aparecia saindo da aba e voltando — porque a lista
+   * (com o botão "+ Nova personalidade") fica atrás do cadastro aberto. Este
+   * botão salva e abre o próximo cadastro na hora, sem sair da tela.
+   */
+  async function salvarEComecarOutra() {
+    const salvou = await salvar();
+
+    if (!salvou) return;
+
+    // o que acabou de ser salvo já está na lista; o que abre agora é um cadastro
+    // novo, e a mensagem do salvamento segue à vista para confirmar o que foi salvo
+    setEditando(personalidadeVazia());
+    setPendente(false);
+    setPrevia(false);
   }
 
   async function mudarSituacao(p: Personalidade, situacao: "rascunho" | "publicada") {
@@ -499,6 +521,10 @@ export default function PersonalidadesAdmin() {
         <div className="admin-form-botoes">
           <button type="button" className="btn" onClick={salvar} disabled={salvando}>
             {salvando ? "Salvando..." : "Salvar"}
+          </button>
+
+          <button type="button" className="outline" onClick={salvarEComecarOutra} disabled={salvando}>
+            Salvar e cadastrar outra
           </button>
 
           <button type="button" className="outline" onClick={() => setPrevia((v) => !v)}>
