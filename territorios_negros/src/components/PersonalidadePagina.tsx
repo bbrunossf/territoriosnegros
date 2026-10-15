@@ -308,14 +308,8 @@ export default function PersonalidadePagina({ dados }: { dados?: Personalidade }
       )}
 
       {/* Marcos e Conexões SEMPRE no fim da página — depois de tudo e antes do
-          link que fecha a personalidade (pedido da autoria, 02/10/2026). */}
+          que fecha a personalidade (pedido da autoria, 02/10/2026). */}
       <MarcosConexoes chaveDaPagina={chaveDaPersonalidade(personalidade.slug)} />
-
-      <p className="personalidade-voltar personalidade-voltar-fim">
-        <Link className="outline" to="/personalidades">
-          Personalidades
-        </Link>
-      </p>
     </div>
   );
 }
