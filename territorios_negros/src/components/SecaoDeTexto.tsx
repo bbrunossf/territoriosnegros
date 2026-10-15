@@ -8,8 +8,10 @@
 // relacionados e Links) e passou a valer também na página do território, em
 // Personalidades relacionadas — daí a extração para um componente só.
 import type { ReactNode } from "react";
+import { useEffect, useRef } from "react";
 
 import { paragrafosDe } from "../utils/texto";
+import { trazerParaVista } from "../utils/rolagem";
 import Inline from "./Inline";
 
 export default function SecaoDeTexto({
@@ -29,11 +31,21 @@ export default function SecaoDeTexto({
   aberto: boolean;
   aoAlternar: () => void;
 }) {
+  const caixa = useRef<HTMLElement | null>(null);
+
+  // Ao ABRIR, a seção vem para o alto da tela (abaixo da barra). Sem isso, quando
+  // um tópico grande recolhe e outro abre logo abaixo, a página encolhe de uma vez
+  // e a rolagem fica onde estava — o visitante passa a ver o que vem DEPOIS do
+  // tópico aberto (relato da autoria, 14/10/2026: via as fotografias da galeria).
+  useEffect(() => {
+    if (aberto) trazerParaVista(caixa.current);
+  }, [aberto]);
+
   // sem texto e sem conteúdo próprio, a seção não existe (nada de caixa vazia)
   if (texto.trim() === "" && !children) return null;
 
   return (
-    <section className="marco">
+    <section className="marco" ref={caixa}>
       <button
         type="button"
         className="marco-titulo marco-titulo-clicavel"

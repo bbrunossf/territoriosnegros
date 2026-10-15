@@ -18,12 +18,13 @@
 // — assim se entende que é clicável. Nesse tópico o clique é o próprio link para
 // a página da pessoa, e a seta é "›" (navega) em vez de "▸/▾" (expande).
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import "../styles/marcos.css";
 import Topic from "./Topic";
 import Inline from "./Inline";
 import { useTerritorios } from "../context/useTerritorios";
+import { trazerParaVista } from "../utils/rolagem";
 import {
   TITULO_MARCOS,
   explicacoesPublicas,
@@ -78,6 +79,16 @@ export default function MarcosConexoes({
   // fecha. (Antes era uma lista, e vários ficavam abertos ao mesmo tempo.)
   const [aberto, setAberto] = useState<string | null>(null);
 
+  // as caixas dos tópicos, para trazer a que abriu para o alto da tela
+  const caixas = useRef<Record<string, HTMLLIElement | null>>({});
+
+  // Abrir um tópico pode recolher outro acima, e a página encolhe: sem este
+  // ajuste a rolagem fica lá embaixo e o visitante vê o que vem depois do tópico
+  // (mesma correção pedida pela autoria em 14/10/2026, na página da pessoa).
+  useEffect(() => {
+    if (aberto) trazerParaVista(caixas.current[aberto]);
+  }, [aberto]);
+
   // As explicações e as fontes abrem quando a autoria libera no painel
   // ("Explicações e fontes — Exibidas para todos"). Tópico habilitado aparece
   // com o título; desabilitado não aparece.
@@ -101,7 +112,13 @@ export default function MarcosConexoes({
           const estaAberto = permitir && aberto === marco.id;
 
           return (
-            <li key={marco.id} className="marco">
+            <li
+              key={marco.id}
+              className="marco"
+              ref={(el) => {
+                caixas.current[marco.id] = el;
+              }}
+            >
               {permitir ? (
                 <button
                   type="button"
