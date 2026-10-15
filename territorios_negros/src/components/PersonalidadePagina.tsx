@@ -240,51 +240,16 @@ export default function PersonalidadePagina({ dados }: { dados?: Personalidade }
         </Topic>
       )}
 
-      {galeria.length > 0 && (
-        <Topic icon="▣" title="Galeria de fotos">
-          <div className="personalidade-galeria">
-            {galeria.map((foto, i) => (
-              <figure key={`${foto.url}-${i}`} style={{ margin: 0 }}>
-                <FotoAmpliavel
-                  url={foto.url}
-                  alt={foto.alt || foto.legenda || personalidade.nome}
-                  legenda={foto.legenda}
-                  credito={[foto.credito, foto.fonte].filter(Boolean).join(" · ")}
-                />
-              </figure>
-            ))}
-          </div>
-        </Topic>
-      )}
-
-      {personalidade.videos.length > 0 && (
-        <Topic icon="▱" title="Vídeos">
-          <div className="personalidade-blocos">
-            {personalidade.videos.map((video) => (
-              <section key={video.id} className="personalidade-bloco">
-                {video.titulo?.trim() && <h3>{video.titulo}</h3>}
-
-                {/* PlayerVideo já entrega link para abrir quando a plataforma não
-                    permite incorporar */}
-                <PlayerVideo url={video.url} titulo={video.titulo || personalidade.nome} />
-
-                {video.descricao?.trim() && (
-                  <p className="personalidade-cartao-texto">
-                    <Inline texto={video.descricao} />
-                  </p>
-                )}
-
-                {video.credito?.trim() && (
-                  <p className="personalidade-credito">crédito: {video.credito}</p>
-                )}
-              </section>
-            ))}
-          </div>
-        </Topic>
-      )}
-
+      {/* Territórios relacionados com a MESMA exibição da Biografia e dos Links:
+          o título é o alvo do toque e o conteúdo abre e recolhe (pedido da
+          autoria, 02/10/2026) */}
       {territoriosLigados.length > 0 && (
-        <Topic icon="●" title="Territórios relacionados">
+        <SecaoDeTexto
+          icone="●"
+          titulo="Territórios relacionados"
+          aberto={secaoAberta === "territorios"}
+          aoAlternar={() => alternarSecao("territorios")}
+        >
           <div className="territorio-personalidades">
             {territoriosLigados.map((vinculo) => {
               const territorio = territorios[vinculo.territorioId];
@@ -308,7 +273,7 @@ export default function PersonalidadePagina({ dados }: { dados?: Personalidade }
               );
             })}
           </div>
-        </Topic>
+        </SecaoDeTexto>
       )}
 
       {/* Marcos e Conexões fica no FIM da página (pedido da autoria, 02/10/2026):
@@ -356,6 +321,51 @@ export default function PersonalidadePagina({ dados }: { dados?: Personalidade }
             ))}
           </ul>
         </SecaoDeTexto>
+      )}
+
+      {/* depois dos links vêm as galerias, fechando o conteúdo da página —
+          fotos primeiro, vídeos depois (ordem pedida pela autoria, 02/10/2026) */}
+      {galeria.length > 0 && (
+        <Topic icon="▣" title="Galeria de fotos">
+          <div className="personalidade-galeria">
+            {galeria.map((foto, i) => (
+              <figure key={`${foto.url}-${i}`} style={{ margin: 0 }}>
+                <FotoAmpliavel
+                  url={foto.url}
+                  alt={foto.alt || foto.legenda || personalidade.nome}
+                  legenda={foto.legenda}
+                  credito={[foto.credito, foto.fonte].filter(Boolean).join(" · ")}
+                />
+              </figure>
+            ))}
+          </div>
+        </Topic>
+      )}
+
+      {personalidade.videos.length > 0 && (
+        <Topic icon="▱" title="Vídeos">
+          <div className="personalidade-blocos">
+            {personalidade.videos.map((video) => (
+              <section key={video.id} className="personalidade-bloco">
+                {video.titulo?.trim() && <h3>{video.titulo}</h3>}
+
+                {/* PlayerVideo já entrega link para abrir quando a plataforma não
+                    permite incorporar */}
+                <PlayerVideo url={video.url} titulo={video.titulo || personalidade.nome} />
+
+                {video.descricao?.trim() && (
+                  <p className="personalidade-cartao-texto">
+                    <Inline texto={video.descricao} />
+                  </p>
+                )}
+
+                {video.credito?.trim() && (
+                  <p className="personalidade-credito">crédito: {video.credito}</p>
+                )}
+              </section>
+            ))}
+          </div>
+        </Topic>
       )}
 
       {/* Marcos e Conexões SEMPRE no fim da página — depois de tudo e antes dos
