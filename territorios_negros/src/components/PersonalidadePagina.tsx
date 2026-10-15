@@ -48,18 +48,20 @@ function SecaoDeTexto({
   icone,
   titulo,
   marca,
-  texto,
+  texto = "",
+  children,
   aberto,
   aoAlternar,
 }: {
   icone?: string;
   titulo: string;
   marca?: string;
-  texto: string;
+  texto?: string;
+  children?: React.ReactNode;
   aberto: boolean;
   aoAlternar: () => void;
 }) {
-  if (texto.trim() === "") return null;
+  if (texto.trim() === "" && !children) return null;
 
   return (
     <section className="marco">
@@ -86,11 +88,12 @@ function SecaoDeTexto({
 
       {aberto && (
         <div className="marco-corpo">
-          {paragrafosDe(texto).map((p, i) => (
-            <p key={i} className="texto-paragrafo">
-              <Inline texto={p} />
-            </p>
-          ))}
+          {children ??
+            paragrafosDe(texto).map((p, i) => (
+              <p key={i} className="texto-paragrafo">
+                <Inline texto={p} />
+              </p>
+            ))}
         </div>
       )}
     </section>
@@ -335,7 +338,12 @@ export default function PersonalidadePagina({ dados }: { dados?: Personalidade }
       )}
 
       {linksDaPersonalidade(personalidade).length > 0 && (
-        <Topic icon="↗" title="Links">
+        <SecaoDeTexto
+          icone="↗"
+          titulo="Links"
+          aberto={secaoAberta === "links"}
+          aoAlternar={() => alternarSecao("links")}
+        >
           <ul className="personalidade-links">
             {linksDaPersonalidade(personalidade).map((endereco) => (
               <li key={endereco}>
@@ -345,7 +353,7 @@ export default function PersonalidadePagina({ dados }: { dados?: Personalidade }
               </li>
             ))}
           </ul>
-        </Topic>
+        </SecaoDeTexto>
       )}
 
       {/* Marcos e Conexões SEMPRE no fim da página — depois de tudo e antes do
