@@ -13,8 +13,10 @@ import "../styles/personalidades.css";
 
 import { useTerritorios } from "../context/useTerritorios";
 import {
+  CHAVE_PAGINA_PERSONALIDADES,
   CHAVE_PERSONALIDADES,
   buscarPorNome,
+  lerPaginaPersonalidades,
   lerPersonalidades,
   personalidadesPublicadas,
   territoriosComPersonalidades,
@@ -54,12 +56,13 @@ export default function Personalidades() {
 
   const filtrando = busca.trim() !== "" || territorio !== "";
 
+  // o título e a linha de apresentação desta página são editáveis no painel
+  // (aba Personalidades › Página Personalidades)
+  const pagina = lerPaginaPersonalidades(config[CHAVE_PAGINA_PERSONALIDADES]);
+
   return (
     <div className="personalidades">
-      <PageTitle
-        title="Personalidades"
-        subtitle="Trajetórias de pessoas negras importantes para a história de Vitória e do Espírito Santo."
-      />
+      <PageTitle title={pagina.titulo} subtitle={pagina.subtitulo || undefined} />
 
       {/* botões que a autoria escolheu para o topo (aba Botões, "Em cada tela") */}
       <BotoesDaTela tela="personalidades" posicao="topo" />

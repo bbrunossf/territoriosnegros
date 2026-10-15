@@ -43,19 +43,22 @@
   display: grid;
   gap: 16px;
 
+  /* um cartão por linha: em duas colunas o cartão ficava estreito e encostado na
+     esquerda, com a metade da tela vazia (reclamação da autoria, 02/10/2026) */
   grid-template-columns: 1fr;
-}
-
-@media (min-width: 720px) {
-  .personalidades-grade {
-    grid-template-columns: 1fr 1fr;
-  }
 }
 
 .personalidade-cartao {
   display: grid;
   gap: 12px;
   justify-items: center;
+
+  /* centralizado e proporcional à tela: ocupa a largura toda no celular e para
+     de crescer numa tela larga (pedido da autoria, 02/10/2026) */
+  width: 100%;
+  max-width: 480px;
+
+  margin-inline: auto;
 
   padding: 16px 14px 12px;
 
@@ -483,6 +486,21 @@
   font-family: Georgia, serif;
   font-size: 13.5px;
   line-height: 1.45;
+}
+
+/* ── os textos da página que agrupa as personalidades (aba Personalidades) ── */
+.personalidades-admin-pagina {
+  margin: 16px 0 0;
+  padding: 14px;
+
+  border: 1px solid rgba(197, 139, 42, 0.4);
+  border-radius: 12px;
+
+  background: rgba(197, 139, 42, 0.06);
+}
+
+.personalidades-admin-pagina .admin-form-secao {
+  margin-top: 0;
 }
 
 /* ── painel ──────────────────────────────────────────────────────── */

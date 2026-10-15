@@ -17,12 +17,15 @@ import { useTerritorios } from "../context/useTerritorios";
 import EditorDeMarcos from "./EditorDeMarcos";
 import { chaveDaPersonalidade } from "../data/marcos";
 import {
+  CHAVE_PAGINA_PERSONALIDADES,
   CHAVE_PERSONALIDADES,
   NATUREZAS,
+  PAGINA_PERSONALIDADES_PADRAO,
   TIPOS_DE_FONTE,
   blocoVazio,
   contarPorSituacao,
   fonteVazia,
+  lerPaginaPersonalidades,
   lerPersonalidades,
   marcoVazio,
   novoId,
@@ -67,6 +70,101 @@ function resumoDeLinha(p: Personalidade): string {
   return partes.join(" · ");
 }
 
+/**
+ * Os textos da PÁGINA que agrupa as personalidades (a listagem pública).
+ *
+ * A autoria procurava no painel o lugar de editar essa página e só encontrava o
+ * cadastro de pessoas — por isso os campos vivem no alto desta mesma aba. Salva
+ * por botão (são textos) e recarrega a configuração: o app mostra na hora.
+ */
+function TextosDaPaginaDaListagem({ bruto }: { bruto: unknown }) {
+  const { recarregar } = useTerritorios();
+
+  const lida = lerPaginaPersonalidades(bruto);
+
+  const [titulo, setTitulo] = useState(lida.titulo);
+  const [subtitulo, setSubtitulo] = useState(lida.subtitulo);
+  const [salvando, setSalvando] = useState(false);
+  const [ok, setOk] = useState("");
+  const [erro, setErro] = useState("");
+
+  const mudou = titulo !== lida.titulo || subtitulo !== lida.subtitulo;
+
+  async function salvar() {
+    setSalvando(true);
+    setOk("");
+    setErro("");
+
+    try {
+      await salvarConfig(CHAVE_PAGINA_PERSONALIDADES, { titulo, subtitulo });
+      await recarregar();
+      setOk("Textos da página salvos — o app já está mostrando.");
+    } catch (e) {
+      console.error(e);
+      setErro(e instanceof Error ? e.message : "Falha ao salvar.");
+    } finally {
+      setSalvando(false);
+    }
+  }
+
+  return (
+    <section className="personalidades-admin-pagina">
+      <h2 className="admin-form-secao">Página Personalidades (a listagem)</h2>
+
+      <p className="admin-ajuda">
+        É o que abre a página que agrupa todas as pessoas publicadas. Cada pessoa continua com a
+        página dela, com endereço próprio.
+      </p>
+
+      <label className="admin-campo">
+        <b>Título</b>
+        <span className="admin-campo-dica">
+          O nome que abre a listagem. Em branco volta “Personalidades”.
+        </span>
+        <input
+          type="text"
+          value={titulo}
+          onChange={(e) => setTitulo(e.target.value)}
+          placeholder="Ex: Personalidades Negras"
+        />
+      </label>
+
+      <label className="admin-campo">
+        <b>Linha de apresentação</b>
+        <span className="admin-campo-dica">
+          Uma frase abaixo do título. Deixe em branco para não aparecer.
+        </span>
+        <textarea
+          rows={2}
+          value={subtitulo}
+          onChange={(e) => setSubtitulo(e.target.value)}
+          placeholder="Ex: Trajetórias de pessoas negras importantes para a história de Vitória."
+        />
+      </label>
+
+      <div className="admin-form-botoes">
+        <button type="button" className="btn" onClick={salvar} disabled={salvando || !mudou}>
+          {salvando ? "Salvando…" : "Salvar os textos da página"}
+        </button>
+
+        <button
+          type="button"
+          className="outline"
+          onClick={() => {
+            setTitulo(PAGINA_PERSONALIDADES_PADRAO.titulo);
+            setSubtitulo(PAGINA_PERSONALIDADES_PADRAO.subtitulo);
+          }}
+        >
+          Voltar ao padrão
+        </button>
+      </div>
+
+      {ok && <p className="admin-ok">{ok}</p>}
+      {erro && <p className="admin-erro">{erro}</p>}
+    </section>
+  );
+}
+
 export default function PersonalidadesAdmin() {
   const { config, recarregar, territorios } = useTerritorios();
 
@@ -81,6 +179,8 @@ export default function PersonalidadesAdmin() {
   const [previa, setPrevia] = useState(false);
   const [ok, setOk] = useState("");
   const [erro, setErro] = useState("");
+
+  const paginaBruta = JSON.stringify(config[CHAVE_PAGINA_PERSONALIDADES] ?? null);
 
   useEffect(() => {
     let ativo = true;
@@ -1100,6 +1200,15 @@ export default function PersonalidadesAdmin() {
         No app aparecem <b>{contagem.publicadas}</b> publicada(s) · <b>{contagem.rascunhos}</b> em
         rascunho (rascunho não aparece para o visitante).
       </p>
+
+      {/* ── os textos da PÁGINA que agrupa as personalidades (a listagem) ──
+          A autoria não achava onde editar essa página: os campos ficam aqui,
+          no alto da mesma aba em que ela cadastra as pessoas. A `key` faz o
+          bloco se refazer quando os textos salvos mudam. */}
+      <TextosDaPaginaDaListagem
+        key={paginaBruta}
+        bruto={config[CHAVE_PAGINA_PERSONALIDADES]}
+      />
 
       {ok && <p className="admin-ok">{ok}</p>}
       {erro && <p className="admin-erro">{erro}</p>}

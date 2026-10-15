@@ -540,4 +540,37 @@ export function idsVinculados(lista: Personalidade[]): string[] {
   return territoriosComPersonalidades(lista);
 }
 
+/** ── a página que agrupa as personalidades (a listagem) ─────────────────── */
+
+/** chave no app_config dos textos da listagem pública */
+export const CHAVE_PAGINA_PERSONALIDADES = "pagina_personalidades";
+
+export const PAGINA_PERSONALIDADES_PADRAO = {
+  titulo: "Personalidades",
+  subtitulo:
+    "Trajetórias de pessoas negras importantes para a história de Vitória e do Espírito Santo.",
+};
+
+export type PaginaPersonalidades = typeof PAGINA_PERSONALIDADES_PADRAO;
+
+/**
+ * Lê o que a autoria gravou para a listagem (aba Personalidades do painel).
+ * Chave nunca salva usa o padrão; a linha de apresentação esvaziada continua
+ * vazia — é assim que a autoria a tira da página. Título em branco volta ao
+ * padrão, porque uma página sem nome não se explica.
+ */
+export function lerPaginaPersonalidades(bruto: unknown): PaginaPersonalidades {
+  const o = (bruto && typeof bruto === "object" ? bruto : {}) as Record<string, unknown>;
+
+  const titulo = typeof o.titulo === "string" ? o.titulo.trim() : "";
+  const subtitulo =
+    typeof o.subtitulo === "string" ? o.subtitulo : PAGINA_PERSONALIDADES_PADRAO.subtitulo;
+
+  return {
+    titulo: titulo || PAGINA_PERSONALIDADES_PADRAO.titulo,
+    subtitulo: texto(subtitulo, 400),
+  };
+}
+
 export { listaDeTextos };
+
