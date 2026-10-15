@@ -361,15 +361,17 @@ export default function PersonalidadePagina({ dados }: { dados?: Personalidade }
           botões de ação (pedido da autoria, 02/10/2026). */}
       <MarcosConexoes chaveDaPagina={chaveDaPersonalidade(personalidade.slug)} />
 
-      {/* depois dos links, os dois botões de ação (pedido da autoria,
-          02/10/2026): voltar para a lista e enviar uma mensagem */}
-      <div className="personalidade-fim">
+      {/* depois dos links, os botões de ação (pedido da autoria, 02/10/2026):
+          voltar para a lista e enviar uma mensagem — nas MESMAS caixas das
+          outras telas (.pagina-botoes/.pagina-botao: largura cheia e
+          centralizados), uma caixa por botão, como no resto do app */}
+      <div className="pagina-botoes">
         <Link className="outline pagina-botao" to="/personalidades">
           Personalidades
         </Link>
-
-        <BotaoContato tela="personalidade" />
       </div>
+
+      <BotaoContato tela="personalidade" />
     </div>
   );
 }

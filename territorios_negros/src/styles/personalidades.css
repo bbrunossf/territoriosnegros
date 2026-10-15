@@ -91,23 +91,6 @@
   margin: 0 0 24px;
 }
 
-.personalidade-voltar-fim {
-  margin: 18px 0 0;
-}
-
-/* os botões de ação que fecham a página: voltar para a lista e enviar mensagem */
-.personalidade-fim {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-
-  margin: 18px 0 0;
-}
-
-.personalidade-fim .pagina-botoes {
-  margin: 0;
-}
-
 .personalidade-links {
   margin: 0;
   padding-left: 18px;
