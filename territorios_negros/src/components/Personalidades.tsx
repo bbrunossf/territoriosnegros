@@ -113,9 +113,14 @@ export default function Personalidades() {
 /**
  * O cartão de cada personalidade na listagem.
  *
- * Layout pedido pela autoria (02/10/2026): o nome em cima, a foto emoldurada no
- * meio e, embaixo, UMA frase curta digitada no painel. O cartão não mostra
- * informação biográfica — isso é assunto da página da pessoa.
+ * Layout pedido pela autoria (02/10/2026): o nome, a foto emoldurada e UMA frase
+ * curta digitada no painel. O cartão não mostra informação biográfica — isso é
+ * assunto da página da pessoa.
+ *
+ * Em 14/10/2026 a autoria pediu o mesmo cartão na horizontal: com muitas pessoas
+ * cadastradas, o formato em pé (nome, foto grande e frase, um embaixo do outro)
+ * deixava a listagem enorme. Agora a foto fica à esquerda (pequena) e o nome, a
+ * frase e o convite para abrir ficam ao lado — mesma largura, bem mais baixo.
  */
 export function Cartao({ personalidade }: { personalidade: Personalidade }) {
   const capa =
@@ -125,8 +130,6 @@ export function Cartao({ personalidade }: { personalidade: Personalidade }) {
 
   return (
     <Link className="personalidade-cartao" to={`/personalidade/${personalidade.slug}`}>
-      <h2 className="personalidade-cartao-nome">{personalidade.nome}</h2>
-
       <div className="personalidade-cartao-moldura">
         {capa ? (
           <img
@@ -142,13 +145,17 @@ export function Cartao({ personalidade }: { personalidade: Personalidade }) {
         )}
       </div>
 
-      {personalidade.frase.trim() && (
-        <p className="personalidade-cartao-frase">{personalidade.frase}</p>
-      )}
+      <div className="personalidade-cartao-corpo">
+        <h2 className="personalidade-cartao-nome">{personalidade.nome}</h2>
 
-      <p className="personalidade-cartao-abrir" aria-hidden="true">
-        abrir a página ›
-      </p>
+        {personalidade.frase.trim() && (
+          <p className="personalidade-cartao-frase">{personalidade.frase}</p>
+        )}
+
+        <p className="personalidade-cartao-abrir" aria-hidden="true">
+          abrir a página ›
+        </p>
+      </div>
     </Link>
   );
 }

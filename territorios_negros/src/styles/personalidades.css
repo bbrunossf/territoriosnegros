@@ -62,9 +62,12 @@
 }
 
 .personalidade-cartao {
-  display: grid;
+  /* cartão na HORIZONTAL (pedido da autoria, 14/10/2026): foto pequena à
+     esquerda, nome/frase/conversão ao lado. Mantém a largura da listagem e
+     derruba a altura — com muitas pessoas cadastradas a página ficava enorme. */
+  display: flex;
   gap: 12px;
-  justify-items: center;
+  align-items: center;
 
   /* centralizado e proporcional à tela: ocupa a largura toda no celular e para
      de crescer numa tela larga (pedido da autoria, 02/10/2026) */
@@ -73,7 +76,7 @@
 
   margin-inline: auto;
 
-  padding: 16px 14px 12px;
+  padding: 10px 12px;
 
   /* moldura trabalhada, no espírito do cartão que a autoria enviou como
      referência (02/10/2026): faixa trançada em volta de todo o cartão */
@@ -104,30 +107,41 @@
   background-color: #fff6e4;
 }
 
-/* nome em cima, em caixa alta e com o risco embaixo — como no cartão */
+/* nome à esquerda, em caixa alta e com o risco embaixo — como no cartão */
 .personalidade-cartao-nome {
-  width: 100%;
-
   margin: 0;
-  padding-bottom: 8px;
+  padding-bottom: 5px;
 
-  border-bottom: 2px solid #c58b2a;
+  border-bottom: 1px solid rgba(197, 139, 42, 0.75);
 
   color: #2b1a0f;
   font-family: Georgia, serif;
-  font-size: 19px;
+  font-size: 15.5px;
   font-weight: 900;
   line-height: 1.2;
-  text-align: center;
+  text-align: left;
   text-transform: uppercase;
-  letter-spacing: 0.4px;
+  letter-spacing: 0.3px;
 }
 
-/* a moldura branca da foto, como uma fotografia revelada */
-.personalidade-cartao-moldura {
-  width: 100%;
+/* o nome, a frase e o convite para abrir, ao lado da foto */
+.personalidade-cartao-corpo {
+  display: grid;
+  gap: 5px;
 
-  padding: 8px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* a moldura branca da foto, como uma fotografia revelada — pequena, para o
+   cartão não crescer na vertical */
+.personalidade-cartao-moldura {
+  width: 104px;
+  height: 104px;
+
+  flex: none;
+
+  padding: 5px;
 
   background: #fffdf7;
   box-shadow: 0 6px 16px rgba(43, 26, 15, 0.18);
@@ -138,7 +152,7 @@
   display: block;
 
   width: 100%;
-  aspect-ratio: 1 / 1;
+  height: 100%;
 
   object-fit: cover;
 }
@@ -151,19 +165,25 @@
 
   color: #8a6116;
   font-family: Georgia, serif;
-  font-size: 42px;
+  font-size: 32px;
   font-weight: 900;
 }
 
-/* a frase digitada pela autoria, embaixo da foto */
+/* a frase digitada pela autoria, ao lado da foto */
 .personalidade-cartao-frase {
   margin: 0;
 
+  /* no máximo 3 linhas: uma frase longa não estica o cartão na vertical */
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+
   color: #7d5518;
   font-family: Georgia, serif;
-  font-size: 15px;
-  line-height: 1.4;
-  text-align: center;
+  font-size: 12.5px;
+  line-height: 1.35;
+  text-align: left;
 }
 
 .personalidade-cartao-abrir {
@@ -171,9 +191,9 @@
 
   color: #7d5518;
   font-family: Georgia, serif;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
-  text-align: center;
+  text-align: left;
 }
 
 .personalidade-voltar {
