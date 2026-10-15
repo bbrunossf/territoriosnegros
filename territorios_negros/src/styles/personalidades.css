@@ -91,6 +91,16 @@
   margin: 0 0 24px;
 }
 
+/* botões da página da personalidade: mesma caixa das outras telas, com respiro
+   maior entre eles e as seções (pedido da autoria, 02/10/2026) */
+.personalidade-topo {
+  margin: 0 0 34px;
+}
+
+.personalidade > .pagina-botoes {
+  margin-top: 36px;
+}
+
 .personalidade-links {
   margin: 0;
   padding-left: 18px;

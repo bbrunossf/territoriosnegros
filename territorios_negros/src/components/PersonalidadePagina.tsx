@@ -146,13 +146,14 @@ export default function PersonalidadePagina({ dados }: { dados?: Personalidade }
 
   return (
     <div className="personalidade">
-      {/* o caminho de volta fica no TOPO e com este texto, só (pedido da
-          autoria, 02/10/2026) — antes era "ver todas as personalidades" no fim */}
-      <p className="personalidade-voltar">
-        <Link className="outline" to="/personalidades">
+      {/* o caminho de volta fica no TOPO, na mesma caixa dos botões das outras
+          telas (.pagina-botoes/.pagina-botao: largura cheia, centralizado) e com
+          respiro maior até a foto (pedido da autoria, 02/10/2026) */}
+      <div className="pagina-botoes personalidade-topo">
+        <Link className="btn pagina-botao" to="/personalidades">
           Personalidades
         </Link>
-      </p>
+      </div>
 
       <div className="personalidade-hero">
         {capa ? (
