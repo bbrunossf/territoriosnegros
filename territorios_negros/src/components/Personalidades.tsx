@@ -138,7 +138,7 @@ export function Cartao({ personalidade }: { personalidade: Personalidade }) {
     .join(" · ");
 
   return (
-    <article className="personalidade-cartao">
+    <Link className="personalidade-cartao" to={`/personalidade/${personalidade.slug}`}>
       <div className="personalidade-cartao-topo">
         {capa ? (
           <img
@@ -168,11 +168,11 @@ export function Cartao({ personalidade }: { personalidade: Personalidade }) {
         <p className="personalidade-cartao-texto">{resumoDe(personalidade)}</p>
       )}
 
-      <div className="personalidade-cartao-acoes">
-        <Link className="btn pagina-botao" to={`/personalidade/${personalidade.slug}`}>
-          Conheça sua história
-        </Link>
-      </div>
-    </article>
+      {/* o cartão inteiro é o alvo do toque (pedido da autoria, 02/10/2026):
+          foto + nome + um toque abrem a página da personalidade */}
+      <p className="personalidade-cartao-abrir" aria-hidden="true">
+        abrir a página ›
+      </p>
+    </Link>
   );
 }

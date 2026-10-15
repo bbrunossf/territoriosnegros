@@ -371,7 +371,7 @@ function lerUma(bruto: unknown, indice: number): Personalidade | null {
     galeria: lerFotos(o.galeria),
     videos: lerVideos(o.videos),
     fontes: lerFontes(o.fontes),
-    materialCompleto: texto(o.materialCompleto, 1000),
+    materialCompleto: texto(o.materialCompleto, 4000),
     territorios: lerVinculos(o.territorios),
     situacao,
     ordem,
@@ -480,6 +480,19 @@ export function capaVisivel(p: Personalidade): FotoPersonalidade | null {
 /** Fotos da galeria liberadas para o visitante. */
 export function galeriaVisivel(p: Personalidade): FotoPersonalidade[] {
   return p.galeria.filter((f) => f.visivel !== false);
+}
+
+/**
+ * Os links que a autoria cadastrou — um por linha, como ela digita no painel
+ * (pedido de 02/10/2026: no lugar do botão "abrir o material completo", uma lista
+ * dos links). Linha sem endereço completo recebe "https://", para abrir.
+ */
+export function linksDaPersonalidade(p: Personalidade): string[] {
+  return p.materialCompleto
+    .split(/\r?\n/)
+    .map((linha) => linha.trim())
+    .filter((linha) => linha.length > 0)
+    .map((linha) => (/^https?:\/\//i.test(linha) ? linha : `https://${linha}`));
 }
 
 /** Quantas partes preenchidas a página tem (para o painel avisar o que falta). */

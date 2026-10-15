@@ -21,6 +21,7 @@ import {
   galeriaVisivel,
   lerPersonalidades,
   linhaDeVida,
+  linksDaPersonalidade,
   marcaDaNatureza,
   personalidadesPublicadas,
   porSlug,
@@ -79,7 +80,7 @@ export default function PersonalidadePagina({ dados }: { dados?: Personalidade }
 
         <p>
           <Link className="outline" to="/personalidades">
-            ver todas as personalidades
+            Personalidades
           </Link>
         </p>
       </div>
@@ -100,6 +101,14 @@ export default function PersonalidadePagina({ dados }: { dados?: Personalidade }
 
   return (
     <div className="personalidade">
+      {/* o caminho de volta fica no TOPO e com este texto, só (pedido da
+          autoria, 02/10/2026) — antes era "ver todas as personalidades" no fim */}
+      <p className="personalidade-voltar">
+        <Link className="outline" to="/personalidades">
+          Personalidades
+        </Link>
+      </p>
+
       <div className="personalidade-hero">
         {capa ? (
           <img
@@ -284,13 +293,17 @@ export default function PersonalidadePagina({ dados }: { dados?: Personalidade }
         </Topic>
       )}
 
-      {personalidade.materialCompleto.trim() && (
-        <Topic icon="▤" title="Material completo">
-          <p>
-            <a className="btn pagina-botao" href={personalidade.materialCompleto} target="_blank" rel="noreferrer">
-              abrir o material completo ↗
-            </a>
-          </p>
+      {linksDaPersonalidade(personalidade).length > 0 && (
+        <Topic icon="↗" title="Links">
+          <ul className="personalidade-links">
+            {linksDaPersonalidade(personalidade).map((endereco) => (
+              <li key={endereco}>
+                <a href={endereco} target="_blank" rel="noreferrer">
+                  {endereco}
+                </a>
+              </li>
+            ))}
+          </ul>
         </Topic>
       )}
 
@@ -298,9 +311,9 @@ export default function PersonalidadePagina({ dados }: { dados?: Personalidade }
           link que fecha a personalidade (pedido da autoria, 02/10/2026). */}
       <MarcosConexoes chaveDaPagina={chaveDaPersonalidade(personalidade.slug)} />
 
-      <p style={{ marginTop: 22 }}>
+      <p className="personalidade-voltar personalidade-voltar-fim">
         <Link className="outline" to="/personalidades">
-          ver todas as personalidades
+          Personalidades
         </Link>
       </p>
     </div>

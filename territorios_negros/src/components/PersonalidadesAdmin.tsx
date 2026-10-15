@@ -963,15 +963,16 @@ export default function PersonalidadesAdmin() {
             </button>
 
             <label className="admin-campo">
-              <b>Link do material completo (opcional)</b>
+              <b>Links (opcional)</b>
               <span className="admin-campo-dica">
-                TCC, dossiê, inventário — o botão aparece no fim da página.
+                Um link por linha. Aparecem numa lista no fim da página, em “Links”. Aceita
+                quantos você quiser: TCC, dossiê, inventário, matéria, acervo.
               </span>
-              <input
-                type="text"
+              <textarea
+                rows={4}
                 value={editando.materialCompleto}
                 onChange={(e) => mudar("materialCompleto", e.target.value)}
-                placeholder="https://..."
+                placeholder={"https://exemplo.org/tcc.pdf\nhttps://exemplo.org/materia"}
               />
             </label>
 
