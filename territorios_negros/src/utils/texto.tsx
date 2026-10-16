@@ -4,7 +4,7 @@ import { Fragment, type ReactNode } from "react";
  * Texto com **negrito** e *itálico* — a mesma marcação usada no painel.
  * Linha simples dentro do texto vira quebra de linha.
  */
-export function formatarInline(texto: string): ReactNode[] {
+export function formatarInline(texto: string = ""): ReactNode[] {
   const partes = texto.split(/(\*\*[^*]+\*\*|\*[^*]+\*)/g);
   const saida: ReactNode[] = [];
 

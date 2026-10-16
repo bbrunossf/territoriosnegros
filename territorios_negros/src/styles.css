@@ -401,6 +401,31 @@ a, a:visited, a:hover, a:active {
   box-shadow: 0 4px 10px rgba(77, 49, 17, 0.12);
 }
 
+/* Cor do nível de dificuldade das rotas (pedido da autoria, 14/10/2026):
+   verde = Fácil, amarelo = Médio, vermelho = Difícil. A faixa é decidida por
+   `nivelDaRota()`/`classeDoNivel()` em `data/roteiros.ts` — o campo do painel é
+   livre ("Dificuldade: Médio") e o texto escrito pela autoria continua igual na
+   pílula, então a informação não depende só da cor. O texto de cada faixa foi
+   escolhido por contraste com o fundo: escuro no amarelo, claro no verde e no
+   vermelho. Nível fora dessas faixas fica com a cor neutra de cima (#c58b2a). */
+.roteiro-level.nivel-facil {
+  background: #2f7d32;
+  border: 1px solid #1f5a23;
+  color: #ffffff;
+}
+
+.roteiro-level.nivel-medio {
+  background: #e0a92a;
+  border: 1px solid #a8762a;
+  color: #3a2604;
+}
+
+.roteiro-level.nivel-dificil {
+  background: #a8302a;
+  border: 1px solid #7a1f19;
+  color: #ffffff;
+}
+
 /* A pílula do nível fica sozinha na linha, logo acima do botão "Iniciar
    percurso": aqui o flex evita que ela estique na largura toda e mantém o
    formato de pílula, encostada à esquerda como o resto do texto do cartão. */

@@ -5,6 +5,7 @@ import BotoesDaTela from "../components/BotoesDaTela";
 import Inline from "../components/Inline";
 import { useTerritorios } from "../context/useTerritorios";
 import { sloganDaRota } from "../data/slogansRota";
+import { classeDoNivel } from "../data/roteiros";
 import { paragrafosDe } from "../utils/texto";
 
 export default function Roteiros() {
@@ -91,7 +92,7 @@ export default function Roteiros() {
                 a pessoa só via a informação depois de decidir começar. */}
             {r.nivel && (
               <div className="roteiro-nivel">
-                <span className="roteiro-level">{r.nivel}</span>
+                <span className={`roteiro-level ${classeDoNivel(r.nivel)}`.trim()}>{r.nivel}</span>
               </div>
             )}
 
