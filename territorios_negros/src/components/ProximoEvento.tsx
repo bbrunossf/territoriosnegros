@@ -45,7 +45,7 @@ export default function ProximoEvento() {
     <>
       <p className="evento-selo">{textos.selo}</p>
 
-      <h1 className="page-title">{proximoTour.texto || "Próximo tour"}</h1>
+      <h1 className="page-title evento-titulo">{proximoTour.texto || "Próximo tour"}</h1>
 
       {logo && (
         <img
@@ -86,14 +86,13 @@ export default function ProximoEvento() {
 
       {inscricao ? (
         <>
-          <a
-            className="btn evento-btn"
-            href={inscricao}
-            target="_blank"
-            rel="noreferrer"
-          >
-            Abrir a ficha de inscrição
-          </a>
+          {/* A ficha de inscrição é a ação desta página: botão cheio, para o
+              visitante achar sem procurar. *(pedido da autoria, 14/10/2026)* */}
+          <div className="pagina-botoes">
+            <a className="btn pagina-botao" href={inscricao} target="_blank" rel="noreferrer">
+              Abrir a ficha de inscrição
+            </a>
+          </div>
 
           <p className="evento-ajuda">
             A ficha abre em outra guia, no Google Docs, onde você preenche e envia.
@@ -106,16 +105,23 @@ export default function ProximoEvento() {
       )}
 
       {rota && (
-        <p className="evento-percurso">
-          <Link to={`/percurso/${rota.id}`}>ver o percurso completo desta rota ›</Link>
-        </p>
+        <div className="pagina-botoes">
+          {/* Antes era um link solto no meio do texto: a autoria não conseguia
+              bater o olho e ver que ali havia um caminho. */}
+          <Link className="botao-secundario pagina-botao" to={`/percurso/${rota.id}`}>
+            ver o percurso completo desta rota ›
+          </Link>
+        </div>
       )}
 
       <BotaoContato tela="evento" />
 
-      <p className="evento-voltar">
-        <Link to="/">‹ voltar para a tela inicial</Link>
-      </p>
+      <div className="pagina-botoes">
+        {/* mesmo formato do botão "Enviar uma mensagem", a pedido da autoria */}
+        <Link className="outline pagina-botao" to="/">
+          ‹ voltar para a tela inicial
+        </Link>
+      </div>
     </>
   );
 }

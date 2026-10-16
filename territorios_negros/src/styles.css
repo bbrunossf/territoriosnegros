@@ -1621,6 +1621,36 @@ a, a:visited, a:hover, a:active {
   margin-top: 18px;
 }
 
+/* Botão secundário do app: contorno forte e fundo claro, para um link de
+   navegação ter cara de botão sem competir com o botão principal. Nasceu no
+   pedido da autoria (14/10/2026) sobre o link do percurso na página do evento:
+   "precisam ter destaque em relação ao fundo da pagina, pois da forma nao é
+   possível para o usuário bater o olho na tela e saber". */
+.app a.botao-secundario {
+  display: block;
+  text-align: center;
+  border: 2px solid #8f611d;
+  background: #fffaf0;
+  color: #130b08;
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-weight: 900;
+  font-family: Georgia, serif;
+  text-decoration: none;
+}
+
+.app a.botao-secundario:hover {
+  filter: brightness(1.05);
+}
+
+/* O nome do evento é longo e, no celular, tomava a tela inteira antes de o
+   visitante chegar às informações. A autoria pediu metade do tamanho
+   (14/10/2026): aqui ele é título de apoio, não a manchete da página. */
+.app h1.evento-titulo {
+  font-size: clamp(11.5px, 3.1vw, 16px);
+  line-height: 1.3;
+}
+
 .evento-ajuda {
   margin-top: 8px;
   font-size: 12.5px;
