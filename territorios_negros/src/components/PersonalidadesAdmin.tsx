@@ -19,6 +19,7 @@ import { chaveDaPersonalidade } from "../data/marcos";
 import {
   CHAVE_PAGINA_PERSONALIDADES,
   CHAVE_PERSONALIDADES,
+  ENQUADRAMENTOS,
   NATUREZAS,
   PAGINA_PERSONALIDADES_PADRAO,
   TIPOS_DE_FONTE,
@@ -31,6 +32,7 @@ import {
   novoId,
   partesPreenchidas,
   personalidadeVazia,
+  posicaoDaFoto,
   slugDe,
   type BlocoBiografia,
   type FontePesquisa,
@@ -854,7 +856,12 @@ export default function PersonalidadesAdmin() {
               <div className="admin-galeria">
                 <div className="admin-galeria-item">
                   <span className="admin-galeria-principal">capa</span>
-                  <img src={editando.fotoCapa.url} alt="" />
+                  <img
+                    src={editando.fotoCapa.url}
+                    alt=""
+                    // mostra aqui o mesmo recorte que o visitante vê
+                    style={{ objectPosition: posicaoDaFoto(editando.fotoCapa) }}
+                  />
 
                   {(["legenda", "credito", "fonte", "alt"] as const).map((campo) => (
                     <label className="admin-galeria-campo" key={campo}>
@@ -884,6 +891,27 @@ export default function PersonalidadesAdmin() {
                       <option value="visivel">aparecendo no app</option>
                       <option value="oculta">oculta para os visitantes</option>
                     </select>
+                  </label>
+
+                  {/* O app recorta a foto para o formato do retrato: aqui a autoria
+                      escolhe QUE PARTE da foto aparece (pedido de 14/10/2026, quando
+                      a foto de Maria Saraiva saiu com a cabeça cortada). */}
+                  <label className="admin-galeria-campo">
+                    <span>Parte da foto que aparece</span>
+                    <select
+                      value={editando.fotoCapa.enquadramento ?? ""}
+                      onChange={(e) => mudarCapa("enquadramento", e.target.value)}
+                    >
+                      {ENQUADRAMENTOS.map((opcao) => (
+                        <option key={opcao.valor} value={opcao.valor}>
+                          {opcao.rotulo}
+                        </option>
+                      ))}
+                    </select>
+                    <span className="admin-ajuda">
+                      A foto é recortada no formato do retrato do app. Se a cabeça ficar de fora, escolha
+                      “mais para o alto”. Vale para a página e para o cartão da listagem.
+                    </span>
                   </label>
                 </div>
               </div>

@@ -20,6 +20,7 @@ import {
   lerPaginaPersonalidades,
   lerPersonalidades,
   personalidadesPublicadas,
+  posicaoDaFoto,
   type Personalidade,
 } from "../data/personalidades";
 import PageTitle from "./PageTitle";
@@ -137,6 +138,8 @@ export function Cartao({ personalidade }: { personalidade: Personalidade }) {
             src={capa.url}
             alt={capa.alt || capa.legenda || personalidade.nome}
             loading="lazy"
+            // mesmo enquadramento escolhido no painel (o cartão também recorta)
+            style={{ objectPosition: posicaoDaFoto(capa) }}
           />
         ) : (
           <div className="personalidade-cartao-semfoto" aria-hidden="true">

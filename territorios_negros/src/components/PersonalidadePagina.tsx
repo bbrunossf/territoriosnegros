@@ -27,6 +27,7 @@ import {
   marcaDaNatureza,
   personalidadesPublicadas,
   porSlug,
+  posicaoDaFoto,
   relacaoCom,
   type Personalidade,
 } from "../data/personalidades";
@@ -92,6 +93,9 @@ export default function PersonalidadePagina({ dados }: { dados?: Personalidade }
             className="personalidade-hero-foto"
             src={capa.url}
             alt={capa.alt || capa.legenda || personalidade.nome}
+            // o enquadramento escolhido no painel decide que parte da foto
+            // aparece neste recorte (pedido da autoria, 14/10/2026)
+            style={{ objectPosition: posicaoDaFoto(capa) }}
           />
         ) : (
           <div className="personalidade-hero-semfoto" aria-hidden="true">

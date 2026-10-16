@@ -29,6 +29,29 @@ export interface FotoPersonalidade {
   alt?: string;
   /** liberada para o visitante (o painel liga e desliga) */
   visivel?: boolean;
+  /**
+   * Qual parte da foto fica visível no recorte (o app corta a imagem para o
+   * formato do retrato). Vazio = meio. Pedido da autoria (14/10/2026): a foto de
+   * Maria Saraiva aparecia com a cabeça cortada e não havia como enquadrar.
+   */
+  enquadramento?: string;
+}
+
+/** As opções de enquadramento que o painel oferece, com o rótulo da autoria. */
+export const ENQUADRAMENTOS: { valor: string; rotulo: string }[] = [
+  { valor: "", rotulo: "No meio (como está)" },
+  { valor: "alto", rotulo: "Mais para o alto (aparece a cabeça)" },
+  { valor: "base", rotulo: "Mais para a base" },
+];
+
+/** O `object-position` que corresponde ao enquadramento escolhido. */
+export function posicaoDaFoto(foto: FotoPersonalidade | null | undefined): string {
+  const escolhido = (foto?.enquadramento ?? "").trim();
+
+  if (escolhido === "alto") return "50% 0%";
+  if (escolhido === "base") return "50% 100%";
+
+  return "50% 50%";
 }
 
 export interface VideoPersonalidade {
@@ -192,7 +215,15 @@ export function personalidadeVazia(): Personalidade {
 }
 
 export function fotoVazia(): FotoPersonalidade {
-  return { url: "", legenda: "", credito: "", fonte: "", alt: "", visivel: true };
+  return {
+    url: "",
+    legenda: "",
+    credito: "",
+    fonte: "",
+    alt: "",
+    visivel: true,
+    enquadramento: "",
+  };
 }
 
 export function blocoVazio(): BlocoBiografia {
@@ -232,6 +263,8 @@ function lerFoto(bruto: unknown): FotoPersonalidade | null {
     fonte: texto(o.fonte, 300),
     alt: texto(o.alt, 400),
     visivel: o.visivel !== false,
+    // só os valores que o app conhece; qualquer outra coisa volta para o meio
+    enquadramento: o.enquadramento === "alto" || o.enquadramento === "base" ? o.enquadramento : "",
   };
 }
 
