@@ -347,8 +347,8 @@ a, a:visited, a:hover, a:active {
 }
 
 .roteiro-title {
-  /* era 18px: a autoria pediu 20% menor (14/10/2026) */
-  font-size: 14.4px;
+  /* era 18px → 20% menos → a autoria pediu 14px (14/10/2026) */
+  font-size: 14px;
   letter-spacing: 0.25px;
 }
 
@@ -1228,8 +1228,8 @@ a, a:visited, a:hover, a:active {
 }
 
 .roteiro-title {
-  /* era 20px (é esta que vale hoje): a autoria pediu 20% menor (14/10/2026) */
-  font-size: 16px;
+  /* é esta que vale hoje: era 20px, a autoria pediu 14px (14/10/2026) */
+  font-size: 14px;
 }
 
 .roteiro-subtitle {
