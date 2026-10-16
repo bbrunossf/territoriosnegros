@@ -261,7 +261,7 @@ export const MANUAL_PADRAO: SecaoManual[] = [
       "Territórios vinculados: marque um ou mais territórios do app e explique a relação (“morou aqui”, “nome da rua é homenagem”, “atuou na escola”). O mesmo vínculo aparece dos dois lados: na página da pessoa, em **Territórios relacionados** (o nome do território é o link), e na página do território, dentro de **Marcos e Conexões** — cada pessoa ligada vira um tópico daquela seção, e o toque no nome leva à página dela. O vínculo é um só: tirar em um lugar tira no outro.",
       "Uma personalidade pode estar ligada a vários territórios, e um território a várias personalidades. Também dá para publicar sem nenhum território.",
       "Antes de excluir, o painel pede confirmação — e avisa se você sair com alterações não salvas. Fotos, vídeos, referências e vínculos continuam no cadastro quando você o reabre.",
-      "Para cadastrar várias pessoas em sequência, use **Salvar e cadastrar outra**: ele grava o que está aberto e já abre um cadastro novo, em branco, sem sair da tela. O botão fica ao lado de **Salvar** e continua à vista depois de salvar. Para voltar à lista — onde está o **+ Nova personalidade** — use **Cancelar e voltar à lista**.",
+      "Para cadastrar várias pessoas em sequência, use **Salvar e cadastrar outra**: ele grava o que está aberto e já abre um cadastro novo, em branco, sem sair da tela. O botão fica ao lado de **Salvar** e continua à vista depois de salvar. Para voltar à lista — onde está o **+ Nova personalidade** — use **Voltar para a lista**, na mesma barra: ela fica presa no alto da janela enquanto você rola o cadastro, então não é preciso subir a página para achar. Se houver alterações não salvas, o painel avisa antes de sair.",
     ],
   },
   {

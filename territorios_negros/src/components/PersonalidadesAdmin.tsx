@@ -532,7 +532,7 @@ export default function PersonalidadesAdmin() {
           </button>
 
           <button type="button" className="outline" onClick={fechar}>
-            Cancelar e voltar à lista
+            Voltar para a lista
           </button>
         </div>
 

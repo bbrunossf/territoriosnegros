@@ -500,6 +500,18 @@
 }
 
 /* ── os textos da página que agrupa as personalidades (aba Personalidades) ── */
+
+/* A barra de Salvar/Voltar do cadastro fica PRESA no alto da janela enquanto o
+   formulário rola (pedido da autoria, 14/10/2026: com o cadastro de uma pessoa
+   aberto — 4.000px de formulário — o caminho de volta para a lista ficava fora
+   da vista). O "bottom: 0" herdado do resto do painel não segura esta barra:
+   ela é o ÚLTIMO item de um bloco alto, e nesse caso o navegador não a fixa.
+   Medido: com top:0 ela fica visível (topo = 0) depois de rolar a página. */
+.personalidades-admin > .admin-form-botoes {
+  position: sticky;
+  top: 0;
+  z-index: 11;
+}
 .personalidades-admin-pagina {
   margin: 16px 0 0;
   padding: 14px;
