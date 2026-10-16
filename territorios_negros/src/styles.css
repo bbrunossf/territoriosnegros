@@ -1232,11 +1232,12 @@ a, a:visited, a:hover, a:active {
   font-size: 14px;
 }
 
-/* O nome da rota também é o título da página do percurso — mesmo tamanho do
-   título no cartão da lista (14px). Os outros títulos de página seguem com o
-   `.page-title` de sempre, que é curto ("Percursos", "Territórios"). */
+/* O nome da rota também é o título da página do percurso. Ali ele é o título
+   principal da tela, então a autoria pediu 16px (14/10/2026) — no cartão da lista
+   o mesmo nome fica em 14px. Os outros títulos de página seguem com o `.page-title`
+   de sempre, que é curto ("Percursos", "Territórios"). */
 .app h1.percurso-titulo {
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.35;
 }
 
