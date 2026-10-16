@@ -1550,15 +1550,17 @@ a, a:visited, a:hover, a:active {
   flex: 1 1 auto;
   min-height: 42vh;
   background-color: #f7efdf;
-  background-size: cover;
-  /* A arte da capa é um cartaz alto (883x1600) e o título "TERRITÓRIOS NEGROS"
-     fica a ~57% da altura dela. Com `cover` a imagem é recortada: alinhando pelo
-     mesmo ponto (57%), essa faixa do título aparece em qualquer altura de tela —
-     antes (center 30%) o recorte cortava justamente o título em telas baixas, e o
-     cartão do próximo evento ficava no lugar dele. *(pedido da autoria, 14/10/2026:
-     "o anuncio do proximo evento está encobrindo o titulo da pagina … É essencial
-     que apareça")* */
-  background-position: center 57%;
+  /* A arte da capa é um cartaz completo (883x1600): topo com o Penedo, o título
+     "TERRITÓRIOS NEGROS" a ~61% e a orla com palmeiras na base. Com `cover` a
+     imagem era recortada e sempre faltava um pedaço — primeiro o título, depois o
+     topo — e a tela inicial não rolava para alcançá-lo. Com `contain` a arte
+     aparece **inteira** em qualquer tela; o fundo do cartão é o mesmo creme da
+     arte (#f7efdf), então não aparecem faixas.
+     *(pedido da autoria, 14/10/2026: "o anuncio do proximo evento está encobrindo
+     o titulo da pagina … É essencial que apareça" e, em seguida, "a tela inicial é
+     cortada na parte superior e nem rolando a barra eu consigo visualizar o topo")* */
+  background-size: contain;
+  background-position: center;
   background-repeat: no-repeat;
 }
 
