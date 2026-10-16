@@ -1563,7 +1563,12 @@ a, a:visited, a:hover, a:active {
   top: 0;
   left: 0;
   right: 0;
-  height: 100vh;
+  /* Altura da TELA menos a faixa dos blocos (250px = cartão + botão + créditos
+     medidos). Assim a arte termina onde a faixa autorizada começa: o cartão do
+     evento e o botão ficam por cima do palácio e das árvores, como a autoria
+     autorizou, sem subir até a logo nem o título do cartaz. Como a altura não
+     depende do conteúdo, ligar ou desligar o anúncio não muda o papel de parede. */
+  height: calc(100vh - 250px);
   z-index: 0;
   background-color: #f7efdf;
   background-size: cover;
