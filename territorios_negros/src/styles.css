@@ -1540,18 +1540,16 @@ a, a:visited, a:hover, a:active {
 /* a capa virou uma faixa no topo e o conteúdo fica abaixo, no fundo do app:
    assim o cartão do tour nunca cobre a arte da capa, em qualquer tela */
 /* ── Tela inicial ──
-   A arte da capa tem a proporção do próprio cartaz (883x1600): assim ela aparece
-   inteira, ocupa toda a largura e a sua altura depende SÓ da largura — não do que
-   entra embaixo. Era isso que fazia o papel de parede crescer e encolher quando o
-   anúncio do próximo evento era ligado ou desligado (antes ele dividia o espaço
-   com os blocos de baixo, com `flex: 1`).
-   Os blocos ficam ABAIXO da arte, no fluxo: nada cobre a logo nem o título do
-   cartaz. Se não couberem na tela, a página rola.
-   *(pedido da autoria, 14/10/2026: "a imagem que faz o papel de parede da página
-   está ampliando e reduzindo conforme eu habilito ou desabilito a exibição do
-   proximo evento. Isso nao deve acontecer" e, depois de uma tentativa de pôr os
-   blocos por cima: "foi ocultado totalmente a logo da pagina … todos deslocaram
-   para direita")* */
+   A arte ocupa a tela inteira (100vh, `cover`) e os blocos do próximo evento e do
+   botão ficam SOBRE a faixa de baixo da arte — a autoria marcou essa faixa (o
+   palácio e as árvores) e autorizou a sobreposição, porque um visitante novo não
+   descobre que a página rola.
+   A altura da arte é a da TELA, nunca a do conteúdo: era essa a causa de o papel
+   de parede "ampliar e reduzir" quando o anúncio do próximo evento era ligado ou
+   desligado (antes a arte era `flex: 1` e ficava com o que sobrava).
+   Os blocos usam `left: 0; right: 0` de propósito — a regra antiga, de quando este
+   bloco era absoluto, tinha `left: 22px` e isso deslocava tudo 22px à direita.
+   *(pedidos da autoria, 14/10/2026)* */
 .home {
   position: relative;
   display: flex;
@@ -1561,22 +1559,23 @@ a, a:visited, a:hover, a:active {
 }
 
 .home-capa {
-  width: 100%;
-  aspect-ratio: 883 / 1600;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100vh;
+  z-index: 0;
   background-color: #f7efdf;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
 }
 
-/* `position: relative` + z-index põem os blocos acima do fundo, mas os valores
-   `left/right/bottom` da regra antiga (quando este bloco era absoluto) precisam
-   ser zerados — sem isso o bloco deslocava 22px para a direita. */
 .home-bottom {
-  position: relative;
-  left: auto;
-  right: auto;
-  bottom: auto;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
   z-index: 1;
 
   display: flex;
