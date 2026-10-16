@@ -941,10 +941,12 @@ a, a:visited, a:hover, a:active {
 
 .main-home {
   min-height: 100vh;
+  min-height: 100svh;
 }
 
 .app {
   min-height: 100vh;
+  min-height: 100svh;
   background: #1d110d;
   display: flex;
   justify-content: center;
@@ -954,7 +956,11 @@ a, a:visited, a:hover, a:active {
 .phone {
   width: 100%;
   max-width: 430px;
+  /* svh: a página inteira passa a ter a altura VISÍVEL do aparelho — sem isso, no
+     celular, o rodapé da tela inicial (botão + créditos, posicionados no fim deste
+     bloco) caía atrás da barra de navegação. Ver o comentário de `.home`. */
   min-height: 100vh;
+  min-height: 100svh;
   background: #f7efdf;
   color: #1b100c;
   position: relative;
@@ -1554,7 +1560,15 @@ a, a:visited, a:hover, a:active {
   position: relative;
   display: flex;
   flex-direction: column;
+  /* 100svh = altura da TELA VISÍVEL, com as barras do navegador no lugar. No
+     celular o `100vh` conta a área que fica atrás da barra de endereço, então o
+     rodapé (botão + créditos) era posicionado abaixo do que se vê e ficava
+     escondido atrás da barra de navegação do app — foi o caso relatado pela
+     autoria em 14/10/2026: com a caixa do próximo evento desabilitada, a faixa
+     embaixo aparecia vazia. `svh` é estável (não muda ao rolar), então o papel de
+     parede continua sem ampliar/reduzir. */
   min-height: 100vh;
+  min-height: 100svh;
   background: #f7efdf;
 }
 
@@ -1563,13 +1577,15 @@ a, a:visited, a:hover, a:active {
   top: 0;
   left: 0;
   right: 0;
-  /* Altura da TELA menos a faixa dos blocos (≈220px = cartão + botão + créditos
-     medidos, já com a fonte menor do nome do evento e os créditos em uma linha).
-     Assim a arte termina onde a faixa autorizada começa: o cartão do evento e o
-     botão ficam por cima do palácio e das árvores, como a autoria autorizou, sem
-     subir até a logo nem o título do cartaz. Como a altura não depende do
-     conteúdo, ligar ou desligar o anúncio não muda o papel de parede. */
+  /* Altura da TELA VISÍVEL (svh, não vh) menos a faixa dos blocos (≈220px =
+     cartão + botão + créditos medidos, já com a fonte menor do nome do evento e
+     os créditos em uma linha). Assim a arte termina onde a faixa autorizada
+     começa: o cartão do evento e o botão ficam por cima do palácio e das árvores,
+     como a autoria autorizou, sem subir até a logo nem o título do cartaz. Como a
+     altura não depende do conteúdo, ligar ou desligar o anúncio não muda o papel
+     de parede. */
   height: calc(100vh - 220px);
+  height: calc(100svh - 220px);
   z-index: 0;
   background-color: #f7efdf;
   background-size: cover;
