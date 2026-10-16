@@ -1580,9 +1580,9 @@ a, a:visited, a:hover, a:active {
 
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 
-  padding: 12px 22px 92px;
+  padding: 10px 22px 92px;
   background: transparent;
 }
 
