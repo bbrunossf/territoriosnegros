@@ -1540,18 +1540,18 @@ a, a:visited, a:hover, a:active {
 /* a capa virou uma faixa no topo e o conteúdo fica abaixo, no fundo do app:
    assim o cartão do tour nunca cobre a arte da capa, em qualquer tela */
 /* ── Tela inicial ──
-   A arte é uma camada própria, presa à altura da TELA (100vh) e não à altura do
-   conteúdo. Era essa a causa de o papel de parede "ampliar e reduzir" quando a
-   autoria habilitava ou desabilitava o anúncio do próximo evento: a arte dividia
-   o espaço com os blocos de baixo (flex: 1) e crescia/encolhia conforme o que
-   entrasse na tela. Agora ela ocupa a tela inteira, vertical e horizontal
-   (`cover`), e os blocos ficam por cima — por isso também foram compactados.
+   A arte da capa tem a proporção do próprio cartaz (883x1600): assim ela aparece
+   inteira, ocupa toda a largura e a sua altura depende SÓ da largura — não do que
+   entra embaixo. Era isso que fazia o papel de parede crescer e encolher quando o
+   anúncio do próximo evento era ligado ou desligado (antes ele dividia o espaço
+   com os blocos de baixo, com `flex: 1`).
+   Os blocos ficam ABAIXO da arte, no fluxo: nada cobre a logo nem o título do
+   cartaz. Se não couberem na tela, a página rola.
    *(pedido da autoria, 14/10/2026: "a imagem que faz o papel de parede da página
    está ampliando e reduzindo conforme eu habilito ou desabilito a exibição do
-   proximo evento. Isso nao deve acontecer. O papel de parede deve ocupar a tela em
-   sua area vertical e horizontal … A exibição de proximo evento disponível pode ser
-   reduzida na dimensão na vertical e assim nao ocultamos as partes importantes do
-   papel de fundo")* */
+   proximo evento. Isso nao deve acontecer" e, depois de uma tentativa de pôr os
+   blocos por cima: "foi ocultado totalmente a logo da pagina … todos deslocaram
+   para direita")* */
 .home {
   position: relative;
   display: flex;
@@ -1561,28 +1561,29 @@ a, a:visited, a:hover, a:active {
 }
 
 .home-capa {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 100vh;
-  z-index: 0;
+  width: 100%;
+  aspect-ratio: 883 / 1600;
   background-color: #f7efdf;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
 }
 
+/* `position: relative` + z-index põem os blocos acima do fundo, mas os valores
+   `left/right/bottom` da regra antiga (quando este bloco era absoluto) precisam
+   ser zerados — sem isso o bloco deslocava 22px para a direita. */
 .home-bottom {
   position: relative;
+  left: auto;
+  right: auto;
+  bottom: auto;
   z-index: 1;
-  margin-top: auto;
 
   display: flex;
   flex-direction: column;
   gap: 8px;
 
-  padding: 10px 22px 92px;
+  padding: 12px 22px 92px;
   background: transparent;
 }
 
@@ -1746,11 +1747,14 @@ a, a:visited, a:hover, a:active {
 }
 
 /* o botão principal da tela inicial: mais baixo que o `.btn` comum (12px de
-   padding), como a autoria pediu em 14/10/2026 — "podemos diminuir na dimensão
-   vertical o botao clique aqui e conheça os territórios". O seletor com `.home`
-   na frente vence o `.btn`, que vem depois no arquivo. */
+   padding e o tamanho de fonte do app, 17px), como a autoria pediu em 14/10/2026 —
+   "podemos diminuir na dimensão vertical o botao clique aqui e conheça os
+   territórios". Com 15px o texto que ela escreveu no painel cabe em uma linha, o
+   que também encolhe o bloco de baixo. O seletor com `.home` na frente vence o
+   `.btn`, que vem depois no arquivo. */
 .home .home-start-btn {
-  padding: 10px 14px;
+  font-size: 15px;
+  padding: 9px 14px;
 }
 
 .home-tour-data {
