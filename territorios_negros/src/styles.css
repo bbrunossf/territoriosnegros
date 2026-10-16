@@ -1642,10 +1642,9 @@ a, a:visited, a:hover, a:active {
 
 .home-tour-link {
   display: block;
-  text-decoration: underline;
-  text-decoration-color: rgba(197, 139, 42, 0.75);
-  text-decoration-thickness: 2px;
-  text-underline-offset: 4px;
+  /* sem sublinhado no nome do evento, a pedido da autoria (14/10/2026) — o título
+     segue sendo o link para a página do evento, com o cursor de mão */
+  text-decoration: none;
   cursor: pointer;
 }
 
