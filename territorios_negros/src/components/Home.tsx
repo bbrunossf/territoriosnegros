@@ -51,7 +51,7 @@ export default function Home() {
             )}
 
             <Link to="/evento" className="home-tour-mais">
-              toque no título para ver as informações do tour e a ficha de inscrição ›
+              toque no título para ver mais e se inscrever ›
             </Link>
 
             {inscricao && (
