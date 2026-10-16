@@ -1580,9 +1580,12 @@ a, a:visited, a:hover, a:active {
 
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 
-  padding: 12px 22px 92px;
+  /* o rodapé de 76px deixa a barra de navegação do app livre; os blocos acima
+     dele foram compactados para caberem na faixa que a autoria autorizou sobre a
+     arte (o palácio e as árvores) sem cobrir a logo nem o título do cartaz. */
+  padding: 10px 22px 76px;
   background: transparent;
 }
 
@@ -1590,7 +1593,7 @@ a, a:visited, a:hover, a:active {
   background: #fdf8ec;
   border: 1px solid rgba(197, 139, 42, 0.7);
   border-radius: 16px;
-  padding: 9px 10px;
+  padding: 8px 10px;
   text-align: center;
   box-shadow: 0 8px 18px rgba(54, 33, 18, 0.12);
 }
@@ -1775,7 +1778,7 @@ a, a:visited, a:hover, a:active {
   background: rgba(9, 5, 4, 0.42);
   border: 1px solid rgba(197, 139, 42, 0.35);
   border-radius: 12px;
-  padding: 8px 12px;
+  padding: 6px 12px;
   backdrop-filter: blur(4px);
 }
 

@@ -50,10 +50,6 @@ export default function Home() {
               <p className="home-tour-local">{proximoTour.local}</p>
             )}
 
-            <Link to="/evento" className="home-tour-mais">
-              toque no título para ver mais e se inscrever ›
-            </Link>
-
             {inscricao && (
               <a
                 className="btn home-tour-btn"
