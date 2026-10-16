@@ -1563,12 +1563,13 @@ a, a:visited, a:hover, a:active {
   top: 0;
   left: 0;
   right: 0;
-  /* Altura da TELA menos a faixa dos blocos (250px = cartão + botão + créditos
-     medidos). Assim a arte termina onde a faixa autorizada começa: o cartão do
-     evento e o botão ficam por cima do palácio e das árvores, como a autoria
-     autorizou, sem subir até a logo nem o título do cartaz. Como a altura não
-     depende do conteúdo, ligar ou desligar o anúncio não muda o papel de parede. */
-  height: calc(100vh - 250px);
+  /* Altura da TELA menos a faixa dos blocos (≈220px = cartão + botão + créditos
+     medidos, já com a fonte menor do nome do evento e os créditos em uma linha).
+     Assim a arte termina onde a faixa autorizada começa: o cartão do evento e o
+     botão ficam por cima do palácio e das árvores, como a autoria autorizou, sem
+     subir até a logo nem o título do cartaz. Como a altura não depende do
+     conteúdo, ligar ou desligar o anúncio não muda o papel de parede. */
+  height: calc(100vh - 220px);
   z-index: 0;
   background-color: #f7efdf;
   background-size: cover;
@@ -1604,7 +1605,10 @@ a, a:visited, a:hover, a:active {
 }
 
 .home-tour-titulo {
-  font-size: 16px;
+  /* a autoria pediu fonte menor para a caixa do próximo evento ocupar menos
+     espaço na vertical (14/10/2026) — o nome do evento é longo e quebrava em
+     duas ou três linhas */
+  font-size: 13.5px;
   line-height: 1.28;
   font-weight: 900;
   color: #1b100c;
@@ -1778,18 +1782,36 @@ a, a:visited, a:hover, a:active {
   font-size: 12px;
 }
 
-/* data de acesso e autoria sobre a capa: painel discreto para não sumir no fundo */
+/* data de acesso e autoria sobre a capa: painel discreto para não sumir no fundo.
+   A autoria pediu que os dois ficassem em UMA linha, para o rodapé ocupar menos
+   espaço na vertical (14/10/2026) — por isso o flex na horizontal e a fonte
+   menor; o `flex-wrap` é a reserva para o caso de o texto da autoria crescer. */
 .home-creditos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
   background: rgba(9, 5, 4, 0.42);
   border: 1px solid rgba(197, 139, 42, 0.35);
   border-radius: 12px;
-  padding: 6px 12px;
+  padding: 5px 10px;
   backdrop-filter: blur(4px);
+}
+
+.home-creditos p {
+  margin: 0;
+  line-height: 1.25;
+}
+
+.home-date {
+  font-size: 10px;
 }
 
 .home-autoria {
   text-align: center;
-  font-size: 12px;
+  font-size: 10px;
   letter-spacing: 0.3px;
   color: #fff1d6;
   opacity: 0.92;
