@@ -30,8 +30,7 @@ export interface TextosIniciais {
 export const TELA_INICIAL_PADRAO: TextosIniciais = {
   selo: "Próximo evento disponível",
   botaoInscricao: "Clique aqui e se inscreva",
-  botaoInicio:
-    "Iniciar a leitura da cidade de Vitória - ES a partir dos territórios negros",
+  botaoInicio: "Conheça os Territórios",
   autoria: "Aingrid Fabiane de Souza — Licenciada em Geografia (UFES)",
 };
 

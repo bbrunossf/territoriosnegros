@@ -1539,7 +1539,21 @@ a, a:visited, a:hover, a:active {
 
 /* a capa virou uma faixa no topo e o conteúdo fica abaixo, no fundo do app:
    assim o cartão do tour nunca cobre a arte da capa, em qualquer tela */
+/* ── Tela inicial ──
+   A arte é uma camada própria, presa à altura da TELA (100vh) e não à altura do
+   conteúdo. Era essa a causa de o papel de parede "ampliar e reduzir" quando a
+   autoria habilitava ou desabilitava o anúncio do próximo evento: a arte dividia
+   o espaço com os blocos de baixo (flex: 1) e crescia/encolhia conforme o que
+   entrasse na tela. Agora ela ocupa a tela inteira, vertical e horizontal
+   (`cover`), e os blocos ficam por cima — por isso também foram compactados.
+   *(pedido da autoria, 14/10/2026: "a imagem que faz o papel de parede da página
+   está ampliando e reduzindo conforme eu habilito ou desabilito a exibição do
+   proximo evento. Isso nao deve acontecer. O papel de parede deve ocupar a tela em
+   sua area vertical e horizontal … A exibição de proximo evento disponível pode ser
+   reduzida na dimensão na vertical e assim nao ocultamos as partes importantes do
+   papel de fundo")* */
 .home {
+  position: relative;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -1547,62 +1561,55 @@ a, a:visited, a:hover, a:active {
 }
 
 .home-capa {
-  flex: 1 1 auto;
-  min-height: 42vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100vh;
+  z-index: 0;
   background-color: #f7efdf;
-  /* A arte da capa é um cartaz completo (883x1600): topo com o Penedo, o título
-     "TERRITÓRIOS NEGROS" a ~61% e a orla com palmeiras na base. Com `cover` a
-     imagem era recortada e sempre faltava um pedaço — primeiro o título, depois o
-     topo — e a tela inicial não rolava para alcançá-lo. Com `contain` a arte
-     aparece **inteira** em qualquer tela; o fundo do cartão é o mesmo creme da
-     arte (#f7efdf), então não aparecem faixas.
-     *(pedido da autoria, 14/10/2026: "o anuncio do proximo evento está encobrindo
-     o titulo da pagina … É essencial que apareça" e, em seguida, "a tela inicial é
-     cortada na parte superior e nem rolando a barra eu consigo visualizar o topo")* */
-  background-size: contain;
+  background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
 }
 
 .home-bottom {
-  position: static;
-  left: auto;
-  right: auto;
-  bottom: auto;
-  flex: 0 0 auto;
+  position: relative;
+  z-index: 1;
+  margin-top: auto;
 
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 
-  padding: 14px 22px 92px;
-  background: #f7efdf;
+  padding: 12px 22px 92px;
+  background: transparent;
 }
 
 .home-tour {
   background: #fdf8ec;
   border: 1px solid rgba(197, 139, 42, 0.7);
   border-radius: 16px;
-  padding: 12px;
+  padding: 9px 10px;
   text-align: center;
   box-shadow: 0 8px 18px rgba(54, 33, 18, 0.12);
 }
 
 .home-tour-titulo {
   font-size: 16px;
-  line-height: 1.32;
+  line-height: 1.28;
   font-weight: 900;
   color: #1b100c;
 }
 
 /* faixa "Próximo evento disponível" e título clicável */
 .home-tour-selo {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 800;
   letter-spacing: 1.1px;
   text-transform: uppercase;
   color: #7b522a;
-  margin-bottom: 6px;
+  margin-bottom: 3px;
 }
 
 .home-tour-link {
@@ -1615,18 +1622,28 @@ a, a:visited, a:hover, a:active {
 }
 
 .home-tour-local {
-  margin-top: 4px;
+  margin-top: 2px;
+  font-size: 13px;
+  color: #563827;
+}
+
+.home-tour-data {
+  margin-top: 2px;
   font-size: 14px;
   color: #563827;
 }
 
 .home-tour-mais {
   display: block;
-  margin-top: 8px;
-  font-size: 12.5px;
-  line-height: 1.4;
+  margin-top: 5px;
+  font-size: 12px;
+  line-height: 1.35;
   color: #6a452b;
   opacity: 0.9;
+}
+
+.home-tour-btn {
+  margin-top: 8px;
 }
 
 /* ── Página do próximo evento ── */
@@ -1728,14 +1745,22 @@ a, a:visited, a:hover, a:active {
   text-align: center;
 }
 
+/* o botão principal da tela inicial: mais baixo que o `.btn` comum (12px de
+   padding), como a autoria pediu em 14/10/2026 — "podemos diminuir na dimensão
+   vertical o botao clique aqui e conheça os territórios". O seletor com `.home`
+   na frente vence o `.btn`, que vem depois no arquivo. */
+.home .home-start-btn {
+  padding: 10px 14px;
+}
+
 .home-tour-data {
-  margin-top: 4px;
-  font-size: 15px;
+  margin-top: 2px;
+  font-size: 14px;
   color: #563827;
 }
 
 .home-tour-btn {
-  margin-top: 10px;
+  margin-top: 8px;
 }
 
 .home-date {
