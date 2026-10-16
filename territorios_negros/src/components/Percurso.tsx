@@ -32,7 +32,7 @@ export default function Percurso() {
   return (
     <>
       {/* Título, logo do evento e a linha de início/conclusão */}
-      <h1 className="page-title">{roteiro.nome}</h1>
+      <h1 className="page-title percurso-titulo">{roteiro.nome}</h1>
 
       {roteiro.logo && (
         <img
