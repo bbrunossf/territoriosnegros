@@ -1625,8 +1625,10 @@ a, a:visited, a:hover, a:active {
    navegação ter cara de botão sem competir com o botão principal. Nasceu no
    pedido da autoria (14/10/2026) sobre o link do percurso na página do evento:
    "precisam ter destaque em relação ao fundo da pagina, pois da forma nao é
-   possível para o usuário bater o olho na tela e saber". */
-.app a.botao-secundario {
+   possível para o usuário bater o olho na tela e saber".
+   O seletor vale para `<a>` e para `<span>`: o botão da ficha de inscrição
+   aparece sempre, e sem link salvo é um span apagado (ver `.botao-sem-link`). */
+.app .botao-secundario {
   display: block;
   text-align: center;
   border: 2px solid #8f611d;
@@ -1639,8 +1641,19 @@ a, a:visited, a:hover, a:active {
   text-decoration: none;
 }
 
-.app a.botao-secundario:hover {
+.app .botao-secundario:hover {
   filter: brightness(1.05);
+}
+
+/* Ficha de inscrição sem link salvo: o botão fica no lugar, apagado, avisando
+   que ainda não está disponível — em vez de sumir e virar texto simples. */
+.app .botao-sem-link {
+  opacity: 0.62;
+  cursor: default;
+}
+
+.app .botao-sem-link:hover {
+  filter: none;
 }
 
 /* O nome do evento é longo e, no celular, tomava a tela inteira antes de o

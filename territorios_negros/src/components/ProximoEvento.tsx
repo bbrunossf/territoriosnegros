@@ -84,24 +84,35 @@ export default function ProximoEvento() {
         </p>
       )}
 
-      {inscricao ? (
-        <>
-          {/* A ficha de inscrição é a ação desta página: botão cheio, para o
-              visitante achar sem procurar. *(pedido da autoria, 14/10/2026)* */}
-          <div className="pagina-botoes">
-            <a className="btn pagina-botao" href={inscricao} target="_blank" rel="noreferrer">
-              Abrir a ficha de inscrição
-            </a>
-          </div>
+      {/* A ficha de inscrição tem botão SEMPRE no modo usuário — mesmo sem link
+          salvo o visitante vê onde ela vai ficar (pedido da autoria, 14/10/2026:
+          "mesmo que eu nao tenha anexado o link … deve ser um botão similar ao
+          botao ver percurso. E quando eu criar a ficha de inscrição ao clicar
+          será levado a ficha"). Sem link, o botão fica apagado e não leva a
+          lugar nenhum; com link, abre a ficha em outra guia. */}
+      <div className="pagina-botoes">
+        {inscricao ? (
+          <a
+            className="botao-secundario pagina-botao"
+            href={inscricao}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Abrir a ficha de inscrição
+          </a>
+        ) : (
+          <span className="botao-secundario pagina-botao botao-sem-link" aria-disabled="true">
+            Abrir a ficha de inscrição
+          </span>
+        )}
+      </div>
 
-          <p className="evento-ajuda">
-            A ficha abre em outra guia, no Google Docs, onde você preenche e envia.
-          </p>
-        </>
-      ) : (
-        <p className="admin-ajuda">
-          A ficha de inscrição ainda não está disponível.
+      {inscricao ? (
+        <p className="evento-ajuda">
+          A ficha abre em outra guia, no Google Docs, onde você preenche e envia.
         </p>
+      ) : (
+        <p className="evento-ajuda">A ficha de inscrição ainda não está disponível.</p>
       )}
 
       {rota && (
