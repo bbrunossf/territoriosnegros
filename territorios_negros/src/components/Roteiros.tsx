@@ -6,18 +6,18 @@ import Inline from "../components/Inline";
 import { useTerritorios } from "../context/useTerritorios";
 import { sloganDaRota } from "../data/slogansRota";
 import { classeDoNivel } from "../data/roteiros";
+import { LISTA_ROTAS_PADRAO, normalizarTituloDeLista } from "../data/titulosDeLista";
 import { paragrafosDe } from "../utils/texto";
 
 export default function Roteiros() {
   const navigate = useNavigate();
   const { roteiros, inscricaoUrl, config } = useTerritorios();
+  // título e subtítulo desta página vêm do painel (aba Rotas)
+  const titulo = normalizarTituloDeLista(config.lista_roteiros, LISTA_ROTAS_PADRAO);
 
   return (
     <>
-      <PageTitle
-        title="Percursos"
-        subtitle="Escolha a rota conforme o contexto da visita, o público e as condições do percurso."
-      />
+      <PageTitle title={titulo.titulo} subtitle={titulo.subtitulo} />
 
       {/* Atalhos abaixo do subtítulo (pedidos da autoria, 02/10/2026): a cidade de
           Vitória, a Presença Negra na Cidade e, por fim, os Apoiadores — nesta

@@ -18,3 +18,37 @@ export function urlParaIncorporar(url: string): string {
 
   return url;
 }
+
+/** Os rótulos da tela da ficha de inscrição (`/evento/ficha`), editáveis no
+ *  painel (chave `ficha_textos`). Antes eram texto fixo no componente — o último
+ *  ponto sem controle apontado pela revisão geral de 14/10/2026. */
+export interface TextosDaFicha {
+  titulo: string;
+  voltarEvento: string;
+  voltarInicio: string;
+}
+
+export const FICHA_TEXTOS_PADRAO: TextosDaFicha = {
+  titulo: "Ficha de inscrição",
+  voltarEvento: "Voltar para as informações do evento",
+  voltarInicio: "Voltar para a tela inicial",
+};
+
+const texto = (valor: unknown) => (typeof valor === "string" ? valor.trim() : "");
+
+/**
+ * Campo em branco volta ao padrão: nenhum botão de volta pode ficar sem rótulo,
+ * senão o visitante que não está acostumado com o app não sabe como sair.
+ */
+export function textosDaFicha(valor: unknown): TextosDaFicha {
+  if (!valor || typeof valor !== "object") return FICHA_TEXTOS_PADRAO;
+
+  const guardado = valor as Record<string, unknown>;
+
+  return {
+    titulo: texto(guardado.titulo) || FICHA_TEXTOS_PADRAO.titulo,
+    voltarEvento: texto(guardado.voltarEvento) || FICHA_TEXTOS_PADRAO.voltarEvento,
+    voltarInicio: texto(guardado.voltarInicio) || FICHA_TEXTOS_PADRAO.voltarInicio,
+  };
+}
+

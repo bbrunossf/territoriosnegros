@@ -7,10 +7,14 @@ import PageTitle from "../components/PageTitle";
 import SectionHeader from "../components/SectionHeader";
 import BotoesDaTela from "../components/BotoesDaTela";
 import BotaoContato from "../components/BotaoContato";
+import { LISTA_TERRITORIOS_PADRAO, normalizarTituloDeLista } from "../data/titulosDeLista";
 
 export default function Territorios() {
   const navigate = useNavigate();
-  const { territorios, categorias, carregando } = useTerritorios();
+  const { territorios, categorias, carregando, config } = useTerritorios();
+
+  // título e subtítulo desta página vêm do painel (aba Territórios)
+  const titulo = normalizarTituloDeLista(config.lista_territorios, LISTA_TERRITORIOS_PADRAO);
 
   // Os grupos agora vêm do banco (tabela "categorias"), não mais fixos no código:
   // território novo entra na lista assim que recebe uma categoria no painel.
@@ -18,10 +22,7 @@ export default function Territorios() {
 
   return (
     <>
-      <PageTitle
-        title="Territórios"
-        subtitle="Consulta individual dos pontos do guia."
-      />
+      <PageTitle title={titulo.titulo} subtitle={titulo.subtitulo} />
 
       {/* Pedido da autoria (02/10/2026): o botão da cidade fica AQUI, logo abaixo
           do subtítulo — é o passo anterior natural antes de descer para os

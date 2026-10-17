@@ -28,6 +28,12 @@ import type { Categoria, FotoTerritorio, Territorio, VideoTerritorio } from "../
 import PlayerVideo from "../components/PlayerVideo";
 import EditorDeMarcos from "../components/EditorDeMarcos";
 import { chaveDoTerritorio } from "../data/marcos";
+import {
+  LISTA_TERRITORIOS_PADRAO,
+  normalizarTituloDeLista,
+  type TituloDeLista,
+} from "../data/titulosDeLista";
+
 import { useTerritorios } from "../context/useTerritorios";
 import { gerarSlug } from "../utils/catalogo";
 import { formatarDataHoraBR, idadeTexto } from "../utils/data";
@@ -125,6 +131,9 @@ const FORM_VAZIO = {
 
 // ── Componente ───────────────────────────────────────────────
 
+/** chave em app_config com o título e o subtítulo da página Territórios */
+const CHAVE_LISTA = "lista_territorios";
+
 export default function TerritoriosAdmin() {
   const { config, recarregar } = useTerritorios();
 
@@ -166,6 +175,49 @@ export default function TerritoriosAdmin() {
   const [salvando, setSalvando] = useState(false);
   const [ok, setOk] = useState("");
   const [erro, setErro] = useState("");
+
+  // título e subtítulo da página Territórios (app_config, "lista_territorios"):
+  // é da página, não de um território — por isso tem botão de salvar próprio
+  const [tituloPagina, setTituloPagina] = useState<TituloDeLista>(LISTA_TERRITORIOS_PADRAO);
+  const [salvandoTitulo, setSalvandoTitulo] = useState(false);
+
+  useEffect(() => {
+    let ativo = true;
+
+    (async () => {
+      // espera um tick para não disparar render em cascata dentro do efeito
+      await Promise.resolve();
+      if (!ativo) return;
+
+      setTituloPagina(
+        normalizarTituloDeLista(config[CHAVE_LISTA], LISTA_TERRITORIOS_PADRAO)
+      );
+    })();
+
+    return () => {
+      ativo = false;
+    };
+  }, [config]);
+
+  /** Salva só o título e o subtítulo da página (não mexe em nenhum território). */
+  async function salvarTituloPagina() {
+    setOk("");
+    setErro("");
+
+    try {
+      setSalvandoTitulo(true);
+      await salvarConfig(CHAVE_LISTA, tituloPagina);
+      await recarregar();
+      setOk("Título da página Territórios salvo.");
+    } catch (e) {
+      console.error(e);
+      setErro(
+        e instanceof Error ? e.message : "Falha ao salvar o título da página."
+      );
+    } finally {
+      setSalvandoTitulo(false);
+    }
+  }
 
   // ── Carregar lista ──────────────────────────────────────────
 
@@ -922,6 +974,59 @@ export default function TerritoriosAdmin() {
 
       {ok && <p className="admin-ok">{ok}</p>}
       {erro && <p className="admin-erro">{erro}</p>}
+
+      {/* ─── Título da página (é da página Territórios, não de um território) ─── */}
+      <section>
+        <h3 className="admin-form-secao">Título da página Territórios</h3>
+
+        <p className="admin-ajuda">
+          É o que o visitante lê no topo da lista de territórios. Este bloco tem
+          botão próprio: salvar aqui não mexe na ficha de nenhum território.
+        </p>
+
+        <div className="admin-form-grid">
+          <label className="admin-campo">
+            <b>Título</b>
+            <span className="admin-campo-dica">
+              Em branco, volta ao nome padrão.
+            </span>
+            <input
+              type="text"
+              placeholder="Ex: Territórios"
+              value={tituloPagina.titulo}
+              onChange={(e) =>
+                setTituloPagina({ ...tituloPagina, titulo: e.target.value })
+              }
+            />
+          </label>
+
+          <label className="admin-campo">
+            <b>Subtítulo</b>
+            <span className="admin-campo-dica">
+              A frase abaixo do título. Em branco, ela desaparece.
+            </span>
+            <input
+              type="text"
+              placeholder="Ex: Consulta individual dos pontos do guia"
+              value={tituloPagina.subtitulo}
+              onChange={(e) =>
+                setTituloPagina({ ...tituloPagina, subtitulo: e.target.value })
+              }
+            />
+          </label>
+        </div>
+
+        <div className="admin-form-botoes">
+          <button
+            type="button"
+            className="btn"
+            onClick={salvarTituloPagina}
+            disabled={salvandoTitulo}
+          >
+            {salvandoTitulo ? "Salvando..." : "Salvar título da página"}
+          </button>
+        </div>
+      </section>
 
       {/* ─── Formulário (criar / editar) ─── */}
       <form className="admin-form" onSubmit={salvar}>

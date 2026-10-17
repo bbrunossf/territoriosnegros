@@ -27,6 +27,14 @@ import {
 import { gerarSlug } from "../utils/catalogo";
 import { formatarDataHoraBR } from "../utils/data";
 import { legendaDoArquivo } from "../utils/legendas";
+import {
+  LISTA_ROTAS_PADRAO,
+  normalizarTituloDeLista,
+  type TituloDeLista,
+} from "../data/titulosDeLista";
+
+/** chave em app_config com o título e o subtítulo da página Rotas */
+const CHAVE_LISTA = "lista_roteiros";
 
 // ── Helpers para arrays ↔ textarea ───────────────────────────
 
@@ -77,6 +85,11 @@ export default function RoteirosAdmin() {
   // slogan de cada rota (gravado em app_config, chave "roteiros_slogans")
   const [slogans, setSlogans] = useState<SlogansDeRota>({});
 
+  // título e subtítulo da página Rotas (app_config, chave "lista_roteiros"),
+  // com botão de salvar próprio: não é dado de uma rota, é da página
+  const [tituloPagina, setTituloPagina] = useState<TituloDeLista>(LISTA_ROTAS_PADRAO);
+  const [salvandoTitulo, setSalvandoTitulo] = useState(false);
+
   const [form, setForm] = useState(FORM_VAZIO);
   const [pontos, setPontos] = useState<string[]>([]);
   const [novoPonto, setNovoPonto] = useState("");
@@ -101,6 +114,7 @@ export default function RoteirosAdmin() {
       setRoteiros(rs.sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR")));
       setTerritorios(ts);
       setSlogans(lerSlogans(cfg[CHAVE_SLOGANS]));
+      setTituloPagina(normalizarTituloDeLista(cfg[CHAVE_LISTA], LISTA_ROTAS_PADRAO));
     } catch (e) {
       console.error(e);
       setErro(e instanceof Error ? e.message : "Falha ao carregar as rotas.");
@@ -121,6 +135,7 @@ export default function RoteirosAdmin() {
         setRoteiros(rs.sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR")));
         setTerritorios(ts);
         setSlogans(lerSlogans(cfg[CHAVE_SLOGANS]));
+        setTituloPagina(normalizarTituloDeLista(cfg[CHAVE_LISTA], LISTA_ROTAS_PADRAO));
       } catch (e) {
         console.error(e);
         if (ativo) {
@@ -294,6 +309,25 @@ export default function RoteirosAdmin() {
     setSlogans(atualizado);
   }
 
+  /** Salva só o título e o subtítulo da página Rotas (não é dado de uma rota). */
+  async function salvarTituloPagina() {
+    setOk("");
+    setErro("");
+
+    try {
+      setSalvandoTitulo(true);
+      await salvarConfig(CHAVE_LISTA, tituloPagina);
+      setOk("Título da página Rotas salvo.");
+    } catch (e) {
+      console.error(e);
+      setErro(
+        e instanceof Error ? explicarErro(e.message) : "Falha ao salvar o título."
+      );
+    } finally {
+      setSalvandoTitulo(false);
+    }
+  }
+
   async function salvar(e: React.FormEvent) {
     e.preventDefault();
     setErro("");
@@ -429,6 +463,59 @@ export default function RoteirosAdmin() {
 
       {ok && <p className="admin-ok">{ok}</p>}
       {erro && <p className="admin-erro">{erro}</p>}
+
+      {/* ─── Título da página (é da página Rotas, não de uma rota) ─── */}
+      <section>
+        <h3 className="admin-form-secao">Título da página Rotas</h3>
+
+        <p className="admin-ajuda">
+          É o que o visitante lê no topo da tela de rotas. Este bloco tem botão
+          próprio: salvar aqui não mexe no cadastro de nenhuma rota.
+        </p>
+
+        <div className="admin-form-grid">
+          <label className="admin-campo">
+            <b>Título</b>
+            <span className="admin-campo-dica">
+              Em branco, volta ao nome padrão.
+            </span>
+            <input
+              type="text"
+              placeholder="Ex: Percursos"
+              value={tituloPagina.titulo}
+              onChange={(e) =>
+                setTituloPagina({ ...tituloPagina, titulo: e.target.value })
+              }
+            />
+          </label>
+
+          <label className="admin-campo">
+            <b>Subtítulo</b>
+            <span className="admin-campo-dica">
+              A frase abaixo do título. Em branco, ela desaparece.
+            </span>
+            <input
+              type="text"
+              placeholder="Ex: Escolha a rota conforme o público e as condições do percurso"
+              value={tituloPagina.subtitulo}
+              onChange={(e) =>
+                setTituloPagina({ ...tituloPagina, subtitulo: e.target.value })
+              }
+            />
+          </label>
+        </div>
+
+        <div className="admin-form-botoes">
+          <button
+            type="button"
+            className="btn"
+            onClick={salvarTituloPagina}
+            disabled={salvandoTitulo}
+          >
+            {salvandoTitulo ? "Salvando..." : "Salvar título da página"}
+          </button>
+        </div>
+      </section>
 
       {/* ─── Formulário (criar / editar) ─── */}
       <form className="admin-form" onSubmit={salvar}>

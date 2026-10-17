@@ -3,6 +3,7 @@ import "../styles.css";
 
 import { useEffect, useState } from "react";
 import { normalizarProximoTour, salvarConfig, uploadFoto } from "../data/api";
+import { textosDaFicha } from "../utils/ficha";
 import { useTerritorios } from "../context/useTerritorios";
 import { formatarDataHoraBR } from "../utils/data";
 import CAPA_ORIGINAL from "../assets/capa-inicial.jpg";
@@ -24,6 +25,11 @@ export default function InicioAdmin() {
   const [logo, setLogo] = useState("");
   const [inscricao, setInscricao] = useState("");
   const [inscricaoGeral, setInscricaoGeral] = useState("");
+
+  // rótulos da tela da ficha de inscrição (/evento/ficha), editáveis aqui
+  const [fichaTitulo, setFichaTitulo] = useState("");
+  const [fichaVoltarEvento, setFichaVoltarEvento] = useState("");
+  const [fichaVoltarInicio, setFichaVoltarInicio] = useState("");
 
   // imagem de fundo e textos fixos da tela inicial
   const [capaUrl, setCapaUrl] = useState("");
@@ -78,6 +84,12 @@ export default function InicioAdmin() {
       setBotaoInscricao(txt(textos.botao_inscricao));
       setBotaoInicio(txt(textos.botao_inicio));
       setAutoria(txt(textos.autoria));
+
+      // rótulos da tela da ficha (app_config, chave "ficha_textos")
+      const ficha = textosDaFicha(config.ficha_textos);
+      setFichaTitulo(ficha.titulo);
+      setFichaVoltarEvento(ficha.voltarEvento);
+      setFichaVoltarInicio(ficha.voltarInicio);
     })();
 
     return () => {
@@ -150,6 +162,13 @@ export default function InicioAdmin() {
         botao_inscricao: botaoInscricao,
         botao_inicio: botaoInicio,
         autoria,
+      });
+
+      // rótulos da tela da ficha; campo em branco volta ao padrão ao ler
+      await salvarConfig("ficha_textos", {
+        titulo: fichaTitulo,
+        voltarEvento: fichaVoltarEvento,
+        voltarInicio: fichaVoltarInicio,
       });
 
       await recarregar();
@@ -352,6 +371,55 @@ export default function InicioAdmin() {
             onChange={(e) => setInscricaoGeral(e.target.value)}
           />
         </label>
+
+        <h3 className="admin-form-secao">Tela da ficha de inscrição</h3>
+
+        <p className="admin-ajuda">
+          O que aparece na tela que abre a ficha dentro do app. Deixe em branco
+          para voltar ao texto padrão — nenhum botão de volta fica sem dizer para
+          onde leva.
+        </p>
+
+        <div className="admin-form-grid">
+          <label className="admin-campo">
+            <b>Título da tela</b>
+            <span className="admin-campo-dica">
+              Aparece no topo, acima do formulário.
+            </span>
+            <input
+              type="text"
+              placeholder="Ex: Ficha de inscrição"
+              value={fichaTitulo}
+              onChange={(e) => setFichaTitulo(e.target.value)}
+            />
+          </label>
+
+          <label className="admin-campo">
+            <b>Botão “voltar para o evento”</b>
+            <span className="admin-campo-dica">
+              Primeiro botão abaixo do formulário.
+            </span>
+            <input
+              type="text"
+              placeholder="Ex: Voltar para as informações do evento"
+              value={fichaVoltarEvento}
+              onChange={(e) => setFichaVoltarEvento(e.target.value)}
+            />
+          </label>
+
+          <label className="admin-campo">
+            <b>Botão “voltar para o início”</b>
+            <span className="admin-campo-dica">
+              Segundo botão abaixo do formulário.
+            </span>
+            <input
+              type="text"
+              placeholder="Ex: Voltar para a tela inicial"
+              value={fichaVoltarInicio}
+              onChange={(e) => setFichaVoltarInicio(e.target.value)}
+            />
+          </label>
+        </div>
 
         <h2>Imagem de fundo e textos da tela inicial</h2>
 

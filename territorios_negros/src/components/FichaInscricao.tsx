@@ -1,21 +1,24 @@
 import { Link } from "react-router-dom";
 
 import { useTerritorios } from "../context/useTerritorios";
-import { urlParaIncorporar } from "../utils/ficha";
+import { textosDaFicha, urlParaIncorporar } from "../utils/ficha";
 
 /** Ficha de inscrição dentro do app (14/10/2026): antes o botão abria o formulário
  *  em outra guia, e a autoria observou que quem não tem prática pode não conseguir
  *  voltar ao app. Aqui a ficha fica numa moldura, com o caminho de volta logo
- *  abaixo — inclusive depois do envio, quando o Google mostra a confirmação. */
+ *  abaixo — inclusive depois do envio, quando o Google mostra a confirmação.
+ *  Os rótulos (título e os dois botões de volta) são editáveis no painel, na aba
+ *  Página inicial, seção "Tela da ficha de inscrição". */
 export default function FichaInscricao() {
-  const { proximoTour, inscricaoUrl } = useTerritorios();
+  const { proximoTour, inscricaoUrl, config } = useTerritorios();
 
   const inscricao = proximoTour?.inscricaoUrl || inscricaoUrl;
   const dentro = urlParaIncorporar(inscricao);
+  const textos = textosDaFicha(config.ficha_textos);
 
   return (
     <section className="ficha">
-      <h1 className="page-title ficha-titulo">Ficha de inscrição</h1>
+      <h1 className="page-title ficha-titulo">{textos.titulo}</h1>
 
       {dentro ? (
         <>
@@ -43,11 +46,11 @@ export default function FichaInscricao() {
 
       <div className="pagina-botoes">
         <Link className="botao-secundario pagina-botao" to="/evento">
-          Voltar para as informações do evento
+          {textos.voltarEvento}
         </Link>
 
         <Link className="botao-secundario pagina-botao" to="/">
-          Voltar para a tela inicial
+          {textos.voltarInicio}
         </Link>
       </div>
     </section>
