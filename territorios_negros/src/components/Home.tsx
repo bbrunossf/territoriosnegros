@@ -7,9 +7,7 @@ import { useTerritorios } from "../context/useTerritorios";
 import { normalizarCapa, normalizarTextosIniciais } from "../data/telaInicial";
 
 export default function Home() {
-  const { proximoTour, inscricaoUrl, config } = useTerritorios();
-
-  const inscricao = proximoTour?.inscricaoUrl || inscricaoUrl;
+  const { proximoTour, config } = useTerritorios();
 
   // arte e textos da tela inicial: vêm do painel (aba Página inicial), com o
   // conteúdo original do app como reserva
@@ -50,16 +48,12 @@ export default function Home() {
               <p className="home-tour-local">{proximoTour.local}</p>
             )}
 
-            {inscricao && (
-              <a
-                className="btn home-tour-btn"
-                href={inscricao}
-                target="_blank"
-                rel="noreferrer"
-              >
-                {textos.botaoInscricao}
-              </a>
-            )}
+            {/* este botão leva à página do evento, não direto à ficha: a ficha só
+                abre na página que traz as informações do evento (pedido da autoria,
+                14/10/2026) */}
+            <Link to="/evento" className="btn home-tour-btn">
+              {textos.botaoInscricao}
+            </Link>
           </div>
         )}
 

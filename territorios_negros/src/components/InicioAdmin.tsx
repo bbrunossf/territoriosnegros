@@ -447,8 +447,8 @@ export default function InicioAdmin() {
         <label className="admin-campo">
           <b>Botão de inscrição, dentro do cartão do evento</b>
           <span className="admin-campo-dica">
-            Texto do botão que abre a ficha de inscrição, no aviso do evento na tela
-            inicial.
+            Texto do botão que abre a página do evento, no aviso do evento na tela
+            inicial. A ficha de inscrição abre na própria página do evento.
           </span>
           <input
             type="text"
