@@ -89,17 +89,14 @@ export default function ProximoEvento() {
           "mesmo que eu nao tenha anexado o link … deve ser um botão similar ao
           botao ver percurso. E quando eu criar a ficha de inscrição ao clicar
           será levado a ficha"). Sem link, o botão fica apagado e não leva a
-          lugar nenhum; com link, abre a ficha em outra guia. */}
+          lugar nenhum; com link, abre a ficha DENTRO do app (/evento/ficha),
+          com o caminho de volta logo abaixo — a autoria observou que abrir em
+          outra guia deixa o visitante sem saber como voltar. */}
       <div className="pagina-botoes">
         {inscricao ? (
-          <a
-            className="botao-secundario pagina-botao"
-            href={inscricao}
-            target="_blank"
-            rel="noreferrer"
-          >
+          <Link to="/evento/ficha" className="botao-secundario pagina-botao">
             Abrir a ficha de inscrição
-          </a>
+          </Link>
         ) : (
           <span className="botao-secundario pagina-botao botao-sem-link" aria-disabled="true">
             Abrir a ficha de inscrição
@@ -109,7 +106,7 @@ export default function ProximoEvento() {
 
       {inscricao ? (
         <p className="evento-ajuda">
-          A ficha abre em outra guia, no Google Docs, onde você preenche e envia.
+          A ficha abre aqui dentro do app: você preenche e envia sem sair dele.
         </p>
       ) : (
         <p className="evento-ajuda">A ficha de inscrição ainda não está disponível.</p>

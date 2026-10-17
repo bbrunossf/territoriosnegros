@@ -47,6 +47,7 @@ import Percurso from "./components/Percurso";
 import Territorios from "./components/Territorios";
 import Territorio from "./components/Territorio";
 import ProximoEvento from "./components/ProximoEvento";
+import FichaInscricao from "./components/FichaInscricao";
 import Fim from "./components/Fim";
 import Apoiadores from "./components/Apoiadores";
 
@@ -72,6 +73,9 @@ createRoot(document.getElementById('root')!).render(
               <Route path="territorios" element={<Territorios />} />
               <Route path="territorio/:id" element={<Territorio />} />
               <Route path="evento" element={<ProximoEvento />} />
+              {/* a ficha de inscrição abre dentro do app, com caminho de volta
+                  (pedido da autoria, 14/10/2026) */}
+              <Route path="evento/ficha" element={<FichaInscricao />} />
               <Route path="fim" element={<Fim />} />
               {/* quem apoia o projeto — aberta pelo botão da tela "Antes de caminhar" */}
               <Route path="apoiadores" element={<Apoiadores />} />

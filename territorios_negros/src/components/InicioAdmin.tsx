@@ -307,8 +307,11 @@ export default function InicioAdmin() {
           <span className="admin-campo-dica">
             Vira o botão “Abrir a ficha de inscrição” na página do evento. Pode ser a
             página do Google Docs com as informações ou direto o formulário — ele abre
-            em outra guia. Enquanto este campo estiver vazio, o botão continua aparecendo
-            na página, apagado, avisando que a ficha ainda não está disponível.
+            dentro do app, na página da ficha, com o caminho de volta logo abaixo.
+            No Google Forms, deixe a resposta liberada para “qualquer pessoa com o
+            link”; se o formulário exigir login, a ficha aparece pedindo conta Google.
+            Enquanto este campo estiver vazio, o botão continua aparecendo na página,
+            apagado, avisando que a ficha ainda não está disponível.
           </span>
           <input
             type="text"
