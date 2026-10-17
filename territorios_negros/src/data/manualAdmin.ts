@@ -267,14 +267,17 @@ export const MANUAL_PADRAO: SecaoManual[] = [
   },
   {
     id: "botoes",
-    titulo: "Botões: renomear os botões de navegação",
+    titulo: "Botões: os nomes e os botões de cada tela",
     texto:
-      "A aba **Botões** cuida dos seis botões da tela **Antes de caminhar** — a porta de entrada do app. Nela você muda o **nome** de cada botão. A **ordem** e **para onde** cada um leva são do app, de propósito: assim a navegação não depende do que estiver gravado no banco, e um ajuste seu não deixa o visitante numa tela errada.\n\nDeixar um nome em branco faz o botão voltar ao nome padrão. Nada vai ao ar sem **Salvar alterações**.",
+      "A aba **Botões** tem duas partes: os **nomes** dos botões de navegação do app e a seção **Em cada tela**, onde você escolhe quais desses botões aparecem no fim de **cada página** — inclusive nas páginas que hoje não têm botão, para inserir no futuro. A **ordem** e **para onde** cada um leva são do app, de propósito: assim a navegação não depende do que estiver gravado no banco, e um ajuste seu não deixa o visitante numa tela errada.\n\nDeixar um nome em branco faz o botão voltar ao nome padrão. Nada vai ao ar sem **Salvar alterações**.",
     itens: [
       "A ordem é: **Base teórica**, **A cidade de Vitória**, **Presença Negra**, **Roteiros**, **Territórios**, **Apoiadores** — e o **Enviar uma mensagem** fecha a tela, separado por um respiro maior.",
       "Todos os botões ficam com a **mesma distância** entre si. Se quiser mais respiro entre eles, é um número no app.",
       "Se você criar na aba **Páginas** um botão para um endereço que não está entre esses seis, ele continua aparecendo, no fim do grupo — nada do que você escreve é escondido.",
-      "Os nomes valem nas duas telas que usam esta lista: o fim da tela Antes de caminhar e o fim da página Base teórica.",
+      "Os nomes valem em todas as telas que usam esta lista — e a seção **Em cada tela** cobre agora **todas as páginas do app**: as de texto, as listas (Rotas, Territórios, Personalidades, Apoiadores, Contato) e as criadas depois (Próximo evento, Ficha de inscrição, página de uma personalidade, percurso de uma rota, página de um território e Fim do passeio).",
+      "Página que hoje não tem botão de navegação também aparece na lista: é por ali que você **insere** os que quiser depois. Enquanto nada estiver marcado, ela continua exatamente como está.",
+      "Nas telas de texto (Antes, Base teórica, Vitória e Presença Negra) os botões entram no **topo**, logo abaixo do título, ou no **final**; nas demais, no **final** da página.",
+      "A **tela inicial** fica de fora: ela não rola e tem os próprios botões no cartão do evento (o de inscrição e o “Conheça os Territórios”).",
     ],
   },
   {
