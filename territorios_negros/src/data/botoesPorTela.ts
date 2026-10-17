@@ -126,16 +126,19 @@ export interface TelaDoApp {
   id: string;
   nome: string;
   onde: string;
-  /** onde os botões cabem nesta tela (hoje, todas aceitam topo e final) */
+  /** onde os botões cabem nesta tela. Os "final" são desenhados no fim do
+   *  conteúdo (ver `BotoesFinaisDaTela`); o "topo" só existe nas telas de texto,
+   *  que chamam `BotoesDaTela` logo abaixo do título. */
   slots: ("topo" | "final")[];
 }
 
 /**
- * As telas do app que podem receber botões de navegação.
- * TODAS aceitam botões no topo e no final (pedido da autoria, 02/10/2026: "em
- * todas as paginas eu preciso ter esta possibilidade de add ou remover botoes no
- * topo ou no final da pagina"). As telas do passeio guiado (percurso, evento,
- * fim) ficam de fora — lá o caminho é o próprio passeio.
+ * As telas do app que podem receber botões de navegação. Até 14/10/2026 estavam
+ * aqui só as páginas de texto (o passeio guiado ficava de fora de propósito). A
+ * autoria pediu controle sobre **todas** as páginas — inclusive as criadas depois
+ * da aba Botões (evento, ficha, personalidades, percurso, território, fim) e as
+ * que hoje não têm botões, para poder inserir botões nelas no futuro. As telas
+ * novas entram com o slot **final** e sem padrão (vazio = nada muda no app).
  */
 export const TELAS_DO_APP: TelaDoApp[] = [
   { id: "intro", nome: "Antes de caminhar", onde: "página de abertura do passeio", slots: ["topo", "final"] },
@@ -147,16 +150,24 @@ export const TELAS_DO_APP: TelaDoApp[] = [
     onde: "a página da presença negra",
     slots: ["topo", "final"],
   },
-  { id: "roteiros", nome: "Rotas", onde: "a lista de rotas", slots: ["topo", "final"] },
-  { id: "territorios", nome: "Territórios", onde: "a lista de territórios", slots: ["topo", "final"] },
+  { id: "roteiros", nome: "Rotas", onde: "a lista de rotas", slots: ["final"] },
+  { id: "territorios", nome: "Territórios", onde: "a lista de territórios", slots: ["final"] },
   {
     id: "personalidades",
     nome: "Personalidades",
     onde: "a lista de personalidades negras",
-    slots: ["topo", "final"],
+    slots: ["final"],
   },
-  { id: "apoiadores", nome: "Apoiadores", onde: "quem apoia o projeto", slots: ["topo", "final"] },
-  { id: "contato", nome: "Contato", onde: "a página de contato", slots: ["topo", "final"] },
+  { id: "apoiadores", nome: "Apoiadores", onde: "quem apoia o projeto", slots: ["final"] },
+  { id: "contato", nome: "Contato", onde: "a página de contato", slots: ["final"] },
+  // telas criadas depois da aba Botões — sem botões de navegação hoje, prontas
+  // para receber os que a autoria escolher
+  { id: "evento", nome: "Próximo evento", onde: "a página do evento e da inscrição", slots: ["final"] },
+  { id: "ficha", nome: "Ficha de inscrição", onde: "o formulário aberto dentro do app", slots: ["final"] },
+  { id: "personalidade", nome: "Página de uma personalidade", onde: "a ficha de cada personalidade", slots: ["final"] },
+  { id: "percurso", nome: "Percurso de uma rota", onde: "o caminho de cada rota", slots: ["final"] },
+  { id: "territorio", nome: "Página de um território", onde: "a ficha de cada território", slots: ["final"] },
+  { id: "fim", nome: "Fim do passeio", onde: "a tela de encerramento", slots: ["final"] },
 ];
 
 export interface ListaDaTela {
@@ -328,6 +339,13 @@ export const DESTINO_DA_TELA: Record<string, string> = {
   personalidades: "/personalidades",
   apoiadores: "/apoiadores",
   contato: "/contato",
+  // telas do passeio guiado e as criadas depois da aba Botões
+  evento: "/evento",
+  ficha: "/evento/ficha",
+  personalidade: "/personalidade",
+  percurso: "/percurso",
+  territorio: "/territorio",
+  fim: "/fim",
 };
 
 /** Os botões que ainda não estão nesta lista (para o seletor do painel). */

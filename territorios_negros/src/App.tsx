@@ -2,6 +2,7 @@ import { Outlet, useLocation } from "react-router-dom";
 import Header from "./components/Header";
 import BottomNav from "./components/BottomNav";
 import RegistrarAcesso from "./components/RegistrarAcesso";
+import BotoesFinaisDaTela from "./components/BotoesFinaisDaTela";
 import { useTerritorios } from "./context/useTerritorios";
 
 export default function App() {
@@ -43,6 +44,9 @@ export default function App() {
           {!isHome && <Header />}
           <main className={isHome ? "main-home" : "content"}>
             <Outlet />
+            {/* botões de navegação escolhidos no painel para esta tela, no fim
+                do conteúdo; sem nada configurado não desenha nada */}
+            <BotoesFinaisDaTela endereco={location.pathname} />
           </main>
           <BottomNav />
         </div>
