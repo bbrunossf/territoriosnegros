@@ -3749,6 +3749,10 @@ p.foto-credito {
 }
 
 .app .territorios-thumb {
+  position: relative;
+  overflow: hidden;
+  display: block;
+
   width: 92px;
   height: 92px;
   border-radius: 10px;
@@ -3756,10 +3760,29 @@ p.foto-credito {
 
   /* 14/10/2026: a foto é exibida INTEIRA. Com `cover` a moldura quadrada cortava
      as fotos verticais (caso da Dona Domingas, estátua em pé: perdia a base).
-     `contain` mostra a foto completa e o fundo creme faz o papel de passe-partout
-     nas laterais. */
+     Agora a moldura recebe a própria foto ao fundo, esmaecida, e a foto inteira
+     por cima — sem corte e sem faixa morta nas laterais. */
+  background-color: #efe0c6;
+  background-size: cover;
+  background-position: center;
+}
+
+.app .territorios-thumb::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background: rgba(241, 226, 201, 0.72);
+}
+
+.app .territorios-thumb-foto {
+  position: relative;
+
+  display: block;
+  width: 100%;
+  height: 100%;
+
   object-fit: contain;
-  background: #efe0c6;
 }
 
 .app .territorios-nome {
@@ -3832,14 +3855,37 @@ p.foto-credito {
 }
 
 .app .percurso-thumb {
+  position: relative;
+  overflow: hidden;
+  display: block;
+
   width: 92px;
   height: 92px;
   border-radius: 10px;
   border: 2px solid #8c5d21;
 
   /* mesma regra dos Territórios: foto inteira, sem corte (14/10/2026) */
+  background-color: #efe0c6;
+  background-size: cover;
+  background-position: center;
+}
+
+.app .percurso-thumb::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background: rgba(241, 226, 201, 0.72);
+}
+
+.app .percurso-thumb-foto {
+  position: relative;
+
+  display: block;
+  width: 100%;
+  height: 100%;
+
   object-fit: contain;
-  background: #efe0c6;
 }
 
 .app .percurso-nome {
