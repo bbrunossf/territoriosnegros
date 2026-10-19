@@ -2959,6 +2959,7 @@ a, a:visited, a:hover, a:active {
 .pagina-botoes--acoes {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 8px;
 
   margin-top: 16px;
@@ -2966,9 +2967,10 @@ a, a:visited, a:hover, a:active {
 
 .pagina-botoes--acoes > .pagina-botao {
   flex: 1 1 30%;
-  /* três por linha no celular; com um ou dois botões eles não esticam até a
-     largura toda (o que devolveria o peso visual que queremos evitar) */
-  max-width: calc((100% - 16px) / 3);
+  /* no máximo três por linha. Com dois botões eles ocupam meia linha cada e
+     ficam centralizados; com um, ele fica ao centro em meia linha — sem o vazio
+     grande à direita (14/10/2026). */
+  max-width: calc((100% - 8px) / 2);
   min-width: 92px;
 
   display: flex;
