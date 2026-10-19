@@ -48,9 +48,17 @@ function Icone({ nome }: { nome: "inicio" | "vitoria" | "conceito" | "rotas" | "
   }
 
   if (nome === "vitoria") {
+    // Punho erguido: mesmo símbolo do botão da página Presença Negra (14/10/2026).
+    // A estrela de quatro pontas não dizia nada sobre a página.
     return (
       <svg {...comum} fill="currentColor" stroke="none">
-        <path d="M12 2.6l2.3 6.1 6.1 2.3-6.1 2.3L12 19.4l-2.3-6.1L3.6 11l6.1-2.3z" />
+        <path d="M9 21.4v-5h6v5z" />
+        <path d="M7.6 16.6V9.9a2.7 2.7 0 0 1 2.7-2.7h3.4a2.7 2.7 0 0 1 2.7 2.7v6.7z" />
+        <rect x="7.9" y="5.2" width="2.1" height="4" rx="1.05" />
+        <rect x="10.3" y="4.7" width="2.1" height="4.5" rx="1.05" />
+        <rect x="12.7" y="4.9" width="2.1" height="4.3" rx="1.05" />
+        <rect x="15" y="5.6" width="2.1" height="3.6" rx="1.05" />
+        <path d="M7.6 11.2H6.1a1.7 1.7 0 0 0-.1 3.4h1.6z" />
       </svg>
     );
   }

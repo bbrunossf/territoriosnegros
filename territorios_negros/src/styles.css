@@ -3996,7 +3996,20 @@ p.foto-credito {
   height: 18px;
 }
 
-/* ── Cabeçalho do app: ícone de casa igual ao do menu e título maior ── */
+/* ── Símbolo da Presença Negra: punho, maior que os demais ──
+   Pedido da autoria (14/10/2026): o símbolo precisa ser maior e mais
+   representativo. O punho é cheio, então suporta ser o maior da faixa sem
+   virar mancha. */
+
+.pagina-botoes--acoes .pagina-botao[href="/presenca-negra"] svg {
+  width: 30px;
+  height: 30px;
+}
+
+.bottom-nav a[href="/presenca-negra"] svg {
+  width: 26px;
+  height: 26px;
+}
 
 .header-home-btn {
   display: inline-flex;
