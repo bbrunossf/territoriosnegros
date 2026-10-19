@@ -3753,6 +3753,13 @@ p.foto-credito {
   height: 92px;
   border-radius: 10px;
   border: 2px solid #8c5d21;
+
+  /* 14/10/2026: a foto é exibida INTEIRA. Com `cover` a moldura quadrada cortava
+     as fotos verticais (caso da Dona Domingas, estátua em pé: perdia a base).
+     `contain` mostra a foto completa e o fundo creme faz o papel de passe-partout
+     nas laterais. */
+  object-fit: contain;
+  background: #efe0c6;
 }
 
 .app .territorios-nome {
@@ -3829,6 +3836,10 @@ p.foto-credito {
   height: 92px;
   border-radius: 10px;
   border: 2px solid #8c5d21;
+
+  /* mesma regra dos Territórios: foto inteira, sem corte (14/10/2026) */
+  object-fit: contain;
+  background: #efe0c6;
 }
 
 .app .percurso-nome {
