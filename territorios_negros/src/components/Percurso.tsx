@@ -69,10 +69,7 @@ export default function Percurso() {
           className={`percurso-item${i % 2 === 1 ? " percurso-item--alternado" : ""}`}
           onClick={() => navigate(`/percurso/${roteiro.id}/${i}`)}
         >
-          <span
-            className="percurso-thumb"
-            style={{ backgroundImage: `url(${t.imagem})` }}
-          >
+          <span className="percurso-thumb">
             <img src={t.imagem} alt="" className="percurso-thumb-foto" />
           </span>
 

@@ -51,12 +51,9 @@ export default function Territorios() {
                   onClick={() => navigate(`/territorio/${t.id}`)}
                 >
                   {t.imagem ? (
-                    /* moldura com o próprio foto ao fundo, esmaecida: a foto
-                       aparece inteira por cima, sem corte e sem faixa morta */
-                    <span
-                      className="territorios-thumb"
-                      style={{ backgroundImage: `url(${t.imagem})` }}
-                    >
+                    /* moldura com fundo creme (passe-partout) e a foto INTEIRA
+                       dentro — as verticais não são mais cortadas */
+                    <span className="territorios-thumb">
                       <img src={t.imagem} alt="" className="territorios-thumb-foto" />
                     </span>
                   ) : (
