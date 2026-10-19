@@ -2951,6 +2951,48 @@ a, a:visited, a:hover, a:active {
   margin-top: 22px;
 }
 
+/* Atalhos do topo das telas de conteúdo — "chips" de contorno, lado a lado.
+   14/10/2026: eram botões cheios de 100% de largura, e nas listas (Territórios,
+   Rotas, Personalidades) eles venciam a disputa visual com os cartões e as fotos,
+   levando o visitante a Apoiadores em vez do território logo abaixo. Botão de
+   navegação no topo agora é discreto; a ação principal da tela segue cheia
+   (é só uma por tela) e os botões do FIM da página continuam cheios. */
+.pagina-botoes--chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.pagina-botoes--chips .pagina-botao {
+  width: auto;
+  flex: 0 1 auto;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 38px;
+  padding: 8px 15px;
+
+  border: 1.5px solid rgba(143, 97, 29, 0.55);
+  border-radius: 999px;
+
+  background: rgba(255, 250, 240, 0.92);
+  color: #4a2d12;
+
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: 0.1px;
+
+  box-shadow: none;
+}
+
+.pagina-botoes--chips .pagina-botao:active {
+  background: rgba(240, 217, 169, 0.7);
+}
+
 /* Atalho do TCC logo abaixo do título, na Base teórica (pedido da autoria,
    02/10/2026 — antes esse acesso só existia no fim da página). */
 .rodape-topo {
@@ -3326,6 +3368,10 @@ p.foto-credito {
   width: 96px;
   height: 96px;
   border-radius: 12px;
+
+  /* a foto é o conteúdo: sombra leve para ela se destacar do fundo, agora que os
+     atalhos do topo ficaram discretos (14/10/2026) */
+  box-shadow: 0 4px 12px rgba(94, 60, 20, 0.18);
 }
 
 /* ── 2. Nome do território em caixa alta ── */

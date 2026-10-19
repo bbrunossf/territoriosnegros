@@ -110,8 +110,13 @@ export default function BotoesDaTela({ tela, posicao = "final", extras = [] }: P
 
   if (ids.length === 0 && extrasFiltrados.length === 0) return null;
 
+  // No topo os botões são **atalhos**, não a ação principal da tela: saem como
+  // "chips" (contorno, uma linha, lado a lado). Antes eram botões cheios de largura
+  // total e, nas listas, disputavam com o conteúdo — os visitantes iam para
+  // Apoiadores em vez de tocar no território logo abaixo (relato de 14/10/2026).
+  // No final da página continuam botões cheios: ali não há conteúdo competindo.
   return (
-    <div className="pagina-botoes">
+    <div className={posicao === "topo" ? "pagina-botoes pagina-botoes--chips" : "pagina-botoes"}>
       {ids.map((id) => (
         <Botao key={id} id={id} />
       ))}
