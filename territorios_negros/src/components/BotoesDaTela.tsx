@@ -21,7 +21,6 @@ import {
 import type { BotaoConteudo } from "../data/paginas";
 import {
   DESTINO_DA_TELA,
-  TELAS_DO_APP,
   atalhosDaTela,
   catalogoPorId,
   filtrarPropriaTela,
@@ -97,15 +96,21 @@ type Props = {
 export default function BotoesDaTela({ tela, posicao = "final", extras = [] }: Props) {
   const { config } = useTerritorios();
 
-  // Cada tela declara onde aceita botões (topo, final ou os dois). Sem esta
-  // checagem, uma tela que só tem "final" ainda desenhava a lista padrão do topo
-  // e os mesmos botões apareciam duas vezes na página — foi o que aconteceu em
-  // Rotas (14/10/2026).
-  const declarados = TELAS_DO_APP.find((t) => t.id === tela)?.slots ?? [];
+  const destinoDaTela = DESTINO_DA_TELA[tela] ?? "";
 
-  if (!declarados.includes(posicao)) return null;
+  const ids = filtrarPropriaTela(atalhosDaTela(config, tela, posicao), destinoDaTela);
 
-  const ids = filtrarPropriaTela(atalhosDaTela(config, tela, posicao), DESTINO_DA_TELA[tela] ?? "");
+  // Duplicação (14/10/2026, Rotas): quando a mesma lista está gravada em "topo"
+  // e em "final", a página desenhava os mesmos botões duas vezes. Se a lista do
+  // fim é idêntica à do topo, o grupo do fim não entra — quem manda é o topo.
+  if (posicao === "final" && ids.length > 0) {
+    const doTopo = filtrarPropriaTela(atalhosDaTela(config, tela, "topo"), destinoDaTela);
+
+    const igual =
+      doTopo.length === ids.length && doTopo.every((id, i) => id === ids[i]);
+
+    if (igual) return null;
+  }
 
   const destinos = ids.map((id) => catalogoPorId(id)?.destino ?? "");
   const nomes = lerNomesDeBotoes(config[CHAVE_BOTOES_INTRO]);
