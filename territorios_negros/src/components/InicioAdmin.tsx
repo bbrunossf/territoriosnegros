@@ -257,7 +257,7 @@ export default function InicioAdmin() {
 
           <p className="admin-ajuda">
             Envie aqui a imagem da logo <b>deste tour</b> — ela aparece no topo da página
-            do evento, no mesmo tamanho reduzido da tela de Percursos. Publica ao clicar
+            do evento, no mesmo tamanho reduzido da tela de Rotas. Publica ao clicar
             em <b>Salvar</b>. Se você não enviar nenhuma, o app usa a logo da rota
             escolhida no fim deste formulário.
           </p>
@@ -343,7 +343,7 @@ export default function InicioAdmin() {
         <label className="admin-campo">
           <b>Rota do evento (opcional)</b>
           <span className="admin-campo-dica">
-            Serve para o link “ver o percurso completo desta rota” na página do evento e,
+            Serve para o link “ver a rota completa” na página do evento e,
             se você não enviou uma logo própria acima, é a logo usada nesta página.
           </span>
           <select value={rotaId} onChange={(e) => setRotaId(e.target.value)}>

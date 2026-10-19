@@ -7,9 +7,9 @@ export interface TituloDeLista {
 }
 
 export const LISTA_ROTAS_PADRAO: TituloDeLista = {
-  titulo: "Percursos",
+  titulo: "Rotas",
   subtitulo:
-    "Escolha a rota conforme o contexto da visita, o público e as condições do percurso.",
+    "Escolha a rota conforme o contexto da visita, o público e as condições da rota.",
 };
 
 export const LISTA_TERRITORIOS_PADRAO: TituloDeLista = {

@@ -973,7 +973,7 @@ export default function PaginasAdmin() {
                   <b>Texto do link</b>
                   <input
                     type="text"
-                    placeholder="Ex: Ver o mapa do percurso"
+                    placeholder="Ex: Ver o mapa da rota"
                     value={link.texto}
                     onChange={(e) => setLink(i, j, "texto", e.target.value)}
                   />
@@ -1111,7 +1111,7 @@ export default function PaginasAdmin() {
               <b>Texto do botão</b>
               <input
                 type="text"
-                placeholder="Ex: Iniciar percurso"
+                placeholder="Ex: Iniciar a rota"
                 value={botao.texto}
                 onChange={(e) => setBotao(i, "texto", e.target.value)}
               />

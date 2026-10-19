@@ -42,7 +42,7 @@ export interface ItemDoMenu {
 export const CATALOGO_DE_PAGINAS: PaginaDoCatalogo[] = [
   { caminho: "/", nome: "Página inicial", icone: "⌂" },
   { caminho: "/intro", nome: "Antes de caminhar", icone: "⟲" },
-  { caminho: "/roteiros", nome: "Rotas (percursos)", icone: "▱" },
+  { caminho: "/roteiros", nome: "Rotas", icone: "▱" },
   { caminho: "/territorios", nome: "Territórios", icone: "●" },
   { caminho: "/conceito", nome: "Base teórica", icone: "◎" },
   { caminho: "/vitoria", nome: "A cidade de Vitória - ES", icone: "◈" },

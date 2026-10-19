@@ -481,7 +481,7 @@ export default function RoteirosAdmin() {
             </span>
             <input
               type="text"
-              placeholder="Ex: Percursos"
+              placeholder="Ex: Rotas"
               value={tituloPagina.titulo}
               onChange={(e) =>
                 setTituloPagina({ ...tituloPagina, titulo: e.target.value })
@@ -531,7 +531,7 @@ export default function RoteirosAdmin() {
           <label className="admin-campo">
             <b>Nome da rota *</b>
             <span className="admin-campo-dica">
-              Título da tela da rota e do cartão na tela Percursos.
+              Título da tela da rota e do cartão na tela Rotas.
             </span>
             <input
               type="text"
@@ -559,7 +559,7 @@ export default function RoteirosAdmin() {
           <label className="admin-campo">
             <b>Ordem na lista de rotas</b>
             <span className="admin-campo-dica">
-              Menor número aparece antes na tela Percursos.
+              Menor número aparece antes na tela Rotas.
             </span>
             <input
               type="number"
@@ -578,7 +578,7 @@ export default function RoteirosAdmin() {
           <span className="admin-check-texto">
             <b>Visível para os visitantes</b>
             <span className="admin-campo-dica">
-              Desmarcada, a rota sai da tela Percursos do app (nada é apagado).
+              Desmarcada, a rota sai da tela Rotas do app (nada é apagado).
             </span>
           </span>
         </label>
@@ -604,7 +604,7 @@ export default function RoteirosAdmin() {
           <b>Slogan</b>
           <span className="admin-campo-dica">
             Frase de abertura da rota (slogan e/ou citação) — aparece logo abaixo do nome,
-            tanto no cartão da tela Percursos quanto no topo da página da rota. Não é
+            tanto no cartão da tela Rotas quanto no topo da página da rota. Não é
             obrigatório: em branco, nada aparece. Linha em branco separa parágrafos,
             **duas estrelas** deixam em negrito.
           </span>
@@ -625,7 +625,7 @@ export default function RoteirosAdmin() {
             “Informação de acessibilidade em revisão.”
           </span>
           <textarea
-            placeholder="Ex: Percurso plano, com calçamento irregular em dois trechos"
+            placeholder="Ex: Rota plana, com calçamento irregular em dois trechos"
             value={form.acessibilidade}
             onChange={(e) => setCampo("acessibilidade", e.target.value)}
             required

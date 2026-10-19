@@ -73,12 +73,12 @@ export function nomeAmigavel(rota: string): string {
     roteiros: "Lista de rotas",
     territorios: "Lista de territórios",
     evento: "Página do evento",
-    fim: "Fim do percurso",
+    fim: "Fim da rota",
   };
 
   if (partes.length === 1) return nomes[partes[0]] ?? `/${partes[0]}`;
 
-  if (partes[0] === "percurso") return `Percurso da rota ${partes[1]}`;
+  if (partes[0] === "percurso") return `Rota ${partes[1]}`;
   if (partes[0] === "territorio") return `Território: ${partes[1]}`;
 
   return `/${partes.join("/")}`;

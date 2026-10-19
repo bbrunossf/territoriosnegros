@@ -26,7 +26,7 @@ export const TELAS_BOTAO: { chave: string; nome: string }[] = [
   { chave: "intro", nome: "Introdução" },
   { chave: "conceito", nome: "Conceito" },
   { chave: "vitoria", nome: "A cidade de Vitória" },
-  { chave: "roteiros", nome: "Roteiros (lista)" },
+  { chave: "roteiros", nome: "Rotas (lista)" },
   { chave: "percurso", nome: "Página de uma rota" },
   { chave: "territorios", nome: "Territórios (lista)" },
   { chave: "territorio", nome: "Ficha de um território" },

@@ -78,7 +78,7 @@ export const CATALOGO_DE_NAVEGACAO: BotaoDoCatalogo[] = [
   },
   {
     id: "roteiros",
-    padrao: "Roteiros",
+    padrao: "Rotas",
     destino: "/roteiros",
     idDoNome: "roteiros",
     caminhoNoIntro: "/roteiros",

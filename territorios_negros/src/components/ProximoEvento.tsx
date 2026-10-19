@@ -35,7 +35,7 @@ export default function ProximoEvento() {
         </p>
 
         <Link className="outline roteiro-btn" to="/roteiros">
-          Ver os percursos
+          Ver as rotas
         </Link>
       </>
     );
@@ -117,7 +117,7 @@ export default function ProximoEvento() {
           {/* Antes era um link solto no meio do texto: a autoria não conseguia
               bater o olho e ver que ali havia um caminho. */}
           <Link className="botao-secundario pagina-botao" to={`/percurso/${rota.id}`}>
-            ver o percurso completo desta rota ›
+            ver a rota completa ›
           </Link>
         </div>
       )}

@@ -1140,7 +1140,7 @@ export default function TerritoriosAdmin() {
             <b>Visível para os visitantes</b>
             <span className="admin-campo-dica">
               Desmarcado, o território sai da lista e do percurso do dia (nada é
-              apagado); quem abrir um link antigo lê “não faz parte do percurso de
+              apagado); quem abrir um link antigo lê “não faz parte da rota de
               hoje”.
             </span>
           </span>

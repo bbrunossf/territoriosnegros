@@ -88,7 +88,7 @@ export const GRUPOS_DE_BOTOES: GrupoDeBotoes[] = [
         exemplo: "Ex: Negritude capixaba",
       },
       { id: "/conceito", padrao: "Conceito", destino: "/conceito", onde: "terceiro item da barra", exemplo: "Ex: Fundamentos" },
-      { id: "/roteiros", padrao: "Rotas", destino: "/roteiros", onde: "quarto item da barra", exemplo: "Ex: Percursos" },
+      { id: "/roteiros", padrao: "Rotas", destino: "/roteiros", onde: "quarto item da barra", exemplo: "Ex: Rotas" },
       {
         id: "/territorios",
         padrao: "Territórios",
