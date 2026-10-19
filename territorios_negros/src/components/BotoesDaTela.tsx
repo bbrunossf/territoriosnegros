@@ -21,6 +21,7 @@ import {
 import type { BotaoConteudo } from "../data/paginas";
 import {
   DESTINO_DA_TELA,
+  TELAS_DO_APP,
   atalhosDaTela,
   catalogoPorId,
   filtrarPropriaTela,
@@ -95,6 +96,14 @@ type Props = {
 
 export default function BotoesDaTela({ tela, posicao = "final", extras = [] }: Props) {
   const { config } = useTerritorios();
+
+  // Cada tela declara onde aceita botões (topo, final ou os dois). Sem esta
+  // checagem, uma tela que só tem "final" ainda desenhava a lista padrão do topo
+  // e os mesmos botões apareciam duas vezes na página — foi o que aconteceu em
+  // Rotas (14/10/2026).
+  const declarados = TELAS_DO_APP.find((t) => t.id === tela)?.slots ?? [];
+
+  if (!declarados.includes(posicao)) return null;
 
   const ids = filtrarPropriaTela(atalhosDaTela(config, tela, posicao), DESTINO_DA_TELA[tela] ?? "");
 

@@ -37,8 +37,19 @@ const REGRAS: Array<[RegExp, string]> = [
   [/^\/fim\/?$/, "fim"],
 ];
 
-/** Telas que já desenham os próprios botões finais. */
-const JA_DESENHAM = new Set(["intro", "conceito", "vitoria", "presenca-negra"]);
+/** Telas que já desenham os próprios botões finais — precisam ficar de fora
+ *  daqui, senão os mesmos botões aparecem duas vezes no fim da página. */
+const JA_DESENHAM = new Set([
+  "intro",
+  "conceito",
+  "vitoria",
+  "presenca-negra",
+  "roteiros",
+  "territorios",
+  "personalidades",
+  "apoiadores",
+  "contato",
+]);
 
 /** Telas sem espaço para botões de navegação. */
 const SEM_ESPACO = new Set(["inicio-nao-usada"]);
