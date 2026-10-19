@@ -64,7 +64,9 @@ export default function Percurso() {
       {pontos.map((t, i) => (
         <button
           key={t.id}
-          className="percurso-item"
+          /* mesmo padrão da página Territórios (14/10/2026): cartão com borda e
+             fundo alternado — os pontos da rota são a mesma lista de territórios */
+          className={`percurso-item${i % 2 === 1 ? " percurso-item--alternado" : ""}`}
           onClick={() => navigate(`/percurso/${roteiro.id}/${i}`)}
         >
           <img src={t.imagem} alt="" className="percurso-thumb" />
