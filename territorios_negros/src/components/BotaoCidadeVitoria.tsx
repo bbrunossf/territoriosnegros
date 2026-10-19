@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 
 import { useTerritorios } from "../context/useTerritorios";
 import { rotuloDoCatalogo } from "../data/botoesPorTela";
+import IconeDeBotao from "./IconeDeBotao";
 
 type Props = {
   id?: string;
@@ -17,6 +18,7 @@ export default function BotaoCidadeVitoria({ id = "cidade-de-vitoria", texto }: 
 
   return (
     <Link className="btn pagina-botao" to="/vitoria">
+      <IconeDeBotao id="cidade-de-vitoria" />
       {texto?.trim() || rotuloDoCatalogo(config, id, "A cidade de Vitória")}
     </Link>
   );

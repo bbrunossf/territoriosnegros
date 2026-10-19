@@ -2951,51 +2951,58 @@ a, a:visited, a:hover, a:active {
   margin-top: 22px;
 }
 
-/* Atalhos do topo das telas de conteúdo — "chips" de contorno, lado a lado.
-   14/10/2026: eram botões cheios de 100% de largura, e nas listas (Territórios,
-   Rotas, Personalidades) eles venciam a disputa visual com os cartões e as fotos,
-   levando o visitante a Apoiadores em vez do território logo abaixo. Botão de
-   navegação no topo agora é discreto; a ação principal da tela segue cheia
-   (é só uma por tela) e os botões do FIM da página continuam cheios. */
-.pagina-botoes--chips {
+/* Atalhos e ações de navegação — modelo de "barra de ações" (14/10/2026, referência
+   da autoria): símbolo em cima, nome embaixo, mais de um por linha. O ícone diz o
+   que o botão faz antes da leitura, e a faixa fica compacta para não disputar com
+   o conteúdo da página (queixa anterior: os botões cheios venciam os territórios).
+   Vale no topo e no fim das páginas — quem desenha é o BotoesDaTela. */
+.pagina-botoes--acoes {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+
   margin-top: 16px;
 }
 
-.pagina-botoes--chips .pagina-botao {
-  width: auto;
-  flex: 0 1 auto;
+.pagina-botoes--acoes > .pagina-botao {
+  flex: 1 1 30%;
+  min-width: 92px;
 
-  display: inline-flex;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  gap: 7px;
 
-  min-height: 40px;
-  padding: 9px 16px;
+  padding: 11px 8px 10px;
 
-  /* continua secundário, mas precisa LER como botão: borda forte, fundo cheio
-     e sombra de apoio (a versão anterior, só contorno claro, não parecia
-     clicável — relato de 14/10/2026) */
-  border: 2px solid #8f611d;
-  border-radius: 999px;
+  border: 1px solid rgba(143, 97, 29, 0.38);
+  border-radius: 12px;
 
-  background: #fffaf0;
+  background: #fdf8ef;
   color: #3a2410;
 
-  font-size: 13px;
-  font-weight: 900;
-  line-height: 1.15;
-  letter-spacing: 0.1px;
+  font-family: Georgia, serif;
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
 
-  box-shadow: 0 2px 0 rgba(143, 97, 29, 0.35);
+  box-shadow: 0 1px 3px rgba(94, 60, 20, 0.08);
 }
 
-.pagina-botoes--chips .pagina-botao:active {
-  background: #f6e3bd;
+.pagina-botoes--acoes > .pagina-botao svg {
+  width: 24px;
+  height: 24px;
+  flex: none;
+
+  color: #8f611d;
+}
+
+.pagina-botoes--acoes > .pagina-botao:active {
+  background: #f3e2c4;
   box-shadow: none;
-  transform: translateY(1px);
 }
 
 /* Atalho do TCC logo abaixo do título, na Base teórica (pedido da autoria,

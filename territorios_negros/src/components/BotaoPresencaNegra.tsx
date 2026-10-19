@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 
 import { useTerritorios } from "../context/useTerritorios";
 import { rotuloDoCatalogo } from "../data/botoesPorTela";
+import IconeDeBotao from "./IconeDeBotao";
 
 type Props = {
   id?: string;
@@ -17,6 +18,7 @@ export default function BotaoPresencaNegra({ id = "presenca-negra", texto }: Pro
 
   return (
     <Link className="btn pagina-botao" to="/presenca-negra">
+      <IconeDeBotao id="presenca-negra" />
       {texto?.trim() || rotuloDoCatalogo(config, id, "Presença Negra")}
     </Link>
   );

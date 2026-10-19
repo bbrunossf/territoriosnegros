@@ -7,12 +7,14 @@ import { Link } from "react-router-dom";
 
 import { useTerritorios } from "../context/useTerritorios";
 import { rotuloDoCatalogo } from "../data/botoesPorTela";
+import IconeDeBotao from "./IconeDeBotao";
 
 export default function BotaoBaseTeorica() {
   const { config } = useTerritorios();
 
   return (
     <Link className="btn pagina-botao" to="/conceito">
+      <IconeDeBotao id="base-teorica" />
       {rotuloDoCatalogo(config, "base-teorica", "Base teórica")}
     </Link>
   );

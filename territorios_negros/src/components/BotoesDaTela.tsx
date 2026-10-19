@@ -34,6 +34,7 @@ import BotaoCidadeVitoria from "./BotaoCidadeVitoria";
 import BotaoPersonalidades from "./BotaoPersonalidades";
 import BotaoPresencaNegra from "./BotaoPresencaNegra";
 import BotaoTerritorios from "./BotaoTerritorios";
+import IconeDeBotao from "./IconeDeBotao";
 
 /** Um botão do catálogo, já com o nome que a autoria gravou. */
 function Botao({ id }: { id: string }) {
@@ -65,6 +66,7 @@ function Botao({ id }: { id: string }) {
       // não há componente próprio: é o mesmo botão do app, com o nome do catálogo
       return (
         <Link className="btn pagina-botao" to="/roteiros">
+          <IconeDeBotao id="roteiros" />
           {nomeDoCatalogo(config, entrada)}
         </Link>
       );
@@ -72,6 +74,7 @@ function Botao({ id }: { id: string }) {
     case "inicio":
       return (
         <Link className="btn pagina-botao" to="/">
+          <IconeDeBotao id="inicio" />
           {nomeDoCatalogo(config, entrada)}
         </Link>
       );
@@ -110,13 +113,12 @@ export default function BotoesDaTela({ tela, posicao = "final", extras = [] }: P
 
   if (ids.length === 0 && extrasFiltrados.length === 0) return null;
 
-  // No topo os botões são **atalhos**, não a ação principal da tela: saem como
-  // "chips" (contorno, uma linha, lado a lado). Antes eram botões cheios de largura
-  // total e, nas listas, disputavam com o conteúdo — os visitantes iam para
-  // Apoiadores em vez de tocar no território logo abaixo (relato de 14/10/2026).
-  // No final da página continuam botões cheios: ali não há conteúdo competindo.
+  // Modelo de "barra de ações" (14/10/2026, referência da autoria): símbolo em
+  // cima, nome embaixo, vários por linha, separados por fios finos. O ícone diz o
+  // que o botão faz antes da leitura e a faixa não disputa espaço com o conteúdo —
+  // vale no topo e no fim das páginas.
   return (
-    <div className={posicao === "topo" ? "pagina-botoes pagina-botoes--chips" : "pagina-botoes"}>
+    <div className="pagina-botoes pagina-botoes--acoes">
       {ids.map((id) => (
         <Botao key={id} id={id} />
       ))}
@@ -127,6 +129,7 @@ export default function BotoesDaTela({ tela, posicao = "final", extras = [] }: P
           className={b.estilo === "outline" ? "outline pagina-botao" : "btn pagina-botao"}
           to={b.url}
         >
+          <IconeDeBotao id="link" />
           {rotuloDeBotaoDaPagina(config, b.url ?? "", b.texto?.trim() || nomes[b.url] || b.url)}
         </Link>
       ))}

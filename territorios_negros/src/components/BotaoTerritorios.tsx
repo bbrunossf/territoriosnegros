@@ -5,12 +5,14 @@ import { Link } from "react-router-dom";
 
 import { useTerritorios } from "../context/useTerritorios";
 import { rotuloDoCatalogo } from "../data/botoesPorTela";
+import IconeDeBotao from "./IconeDeBotao";
 
 export default function BotaoTerritorios() {
   const { config } = useTerritorios();
 
   return (
     <Link className="btn pagina-botao" to="/territorios">
+      <IconeDeBotao id="territorios" />
       {rotuloDoCatalogo(config, "territorios", "Territórios")}
     </Link>
   );
