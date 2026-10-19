@@ -699,16 +699,21 @@ a, a:visited, a:hover, a:active {
   width: 100%;
   max-width: 430px;
 
-  background: rgba(9, 5, 4, 0.97);
+  background: rgba(9, 5, 4, 0.98);
 
   display: grid;
   grid-template-columns: repeat(6, 1fr);
+  align-items: start;
 
-  padding: 9px 3px 12px;
+  /* 14/10/2026: barra mais alta e com borda dourada visível — os visitantes
+     não percebiam o menu. O respiro de baixo soma a área segura do iPhone. */
+  padding: 8px 2px 10px;
+  padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
 
   z-index: 20;
 
-  border-top: 1px solid rgba(197, 139, 42, 0.5);
+  border-top: 2px solid rgba(214, 158, 52, 0.9);
+  box-shadow: 0 -8px 22px rgba(0, 0, 0, 0.38);
 
   backdrop-filter: blur(8px);
   text-decoration: none;
@@ -717,16 +722,57 @@ a, a:visited, a:hover, a:active {
 .bottom-nav-btn {
   background: transparent;
   border: 0;
+  border-radius: 10px;
 
-  color: #fff1d6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+
+  padding: 4px 2px 3px;
+
+  color: #fff8e8;
 
   font-family: Georgia, serif;
-  font-size: 10.5px;
-  line-height: 1.25;
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: 0.1px;
+  text-align: center;
+  text-decoration: none;
 
   cursor: pointer;
 
-  opacity: 0.92;
+  opacity: 1;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ícones: SVG de 22px em dourado, bem acima do que era antes (caractere de
+   texto no corpo de 10,5px) */
+.bottom-nav-btn svg {
+  width: 22px;
+  height: 22px;
+  color: #f2cf95;
+}
+
+.bottom-nav-btn:active {
+  background: rgba(242, 207, 149, 0.14);
+}
+
+/* item da tela atual: cor mais viva, fundo suave e traço um pouco mais grosso */
+.bottom-nav-btn--ativo {
+  color: #ffdda4;
+  background: rgba(242, 207, 149, 0.1);
+}
+
+.bottom-nav-btn--ativo svg {
+  color: #ffdda4;
+  stroke-width: 2.3;
+}
+
+.bottom-nav-rotulo {
+  display: block;
+  text-wrap: balance;
 }
 
 
@@ -1286,7 +1332,8 @@ a, a:visited, a:hover, a:active {
 }
 
 .bottom-nav-btn {
-  font-size: 10.5px;
+  /* o corpo da legenda é definido no bloco principal da barra (12,5px) */
+  font-size: 12.5px;
 }
 
 /* Submenu "Mais": páginas que não têm item próprio na barra (Apoiadores,
@@ -1604,10 +1651,12 @@ a, a:visited, a:hover, a:active {
   flex-direction: column;
   gap: 6px;
 
-  /* o rodapé de 76px deixa a barra de navegação do app livre; os blocos acima
-     dele foram compactados para caberem na faixa que a autoria autorizou sobre a
-     arte (o palácio e as árvores) sem cobrir a logo nem o título do cartaz. */
-  padding: 10px 22px 76px;
+  /* o rodapé de 88px deixa a barra de navegação do app livre — a barra ficou
+     mais alta em 14/10/2026 (legibilidade do menu), então o respiro cresceu
+     junto; os blocos acima foram compactados para caberem na faixa que a autoria
+     autorizou sobre a arte (o palácio e as árvores) sem cobrir a logo nem o
+     título do cartaz. */
+  padding: 10px 22px 88px;
   background: transparent;
 }
 
