@@ -33,33 +33,42 @@ export default function Territorios() {
           Apoiadores (ordem pedida em 02/10/2026). */}
       <BotoesDaTela tela="territorios" posicao="topo" />
 
-      {grupos.map((g) => (
-        <section key={g.id}>
-          <SectionHeader title={g.titulo} />
+      {(() => {
+        // contador contínuo: a alternância de fundo não reinicia em cada grupo
+        let indice = 0;
 
-          {g.territorios.map((t) => (
-            <button
-              key={t.id}
-              className="territorios-item"
-              onClick={() => navigate(`/territorio/${t.id}`)}
-            >
-              {t.imagem ? (
-                <img src={t.imagem} alt="" className="territorios-thumb" />
-              ) : (
-                <span className="territorios-thumb territorios-thumb-vazia">●</span>
-              )}
+        return grupos.map((g) => (
+          <section key={g.id}>
+            <SectionHeader title={g.titulo} />
 
-              <span>
-                <b className="territorios-nome">{t.nome}</b>
-                <br />
-                <small className="territorios-palavra">{t.palavra}</small>
-              </span>
+            {g.territorios.map((t) => {
+              const alternado = indice++ % 2 === 1;
 
-              <b className="territorios-arrow">›</b>
-            </button>
-          ))}
-        </section>
-      ))}
+              return (
+                <button
+                  key={t.id}
+                  className={`territorios-item${alternado ? " territorios-item--alternado" : ""}`}
+                  onClick={() => navigate(`/territorio/${t.id}`)}
+                >
+                  {t.imagem ? (
+                    <img src={t.imagem} alt="" className="territorios-thumb" />
+                  ) : (
+                    <span className="territorios-thumb territorios-thumb-vazia">●</span>
+                  )}
+
+                  <span>
+                    <b className="territorios-nome">{t.nome}</b>
+                    <br />
+                    <small className="territorios-palavra">{t.palavra}</small>
+                  </span>
+
+                  <b className="territorios-arrow">›</b>
+                </button>
+              );
+            })}
+          </section>
+        ));
+      })()}
 
       {!carregando && grupos.length === 0 && (
         <p className="aviso-vazio">
