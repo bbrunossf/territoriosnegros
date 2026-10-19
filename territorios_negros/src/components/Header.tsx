@@ -2,6 +2,8 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
+import IconeDeBotao from "./IconeDeBotao";
+
 export default function Header() {
   /**
    * Publica a própria altura na variável CSS --header-altura.
@@ -33,7 +35,11 @@ export default function Header() {
 
   return (
     <header className="header">
-      <Link to="/" className="header-home-btn">⌂</Link>
+      {/* mesmo símbolo de casa do menu fixo de baixo (14/10/2026): o glifo "⌂"
+          era quase imperceptível e destoava dos ícones da barra */}
+      <Link to="/" className="header-home-btn" aria-label="Ir para a tela inicial">
+        <IconeDeBotao id="inicio" />
+      </Link>
 
       <Link to="/" className="header-brand">
         <b>Territórios Negros</b>

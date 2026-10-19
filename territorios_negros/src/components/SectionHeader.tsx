@@ -7,8 +7,10 @@ export default function SectionHeader({
   title,
 }: Props) {
   return (
-    <h3 className="section-header">
-      {title}
-    </h3>
+    <div className="section-caixa">
+      <h3 className="section-header">
+        {title}
+      </h3>
+    </div>
   );
 }

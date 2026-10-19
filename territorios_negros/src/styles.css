@@ -3918,3 +3918,80 @@ p.foto-credito {
   }
 }
 
+/* ══════════════════════════════════════════════════════════════════
+   SEÇÕES DAS PÁGINAS DENTRO DE UM RETÂNGULO (14/10/2026)
+   ══════════════════════════════════════════════════════════════════
+   Pedido da autoria: "cada seção de cada página seria melhor exibida se tivermos
+   o título e o texto explicativo dentro do retângulo com bordas douradas e fundo
+   mais claro que o papel de parede da página". Antes o título e o texto ficavam
+   soltos sobre o fundo #f7efdf; agora cada seção abre com um painel próprio. */
+
+.topic-caixa,
+.section-caixa {
+  border: 1.5px solid rgba(143, 97, 29, 0.55);
+  border-radius: 14px;
+
+  background: #fdf8ef; /* mais claro que o papel de parede (#f7efdf) */
+
+  padding: 13px 15px;
+
+  box-shadow: 0 2px 7px rgba(94, 60, 20, 0.09);
+}
+
+.topic-caixa .topic-line {
+  margin: 9px 0 0;
+}
+
+.topic-caixa .texto-paragrafo:first-of-type {
+  margin-top: 11px;
+}
+
+.topic-caixa .texto-paragrafo:last-child {
+  margin-bottom: 0;
+}
+
+.section-caixa {
+  margin-top: 26px;
+  padding: 10px 14px;
+}
+
+.section-caixa .section-header {
+  margin: 0;
+}
+
+/* ── Cabeçalho do app: ícone de casa igual ao do menu e título maior ── */
+
+.header-home-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  left: 10px;
+  top: 8px;
+  padding: 4px;
+}
+
+.header-home-btn svg {
+  width: 26px;
+  height: 26px;
+
+  color: #f2cf95;
+}
+
+.header-home-btn:active svg {
+  color: #ffdda4;
+}
+
+.app .header-brand b {
+  font-size: 21px;
+  letter-spacing: 0.2px;
+  line-height: 1.1;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.55);
+}
+
+.app .header-brand span {
+  font-size: 12.5px;
+  letter-spacing: 1.8px;
+  font-weight: 700;
+}
+

@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { Children, isValidElement, type ReactNode } from "react";
 
 type Props = {
   icon: string;
@@ -17,19 +17,47 @@ export default function Topic({
   className,
   titleClassName,
 }: Props) {
+  /**
+   * O título e o texto explicativo da seção ficam dentro de um retângulo com
+   * borda dourada e fundo mais claro que o papel de parede (pedido da autoria,
+   * 14/10/2026): as seções deixam de ficar "soltas" no fundo da página.
+   *
+   * Os parágrafos que abrem a seção são os explicativos e entram na caixa. O que
+   * vem depois (listas, caixas de destaque, fotos, marcos) continua fora, para
+   * não aninhar cartão dentro de cartão.
+   */
+  const filhos = Children.toArray(children);
+
+  let corte = 0;
+
+  while (
+    corte < filhos.length &&
+    isValidElement(filhos[corte]) &&
+    (filhos[corte] as { type?: unknown }).type === "p"
+  ) {
+    corte += 1;
+  }
+
+  const explicacao = filhos.slice(0, corte);
+  const resto = filhos.slice(corte);
+
   return (
     <section className={`topic ${className ?? ""}`.trim()}>
-      <h3 className={`topic-title ${titleClassName ?? ""}`.trim()}>
-        <span className="topic-icon">
-          {icon}
-        </span>
+      <div className="topic-caixa">
+        <h3 className={`topic-title ${titleClassName ?? ""}`.trim()}>
+          <span className="topic-icon">
+            {icon}
+          </span>
 
-        {title}
-      </h3>
+          {title}
+        </h3>
 
-      <div className="topic-line" />
+        <div className="topic-line" />
 
-      {children}
+        {explicacao}
+      </div>
+
+      {resto}
     </section>
   );
 }
