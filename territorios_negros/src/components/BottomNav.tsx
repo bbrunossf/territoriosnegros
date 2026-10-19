@@ -48,17 +48,18 @@ function Icone({ nome }: { nome: "inicio" | "vitoria" | "conceito" | "rotas" | "
   }
 
   if (nome === "vitoria") {
-    // Punho erguido: mesmo símbolo do botão da página Presença Negra (14/10/2026).
-    // A estrela de quatro pontas não dizia nada sobre a página.
+    // Punho erguido: mesmo símbolo do botão da página Presença Negra (14/10/2026),
+    // no desenho de referência da autoria — punho grande, dedos separados por
+    // fendas finas e pulso estreito.
     return (
-      <svg {...comum} fill="currentColor" stroke="none">
-        <path d="M9 21.4v-5h6v5z" />
-        <path d="M7.6 16.6V9.9a2.7 2.7 0 0 1 2.7-2.7h3.4a2.7 2.7 0 0 1 2.7 2.7v6.7z" />
-        <rect x="7.9" y="5.2" width="2.1" height="4" rx="1.05" />
-        <rect x="10.3" y="4.7" width="2.1" height="4.5" rx="1.05" />
-        <rect x="12.7" y="4.9" width="2.1" height="4.3" rx="1.05" />
-        <rect x="15" y="5.6" width="2.1" height="3.6" rx="1.05" />
-        <path d="M7.6 11.2H6.1a1.7 1.7 0 0 0-.1 3.4h1.6z" />
+      <svg {...comum} viewBox="0 0 48 48" fill="currentColor" stroke="none">
+        <rect x="10.6" y="12" width="6.8" height="20.4" rx="3.4" />
+        <rect x="18" y="8.4" width="6.8" height="24" rx="3.4" />
+        <rect x="25.4" y="9.6" width="6.8" height="22.8" rx="3.4" />
+        <rect x="32.7" y="13.4" width="6.2" height="18.6" rx="3.1" />
+        <path d="M10.6 22.4h28.3v8.6a4.1 4.1 0 0 1-4.1 4.1H14.7a4.1 4.1 0 0 1-4.1-4.1z" />
+        <path d="M10.2 24.8c-3 .5-4.9 2.7-4.5 5.2.4 2.4 2.7 3.9 5.6 3.5l6.5-1-.9-7.4z" />
+        <path d="M17.9 34.4h13.9l2.3 12.4H15.6z" />
       </svg>
     );
   }
