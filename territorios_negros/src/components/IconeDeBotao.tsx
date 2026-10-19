@@ -77,26 +77,33 @@ export default function IconeDeBotao({ id }: { id: string }) {
   }
 
   if (nome === "presenca-negra") {
-    // Punho erguido — símbolo da presença e da resistência negra, no desenho
-    // pedido pela autoria em 14/10/2026 (referência: punho negro em círculo).
-    // Grade própria de 48 para os dedos ficarem separados por fendas finas e o
-    // punho continuar legível a 20–30px.
+    // Símbolo da Presença Negra (referência enviada pela autoria, 14/10/2026):
+    // barra central com anéis abertos dos dois lados e pestanas nas pontas.
+    // Grade de 48 para os anéis e as pestanas não se colarem nos tamanhos
+    // pequenos; cor vem do contexto (dourado no menu, terracota no botão).
     return (
-      <svg {...comum} viewBox="0 0 48 48" fill="currentColor" stroke="none">
-        {/* dedos */}
-        <rect x="10.6" y="12" width="6.8" height="20.4" rx="3.4" />
-        <rect x="18" y="8.4" width="6.8" height="24" rx="3.4" />
-        <rect x="25.4" y="9.6" width="6.8" height="22.8" rx="3.4" />
-        <rect x="32.7" y="13.4" width="6.2" height="18.6" rx="3.1" />
+      <svg {...comum} viewBox="0 0 48 48" fill="none" strokeLinecap="round">
+        <rect x="21.1" y="2.6" width="5.8" height="42.8" rx="0.9" fill="currentColor" stroke="none" />
 
-        {/* dorso da mão */}
-        <path d="M10.6 22.4h28.3v8.6a4.1 4.1 0 0 1-4.1 4.1H14.7a4.1 4.1 0 0 1-4.1-4.1z" />
+        {/* anéis dos dois lados */}
+        <path
+          d="M21.7 13.2C13.4 11.4 5.8 15.4 5.8 24s7.6 12.6 15.9 10.8"
+          strokeWidth="5.4"
+          stroke="currentColor"
+        />
+        <path
+          d="M26.3 13.2C34.6 11.4 42.2 15.4 42.2 24s-7.6 12.6-15.9 10.8"
+          strokeWidth="5.4"
+          stroke="currentColor"
+        />
 
-        {/* polegar atravessado */}
-        <path d="M10.2 24.8c-3 .5-4.9 2.7-4.5 5.2.4 2.4 2.7 3.9 5.6 3.5l6.5-1-.9-7.4z" />
+        {/* pestanas de cima */}
+        <path d="M20.6 9.2C16 5.8 11 6.2 8.8 9.4" strokeWidth="4.4" stroke="currentColor" />
+        <path d="M27.4 9.2C32 5.8 37 6.2 39.2 9.4" strokeWidth="4.4" stroke="currentColor" />
 
-        {/* pulso */}
-        <path d="M17.9 34.4h13.9l2.3 12.4H15.6z" />
+        {/* pestanas de baixo */}
+        <path d="M20.6 38.8C16 42.2 11 41.8 8.8 38.6" strokeWidth="4.4" stroke="currentColor" />
+        <path d="M27.4 38.8C32 42.2 37 41.8 39.2 38.6" strokeWidth="4.4" stroke="currentColor" />
       </svg>
     );
   }

@@ -48,18 +48,25 @@ function Icone({ nome }: { nome: "inicio" | "vitoria" | "conceito" | "rotas" | "
   }
 
   if (nome === "vitoria") {
-    // Punho erguido: mesmo símbolo do botão da página Presença Negra (14/10/2026),
-    // no desenho de referência da autoria — punho grande, dedos separados por
-    // fendas finas e pulso estreito.
+    // Símbolo da Presença Negra, igual ao do botão (referência da autoria,
+    // 14/10/2026): barra central, anéis abertos e pestanas nas pontas.
     return (
-      <svg {...comum} viewBox="0 0 48 48" fill="currentColor" stroke="none">
-        <rect x="10.6" y="12" width="6.8" height="20.4" rx="3.4" />
-        <rect x="18" y="8.4" width="6.8" height="24" rx="3.4" />
-        <rect x="25.4" y="9.6" width="6.8" height="22.8" rx="3.4" />
-        <rect x="32.7" y="13.4" width="6.2" height="18.6" rx="3.1" />
-        <path d="M10.6 22.4h28.3v8.6a4.1 4.1 0 0 1-4.1 4.1H14.7a4.1 4.1 0 0 1-4.1-4.1z" />
-        <path d="M10.2 24.8c-3 .5-4.9 2.7-4.5 5.2.4 2.4 2.7 3.9 5.6 3.5l6.5-1-.9-7.4z" />
-        <path d="M17.9 34.4h13.9l2.3 12.4H15.6z" />
+      <svg {...comum} viewBox="0 0 48 48" fill="none" strokeLinecap="round">
+        <rect x="21.1" y="2.6" width="5.8" height="42.8" rx="0.9" fill="currentColor" stroke="none" />
+        <path
+          d="M21.7 13.2C13.4 11.4 5.8 15.4 5.8 24s7.6 12.6 15.9 10.8"
+          strokeWidth="5.4"
+          stroke="currentColor"
+        />
+        <path
+          d="M26.3 13.2C34.6 11.4 42.2 15.4 42.2 24s-7.6 12.6-15.9 10.8"
+          strokeWidth="5.4"
+          stroke="currentColor"
+        />
+        <path d="M20.6 9.2C16 5.8 11 6.2 8.8 9.4" strokeWidth="4.4" stroke="currentColor" />
+        <path d="M27.4 9.2C32 5.8 37 6.2 39.2 9.4" strokeWidth="4.4" stroke="currentColor" />
+        <path d="M20.6 38.8C16 42.2 11 41.8 8.8 38.6" strokeWidth="4.4" stroke="currentColor" />
+        <path d="M27.4 38.8C32 42.2 37 41.8 39.2 38.6" strokeWidth="4.4" stroke="currentColor" />
       </svg>
     );
   }
