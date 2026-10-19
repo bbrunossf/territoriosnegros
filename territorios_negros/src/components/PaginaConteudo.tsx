@@ -11,6 +11,8 @@ import FotoAmpliavel from "../components/FotoAmpliavel";
 import { imagensVisiveis, classesEstilo } from "../data/paginas";
 import type { BotaoConteudo, PaginaConteudo } from "../data/paginas";
 import { rotuloDeBotaoDaPagina } from "../data/botoesPorTela";
+import { iconeDoEndereco } from "../utils/iconeDoEndereco";
+import IconeDeBotao from "./IconeDeBotao";
 import { useTerritorios } from "../context/useTerritorios";
 
 import { paragrafosDe } from "../utils/texto";
@@ -21,10 +23,13 @@ import BotaoContato from "./BotaoContato";
 function Botao({ botao }: { botao: BotaoConteudo }) {
   const classe = `${botao.estilo} pagina-botao`;
   const externo = /^https?:/i.test(botao.url);
+  // símbolo coerente com o destino (mesmo modelo de barra de ações, 14/10/2026)
+  const icone = <IconeDeBotao id={iconeDoEndereco(botao.url)} />;
 
   if (externo) {
     return (
       <a className={classe} href={botao.url} target="_blank" rel="noreferrer">
+        {icone}
         <Inline texto={botao.texto} />
       </a>
     );
@@ -32,6 +37,7 @@ function Botao({ botao }: { botao: BotaoConteudo }) {
 
   return (
     <Link className={classe} to={botao.url || "/"}>
+      {icone}
       <Inline texto={botao.texto} />
     </Link>
   );
@@ -260,7 +266,7 @@ export default function PaginaConteudo({
       {antesDosBotoes}
 
       {botoesComNomePadrao.length > 0 && (
-        <div className="pagina-botoes">
+        <div className="pagina-botoes pagina-botoes--acoes">
           {botoesComNomePadrao.map((botao, i) => (
             <Botao key={`${botao.url}-${i}`} botao={botao} />
           ))}
