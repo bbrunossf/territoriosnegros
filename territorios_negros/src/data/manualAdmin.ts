@@ -53,7 +53,7 @@ export const MANUAL_PADRAO: SecaoManual[] = [
     id: "salvar-ou-gravar",
     titulo: "Salvar ou gravar na hora: as duas formas",
     texto:
-      "O próprio painel diz qual está valendo — quando o botão diz **grava na hora**, não precisa salvar.\n\n**Espera o Salvar:** o que você digita nos campos só vale depois de clicar em **Salvar alterações** (ou no botão próprio do bloco, como **Salvar ordem**). Se sair da tela sem salvar, o painel avisa e a alteração se perde.\n\n**Grava na hora:** os botões de mostrar/esconder (mídias de apoio, camadas de tempo, mostrar/esconder rota na tabela) publicam no clique. O **Salvar alterações** seguinte não desfaz o que você escondeu no meio da edição.",
+      "O próprio painel diz qual está valendo — quando o botão diz **grava na hora**, não precisa salvar.\n\n**Espera o Salvar:** o que você digita nos campos só vale depois de clicar em **Salvar alterações** (ou no botão próprio do bloco, como **Salvar ordem**). Se sair da tela sem salvar, o painel avisa e a alteração se perde.\n\n**Grava na hora:** os botões de mostrar/esconder (mídias de apoio, camadas de tempo, mostrar/esconder rota na tabela) publicam no clique. O **Salvar alterações** seguinte não desfaz o que você escondeu no meio da edição.\n\n**Salvar sem rolar até o fim:** nas telas com formulário longo (território, rota, página, personalidade) o botão **Salvar alterações** fica preso no rodapé da tela enquanto você rola. Se houver mudança pendente, ele avisa **Alterações gerais não salvas**. Os botões de cada bloco (mídia, ordem, marco) salvam só aquele bloco — o geral é esse. Antes de sair da tela com mudança pendente, o navegador pede confirmação.",
     itens: [],
   },
   {

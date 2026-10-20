@@ -5,6 +5,7 @@ import { supabase } from "../lib/supabase";
 import { fetchMensagens } from "../data/api";
 import { dentroDasGuias } from "../data/guiasDoPainel";
 import GuiasDoPainel from "./GuiasDoPainel";
+import BarraSalvarFixa from "./BarraSalvarFixa";
 
 const TITULO_PAINEL = "Painel · Territórios Negros";
 
@@ -118,6 +119,8 @@ export default function AdminLayout() {
         )}
 
         <Outlet />
+
+        <BarraSalvarFixa />
       </main>
     </div>
   );
