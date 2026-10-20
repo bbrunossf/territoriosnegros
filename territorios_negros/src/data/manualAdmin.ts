@@ -45,7 +45,9 @@ export const MANUAL_PADRAO: SecaoManual[] = [
     titulo: "Como o painel funciona",
     texto:
       "O painel grava direto no banco de dados do app, e o app lê desse banco. Por isso o que você salva aparece no app assim que a página é recarregada: não depende de programador nem de esperar publicação.\n\nO que precisa de publicação é mudança de estrutura (tela nova, botão novo, ajuste de layout). Quando o Hermes avisar que publicou algo e você não vir a novidade, o motivo mais comum é aba velha: recarregue com **Ctrl+Shift+R**.",
-    itens: [],
+    itens: [
+      "As telas do painel trazem só o que é preciso para editar: os campos, os botões e uma dica curta embaixo de cada campo. Explicação de como o recurso funciona, do que combina com cada seção e do que é gravado onde fica **aqui no Manual**.",
+    ],
   },
   {
     id: "salvar-ou-gravar",

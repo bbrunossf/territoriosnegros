@@ -82,14 +82,6 @@ export default function FormularioContatoAdmin() {
     <form className="admin-form admin-subsecao" onSubmit={salvar}>
       <h2>Formulário de contato (o que o visitante preenche)</h2>
 
-      <p className="admin-ajuda">
-        Aqui você muda os campos do formulário “Fale com a autoria”: quais aparecem, quais
-        são obrigatórios (levam <b> * </b>) e os textos. O visitante recebe o aviso “Preencha:
-        …” quando deixar um campo obrigatório em branco. O formulário tem uma pergunta de
-        soma e uma proteção invisível contra robôs — essas duas ficam fixas. Publica ao
-        clicar em <b>Salvar formulário</b>.
-      </p>
-
       {ok && <p className="admin-ok">{ok}</p>}
       {erro && <p className="admin-erro">{erro}</p>}
 

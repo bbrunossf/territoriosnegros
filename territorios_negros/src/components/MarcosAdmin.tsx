@@ -139,25 +139,12 @@ export default function MarcosAdmin() {
         : "Todos os tópicos de todas as páginas estão desabilitados. O conteúdo continua guardado."
     );
 
-  const quantasPersonalidades = personalidades.length;
-
   return (
     <div>
       <h1>Marcos e Conexões</h1>
 
-      <p className="admin-ajuda">
-        Cada página pode ter uma lista de tópicos — <b>título</b>, <b>explicação breve</b> e{" "}
-        <b>fonte</b> — para dar contexto complementar ao visitante e sustentar a sua fala durante
-        os tours.
-      </p>
-
       <div className="admin-bloco">
         <h3>Controle rápido — vale para todas as páginas de uma vez</h3>
-
-        <p className="admin-ajuda">
-          Você <b>não precisa abrir cada página</b> para isso: os dois controles abaixo valem para
-          Marcos e Conexões inteiro, com um toque. Nada aqui apaga conteúdo.
-        </p>
 
         {/* 1. a seção aparece no app? */}
         <div className="admin-linha marcos-controle">
@@ -198,12 +185,6 @@ export default function MarcosAdmin() {
         </div>
 
         {aviso && <p className="admin-ok">{aviso}</p>}
-
-        <p className="admin-ajuda">
-          Os dois controles valem para <b>todos</b> e ficam guardados no banco: o que você liga aqui
-          vale no app inteiro, em qualquer aparelho. Não existe controle dentro da tela do
-          visitante.
-        </p>
       </div>
 
       <div className="admin-bloco">
@@ -217,10 +198,7 @@ export default function MarcosAdmin() {
         ) : (
           <>
             <p className="admin-ajuda">
-              Como nas <b>Fotos e vídeos</b>: você pode habilitar ou desabilitar{" "}
-              <b>todas de uma vez</b> — em todas as páginas ou em cada página — e também{" "}
-              <b>tópico por tópico</b>. Desabilitado, o tópico não aparece no app; o conteúdo
-              continua guardado, e nada é apagado.
+              Cada tópico tem o próprio botão. Desabilitado, sai do app e o conteúdo fica guardado.
             </p>
 
             <div className="admin-linha marcos-controle">
@@ -336,53 +314,6 @@ export default function MarcosAdmin() {
             })}
           </>
         )}
-      </div>
-
-      <div className="admin-bloco">
-        <h3>Onde cadastrar cada página</h3>
-
-        <p className="admin-ajuda">
-          O conteúdo é <b>independente por página</b>. Cada editor tem o seu próprio botão de
-          salvar, dentro da tela daquela página:
-        </p>
-
-        <ul className="admin-lista">
-          <li>
-            <b>Fichas de território</b> — em <b>Territórios</b>, abra o território: o cadastro fica
-            no fim da ficha. Hoje: {territorios ? Object.keys(territorios).length : 0} territórios
-            cadastrados.
-          </li>
-
-          <li>
-            <b>A cidade de Vitória</b> e <b>Presença Negra na Cidade</b> — em <b>Páginas</b>, abra a
-            página: o cadastro fica no fim da tela, depois dos blocos de texto.
-          </li>
-
-          <li>
-            <b>Personalidades</b> — na guia <b>Personalidades</b>, abra a pessoa: o cadastro fica no
-            fim do formulário. Hoje: {quantasPersonalidades} cadastradas.
-          </li>
-        </ul>
-      </div>
-
-      <div className="admin-bloco">
-        <h3>O que combina com esta seção</h3>
-
-        <ul className="admin-lista">
-          <li>
-            Datas, acontecimentos, pessoas e relações que você desenvolve <b>oralmente</b> durante a
-            caminhada.
-          </li>
-
-          <li>
-            Aprofundamento complementar: o que sustenta a leitura do lugar sem tirar o foco dela.
-          </li>
-
-          <li>
-            <b>Não mova para cá</b> o que é essencial para entender a territorialidade negra ou os
-            apagamentos — isso continua no conteúdo principal da página.
-          </li>
-        </ul>
       </div>
     </div>
   );

@@ -563,20 +563,6 @@ export default function PaginasAdmin() {
     <div>
       <h1>Páginas</h1>
 
-      <p className="admin-ajuda">
-        Aqui você edita os textos das páginas do app. Em cada página, os blocos são as seções
-        com ícone e título. Você escolhe o <b>tamanho</b>, o <b>alinhamento</b> e a{" "}
-        <b>cor</b> — separadamente para o <b>título da página</b>, para o{" "}
-        <b>subtítulo</b>, para a <b>caixa de abertura</b> e, em cada seção, para o{" "}
-        <b>título</b> e para o <b>texto</b>. A prévia mostra como vai ficar antes de
-        publicar. Dentro do texto, para destacar uma palavra use{" "}
-        <b>**duas estrelas**</b> (negrito) ou <b>*uma estrela*</b> (itálico); linha em branco
-        separa parágrafos. Cada bloco também aceita <b>imagens e mapas</b>, que podem ficar
-        visíveis ou bloqueados para os visitantes — e, no fim da página, há um atalho para
-        liberar ou bloquear todas as imagens desta página de uma vez. Nada é publicado antes
-        de clicar em <b>Salvar</b>.
-      </p>
-
       {/* As guias ficam exatamente onde ficavam as abas das páginas (pedido da
           autoria, 02/10/2026): logo abaixo do título "Páginas". Agora são as
           MESMAS guias do painel, numa barra só — as abas antigas de páginas

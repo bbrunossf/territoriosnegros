@@ -157,13 +157,6 @@ export default function AcessosAdmin() {
     <div>
       <h1>Acessos</h1>
 
-      <p className="admin-ajuda">
-        Contagem <b>anônima</b> de uso do app: cada tela aberta pelos visitantes vira uma
-        linha. Não guardamos IP, nome, e-mail nem cookie — só a tela, a hora, o tipo de
-        aparelho (celular/tablet/computador) e um código aleatório da aba, que morre quando
-        a aba é fechada. O uso do próprio painel não entra na conta.
-      </p>
-
       <div className="admin-abas">
         {PERIODOS.map((p) => (
           <button

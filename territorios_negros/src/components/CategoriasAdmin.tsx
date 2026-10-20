@@ -119,11 +119,6 @@ export default function CategoriasAdmin() {
     <div>
       <h1>Categorias</h1>
 
-      <p className="admin-ajuda">
-        As categorias organizam a aba Territórios. A ordem define a sequência em que
-        os grupos aparecem no app.
-      </p>
-
       {ok && <p className="admin-ok">{ok}</p>}
       {erro && <p className="admin-erro">{erro}</p>}
 

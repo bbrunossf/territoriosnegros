@@ -92,13 +92,11 @@ export default function MensagensAdmin() {
     <div>
       <h1>Mensagens</h1>
 
-      <p className="admin-ajuda">
-        Tudo que chega pelo formulário “Fale com a autoria” aparece aqui.
-        {naoLidas > 0 ? ` ${naoLidas} não lida(s).` : " Nenhuma pendente."} Esta página se
-        atualiza sozinha a cada 30 segundos, e o número de não lidas aparece também no
-        título da aba do navegador. O formulário que o visitante preenche é editável em{" "}
-        <b>Páginas › Contato</b>, no fim da página.
-      </p>
+      {naoLidas > 0 && (
+        <p className="admin-ajuda">
+          <b>{naoLidas}</b> não lida(s).
+        </p>
+      )}
 
       {ok && <p className="admin-ok">{ok}</p>}
       {erro && <p className="admin-erro">{erro}</p>}

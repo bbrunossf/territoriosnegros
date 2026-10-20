@@ -379,12 +379,6 @@ export default function MidiasAdmin() {
     <div className="midias">
       <h1>Fotos e vídeos</h1>
 
-      <p className="admin-ajuda">
-        Ligue e desligue aqui o que o visitante vê em cada página, em cada território e nas
-        rotas (imagem de mapa). <b> Cada toque grava na hora</b> — não precisa clicar em
-        “Salvar”. É a lista curta para usar no celular durante o guia.
-      </p>
-
       <p className="midias-total">
         Neste app: <b>{total.fotos}</b> fotos e mapas, <b>{total.videos}</b> vídeos —{" "}
         <b>{total.ocultas}</b> desligado{total.ocultas === 1 ? "" : "s"}.

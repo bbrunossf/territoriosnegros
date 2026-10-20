@@ -154,16 +154,8 @@ export default function BotoesAdmin() {
       <h1>Botões</h1>
 
       <p className="admin-ajuda">
-        Aqui você muda os <b>nomes</b> e a <b>ordem</b> de todos os botões que são do app. Para
-        mudar a ordem, use <b>↑</b> e <b>↓</b> em cada botão; <b>para onde</b> cada um leva é do
-        app. Deixar um nome em branco faz ele voltar ao padrão. Nada vai ao ar sem{" "}
-        <b>Salvar alterações</b>.
-      </p>
-
-      <p className="admin-ajuda">
-        Os botões que <b>você cria</b> nas páginas continuam sendo editados na aba{" "}
-        <b>Páginas</b>, dentro de cada seção; e o botão <b>Enviar uma mensagem</b> tem a seção
-        dele na aba Páginas também.
+        Use <b>↑</b> e <b>↓</b> para reordenar. Nome em branco volta ao padrão. Nada vai ao ar
+        sem <b>Salvar alterações</b>.
       </p>
 
       {ok && <p className="admin-ok">{ok}</p>}

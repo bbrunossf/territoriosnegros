@@ -142,12 +142,6 @@ export default function MenuMaisAdmin() {
       <h1>Menu Mais</h1>
 
       <p className="admin-ajuda">
-        Esta é a lista que abre quando o visitante toca em <b>Mais</b>, na barra do app — o acesso
-        rápido às páginas que não têm item próprio na barra. Aqui você <b>liga, desliga, renomeia,
-        reordena, tira e acrescenta</b> páginas. Nada vai ao ar sem <b>Salvar alterações</b>.
-      </p>
-
-      <p className="admin-ajuda">
         Na lista: <b>{itens.length}</b> {itens.length === 1 ? "página" : "páginas"} e <b>{visiveis}</b>{" "}
         aparecendo para o visitante.
       </p>

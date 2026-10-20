@@ -92,13 +92,6 @@ export default function BotaoContatoAdmin() {
     <div className="admin-fotos">
       <b>Botão "Enviar uma mensagem" no fim das telas</b>
 
-      <p className="admin-ajuda">
-        Este botão leva o visitante para a página de contato. Ele aparece no fim das
-        telas do app — e <b>nunca</b> na tela inicial (capa) nem na própria página de
-        contato, que já tem o formulário. Se alguma página já tem um botão que leva
-        para o contato, ele não é repetido.
-      </p>
-
       {ok && <p className="admin-ok">{ok}</p>}
       {erro && <p className="admin-erro">{erro}</p>}
 

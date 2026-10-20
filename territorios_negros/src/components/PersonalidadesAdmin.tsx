@@ -1245,12 +1245,6 @@ export default function PersonalidadesAdmin() {
       <h1>Personalidades Negras</h1>
 
       <p className="admin-ajuda">
-        Trajetórias de pessoas negras importantes para a história de Vitória e do Espírito Santo.
-        Cada cadastro vira uma página com endereço próprio (<b>/personalidade/…</b>) e aparece na
-        seção <b>Personalidades</b> do app, aberta pelo botão dentro da página Vitória Negra.
-      </p>
-
-      <p className="admin-ajuda">
         No app aparecem <b>{contagem.publicadas}</b> publicada(s) · <b>{contagem.rascunhos}</b> em
         rascunho (rascunho não aparece para o visitante).
       </p>
