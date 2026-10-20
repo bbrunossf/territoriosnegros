@@ -171,7 +171,8 @@ export default function CategoriasAdmin() {
         </div>
       </form>
 
-      <table className="admin-table">
+        <div className="admin-tabela-rolagem">
+          <table className="admin-table">
         <thead>
           <tr>
             <th>Ordem</th>
@@ -224,7 +225,8 @@ export default function CategoriasAdmin() {
             </tr>
           )}
         </tbody>
-      </table>
+        </table>
+        </div>
     </div>
   );
 }

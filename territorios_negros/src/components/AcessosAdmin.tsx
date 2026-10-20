@@ -272,7 +272,8 @@ export default function AcessosAdmin() {
             <>
               <h2>Páginas mais vistas</h2>
 
-              <table className="admin-table">
+        <div className="admin-tabela-rolagem">
+          <table className="admin-table">
                 <thead>
                   <tr>
                     <th>Página</th>
@@ -295,6 +296,7 @@ export default function AcessosAdmin() {
                   ))}
                 </tbody>
               </table>
+              </div>
             </>
           )}
 

@@ -935,7 +935,8 @@ export default function RoteirosAdmin() {
       </form>
 
       {/* ─── Tabela ─── */}
-      <table className="admin-table">
+        <div className="admin-tabela-rolagem">
+          <table className="admin-table">
         <thead>
           <tr>
             <th>Nome</th>
@@ -1000,7 +1001,8 @@ export default function RoteirosAdmin() {
             </tr>
           )}
         </tbody>
-      </table>
+        </table>
+        </div>
     </div>
   );
 }

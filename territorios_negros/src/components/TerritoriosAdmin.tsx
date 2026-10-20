@@ -2065,7 +2065,8 @@ export default function TerritoriosAdmin() {
       </section>
 
       {/* ─── Tabela de territórios cadastrados ─── */}
-      <table className="admin-table">
+        <div className="admin-tabela-rolagem">
+          <table className="admin-table">
         <thead>
           <tr>
             <th>Nome</th>
@@ -2201,7 +2202,8 @@ export default function TerritoriosAdmin() {
             </tr>
           )}
         </tbody>
-      </table>
+        </table>
+        </div>
     </div>
   );
 }
