@@ -32,12 +32,13 @@ export const GUIAS_DO_PAINEL: GuiaDoPainel[] = [
   { id: "antes", rotulo: "Antes", rota: "/admin/paginas?p=antes" },
   { id: "apoiadores", rotulo: "Apoiadores", rota: "/admin/apoiadores" },
   { id: "categorias", rotulo: "Categorias", rota: "/admin/categorias" },
-  { id: "botoes", rotulo: "Botões", rota: "/admin/botoes" },
   { id: "fim", rotulo: "Fim", rota: "/admin/paginas?p=fim" },
   { id: "contato", rotulo: "Contato", rota: "/admin/paginas?p=contato" },
   // "Marcos e Conexões" NÃO entra aqui: desde 02/10/2026 ele fica no menu
   // lateral, logo abaixo de Fotos e vídeos, para acesso rápido — e a autoria
   // pediu que não aparecesse em dois lugares (duplicidade).
+  // "Botões" também saiu das guias (14/10/2026): virou item do menu lateral,
+  // entre Fotos e vídeos e Marcos e Conexões.
 ];
 
 /** As guias que abrem uma página do app dentro da tela das Páginas. */

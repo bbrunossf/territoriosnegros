@@ -60,14 +60,15 @@ export const MANUAL_PADRAO: SecaoManual[] = [
     id: "menu-e-guias",
     titulo: "O menu do painel e as guias de Páginas",
     texto:
-      "O menu da esquerda ficou curto, só com o que você usa o tempo todo: **Fotos e vídeos**, **Rotas**, **Territórios**, **Páginas**, **Mensagens**, **Manual**, **Ver o app** e **Acessos** (e **Sair** no fim).\n\nTudo o que era item separado no menu — Página inicial, Conceito, Vitória, Presença Negra, Personalidades, Menu Mais, Antes, Apoiadores, Categorias, Botões, Fim e Contato — agora vive **dentro de Páginas**, numa barra de guias no alto da tela. Clicar numa guia troca a tela ali mesmo, sem voltar ao menu.",
+      "O menu da esquerda ficou curto, só com o que você usa o tempo todo: **Fotos e vídeos**, **Botões**, **Marcos e Conexões**, **Rotas**, **Territórios**, **Páginas**, **Mensagens**, **Manual**, **Ver o app** e **Acessos** (e **Sair** no fim).\n\nTudo o que era item separado no menu — Página inicial, Conceito, Vitória, Presença Negra, Personalidades, Menu Mais, Antes, Apoiadores, Categorias, Fim e Contato — agora vive **dentro de Páginas**, numa barra de guias no alto da tela. Clicar numa guia troca a tela ali mesmo, sem voltar ao menu.",
     itens: [
-      "A ordem das guias é: Página Inicial, Conceito, Vitória, Presença Negra, Personalidades, Menu Mais, Antes, Apoiadores, Categorias, Botões, Fim e Contato.",
+      "A ordem das guias é: Página Inicial, Conceito, Vitória, Presença Negra, Personalidades, Menu Mais, Antes, Apoiadores, Categorias, Fim e Contato.",
+      "**Botões** deixou de ser guia em 14/10/2026 e passou a ser item do menu, entre **Fotos e vídeos** e **Marcos e Conexões** — junto dos outros dois controles que você usa durante a caminhada.",
       "Na tela das Páginas a barra fica logo abaixo do título **Páginas** — no mesmo lugar das antigas abas, e agora sem duplicar nada: as abas de páginas saíram.",
       "A guia aberta fica destacada em dourado.",
       "Cada guia tem o seu endereço: se você guardar nos favoritos, ela abre direto. Exemplo → …/admin/paginas?p=conceito abre o Conceito; …/admin/paginas?p=antes abre o Antes.",
       "Trocar de página com alterações não salvas continua pedindo confirmação, como antes.",
-      "Fora das guias continuam Fotos e vídeos, Rotas, Territórios, Mensagens, Manual, Ver o app e Acessos — são listas e ferramentas, não páginas de texto.",
+      "Fora das guias continuam Fotos e vídeos, Botões, Marcos e Conexões, Rotas, Territórios, Mensagens, Manual, Ver o app e Acessos — são listas, controles e ferramentas, não páginas de texto.",
     ],
   },
   {
@@ -105,7 +106,7 @@ export const MANUAL_PADRAO: SecaoManual[] = [
       "**Apoiadores** — a página **Apoiadores** do app: título, texto de abertura e a lista de quem apoia o projeto (logo, nome, contribuição e link).",
       "**Presença Negra** — a página **Presença Negra na Cidade**, aberta em /presenca-negra: nasceu do bloco “Uma cidade construída com presença negra”, que saiu de A Cidade de Vitória para ganhar aprofundamento próprio — é onde entram as biografias das personalidades negras de Vitória. Edita-se como as outras páginas: blocos de texto, destaques, listas, imagens e links; vídeo entra como link do YouTube.",
       "**Menu Mais** — a lista que abre no item **Mais** da barra de navegação do app: quais páginas aparecem ali, com que nome, em que ordem — e quais ficam desligadas.",
-      "**Botões** — duas coisas: os **nomes** dos botões de navegação (Base teórica, A cidade de Vitória, Presença Negra, Rotas, Territórios, Apoiadores, Personalidades e Início) e a seção **Em cada tela**, com **todas as páginas do app** para escolher quais botões aparecem no fim de cada uma — inclusive nas que hoje não têm botão. A ordem e para onde cada um leva são do app; aqui você renomeia e escolhe. Em branco, o nome volta ao padrão — ver a seção própria mais adiante.",
+      "**Botões** (agora no menu da esquerda, entre Fotos e vídeos e Marcos e Conexões) — duas coisas: os **nomes** dos botões de navegação (Base teórica, A cidade de Vitória, Presença Negra, Rotas, Territórios, Apoiadores, Personalidades e Início) e a seção **Em cada tela**, com **todas as páginas do app** para escolher quais botões aparecem no fim de cada uma — inclusive nas que hoje não têm botão. A ordem e para onde cada um leva são do app; aqui você renomeia e escolhe. Em branco, o nome volta ao padrão — ver a seção própria mais adiante.",
       "**Categorias** — as categorias que classificam os territórios.",
       "**Mensagens** — o que os visitantes enviam pelo formulário de contato.",
       "**Manual** — esta página. Edite quando quiser: botão **Editar o manual**.",
@@ -243,7 +244,7 @@ export const MANUAL_PADRAO: SecaoManual[] = [
     id: "personalidades",
     titulo: "Personalidades Negras: trajetórias ligadas aos territórios",
     texto:
-      "Aqui ficam as trajetórias de pessoas negras importantes para a história de Vitória e do Espírito Santo. Cada cadastro vira uma página com endereço próprio (/personalidade/nome-da-pessoa) e aparece na seção Personalidades do app, aberta pelo botão dentro da página Vitória Negra (o nome do botão muda na aba Botões).\n\nRascunho NÃO aparece para o visitante: nem na listagem, nem na busca. Publique quando estiver pronto, pelo botão publicar na lista ou pela Situação dentro do cadastro. Para tirar do ar sem apagar, use despublicar.",
+      "Aqui ficam as trajetórias de pessoas negras importantes para a história de Vitória e do Espírito Santo. Cada cadastro vira uma página com endereço próprio (/personalidade/nome-da-pessoa) e aparece na seção Personalidades do app, aberta pelo botão dentro da página Vitória Negra (o nome do botão muda no menu **Botões**).\n\nRascunho NÃO aparece para o visitante: nem na listagem, nem na busca. Publique quando estiver pronto, pelo botão publicar na lista ou pela Situação dentro do cadastro. Para tirar do ar sem apagar, use despublicar.",
     itens: [
       "Identificação: nome (obrigatório), outros nomes, breve apresentação e as datas e locais de nascimento e falecimento — todos opcionais e podendo ser aproximados, como “cerca de 1870” ou “início do século XX”.",
       "Biografia: um texto corrido e quantos blocos você quiser (título + texto). Cada bloco pode ser marcado como informação documentada, proveniente de relato oral ou ainda em pesquisa — a marca aparece ao lado do título no app.",

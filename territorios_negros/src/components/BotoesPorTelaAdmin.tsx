@@ -1,6 +1,6 @@
 // src/components/BotoesPorTelaAdmin.tsx
 //
-// A seção "Em cada tela" da aba Botões do painel (pedido da autoria, 02/10/2026):
+// A seção "Em cada tela" do menu Botões do painel (pedido da autoria, 02/10/2026):
 // ligar e desligar os botões de navegação do app e escolher, em cada tela, quais
 // aparecem — no topo, no final, ou nos dois — e em que ordem.
 //
