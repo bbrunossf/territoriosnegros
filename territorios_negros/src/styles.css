@@ -4171,11 +4171,12 @@ p.foto-credito {
     grid-template-columns: 1fr;
   }
 
-  /* campos grandes o bastante para digitar sem zoom */
-  .admin-form input,
+  /* campos grandes o bastante para digitar sem zoom — exceto caixinhas de
+     marcar: com width:100% elas empurravam o texto do rótulo para fora da tela */
+  .admin-form input:not([type="checkbox"]):not([type="radio"]),
   .admin-form textarea,
   .admin-form select,
-  .admin-campo input,
+  .admin-campo input:not([type="checkbox"]):not([type="radio"]),
   .admin-campo textarea,
   .admin-campo select,
   .admin-linha input[type="text"],
@@ -4243,5 +4244,47 @@ p.foto-credito {
 
     min-height: 46px;
   }
+}
+
+/* ------------------------------------------------------------------
+   CAIXINHA DE MARCAR DO PAINEL
+   A caixa de seleção é pequena e fixa; quem ocupa a largura é o texto ao
+   lado. Sem isso, a regra de "campo com 100%" esticava a caixinha e jogava
+   o rótulo ("Visível para os visitantes") para fora da tela.
+   ------------------------------------------------------------------ */
+.admin-form .admin-check,
+.admin-check {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+
+  gap: 10px;
+
+  width: 100%;
+  max-width: 100%;
+}
+
+.admin-check input[type="checkbox"],
+.admin-check input[type="radio"],
+.admin-form .admin-check input,
+.admin-campo input[type="checkbox"],
+.admin-campo input[type="radio"] {
+  flex: 0 0 auto;
+
+  width: 22px;
+  min-width: 22px;
+  max-width: 22px;
+
+  height: 22px;
+  min-height: 22px;
+
+  margin: 2px 0 0;
+  padding: 0;
+}
+
+.admin-check-texto {
+  flex: 1 1 auto;
+
+  min-width: 0;
 }
 
