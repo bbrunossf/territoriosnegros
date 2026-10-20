@@ -195,7 +195,10 @@ a, a:visited, a:hover, a:active {
   min-height: 100vh;
 
   display: grid;
-  grid-template-columns: 240px 1fr;
+  /* minmax(0, 1fr): a coluna do conteúdo pode encolher. Com `1fr` puro, uma
+     tabela larga impõe o min-content dela e a página fica mais larga que a
+     tela — foi o que obrigava a autoria a reduzir o zoom. */
+  grid-template-columns: 240px minmax(0, 1fr);
 }
 
 .admin-sidebar {
@@ -4094,6 +4097,18 @@ p.foto-credito {
   min-width: 0; /* pode encolher: sem isso a tabela larga estica a grade */
 }
 
+/* nada dentro do painel pode ser mais largo que a coluna de conteúdo —
+   proteção contra imagem/arquivo/campo com largura fixa vazando para fora */
+.admin-content img,
+.admin-content video,
+.admin-content iframe,
+.admin-content input,
+.admin-content select,
+.admin-content textarea,
+.admin-form input[type="file"] {
+  max-width: 100%;
+}
+
 /* quadro que rola na horizontal quando a tabela é mais larga que a tela
    (Rotas, Territórios, Categorias, Acessos) */
 .admin-tabela-rolagem {
@@ -4103,7 +4118,7 @@ p.foto-credito {
   -webkit-overflow-scrolling: touch;
 }
 
-@media (max-width: 720px) {
+@media (max-width: 900px) {
   .admin-layout {
     grid-template-columns: minmax(0, 1fr);
   }
