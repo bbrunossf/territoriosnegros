@@ -3966,6 +3966,18 @@ p.foto-credito {
   margin-bottom: 0;
 }
 
+/* a grade de Informações rápidas já vem embrulhada pela caixa da seção: sem
+   borda e sem fundo próprios, para não ficar caixa dentro de caixa */
+.topic-caixa .info-rapida-grid {
+  margin-top: 12px;
+
+  padding: 0;
+
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
 /* Título de categoria das listas: solto sobre o papel de parede, à esquerda,
    em negrito e com sombra (pedido da autoria, 14/10/2026). O painel com borda
    dourada ficou só para as seções das páginas de texto. */

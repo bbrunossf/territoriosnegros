@@ -24,7 +24,11 @@ function ehExplicacao(no: unknown): boolean {
   // listas de itens (travessões): a lista é o texto explicativo da seção
   if (tipo === Numbered) return true;
 
-  return false;
+  // grade dos cartões de "Informações rápidas": o corpo daquela seção são os
+  // cartões, então eles entram na caixa junto com o título
+  const classe = (no as { props?: { className?: unknown } }).props?.className;
+
+  return typeof classe === "string" && classe.includes("info-rapida-grid");
 }
 
 export default function Topic({
