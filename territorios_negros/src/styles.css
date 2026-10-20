@@ -648,11 +648,18 @@ a, a:visited, a:hover, a:active {
   border: 1px solid #e5d2a8;
   border-radius: 12px;
 
-  padding: 11px;
+  padding: 12px;
 
   grid-column: span 1;
 
   line-height: 1.42;
+}
+
+/* rótulo e valor das Informações rápidas: fonte maior (pedido da autoria,
+   14/10/2026) — o cartão é lido de longe, em pé, com o celular na mão */
+.info-rapida-card b {
+  font-size: 17.5px;
+  letter-spacing: 0.15px;
 }
 
 .info-rapida-card-wide {
@@ -1314,8 +1321,8 @@ a, a:visited, a:hover, a:active {
 }
 
 .info-rapida-grid {
-  font-size: 15px;
-  line-height: 1.6;
+  font-size: 17px;
+  line-height: 1.5;
 }
 
 .territorios-thumb-vazia {
