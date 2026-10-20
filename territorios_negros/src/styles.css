@@ -3956,6 +3956,16 @@ p.foto-credito {
   margin-bottom: 0;
 }
 
+/* listas de itens ("Para observar", "Para refletir"): mesmo tratamento dos
+   parágrafos — o corpo da seção fica dentro do retângulo dourado */
+.topic-caixa .numbered-item:first-of-type {
+  margin-top: 11px;
+}
+
+.topic-caixa > :last-child {
+  margin-bottom: 0;
+}
+
 /* Título de categoria das listas: solto sobre o papel de parede, à esquerda,
    em negrito e com sombra (pedido da autoria, 14/10/2026). O painel com borda
    dourada ficou só para as seções das páginas de texto. */

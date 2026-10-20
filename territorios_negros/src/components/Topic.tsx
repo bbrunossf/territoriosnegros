@@ -1,5 +1,7 @@
 import { Children, isValidElement, type ReactNode } from "react";
 
+import Numbered from "./Numbered";
+
 type Props = {
   icon: string;
   title: string;
@@ -9,6 +11,21 @@ type Props = {
   /** classes de formatação do título da seção (ex: titulo-grande, cor-dourado) */
   titleClassName?: string;
 };
+
+/** O que é explicação da seção e pode ir para dentro do retângulo dourado. */
+function ehExplicacao(no: unknown): boolean {
+  if (!isValidElement(no)) return false;
+
+  const tipo = (no as { type?: unknown }).type;
+
+  // parágrafos escritos direto na seção
+  if (tipo === "p") return true;
+
+  // listas de itens (travessões): a lista é o texto explicativo da seção
+  if (tipo === Numbered) return true;
+
+  return false;
+}
 
 export default function Topic({
   icon,
@@ -20,21 +37,21 @@ export default function Topic({
   /**
    * O título e o texto explicativo da seção ficam dentro de um retângulo com
    * borda dourada e fundo mais claro que o papel de parede (pedido da autoria,
-   * 14/10/2026): as seções deixam de ficar "soltas" no fundo da página.
+   * 14/10/2026).
    *
-   * Os parágrafos que abrem a seção são os explicativos e entram na caixa. O que
-   * vem depois (listas, caixas de destaque, fotos, marcos) continua fora, para
-   * não aninhar cartão dentro de cartão.
+   * Entram na caixa os parágrafos e as listas de itens que abrem a seção. O que
+   * vem depois — fotos, caixas de destaque, cartões de marcos — continua fora,
+   * para não aninhar cartão dentro de cartão.
+   *
+   * A checagem precisa reconhecer as listas pelo componente (`Numbered`): em
+   * "Para observar durante a visita" o corpo da seção é uma lista, e comparar
+   * só com a tag "p" deixava os itens fora, com o título sozinho na caixa.
    */
   const filhos = Children.toArray(children);
 
   let corte = 0;
 
-  while (
-    corte < filhos.length &&
-    isValidElement(filhos[corte]) &&
-    (filhos[corte] as { type?: unknown }).type === "p"
-  ) {
+  while (corte < filhos.length && ehExplicacao(filhos[corte])) {
     corte += 1;
   }
 
