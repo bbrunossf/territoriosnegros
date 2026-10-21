@@ -39,7 +39,6 @@ import SecaoDeTexto from "./SecaoDeTexto";
 import MarcosConexoes from "./MarcosConexoes";
 import BotoesDaTela from "./BotoesDaTela";
 import BotaoContato from "./BotaoContato";
-import IconeDeBotao from "./IconeDeBotao";
 import { chaveDaPersonalidade } from "../data/marcos";
 
 export default function PersonalidadePagina({ dados }: { dados?: Personalidade }) {
@@ -80,17 +79,12 @@ export default function PersonalidadePagina({ dados }: { dados?: Personalidade }
 
   return (
     <div className="personalidade">
-      {/* o caminho de volta fica no TOPO, na mesma caixa dos botões das outras
-          telas (.pagina-botoes/.pagina-botao: largura cheia, centralizado) e com
-          respiro maior até a foto (pedido da autoria, 02/10/2026) */}
-      {/* caminho de volta: um link discreto, no topo, sempre presente. Os
-          botões do topo ficam por conta do painel (menu Botões → Página de uma
-          personalidade → no topo da página), como em todas as telas. */}
-      <Link className="personalidade-voltar" to="/personalidades">
-        <IconeDeBotao id="personalidades" />
-        Personalidades
-      </Link>
-
+      {/* O topo desta ficha é 100% do painel (menu Botões → Página de uma
+          personalidade → no topo da página). O link fixo que existia aqui foi
+          removido em 14/10/2026: a autoria via um botão "Personalidades" na
+          tela e o painel dizia que não havia botões no topo. O caminho de volta
+          continua no menu e na barra de navegação; para ter o botão no topo,
+          basta escolher "Personalidades" no painel. */}
       <BotoesDaTela tela="personalidade" posicao="topo" />
 
       <div className="personalidade-hero">

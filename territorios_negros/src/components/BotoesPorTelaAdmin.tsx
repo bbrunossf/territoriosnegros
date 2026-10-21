@@ -146,6 +146,7 @@ export default function BotoesPorTelaAdmin({
         <div className="botoes-telas-tela" key={tela.id}>
           <h3 className="botoes-telas-nome">{tela.nome}</h3>
           <p className="botoes-telas-onde-tela">{tela.onde}</p>
+          {tela.aviso && <p className="botoes-telas-aviso">{tela.aviso}</p>}
 
           {tela.slots.map((posicao) => {
             const lista = porTela[tela.id]?.[posicao] ?? [];

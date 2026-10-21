@@ -130,6 +130,8 @@ export interface TelaDoApp {
    *  recebem as duas posições: o "topo" é desenhado logo abaixo do título e o
    *  "final" antes do "Enviar uma mensagem" (ver `BotoesFinaisDaTela`). */
   slots: ("topo" | "final")[];
+  /** aviso extra mostrado no painel, só quando a tela precisa (opcional) */
+  aviso?: string;
 }
 
 /**
@@ -164,7 +166,14 @@ export const TELAS_DO_APP: TelaDoApp[] = [
   // 14/10/2026 (pedido da autoria: inserir e remover em todas as páginas)
   { id: "evento", nome: "Próximo evento", onde: "a página do evento e da inscrição", slots: ["topo", "final"] },
   { id: "ficha", nome: "Ficha de inscrição", onde: "o formulário aberto dentro do app", slots: ["topo", "final"] },
-  { id: "personalidade", nome: "Página de uma personalidade", onde: "a ficha de cada personalidade", slots: ["topo", "final"] },
+  {
+    id: "personalidade",
+    nome: "Página de uma personalidade",
+    onde: "a ficha de cada personalidade",
+    slots: ["topo", "final"],
+    aviso:
+      "Esta ficha não tem botão fixo no topo: o caminho de volta fica no menu e na barra de navegação. Se quiser um botão ali, adicione “Personalidades” em NO TOPO DA PÁGINA.",
+  },
   { id: "percurso", nome: "Percurso de uma rota", onde: "o caminho de cada rota", slots: ["topo", "final"] },
   { id: "territorio", nome: "Página de um território", onde: "a ficha de cada território", slots: ["topo", "final"] },
   { id: "fim", nome: "Fim do passeio", onde: "a tela de encerramento", slots: ["topo", "final"] },

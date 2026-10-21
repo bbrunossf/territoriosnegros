@@ -3036,26 +3036,8 @@ a, a:visited, a:hover, a:active {
   margin-right: 6px;
 }
 
-/* caminho de volta da ficha de uma personalidade: link discreto, separado da
-   barra de botões que o painel controla (14/10/2026) */
-.personalidade-voltar {
-  display: inline-flex;
-  gap: 6px;
-  align-items: center;
-
-  margin: 0 0 10px;
-
-  color: #7d5518;
-  font-size: 13.5px;
-  font-weight: 700;
-  text-decoration: none;
-}
-
-.personalidade-voltar svg {
-  width: 16px;
-  height: 16px;
-  flex: none;
-}
+/* caminho de volta da ficha de uma personalidade — aposentado em 14/10/2026:
+   o topo da ficha passou a ser 100% controlado pelo painel */
 
 /* Atalho do TCC logo abaixo do título, na Base teórica (pedido da autoria,
    02/10/2026 — antes esse acesso só existia no fim da página). */

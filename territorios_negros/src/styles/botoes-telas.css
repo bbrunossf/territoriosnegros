@@ -36,6 +36,22 @@
   line-height: 1.4;
 }
 
+/* aviso de tela que precisa de explicação (ex.: ficha de personalidade) */
+.botoes-telas .botoes-telas-aviso {
+  margin: 0 0 10px;
+
+  padding: 8px 10px;
+
+  border-left: 3px solid rgba(197, 139, 42, 0.7);
+  border-radius: 6px;
+
+  background: #fdf3e0;
+
+  color: #6a452b;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
 .botoes-telas .botoes-telas-local {
   margin-top: 12px;
 
