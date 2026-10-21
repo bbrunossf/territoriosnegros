@@ -39,6 +39,7 @@ import SecaoDeTexto from "./SecaoDeTexto";
 import MarcosConexoes from "./MarcosConexoes";
 import BotoesDaTela from "./BotoesDaTela";
 import BotaoContato from "./BotaoContato";
+import IconeDeBotao from "./IconeDeBotao";
 import { chaveDaPersonalidade } from "../data/marcos";
 
 export default function PersonalidadePagina({ dados }: { dados?: Personalidade }) {
@@ -84,6 +85,7 @@ export default function PersonalidadePagina({ dados }: { dados?: Personalidade }
           respiro maior até a foto (pedido da autoria, 02/10/2026) */}
       <div className="pagina-botoes personalidade-topo">
         <Link className="btn pagina-botao" to="/personalidades">
+          <IconeDeBotao id="personalidades" />
           Personalidades
         </Link>
       </div>
