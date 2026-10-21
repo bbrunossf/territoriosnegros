@@ -11,7 +11,7 @@
 // branco = volta ao nome padrão. Nada vai ao ar sem "Salvar alterações".
 import "../styles.css";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { salvarConfig } from "../data/api";
 import { useTerritorios } from "../context/useTerritorios";
@@ -77,6 +77,10 @@ export default function BotoesAdmin() {
   const [erro, setErro] = useState("");
   const [salvando, setSalvando] = useState(false);
 
+  // a seção "Em cada tela" guarda aqui a gravação dela: o botão de salvar desta
+  // tela grava nomes, ordem E telas de uma vez só
+  const salvarTelas = useRef<(() => Promise<void>) | null>(null);
+
   useEffect(() => {
     let ativo = true;
 
@@ -116,11 +120,14 @@ export default function BotoesAdmin() {
     }));
   }
 
-  function descartar() {
+  async function descartar() {
     setNomes(lerTudo(config));
     setOrdem(ordensIniciais(config));
     setErro("");
     setOk("Mostrando o que está publicado — o que não foi salvo saiu da tela.");
+
+    // recarrega do banco: a lista de botões por tela volta ao que está gravado
+    await recarregar();
   }
 
   async function salvar(e: React.FormEvent) {
@@ -139,8 +146,11 @@ export default function BotoesAdmin() {
       // a ordem de todos os grupos vive numa chave só
       await salvarConfig(CHAVE_ORDEM_BOTOES, ordem);
 
+      // e as telas (quais botões aparecem, topo/final) no mesmo clique
+      if (salvarTelas.current) await salvarTelas.current();
+
       await recarregar();
-      setOk("Nomes e ordem dos botões salvos — já valem no app.");
+      setOk("Botões e telas salvos — já valem no app.");
     } catch (err) {
       console.error(err);
       setErro(err instanceof Error ? err.message : "Falha ao salvar os nomes.");
@@ -215,8 +225,12 @@ export default function BotoesAdmin() {
           </section>
         ))}
 
+        {/* botões e telas: dentro do mesmo formulário, para o "Salvar
+            alterações" gravar tudo de uma vez e a barra fixa valer aqui */}
+        <BotoesPorTelaAdmin salvarRef={salvarTelas} />
+
         <div className="admin-form-botoes">
-          <button type="button" className="outline" onClick={descartar}>
+          <button type="button" className="outline" onClick={() => void descartar()}>
             Descartar mudanças
           </button>
 
@@ -225,9 +239,6 @@ export default function BotoesAdmin() {
           </button>
         </div>
       </form>
-
-      {/* quais botões existem e em que telas eles aparecem (02/10/2026) */}
-      <BotoesPorTelaAdmin />
     </div>
   );
 }

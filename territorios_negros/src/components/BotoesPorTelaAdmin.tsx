@@ -9,7 +9,7 @@
 //   · atalhos_por_tela  → as listas de cada tela
 import "../styles/botoes-telas.css";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type MutableRefObject } from "react";
 
 import { useTerritorios } from "../context/useTerritorios";
 import { salvarConfig } from "../data/api";
@@ -45,14 +45,16 @@ function lerTudo(config: Record<string, unknown>): { desligados: string[]; porTe
   return { desligados: lerDesligados(config[CHAVE_BOTOES_DESLIGADOS]), porTela };
 }
 
-export default function BotoesPorTelaAdmin() {
-  const { config, recarregar } = useTerritorios();
+export default function BotoesPorTelaAdmin({
+  salvarRef,
+}: {
+  /** a tela de Botões usa UM botão de salvar: ela chama esta função */
+  salvarRef: MutableRefObject<(() => Promise<void>) | null>;
+}) {
+  const { config } = useTerritorios();
 
   const [desligados, setDesligados] = useState<string[]>(() => lerTudo(config).desligados);
   const [porTela, setPorTela] = useState<PorTela>(() => lerTudo(config).porTela);
-  const [salvando, setSalvando] = useState(false);
-  const [ok, setOk] = useState("");
-  const [erro, setErro] = useState("");
 
   useEffect(() => {
     let ativo = true;
@@ -74,7 +76,6 @@ export default function BotoesPorTelaAdmin() {
 
   function ligar(id: string, ligado: boolean) {
     setDesligados((atual) => (ligado ? atual.filter((i) => i !== id) : [...atual, id]));
-    setOk("");
   }
 
   /** Mexe numa lista (topo ou final) de uma tela. */
@@ -83,35 +84,23 @@ export default function BotoesPorTelaAdmin() {
       ...atual,
       [tela]: { ...(atual[tela] ?? { topo: [], final: [] }), [posicao]: nova },
     }));
-    setOk("");
   }
 
-  async function salvar() {
-    setSalvando(true);
-    setOk("");
-    setErro("");
-
-    try {
+  /**
+   * O "Salvar alterações" da tela de Botões salva as duas partes de uma vez —
+   * nomes/ordem (feito na tela) e esta lista de botões por tela. Antes havia
+   * dois botões e dava para salvar um só, achando que tudo estava salvo.
+   */
+  useEffect(() => {
+    salvarRef.current = async () => {
       await salvarConfig(CHAVE_BOTOES_DESLIGADOS, desligados);
       await salvarConfig(CHAVE_ATALHOS_POR_TELA, porTela);
-      await recarregar();
-      setOk("Botões salvos — já valem no app, tela por tela.");
-    } catch (err) {
-      console.error(err);
-      setErro(err instanceof Error ? err.message : "Falha ao salvar os botões.");
-    } finally {
-      setSalvando(false);
-    }
-  }
+    };
 
-  function descartar() {
-    const lido = lerTudo(config);
-
-    setDesligados(lido.desligados);
-    setPorTela(lido.porTela);
-    setErro("");
-    setOk("Mostrando o que está publicado — o que não foi salvo saiu da tela.");
-  }
+    return () => {
+      salvarRef.current = null;
+    };
+  });
 
   return (
     <section className="botoes-telas">
@@ -119,11 +108,8 @@ export default function BotoesPorTelaAdmin() {
 
       <p className="admin-ajuda">
         A ordem <b>começa</b> como está publicado hoje. Mexer aqui não muda nada até você{" "}
-        <b>salvar</b>.
+        <b>salvar alterações</b> no fim da tela — o mesmo botão salva os nomes e as telas.
       </p>
-
-      {ok && <p className="admin-ok">{ok}</p>}
-      {erro && <p className="admin-erro">{erro}</p>}
 
       <h3 className="admin-form-secao">Quais botões existem no app</h3>
 
@@ -243,15 +229,6 @@ export default function BotoesPorTelaAdmin() {
         </div>
       ))}
 
-      <div className="admin-form-botoes">
-        <button type="button" className="btn" onClick={salvar} disabled={salvando}>
-          {salvando ? "Salvando..." : "Salvar botões e telas"}
-        </button>
-
-        <button type="button" className="outline" onClick={descartar}>
-          Descartar
-        </button>
-      </div>
     </section>
   );
 }
