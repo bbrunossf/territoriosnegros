@@ -44,6 +44,9 @@ export default function ProximoEvento() {
 
   return (
     <>
+      {/* botões que a autoria escolheu para o topo do evento (menu Botões) */}
+      <BotoesDaTela tela="evento" posicao="topo" />
+
       <p className="evento-selo">{textos.selo}</p>
 
       <h1 className="page-title evento-titulo">{proximoTour.texto || "Próximo tour"}</h1>

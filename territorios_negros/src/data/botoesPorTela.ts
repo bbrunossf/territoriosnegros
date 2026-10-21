@@ -126,9 +126,9 @@ export interface TelaDoApp {
   id: string;
   nome: string;
   onde: string;
-  /** onde os botões cabem nesta tela. Os "final" são desenhados no fim do
-   *  conteúdo (ver `BotoesFinaisDaTela`); o "topo" só existe nas telas de texto,
-   *  que chamam `BotoesDaTela` logo abaixo do título. */
+  /** onde os botões cabem nesta tela. Desde 14/10/2026 **todas** as telas
+   *  recebem as duas posições: o "topo" é desenhado logo abaixo do título e o
+   *  "final" antes do "Enviar uma mensagem" (ver `BotoesFinaisDaTela`). */
   slots: ("topo" | "final")[];
 }
 
@@ -160,14 +160,14 @@ export const TELAS_DO_APP: TelaDoApp[] = [
   },
   { id: "apoiadores", nome: "Apoiadores", onde: "quem apoia o projeto", slots: ["topo", "final"] },
   { id: "contato", nome: "Contato", onde: "a página de contato", slots: ["topo", "final"] },
-  // telas criadas depois da aba Botões — sem botões de navegação hoje, prontas
-  // para receber os que a autoria escolher
-  { id: "evento", nome: "Próximo evento", onde: "a página do evento e da inscrição", slots: ["final"] },
-  { id: "ficha", nome: "Ficha de inscrição", onde: "o formulário aberto dentro do app", slots: ["final"] },
-  { id: "personalidade", nome: "Página de uma personalidade", onde: "a ficha de cada personalidade", slots: ["final"] },
-  { id: "percurso", nome: "Percurso de uma rota", onde: "o caminho de cada rota", slots: ["final"] },
-  { id: "territorio", nome: "Página de um território", onde: "a ficha de cada território", slots: ["final"] },
-  { id: "fim", nome: "Fim do passeio", onde: "a tela de encerramento", slots: ["final"] },
+  // telas criadas depois da aba Botões — também recebem topo e final desde
+  // 14/10/2026 (pedido da autoria: inserir e remover em todas as páginas)
+  { id: "evento", nome: "Próximo evento", onde: "a página do evento e da inscrição", slots: ["topo", "final"] },
+  { id: "ficha", nome: "Ficha de inscrição", onde: "o formulário aberto dentro do app", slots: ["topo", "final"] },
+  { id: "personalidade", nome: "Página de uma personalidade", onde: "a ficha de cada personalidade", slots: ["topo", "final"] },
+  { id: "percurso", nome: "Percurso de uma rota", onde: "o caminho de cada rota", slots: ["topo", "final"] },
+  { id: "territorio", nome: "Página de um território", onde: "a ficha de cada território", slots: ["topo", "final"] },
+  { id: "fim", nome: "Fim do passeio", onde: "a tela de encerramento", slots: ["topo", "final"] },
 ];
 
 export interface ListaDaTela {

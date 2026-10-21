@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 
 import { useTerritorios } from "../context/useTerritorios";
 import { textosDaFicha, urlParaIncorporar } from "../utils/ficha";
+import BotoesDaTela from "./BotoesDaTela";
 
 /** Ficha de inscrição dentro do app (14/10/2026): antes o botão abria o formulário
  *  em outra guia, e a autoria observou que quem não tem prática pode não conseguir
@@ -18,6 +19,9 @@ export default function FichaInscricao() {
 
   return (
     <section className="ficha">
+      {/* botões que a autoria escolheu para o topo da ficha (menu Botões) */}
+      <BotoesDaTela tela="ficha" posicao="topo" />
+
       <h1 className="page-title ficha-titulo">{textos.titulo}</h1>
 
       {dentro ? (
@@ -43,6 +47,9 @@ export default function FichaInscricao() {
           A ficha de inscrição ainda não está disponível.
         </p>
       )}
+
+      {/* botões que a autoria escolheu para o fim da ficha (menu Botões) */}
+      <BotoesDaTela tela="ficha" posicao="final" />
 
       <div className="pagina-botoes">
         <Link className="botao-secundario pagina-botao" to="/evento">

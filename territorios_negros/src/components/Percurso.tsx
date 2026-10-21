@@ -32,6 +32,9 @@ export default function Percurso() {
 
   return (
     <>
+      {/* botões que a autoria escolheu para o topo deste percurso (menu Botões) */}
+      <BotoesDaTela tela="percurso" posicao="topo" />
+
       {/* Título, logo do evento e a linha de início/conclusão */}
       <h1 className="page-title percurso-titulo">{roteiro.nome}</h1>
 

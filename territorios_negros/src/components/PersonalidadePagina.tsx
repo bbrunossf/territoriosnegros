@@ -83,12 +83,15 @@ export default function PersonalidadePagina({ dados }: { dados?: Personalidade }
       {/* o caminho de volta fica no TOPO, na mesma caixa dos botões das outras
           telas (.pagina-botoes/.pagina-botao: largura cheia, centralizado) e com
           respiro maior até a foto (pedido da autoria, 02/10/2026) */}
-      <div className="pagina-botoes pagina-botoes--acoes personalidade-topo">
-        <Link className="btn pagina-botao" to="/personalidades">
-          <IconeDeBotao id="personalidades" />
-          Personalidades
-        </Link>
-      </div>
+      {/* caminho de volta: um link discreto, no topo, sempre presente. Os
+          botões do topo ficam por conta do painel (menu Botões → Página de uma
+          personalidade → no topo da página), como em todas as telas. */}
+      <Link className="personalidade-voltar" to="/personalidades">
+        <IconeDeBotao id="personalidades" />
+        Personalidades
+      </Link>
+
+      <BotoesDaTela tela="personalidade" posicao="topo" />
 
       <div className="personalidade-hero">
         {capa ? (

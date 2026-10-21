@@ -104,6 +104,9 @@ export default function Territorio() {
 
   return (
       <>
+        {/* botões que a autoria escolheu para o topo desta ficha (menu Botões) */}
+        <BotoesDaTela tela="territorio" posicao="topo" />
+
         <div className="territorio-topbar">
           <p className="territorio-counter">
             Território {indice + 1} de {lista.length}

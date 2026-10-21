@@ -55,6 +55,8 @@ const JA_DESENHAM = new Set([
   "territorio",
   "percurso",
   "evento",
+  "ficha",
+  "fim",
 ]);
 
 /** Telas sem espaço para botões de navegação. */
