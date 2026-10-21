@@ -3020,6 +3020,22 @@ a, a:visited, a:hover, a:active {
   box-shadow: none;
 }
 
+/* ícone dentro de um botão comum (fora da barra de ações): tamanho fixo.
+   Sem isto o SVG ocupa o botão inteiro — foi o ícone gigante do topo da ficha
+   de personalidade (14/10/2026). */
+.pagina-botao > svg {
+  width: 20px;
+  height: 20px;
+  flex: none;
+
+  vertical-align: middle;
+}
+
+/* separação entre o ícone e o nome, quando os dois ficam na mesma linha */
+.pagina-botoes:not(.pagina-botoes--acoes) > .pagina-botao > svg {
+  margin-right: 6px;
+}
+
 /* Atalho do TCC logo abaixo do título, na Base teórica (pedido da autoria,
    02/10/2026 — antes esse acesso só existia no fim da página). */
 .rodape-topo {
