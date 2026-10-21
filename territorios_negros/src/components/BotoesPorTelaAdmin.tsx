@@ -144,8 +144,8 @@ export default function BotoesPorTelaAdmin({
 
       {TELAS_DO_APP.map((tela) => (
         <div className="botoes-telas-tela" key={tela.id}>
-          <b>{tela.nome}</b>
-          <p className="admin-campo-dica">{tela.onde}</p>
+          <h3 className="botoes-telas-nome">{tela.nome}</h3>
+          <p className="botoes-telas-onde-tela">{tela.onde}</p>
 
           {tela.slots.map((posicao) => {
             const lista = porTela[tela.id]?.[posicao] ?? [];
@@ -226,6 +226,11 @@ export default function BotoesPorTelaAdmin({
               </div>
             );
           })}
+
+          <p className="botoes-telas-resumo">
+            {(porTela[tela.id]?.topo ?? []).length} no topo ·{" "}
+            {(porTela[tela.id]?.final ?? []).length} no final
+          </p>
         </div>
       ))}
 

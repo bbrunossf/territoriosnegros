@@ -1,22 +1,56 @@
-/* src/styles/botoes-telas.css — a seção "Botões em cada tela" do painel. */
+/* src/styles/botoes-telas.css — a seção "Em cada tela" do painel.
+   O painel é claro: os tons antigos (#f0d9a9, #d9c7a5) eram para fundo escuro
+   e sumiam no branco — daí a sensação de "título pequeno e tudo misturado". */
 
+/* um cartão por tela, com nome grande e uma faixa dourada à esquerda para
+   marcar onde começa e onde termina o controle de cada página */
 .botoes-telas .botoes-telas-tela {
-  padding: 12px 14px;
+  padding: 14px 16px 12px;
 
-  border: 1px solid rgba(197, 139, 42, 0.35);
+  margin: 0 0 16px;
+
+  border: 1px solid rgba(197, 139, 42, 0.4);
+  border-left: 5px solid #c58b2a;
   border-radius: 12px;
+
+  background: #fffdf8;
+
+  box-shadow: 0 1px 3px rgba(94, 60, 20, 0.07);
+}
+
+.botoes-telas .botoes-telas-nome {
+  margin: 0 0 2px;
+
+  color: #5d3a1f;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  line-height: 1.25;
+}
+
+.botoes-telas .botoes-telas-onde-tela {
+  margin: 0 0 10px;
+
+  color: #7d5518;
+  font-size: 13px;
+  line-height: 1.4;
 }
 
 .botoes-telas .botoes-telas-local {
-  margin-top: 10px;
+  margin-top: 12px;
+
+  padding-top: 10px;
+
+  border-top: 1px dashed rgba(197, 139, 42, 0.5);
 }
 
 .botoes-telas .botoes-telas-local h4 {
   margin: 0 0 6px;
 
-  color: #f0d9a9;
-  font-size: 13px;
-  letter-spacing: 0.05em;
+  color: #8a5a1c;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
@@ -30,13 +64,18 @@
 
 .botoes-telas .botoes-telas-linha b {
   flex: 1;
+
+  color: #4a2f1a;
+  font-size: 14px;
+  font-weight: 700;
 }
 
 .botoes-telas .botoes-telas-vazio {
   margin: 0;
 
-  color: #d9c7a5;
+  color: #7d5518;
   font-size: 13px;
+  font-style: italic;
 }
 
 .botoes-telas .botoes-telas-add {
@@ -51,6 +90,21 @@
   flex: 1;
 }
 
+/* rodapé do cartão: fecha o controle daquela tela antes do próximo cartão */
+.botoes-telas .botoes-telas-resumo {
+  margin: 12px 0 0;
+
+  padding-top: 8px;
+
+  border-top: 1px solid rgba(197, 139, 42, 0.3);
+
+  color: #7d5518;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-align: right;
+}
+
 .botoes-telas .botoes-telas-liga {
   display: flex;
   gap: 10px;
@@ -58,15 +112,59 @@
 
   padding: 8px 10px;
 
-  border: 1px dashed rgba(197, 139, 42, 0.35);
+  border: 1px dashed rgba(197, 139, 42, 0.45);
   border-radius: 10px;
 }
 
 .botoes-telas .botoes-telas-liga b {
   flex: 1;
+
+  color: #4a2f1a;
 }
 
 .botoes-telas .botoes-telas-onde {
-  color: #d9c7a5;
+  color: #7d5518;
   font-size: 12.5px;
+}
+
+/* no celular o nome da tela cresce um pouco mais e o respiro separa melhor */
+@media (max-width: 900px) {
+  .botoes-telas .botoes-telas-tela {
+    padding: 13px 14px 11px;
+
+    margin-bottom: 14px;
+  }
+
+  .botoes-telas .botoes-telas-nome {
+    font-size: 17px;
+  }
+
+  .botoes-telas .botoes-telas-resumo {
+    text-align: left;
+  }
+
+  /* cada botão em duas linhas: o nome sozinho e, abaixo, o destino com os
+     comandos — antes o nome quebrava em quatro linhas espremido */
+  .botoes-telas .botoes-telas-linha {
+    flex-wrap: wrap;
+
+    gap: 6px;
+  }
+
+  .botoes-telas .botoes-telas-linha b {
+    flex: 1 1 100%;
+  }
+
+  .botoes-telas .botoes-telas-linha .botoes-telas-onde {
+    flex: 1 1 auto;
+  }
+
+  .botoes-telas .botoes-telas-linha button {
+    flex: 0 0 auto;
+
+    width: 44px;
+    height: 40px;
+
+    font-size: 15px;
+  }
 }

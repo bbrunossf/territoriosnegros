@@ -150,16 +150,16 @@ export const TELAS_DO_APP: TelaDoApp[] = [
     onde: "a página da presença negra",
     slots: ["topo", "final"],
   },
-  { id: "roteiros", nome: "Rotas", onde: "a lista de rotas", slots: ["final"] },
-  { id: "territorios", nome: "Territórios", onde: "a lista de territórios", slots: ["final"] },
+  { id: "roteiros", nome: "Rotas", onde: "a lista de rotas", slots: ["topo", "final"] },
+  { id: "territorios", nome: "Territórios", onde: "a lista de territórios", slots: ["topo", "final"] },
   {
     id: "personalidades",
     nome: "Personalidades",
     onde: "a lista de personalidades negras",
-    slots: ["final"],
+    slots: ["topo", "final"],
   },
-  { id: "apoiadores", nome: "Apoiadores", onde: "quem apoia o projeto", slots: ["final"] },
-  { id: "contato", nome: "Contato", onde: "a página de contato", slots: ["final"] },
+  { id: "apoiadores", nome: "Apoiadores", onde: "quem apoia o projeto", slots: ["topo", "final"] },
+  { id: "contato", nome: "Contato", onde: "a página de contato", slots: ["topo", "final"] },
   // telas criadas depois da aba Botões — sem botões de navegação hoje, prontas
   // para receber os que a autoria escolher
   { id: "evento", nome: "Próximo evento", onde: "a página do evento e da inscrição", slots: ["final"] },
