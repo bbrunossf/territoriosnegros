@@ -613,3 +613,39 @@
   gap: 8px;
   align-items: end;
 }
+
+/* ── ações rápidas em lote na lista de personalidades (14/10/2026) ──────────
+   Durante o passeio a autoria precisa liberar ou parar todas as pessoas de uma
+   vez; antes era uma a uma, com um botão por cartão. */
+.admin-lote {
+  display: grid;
+  gap: 6px;
+
+  margin: 0 0 14px;
+  padding: 12px 14px;
+
+  border: 1px solid #e5d2a8;
+  border-left: 4px solid #b8832c;
+  border-radius: 12px;
+
+  background: #fffdf8;
+}
+
+.admin-lote-titulo {
+  margin: 0;
+
+  color: #6a452b;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.admin-lote .admin-form-botoes {
+  margin: 0;
+}
+
+.admin-lote .admin-campo-dica {
+  margin: 2px 0 0;
+}
+

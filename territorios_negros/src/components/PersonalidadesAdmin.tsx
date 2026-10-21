@@ -43,6 +43,7 @@ import {
 } from "../data/personalidades";
 import { PersonalidadesPublicaveis } from "./PersonalidadesAdminAjuda";
 import PersonalidadePagina from "./PersonalidadePagina";
+import { pontosVisiveis } from "../utils/catalogo";
 
 /** Move um item de uma lista (↑ sobe, ↓ desce). */
 function moverItem<T>(lista: T[], indice: number, delta: number): T[] {
@@ -168,7 +169,7 @@ function TextosDaPaginaDaListagem({ bruto }: { bruto: unknown }) {
 }
 
 export default function PersonalidadesAdmin() {
-  const { config, recarregar, territorios } = useTerritorios();
+  const { config, recarregar, territorios, roteiros } = useTerritorios();
 
   const [lista, setLista] = useState<Personalidade[]>(() =>
     lerPersonalidades(config[CHAVE_PERSONALIDADES])
@@ -475,6 +476,94 @@ export default function PersonalidadesAdmin() {
     );
 
     setEditando((atual) => (atual && atual.id === cadastro.id ? cadastro : atual));
+  }
+
+  // ── ações rápidas em lote (14/10/2026) ────────────────────────────────
+  //
+  // Durante o passeio a autoria precisa parar a exibição de todas as pessoas de
+  // uma vez, sem ir uma a uma. Os três botões abaixo gravam a lista inteira
+  // numa só chamada.
+
+  /** Territórios que estão em alguma rota ativa hoje. */
+  function territoriosDasRotasAtivas(): Set<string> {
+    const ids = new Set<string>();
+
+    for (const rota of roteiros) {
+      for (const territorio of pontosVisiveis(rota.pontos, territorios)) {
+        ids.add(territorio.id);
+      }
+    }
+
+    return ids;
+  }
+
+  const vinculadasAsRotasAtivas = (() => {
+    const ids = territoriosDasRotasAtivas();
+    return lista.filter((p) => p.territorios.some((v) => ids.has(v.territorioId))).length;
+  })();
+
+  async function mudarTodas(situacao: "publicada" | "rascunho") {
+    if (lista.length === 0) return;
+
+    const alvo = lista.map((p) => ({ ...p, situacao }));
+    const descricao =
+      situacao === "publicada"
+        ? `Exibir todas: ${alvo.length} personalidade(s) passam a aparecer no app.`
+        : `Ocultar todas: as ${alvo.length} personalidade(s) saem do app até você publicar de novo.`;
+
+    if (!window.confirm(`${descricao}\n\nContinuar?`)) return;
+
+    await gravar(
+      alvo,
+      situacao === "publicada"
+        ? `Todas as ${alvo.length} personalidades publicadas — já aparecem no app.`
+        : `Todas as ${alvo.length} personalidades ocultas — o app não mostra nenhuma agora.`
+    );
+  }
+
+  /**
+   * Deixa publicado só quem tem vínculo com território de alguma rota ativa.
+   * A lista de territórios considerada é a mesma que o visitante vê: pontos das
+   * rotas ativas, ignorando território desativado.
+   */
+  async function somenteVinculadasAsRotasAtivas() {
+    if (lista.length === 0) return;
+
+    if (roteiros.length === 0) {
+      setOk("");
+      setErro(
+        "Nenhuma rota está ativa agora — ative uma rota (aba Rotas) antes de usar este filtro."
+      );
+      return;
+    }
+
+    const ids = territoriosDasRotasAtivas();
+
+    const alvo = lista.map((p) => ({
+      ...p,
+      situacao: (p.territorios.some((v) => ids.has(v.territorioId))
+        ? "publicada"
+        : "rascunho") as Personalidade["situacao"],
+    }));
+
+    const ficam = alvo.filter((p) => p.situacao === "publicada").length;
+    const saem = alvo.length - ficam;
+
+    if (
+      !window.confirm(
+        `Só as vinculadas às rotas ativas:\n\n` +
+          `${ficam} aparecem (têm território em ${roteiros.length} rota(s) ativa(s)).\n` +
+          `${saem} ficam ocultas.\n\nContinuar?`
+      )
+    ) {
+      return;
+    }
+
+    await gravar(
+      alvo,
+      `${ficam} personalidade(s) publicada(s) — vinculadas aos territórios das rotas ativas. ` +
+        `${saem} ficaram ocultas.`
+    );
   }
 
   async function excluir(p: Personalidade) {
@@ -1248,6 +1337,46 @@ export default function PersonalidadesAdmin() {
         No app aparecem <b>{contagem.publicadas}</b> publicada(s) · <b>{contagem.rascunhos}</b> em
         rascunho (rascunho não aparece para o visitante).
       </p>
+
+      {/* ação rápida para o passeio: parar ou liberar todas de uma vez */}
+      <div className="admin-lote">
+        <p className="admin-lote-titulo">Ações rápidas</p>
+
+        <div className="admin-form-botoes">
+          <button
+            type="button"
+            className="outline"
+            onClick={() => mudarTodas("publicada")}
+            disabled={salvando || lista.length === 0}
+          >
+            Exibir todas
+          </button>
+
+          <button
+            type="button"
+            className="outline"
+            onClick={() => mudarTodas("rascunho")}
+            disabled={salvando || lista.length === 0}
+          >
+            Ocultar todas
+          </button>
+
+          <button
+            type="button"
+            className="outline"
+            onClick={somenteVinculadasAsRotasAtivas}
+            disabled={salvando || lista.length === 0}
+          >
+            Só as vinculadas às rotas ativas
+          </button>
+        </div>
+
+        <p className="admin-campo-dica">
+          {vinculadasAsRotasAtivas} de {lista.length} têm território em alguma das{" "}
+          {roteiros.length} rota(s) ativa(s) hoje. O filtro considera os territórios que o
+          visitante vê — território desativado não conta.
+        </p>
+      </div>
 
       {/* ── os textos da PÁGINA que agrupa as personalidades (a listagem) ──
           A autoria não achava onde editar essa página: os campos ficam aqui,
