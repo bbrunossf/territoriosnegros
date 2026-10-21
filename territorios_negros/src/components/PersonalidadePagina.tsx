@@ -83,7 +83,7 @@ export default function PersonalidadePagina({ dados }: { dados?: Personalidade }
       {/* o caminho de volta fica no TOPO, na mesma caixa dos botões das outras
           telas (.pagina-botoes/.pagina-botao: largura cheia, centralizado) e com
           respiro maior até a foto (pedido da autoria, 02/10/2026) */}
-      <div className="pagina-botoes personalidade-topo">
+      <div className="pagina-botoes pagina-botoes--acoes personalidade-topo">
         <Link className="btn pagina-botao" to="/personalidades">
           <IconeDeBotao id="personalidades" />
           Personalidades
