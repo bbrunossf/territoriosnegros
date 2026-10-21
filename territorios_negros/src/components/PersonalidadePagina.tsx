@@ -37,6 +37,7 @@ import PlayerVideo from "./PlayerVideo";
 import Topic from "./Topic";
 import SecaoDeTexto from "./SecaoDeTexto";
 import MarcosConexoes from "./MarcosConexoes";
+import BotoesDaTela from "./BotoesDaTela";
 import BotaoContato from "./BotaoContato";
 import { chaveDaPersonalidade } from "../data/marcos";
 
@@ -306,11 +307,10 @@ export default function PersonalidadePagina({ dados }: { dados?: Personalidade }
           voltar para a lista e enviar uma mensagem — nas MESMAS caixas das
           outras telas (.pagina-botoes/.pagina-botao: largura cheia e
           centralizados), uma caixa por botão, como no resto do app */}
-      <div className="pagina-botoes">
-        <Link className="outline pagina-botao" to="/personalidades">
-          Personalidades
-        </Link>
-      </div>
+      {/* botões que a autoria escolheu para esta tela (menu Botões) e, por
+          último, "Enviar uma mensagem" — o contato fecha a página, como nas
+          outras telas do app (14/10/2026) */}
+      <BotoesDaTela tela="personalidade" posicao="final" />
 
       <BotaoContato tela="personalidade" />
     </div>

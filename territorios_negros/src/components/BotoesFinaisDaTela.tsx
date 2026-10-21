@@ -49,6 +49,12 @@ const JA_DESENHAM = new Set([
   "personalidades",
   "apoiadores",
   "contato",
+  // telas de ficha que passaram a desenhar os botões ANTES do "Enviar uma
+  // mensagem" (14/10/2026): antes eles vinham daqui, depois do contato
+  "personalidade",
+  "territorio",
+  "percurso",
+  "evento",
 ]);
 
 /** Telas sem espaço para botões de navegação. */

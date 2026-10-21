@@ -9,6 +9,7 @@ import Topic from "../components/Topic";
 import FotoAmpliavel from "../components/FotoAmpliavel";
 import PlayerVideo from "../components/PlayerVideo";
 import BotaoContato from "../components/BotaoContato";
+import BotoesDaTela from "../components/BotoesDaTela";
 import MarcosConexoes from "../components/MarcosConexoes";
 import { chaveDoTerritorio } from "../data/marcos";
 import {
@@ -222,6 +223,8 @@ export default function Territorio() {
             aqui como tópicos (14/10/2026). Sem tópico e sem vínculo, não
             aparece nada. */}
         <MarcosConexoes chaveDaPagina={chaveDoTerritorio(territorio.id)} personalidades={ligadas} />
+
+      <BotoesDaTela tela="territorio" posicao="final" />
 
       <BotaoContato tela="territorio" />
       </>

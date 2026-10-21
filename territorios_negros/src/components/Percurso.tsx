@@ -6,6 +6,7 @@ import { sloganDaRota } from "../data/slogansRota";
 import { paragrafosDe } from "../utils/texto";
 
 import BotaoContato from "../components/BotaoContato";
+import BotoesDaTela from "../components/BotoesDaTela";
 import FotoAmpliavel from "../components/FotoAmpliavel";
 import Inline from "../components/Inline";
 
@@ -150,6 +151,8 @@ export default function Percurso() {
           Ficha de inscrição
         </a>
       )}
+
+      <BotoesDaTela tela="percurso" posicao="final" />
 
       <BotaoContato tela="percurso" />
     </>

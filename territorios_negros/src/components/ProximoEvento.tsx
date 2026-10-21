@@ -4,6 +4,7 @@ import { formatarDataBR } from "../utils/data";
 import { useTerritorios } from "../context/useTerritorios";
 import { normalizarTextosIniciais } from "../data/telaInicial";
 import BotaoContato from "./BotaoContato";
+import BotoesDaTela from "./BotoesDaTela";
 
 /**
  * Página do próximo evento: informações do tour e a ficha de inscrição.
@@ -121,6 +122,8 @@ export default function ProximoEvento() {
           </Link>
         </div>
       )}
+
+      <BotoesDaTela tela="evento" posicao="final" />
 
       <BotaoContato tela="evento" />
 
