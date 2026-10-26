@@ -602,6 +602,10 @@ a, a:visited, a:hover, a:active {
 .territorio-media {
   width: 100%;
 
+  /* piso de altura: se a foto ainda não chegou (ou falhou), o bloco não some e
+     a página não "pula" — o aviso de fallback ocupa este espaço */
+  min-height: 200px;
+
   border-radius: 18px;
   border: 1px solid #3a2015;
 
@@ -2838,6 +2842,19 @@ a, a:visited, a:hover, a:active {
   text-transform: uppercase;
   text-align: center;
   padding: 18px;
+  line-height: 1.5;
+}
+
+/* o mesmo aviso quando a foto existe mas não carregou: vira alvo de toque */
+.territorio-sem-foto--recarregar {
+  cursor: pointer;
+
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.territorio-sem-foto--recarregar:active {
+  background: #e7d7b8;
 }
 
 /* ── 8. Rota: logo do evento e mapas do percurso ── */

@@ -1,4 +1,5 @@
 //Territorio.tsx
+import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTerritorios } from "../context/useTerritorios";
 import { pontosVisiveis } from "../utils/catalogo";
@@ -29,6 +30,20 @@ export default function Territorio() {
 
   const dentroDeRota = !!rotaId && rotaId !== "todos";
 
+  // Foto principal: quando o arquivo não carrega (rede, VPN, cache de erro do
+  // navegador) a imagem colapsa e a página "pula" o bloco — foi o que a autoria
+  // viu na Igreja de São Gonçalo (14/10/2026). Aqui o app tenta UMA vez com
+  // endereço novo e, se ainda falhar, mostra o aviso no lugar da foto.
+  //
+  // O estado guarda a QUAL território ele se refere: assim trocar de território
+  // (mesma página, outro índice) recomeça do zero sem precisar de efeito.
+  // (Declarado antes de qualquer saída antecipada: regra dos hooks.)
+  const [estadoFoto, setEstadoFoto] = useState({
+    id: "",
+    falhou: false,
+    tentativa: 0,
+  });
+
   // Lista de territórios do contexto atual (uma rota ou "todos"),
   // sempre só com os que estão habilitados no painel.
   const lista = dentroDeRota
@@ -44,6 +59,18 @@ export default function Territorio() {
     : lista.findIndex((t) => t.id === id);
 
   const territorio = lista[indice];
+
+  const idAtual = territorio?.id ?? "";
+  const foto =
+    estadoFoto.id === idAtual
+      ? estadoFoto
+      : { id: idAtual, falhou: false, tentativa: 0 };
+
+  const enderecoDaFoto = territorio?.imagem
+    ? foto.tentativa === 0
+      ? territorio.imagem
+      : `${territorio.imagem}${territorio.imagem.includes("?") ? "&" : "?"}t=${foto.tentativa}`
+    : "";
 
   // Personalidades ligadas a este território: cada uma vira um tópico em
   // Marcos e Conexões (pedido da autoria, 14/10/2026) — e o tópico leva à
@@ -150,20 +177,42 @@ export default function Territorio() {
           />
           Seu navegador não suporta vídeo.
         </video>
-      ) : territorio.imagem ? (
+      ) : territorio.imagem && !foto.falhou ? (
         <>
           <img
-            src={territorio.imagem}
+            src={enderecoDaFoto}
             alt={territorio.nome}
             className="territorio-media"
+            onError={() => {
+              setEstadoFoto({
+                id: idAtual,
+                falhou: foto.tentativa !== 0,
+                tentativa: foto.tentativa + 1,
+              });
+            }}
           />
 
           {creditoPrincipal && <p className="foto-credito">{creditoPrincipal}</p>}
         </>
       ) : (
-        /* sem foto nem vídeo cadastrados: mostra um aviso em vez de imagem quebrada */
-        <div className="territorio-media territorio-sem-foto">
-          <span>Imagem deste território em produção</span>
+        /* sem foto, ou foto que não carregou: mostra um aviso em vez de imagem
+           quebrada (e em vez de um espaço vazio que some da tela) */
+        <div
+          className={`territorio-media territorio-sem-foto${
+            territorio.imagem ? " territorio-sem-foto--recarregar" : ""
+          }`}
+          role={territorio.imagem ? "button" : undefined}
+          tabIndex={territorio.imagem ? 0 : undefined}
+          onClick={() => {
+            if (!territorio.imagem) return;
+            setEstadoFoto({ id: idAtual, falhou: false, tentativa: foto.tentativa + 1 });
+          }}
+        >
+          <span>
+            {territorio.imagem
+              ? "Não foi possível carregar a foto deste território agora — toque para tentar de novo"
+              : "Imagem deste território em produção"}
+          </span>
         </div>
       )}
 
