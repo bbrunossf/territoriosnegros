@@ -3226,6 +3226,39 @@ a, a:visited, a:hover, a:active {
   filter: brightness(0.96);
 }
 
+/* ── confirmação dentro da página (14/10/2026) ──────────────────────────────
+   O `window.confirm` do navegador pode ficar bloqueado e o clique "não fazer
+   nada"; esta caixa pergunta na própria tela, sem depender de diálogo. */
+.admin-confirmacao {
+  display: grid;
+  gap: 8px;
+
+  margin: 10px 0;
+  padding: 10px 12px;
+
+  border: 1px solid #d8b169;
+  border-left: 4px solid #b8832c;
+  border-radius: 10px;
+
+  background: #fdf3e0;
+
+  color: #4a2f14;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.admin-confirmacao p {
+  margin: 0;
+}
+
+.admin-confirmacao-inline {
+  margin: 8px 0 0;
+}
+
+.admin-confirmacao .admin-form-botoes {
+  margin: 0;
+}
+
 .admin-bloco {
   border: 1px solid #e5d2a8;
   background: #fffdf8;

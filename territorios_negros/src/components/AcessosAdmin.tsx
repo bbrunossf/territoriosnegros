@@ -34,6 +34,11 @@ export default function AcessosAdmin() {
   const [ok, setOk] = useState("");
   const [erro, setErro] = useState("");
 
+  // Confirmação DENTRO da página (14/10/2026): o `window.confirm` do navegador
+  // pode ficar bloqueado ("impedir esta página de abrir mais caixas") e aí o
+  // clique não fazia nada. Aqui a pergunta aparece na própria tela.
+  const [confirmando, setConfirmando] = useState<"" | "zerar" | "antigos">("");
+
   const carregar = useCallback(async (janela: number) => {
     const [lista, total] = await Promise.all([fetchAcessos(janela), contarAcessos()]);
     return { lista, total };
@@ -106,14 +111,8 @@ export default function AcessosAdmin() {
     };
   }, [acessos, dias, hoje]);
 
-  async function apagarAntigos() {
-    const confirmado = window.confirm(
-      "Apagar os registros de acesso com mais de 1 ano? Os números dos últimos 12 " +
-        "meses continuam iguais — some só o histórico mais antigo."
-    );
-
-    if (!confirmado) return;
-
+  async function executarApagarAntigos() {
+    setConfirmando("");
     setOk("");
     setErro("");
 
@@ -128,21 +127,23 @@ export default function AcessosAdmin() {
   }
 
   /** zera tudo: usado antes de divulgar o app, para o número sair limpo */
-  async function zerar() {
-    const confirmado = window.confirm(
-      `Zerar as estatísticas? Isso apaga TODOS os ${totalGeral} registro(s) de acesso ` +
-        `e a contagem recomeça do zero a partir de agora (não tem como desfazer). ` +
-        `A contagem continua funcionando normalmente depois disso.`
-    );
-
-    if (!confirmado) return;
-
+  async function executarZerar() {
+    setConfirmando("");
     setOk("");
     setErro("");
 
     try {
       const apagados = await zerarAcessos();
       await atualizar();
+
+      if (apagados === 0 && totalGeral > 0) {
+        setErro(
+          `O banco recusou a exclusão: ${totalGeral} registro(s) continuam lá. ` +
+            `Isso é permissão (RLS) na tabela acessos — avise quem cuida do banco.`
+        );
+        return;
+      }
+
       setOk(
         `Estatísticas zeradas: ${apagados} registro(s) apagado(s). A contagem começou de ` +
           `novo a partir de agora.`
@@ -324,9 +325,28 @@ export default function AcessosAdmin() {
             antigo sem perder os números do período que você escolher acima.
           </p>
 
-          <button type="button" className="outline" onClick={apagarAntigos}>
-            apagar registros com mais de 1 ano
-          </button>
+          {confirmando === "antigos" ? (
+            <div className="admin-confirmacao">
+              <p>
+                <b>Apagar os registros com mais de 1 ano?</b> Os números dos últimos 12
+                meses continuam iguais — some só o histórico mais antigo.
+              </p>
+
+              <div className="admin-form-botoes">
+                <button type="button" className="btn" onClick={executarApagarAntigos}>
+                  sim, apagar
+                </button>
+
+                <button type="button" className="outline" onClick={() => setConfirmando("")}>
+                  cancelar
+                </button>
+              </div>
+            </div>
+          ) : (
+            <button type="button" className="outline" onClick={() => setConfirmando("antigos")}>
+              apagar registros com mais de 1 ano
+            </button>
+          )}
 
           <p className="admin-ajuda">
             Lista carregada em {carregadoEm || "—"}. Use <b>atualizar agora</b> para ver o
@@ -347,9 +367,28 @@ export default function AcessosAdmin() {
             <div className="admin-fotos-estado">
               <b>Registros guardados agora:</b> {totalGeral}
 
-              <button type="button" className="outline" onClick={zerar}>
-                zerar estatísticas
-              </button>
+              {confirmando === "zerar" ? (
+                <span className="admin-confirmacao admin-confirmacao-inline">
+                  <span>
+                    <b>Zerar tudo agora?</b> {totalGeral} registro(s) serão apagados e não há
+                    como desfazer.
+                  </span>
+
+                  <span className="admin-form-botoes">
+                    <button type="button" className="btn" onClick={executarZerar}>
+                      sim, zerar agora
+                    </button>
+
+                    <button type="button" className="outline" onClick={() => setConfirmando("")}>
+                      cancelar
+                    </button>
+                  </span>
+                </span>
+              ) : (
+                <button type="button" className="outline" onClick={() => setConfirmando("zerar")}>
+                  zerar estatísticas
+                </button>
+              )}
             </div>
           </div>
         </>

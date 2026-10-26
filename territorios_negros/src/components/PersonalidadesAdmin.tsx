@@ -183,6 +183,9 @@ export default function PersonalidadesAdmin() {
   const [ok, setOk] = useState("");
   const [erro, setErro] = useState("");
 
+  // Ação em lote aguardando a confirmação que aparece na própria tela.
+  const [loteAcao, setLoteAcao] = useState<"" | "publicada" | "rascunho" | "rotas">("");
+
   const paginaBruta = JSON.stringify(config[CHAVE_PAGINA_PERSONALIDADES] ?? null);
 
   useEffect(() => {
@@ -506,12 +509,6 @@ export default function PersonalidadesAdmin() {
     if (lista.length === 0) return;
 
     const alvo = lista.map((p) => ({ ...p, situacao }));
-    const descricao =
-      situacao === "publicada"
-        ? `Exibir todas: ${alvo.length} personalidade(s) passam a aparecer no app.`
-        : `Ocultar todas: as ${alvo.length} personalidade(s) saem do app até você publicar de novo.`;
-
-    if (!window.confirm(`${descricao}\n\nContinuar?`)) return;
 
     await gravar(
       alvo,
@@ -529,14 +526,6 @@ export default function PersonalidadesAdmin() {
   async function somenteVinculadasAsRotasAtivas() {
     if (lista.length === 0) return;
 
-    if (roteiros.length === 0) {
-      setOk("");
-      setErro(
-        "Nenhuma rota está ativa agora — ative uma rota (aba Rotas) antes de usar este filtro."
-      );
-      return;
-    }
-
     const ids = territoriosDasRotasAtivas();
 
     const alvo = lista.map((p) => ({
@@ -549,20 +538,64 @@ export default function PersonalidadesAdmin() {
     const ficam = alvo.filter((p) => p.situacao === "publicada").length;
     const saem = alvo.length - ficam;
 
-    if (
-      !window.confirm(
-        `Só as vinculadas às rotas ativas:\n\n` +
-          `${ficam} aparecem (têm território em ${roteiros.length} rota(s) ativa(s)).\n` +
-          `${saem} ficam ocultas.\n\nContinuar?`
-      )
-    ) {
-      return;
-    }
-
     await gravar(
       alvo,
       `${ficam} personalidade(s) publicada(s) — vinculadas aos territórios das rotas ativas. ` +
         `${saem} ficaram ocultas.`
+    );
+  }
+
+  /**
+   * Executa a ação em lote já confirmada na própria tela. A confirmação é um
+   * bloco da página, e não `window.confirm`: o navegador pode bloquear as
+   * caixas de diálogo e aí o clique não fazia nada (14/10/2026).
+   */
+  async function executarLote() {
+    const acao = loteAcao;
+
+    setLoteAcao("");
+
+    if (!acao) return;
+
+    if (acao === "rotas") {
+      await somenteVinculadasAsRotasAtivas();
+      return;
+    }
+
+    await mudarTodas(acao);
+  }
+
+  function pedirLote(acao: "publicada" | "rascunho" | "rotas") {
+    if (lista.length === 0) return;
+
+    if (acao === "rotas" && roteiros.length === 0) {
+      setOk("");
+      setErro(
+        "Nenhuma rota está ativa agora — ative uma rota (aba Rotas) antes de usar este filtro."
+      );
+      return;
+    }
+
+    setErro("");
+    setLoteAcao(acao);
+  }
+
+  /** A pergunta que aparece na tela antes de gravar, com os números da ação. */
+  function textoDaConfirmacao(): string {
+    if (loteAcao === "publicada") {
+      return `Exibir todas: as ${lista.length} personalidade(s) passam a aparecer no app.`;
+    }
+
+    if (loteAcao === "rascunho") {
+      return `Ocultar todas: as ${lista.length} personalidade(s) saem do app até você publicar de novo.`;
+    }
+
+    const ids = territoriosDasRotasAtivas();
+    const ficam = lista.filter((p) => p.territorios.some((v) => ids.has(v.territorioId))).length;
+
+    return (
+      `Só as vinculadas às rotas ativas: ${ficam} aparecem (têm território em ` +
+      `${roteiros.length} rota(s) ativa(s)) e ${lista.length - ficam} ficam ocultas.`
     );
   }
 
@@ -1346,7 +1379,7 @@ export default function PersonalidadesAdmin() {
           <button
             type="button"
             className="outline"
-            onClick={() => mudarTodas("publicada")}
+            onClick={() => pedirLote("publicada")}
             disabled={salvando || lista.length === 0}
           >
             Exibir todas
@@ -1355,7 +1388,7 @@ export default function PersonalidadesAdmin() {
           <button
             type="button"
             className="outline"
-            onClick={() => mudarTodas("rascunho")}
+            onClick={() => pedirLote("rascunho")}
             disabled={salvando || lista.length === 0}
           >
             Ocultar todas
@@ -1364,12 +1397,28 @@ export default function PersonalidadesAdmin() {
           <button
             type="button"
             className="outline"
-            onClick={somenteVinculadasAsRotasAtivas}
+            onClick={() => pedirLote("rotas")}
             disabled={salvando || lista.length === 0}
           >
             Só as vinculadas às rotas ativas
           </button>
         </div>
+
+        {loteAcao && (
+          <div className="admin-confirmacao">
+            <p>{textoDaConfirmacao()}</p>
+
+            <div className="admin-form-botoes">
+              <button type="button" className="btn" onClick={executarLote} disabled={salvando}>
+                sim, aplicar
+              </button>
+
+              <button type="button" className="outline" onClick={() => setLoteAcao("")}>
+                cancelar
+              </button>
+            </div>
+          </div>
+        )}
 
         <p className="admin-campo-dica">
           {vinculadasAsRotasAtivas} de {lista.length} têm território em alguma das{" "}
