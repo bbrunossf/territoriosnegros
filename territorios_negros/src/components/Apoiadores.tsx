@@ -45,22 +45,28 @@ export default function Apoiadores() {
         <div className="apoio-lista">
           {lista.map((apoiador) => (
             <div className="apoio-cartao" key={apoiador.id}>
-              {/* a participação combinada vem primeiro: é o que diferencia um
-                  patrocínio de um acolhimento */}
-              {nomeDoTipo(apoiador.tipo) && (
-                <span className="apoio-tipo">{nomeDoTipo(apoiador.tipo)}</span>
-              )}
+              {/* topo compacto: logo pequena à esquerda, participação e nome à
+                  direita — no celular o cartão tem de caber em pouca altura */}
+              <div className="apoio-topo">
+                {apoiador.logo && (
+                  <img
+                    className="apoio-logo"
+                    src={apoiador.logo}
+                    alt={apoiador.nome ? `Logo de ${apoiador.nome}` : "Logo do apoiador"}
+                    loading="lazy"
+                  />
+                )}
 
-              {apoiador.logo && (
-                <img
-                  className="apoio-logo"
-                  src={apoiador.logo}
-                  alt={apoiador.nome ? `Logo de ${apoiador.nome}` : "Logo do apoiador"}
-                  loading="lazy"
-                />
-              )}
+                <div className="apoio-identidade">
+                  {/* a participação vem antes: é o que diferencia um patrocínio
+                      de um acolhimento */}
+                  {nomeDoTipo(apoiador.tipo) && (
+                    <span className="apoio-tipo">{nomeDoTipo(apoiador.tipo)}</span>
+                  )}
 
-              {apoiador.nome && <b className="apoio-nome">{apoiador.nome}</b>}
+                  {apoiador.nome && <b className="apoio-nome">{apoiador.nome}</b>}
+                </div>
+              </div>
 
               {apoiador.contribuicao && (
                 <p className="apoio-contribuicao">

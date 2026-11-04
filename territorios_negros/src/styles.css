@@ -3076,54 +3076,84 @@ a, a:visited, a:hover, a:active {
 .apoio-lista {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 10px;
 }
 
+/* Cartão compacto (celular é o uso principal, 14/10/2026): logo pequena à
+   esquerda e identidade à direita; texto e contatos abaixo, sem centralização
+   que gastava altura. */
 .apoio-cartao {
   border: 1px solid rgba(155, 112, 46, 0.45);
-  border-radius: 14px;
+  border-radius: 12px;
   background: #fffaf1;
-  padding: 14px;
+  padding: 10px 12px;
 
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 8px;
+  align-items: stretch;
+  gap: 7px;
 
-  text-align: center;
+  text-align: left;
+}
+
+.apoio-topo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.apoio-identidade {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+
+  min-width: 0;
 }
 
 .apoio-logo {
-  max-width: 180px;
-  max-height: 120px;
+  width: 54px;
+  height: 54px;
+  flex: none;
+
+  box-sizing: border-box;
+  padding: 4px;
+
   object-fit: contain;
+
+  border: 1px solid rgba(155, 112, 46, 0.28);
+  border-radius: 10px;
+
+  background: #fff;
 }
 
 /* etiqueta da participação (Realização, Patrocínio, Apoio…), no alto do cartão */
 .apoio-tipo {
-  align-self: center;
+  align-self: flex-start;
 
-  padding: 3px 10px;
+  padding: 2px 8px;
   border-radius: 999px;
 
   background: #b8832c;
   color: #130b08;
 
-  font-size: 12px;
+  font-size: 10.5px;
   font-weight: 900;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 
 .apoio-nome {
   font-family: Georgia, serif;
-  font-size: 17px;
+  font-size: 15.5px;
+  line-height: 1.25;
   color: #3a2015;
 }
 
 .apoio-contribuicao {
   margin: 0;
-  line-height: 1.45;
+
+  font-size: 13.5px;
+  line-height: 1.4;
   color: #2a1c12;
 }
 
@@ -3131,15 +3161,36 @@ a, a:visited, a:hover, a:active {
   align-self: stretch;
 }
 
+/* telas maiores: respira um pouco, sem voltar ao cartão alto */
+@media (min-width: 640px) {
+  .apoio-cartao {
+    padding: 12px 14px;
+    gap: 8px;
+  }
+
+  .apoio-logo {
+    width: 64px;
+    height: 64px;
+  }
+
+  .apoio-nome {
+    font-size: 17px;
+  }
+
+  .apoio-contribuicao {
+    font-size: 14.5px;
+  }
+}
+
 /* foto do apoiador ou do espaço, dentro do cartão */
 .apoio-foto {
   width: 100%;
-  max-width: 420px;
+  max-height: 150px;
 
-  margin-top: 2px;
+  margin-top: 1px;
 
   border: 1px solid rgba(155, 112, 46, 0.35);
-  border-radius: 10px;
+  border-radius: 8px;
 
   object-fit: cover;
 }
@@ -3148,16 +3199,15 @@ a, a:visited, a:hover, a:active {
 .apoio-contatos {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
   gap: 6px;
 
   width: 100%;
 
-  margin-top: 4px;
+  margin-top: 1px;
 }
 
 .apoio-contato {
-  padding: 7px 12px;
+  padding: 5px 10px;
 
   border: 1px solid #c58b2a;
   border-radius: 999px;
@@ -3165,7 +3215,7 @@ a, a:visited, a:hover, a:active {
   background: #fff6e4;
 
   color: #6a452b;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.02em;
   text-decoration: none;
