@@ -166,6 +166,16 @@ export default function TerritoriosAdmin() {
   const [ordemLocal, setOrdemLocal] = useState<BlocoFichaId[] | null>(null);
   const [salvandoOrdem, setSalvandoOrdem] = useState(false);
 
+  /**
+   * Alcance da ordem no momento de salvar: só este território ou todos. É a
+   * escolha que a autoria pediu (14/10/2026) — antes eram dois botões distantes
+   * e a ordem podia ficar sem publicar.
+   */
+  const [escopoOrdem, setEscopoOrdem] = useState<"este" | "todos">("este");
+
+  /** confirmação de ordem aplicada a todos / volta ao original, na própria tela */
+  const [confirmandoOrdem, setConfirmandoOrdem] = useState<"" | "todos" | "original">("");
+
   /** revisão das fichas: mostrar só quem tem pendência */
   const [soPendentes, setSoPendentes] = useState(false);
 
@@ -448,9 +458,31 @@ export default function TerritoriosAdmin() {
         setImagemFile(null);
       }
 
+      // A ordem das informações entra no MESMO "Salvar alterações": antes ela
+      // tinha botão próprio e ficava esquecida (a autoria mudou a posição da
+      // palavra-chave, clicou em salvar e nada mudou — 14/10/2026).
+      if (ordemPendente && escopoOrdem === "todos") {
+        await salvarConfig(
+          "ficha_territorio",
+          padronizarParaTodos(config.ficha_territorio, ordemFicha)
+        );
+        setOrdemLocal(null);
+        await recarregar();
+      } else if (ordemPendente) {
+        await salvarConfig(
+          "ficha_territorio",
+          comOrdemDoTerritorio(config.ficha_territorio, id, ordemFicha)
+        );
+        setOrdemLocal(null);
+        await recarregar();
+      }
+
       setPendente(false);
       await carregar();
-      setOk(`Alterações publicadas em ${formatarDataHoraBR(new Date().toISOString())}.`);
+      setOk(
+        `Alterações publicadas em ${formatarDataHoraBR(new Date().toISOString())}.` +
+          (ordemPendente ? " A ordem das informações também foi publicada." : "")
+      );
     } catch (e) {
       console.error(e);
       setErro(e instanceof Error ? e.message : "Falha ao salvar.");
@@ -712,14 +744,17 @@ export default function TerritoriosAdmin() {
     try {
       await salvarConfig(
         "ficha_territorio",
-        comOrdemDoTerritorio(config.ficha_territorio, editando, ordemFicha)
+        escopoOrdem === "todos"
+          ? padronizarParaTodos(config.ficha_territorio, ordemFicha)
+          : comOrdemDoTerritorio(config.ficha_territorio, editando, ordemFicha)
       );
 
       await recarregar();
       setOrdemLocal(null);
       setOk(
-        `Ordem das informações de “${form.nome}” publicada. ` +
-          "Ela vale só para este território; abra o app para ver a leitura na nova sequência."
+        escopoOrdem === "todos"
+          ? "Ordem publicada para TODOS os territórios — vale também para território criado depois."
+          : `Ordem das informações de “${form.nome}” publicada. Ela vale só para este território; abra o app para ver a leitura na nova sequência.`
       );
     } catch (e) {
       console.error(e);
@@ -733,13 +768,7 @@ export default function TerritoriosAdmin() {
   async function padronizarOrdem() {
     if (!editando) return;
 
-    const certeza = window.confirm(
-      "Aplicar esta ordem a TODOS os territórios? Ela passa a ser a ordem padrão e " +
-        "território que já tiver ordem própria passa a seguir esta também."
-    );
-
-    if (!certeza) return;
-
+    setConfirmandoOrdem("");
     setErro("");
     setOk("");
     setSalvandoOrdem(true);
@@ -765,12 +794,7 @@ export default function TerritoriosAdmin() {
 
   /** devolve todos os territórios à sequência original do app */
   async function voltarTodos() {
-    const certeza = window.confirm(
-      "Voltar TODOS os territórios à ordem original do app? A ordem padrão e as ordens próprias serão apagadas."
-    );
-
-    if (!certeza) return;
-
+    setConfirmandoOrdem("");
     setErro("");
     setOk("");
     setSalvandoOrdem(true);
@@ -1157,8 +1181,8 @@ export default function TerritoriosAdmin() {
               saem agrupados na caixa “Informações rápidas”; as <b>seções de texto</b>
               (Descrição, Para observar…) saem com título próprio. Use <b>↑ ↓</b> para
               posicionar cada uma. Cartão sem conteúdo não aparece, sem deixar buraco na
-              leitura. Publica no <b>Salvar ordem</b>, que é independente do “Salvar
-              alterações” (esse é do conteúdo).
+              leitura. A ordem entra no <b>Salvar alterações</b> do fim da página (ou em{" "}
+              <b>Salvar ordem agora</b>), conforme o alcance escolhido abaixo.
             </p>
 
             <div className="admin-ordem">
@@ -1195,9 +1219,48 @@ export default function TerritoriosAdmin() {
               ))}
             </div>
 
+            {/* escolha do alcance, no momento de salvar (pedido da autoria) */}
+            <div className="admin-escopo">
+              <p className="admin-escopo-titulo">Ao salvar a ordem, ela vale para:</p>
+
+              <label className="admin-escopo-opcao">
+                <input
+                  type="radio"
+                  name="escopo-ordem"
+                  checked={escopoOrdem === "este"}
+                  onChange={() => setEscopoOrdem("este")}
+                />
+                <span>
+                  <b>Só este território</b>
+                  <small>Os outros territórios continuam como estão.</small>
+                </span>
+              </label>
+
+              <label className="admin-escopo-opcao">
+                <input
+                  type="radio"
+                  name="escopo-ordem"
+                  checked={escopoOrdem === "todos"}
+                  onChange={() => setEscopoOrdem("todos")}
+                />
+                <span>
+                  <b>Todos os territórios</b>
+                  <small>
+                    Vira a ordem padrão: os outros passam a seguir esta sequência (inclusive
+                    quem tinha ordem própria) e território novo já nasce assim.
+                  </small>
+                </span>
+              </label>
+            </div>
+
             <div className="admin-galeria-acoes">
-              <button type="button" className="btn" onClick={salvarOrdem} disabled={salvandoOrdem}>
-                {salvandoOrdem ? "Salvando..." : "Salvar ordem"}
+              <button
+                type="button"
+                className="btn"
+                onClick={() => (escopoOrdem === "todos" ? setConfirmandoOrdem("todos") : salvarOrdem())}
+                disabled={salvandoOrdem}
+              >
+                {salvandoOrdem ? "Salvando..." : "Salvar ordem agora"}
               </button>
 
               <button
@@ -1220,13 +1283,14 @@ export default function TerritoriosAdmin() {
 
             {ordemPendente && (
               <p className="admin-ajuda">
-                <b>Ordem alterada e ainda não publicada</b> — clique em “Salvar ordem”
-                para valer no app.
+                <b>Ordem alterada e ainda não publicada.</b> Ela entra no{" "}
+                <b>Salvar alterações</b> do fim da página, junto com o resto da ficha — ou
+                publique agora com <b>Salvar ordem agora</b>.
               </p>
             )}
 
             <div className="admin-subsecao">
-              <b>Ordem padrão de todos os territórios</b>
+              <b>Estado da ordem</b>
 
               <p className="admin-campo-dica">
                 {temOrdemPropria(config.ficha_territorio, editando ?? "")
@@ -1245,30 +1309,60 @@ export default function TerritoriosAdmin() {
               <div className="admin-galeria-acoes">
                 <button
                   type="button"
-                  className="btn"
-                  onClick={padronizarOrdem}
-                  disabled={salvandoOrdem}
-                >
-                  Aplicar esta ordem a todos os territórios
-                </button>
-
-                <button
-                  type="button"
                   className="outline"
-                  onClick={voltarTodos}
+                  onClick={() => setConfirmandoOrdem("original")}
                   disabled={salvandoOrdem}
                 >
                   voltar todos à ordem original do app
                 </button>
               </div>
 
-              <p className="admin-campo-dica">
-                <b>Aplicar a todos</b> faz da ordem da lista acima a ordem <b>padrão</b>: os
-                outros territórios passam a seguir esta sequência (inclusive quem tinha ordem
-                própria) e território criado depois já nasce assim. Para <b>um</b> território
-                deixar de ter ordem própria, use “Voltar à ordem padrão” acima e salve — ele
-                volta a seguir o padrão.
-              </p>
+              {confirmandoOrdem === "original" && (
+                <div className="admin-confirmacao">
+                  <p>
+                    <b>Voltar TODOS os territórios à ordem original do app?</b> A ordem
+                    padrão aplicada e as ordens próprias serão apagadas.
+                  </p>
+
+                  <div className="admin-form-botoes">
+                    <button type="button" className="btn" onClick={voltarTodos}>
+                      sim, voltar todos
+                    </button>
+
+                    <button
+                      type="button"
+                      className="outline"
+                      onClick={() => setConfirmandoOrdem("")}
+                    >
+                      cancelar
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {confirmandoOrdem === "todos" && (
+                <div className="admin-confirmacao">
+                  <p>
+                    <b>Aplicar esta ordem a TODOS os territórios?</b> Ela passa a ser a ordem
+                    padrão, e território que já tiver ordem própria passa a seguir esta
+                    também.
+                  </p>
+
+                  <div className="admin-form-botoes">
+                    <button type="button" className="btn" onClick={padronizarOrdem}>
+                      sim, aplicar a todos
+                    </button>
+
+                    <button
+                      type="button"
+                      className="outline"
+                      onClick={() => setConfirmandoOrdem("")}
+                    >
+                      cancelar
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </>
         )}

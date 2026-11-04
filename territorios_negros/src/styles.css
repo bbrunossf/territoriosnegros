@@ -3229,6 +3229,72 @@ a, a:visited, a:hover, a:active {
 /* ── confirmação dentro da página (14/10/2026) ──────────────────────────────
    O `window.confirm` do navegador pode ficar bloqueado e o clique "não fazer
    nada"; esta caixa pergunta na própria tela, sem depender de diálogo. */
+/* ── escolha do alcance da ordem da ficha (14/10/2026) ───────────────────── */
+.admin-escopo {
+  display: grid;
+  gap: 6px;
+
+  margin: 10px 0 12px;
+  padding: 10px 12px;
+
+  border: 1px solid #e5d2a8;
+  border-left: 4px solid #b8832c;
+  border-radius: 10px;
+
+  background: #fffdf8;
+}
+
+.admin-escopo-titulo {
+  margin: 0 0 2px;
+
+  color: #6a452b;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.admin-escopo-opcao {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+
+  padding: 6px 8px;
+
+  border-radius: 8px;
+
+  cursor: pointer;
+}
+
+.admin-escopo-opcao input {
+  width: 20px;
+  height: 20px;
+  margin: 1px 0 0;
+
+  flex: none;
+
+  accent-color: #b8832c;
+}
+
+.admin-escopo-opcao b {
+  display: block;
+
+  color: #3d2415;
+  font-size: 14px;
+}
+
+.admin-escopo-opcao small {
+  display: block;
+
+  margin-top: 2px;
+
+  color: #7d5518;
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+
+.admin-escopo-opcao:has(input:checked) {
+  background: #fdf3e0;
+}
+
 .admin-confirmacao {
   display: grid;
   gap: 8px;
