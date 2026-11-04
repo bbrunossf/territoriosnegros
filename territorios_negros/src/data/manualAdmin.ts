@@ -211,7 +211,7 @@ export const MANUAL_PADRAO: SecaoManual[] = [
       "**Dados do cadastro (não aparecem no app)** — endereço e telefones ficam guardados no painel para contato e prestação de contas; o visitante não vê. **Não existe campo de CPF/CNPJ**: por decisão de 14/10/2026 o documento não é guardado neste cadastro, para não expor dado pessoal — o painel é público na leitura (o app baixa a configuração para funcionar).",
       "**Link** — aceita o endereço completo, `instagram.com/perfil` ou só **@perfil**; o app completa e chama o botão de Instagram.",
       "**Aparecendo no app** — desmarcado, o cadastro fica guardado e o visitante não vê. É item por item, como nas fotos de apoio: dá para preparar tudo e ligar na hora de publicar.",
-      "**Exibir e ocultar (14/10/2026):** cada cartão mostra o estado no topo — **aparecendo** ou **oculto** — e tem o botão **ocultar**/**exibir** para tirar do ar ou voltar sem perder nada. Ocultar **não apaga**: nome, logo, contatos e foto continuam guardados para quando o apoio for renovado. **apagar** é definitivo e o painel avisa, oferecendo “não — só ocultar”.",
+      "**Exibir e ocultar (14/10/2026):** cada cartão mostra o estado no topo — **aparecendo** ou **oculto** — e tem o botão **ocultar**/**exibir**, que **grava na hora**: o cartão sai (ou volta) ao app no clique, sem passar pelo “Salvar alterações”. Ocultar **não apaga**: nome, logo, contatos e foto continuam guardados para quando o apoio for renovado. **apagar** é definitivo e o painel avisa, oferecendo “não — só ocultar”.",
       "**apagar** remove o apoiador da lista de vez (só confirme se o cadastro não vai ser usado de novo). Nada vai ao ar sem **Salvar alterações**; **Descartar mudanças** volta ao que está publicado.",
     ],
   },

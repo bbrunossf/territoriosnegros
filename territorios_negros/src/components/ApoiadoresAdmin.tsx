@@ -73,6 +73,51 @@ export default function ApoiadoresAdmin() {
     setLista((atual) => [...atual, novoApoiador()]);
   }
 
+  /**
+   * Exibir/ocultar em um clique. Quando o apoiador já está publicado, GRAVA NA
+   * HORA (o estado do cartão vale no app sem passar pelo "Salvar alterações" —
+   * é o que a autoria precisa durante um evento). Cadastro ainda não publicado
+   * só muda aqui e entra no próximo salvamento.
+   */
+  async function alternarVisivel(id: string) {
+    const atual = lista.find((a) => a.id === id);
+    if (!atual) return;
+
+    const publicado = lerApoiadores(config[CHAVE_APOIADORES]);
+    const naListaPublicada = publicado.lista.some((a) => a.id === id);
+
+    setErro("");
+    setOk("");
+
+    if (!naListaPublicada) {
+      mudar(id, "visivel", !atual.visivel);
+      setOk(
+        `“${atual.nome || "este apoiador"}” ${atual.visivel ? "oculto" : "liberado"} aqui — ` +
+          `clique em "Salvar alterações" para publicar (ainda não estava no app).`
+      );
+      return;
+    }
+
+    try {
+      const novaLista = publicado.lista.map((a) =>
+        a.id === id ? { ...a, visivel: !a.visivel } : a
+      );
+
+      await salvarConfig(CHAVE_APOIADORES, { ...publicado, lista: novaLista });
+
+      // mexe só neste item no estado local: as outras edições em andamento
+      // continuam na tela, sem serem publicadas por tabela
+      mudar(id, "visivel", !atual.visivel);
+
+      setOk(
+        `“${atual.nome || "este apoiador"}” ${atual.visivel ? "oculto" : "aparecendo"} no app agora.`
+      );
+    } catch (e) {
+      console.error(e);
+      setErro(e instanceof Error ? e.message : "Falha ao mudar o estado do apoiador.");
+    }
+  }
+
   function remover(id: string) {
     setOk("");
     setErro("");
@@ -252,11 +297,11 @@ export default function ApoiadoresAdmin() {
                 <button
                   type="button"
                   className="midias-acao"
-                  onClick={() => mudar(apoiador.id, "visivel", !apoiador.visivel)}
+                  onClick={() => alternarVisivel(apoiador.id)}
                   title={
                     apoiador.visivel
-                      ? "Tirar do app sem apagar o cadastro"
-                      : "Voltar a mostrar no app"
+                      ? "Tirar do app sem apagar o cadastro (grava na hora)"
+                      : "Voltar a mostrar no app (grava na hora)"
                   }
                 >
                   {apoiador.visivel ? "ocultar" : "exibir"}
@@ -306,7 +351,7 @@ export default function ApoiadoresAdmin() {
                     className="outline"
                     onClick={() => {
                       setConfirmandoRemover(null);
-                      mudar(apoiador.id, "visivel", false);
+                      void alternarVisivel(apoiador.id);
                     }}
                   >
                     não — só ocultar
@@ -551,11 +596,11 @@ export default function ApoiadoresAdmin() {
               <input
                 type="checkbox"
                 checked={apoiador.visivel}
-                onChange={(e) => mudar(apoiador.id, "visivel", e.target.checked)}
+                onChange={() => alternarVisivel(apoiador.id)}
               />
               <span>
-                <b>Aparecendo no app</b> — desmarcado, o cartão sai da página e o cadastro
-                continua guardado aqui, inteiro, para quando o apoio for renovado.
+                <b>Aparecendo no app</b> (grava na hora) — desmarcado, o cartão sai da página e o
+                cadastro continua guardado aqui, inteiro, para quando o apoio for renovado.
               </span>
             </label>
           </div>
