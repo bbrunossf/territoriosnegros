@@ -3073,112 +3073,111 @@ a, a:visited, a:hover, a:active {
   line-height: 1.45;
 }
 
-.apoio-lista {
-  display: flex;
-  flex-direction: column;
+/* Apoiadores no app: GRADE DE MARCAS por seção (14/10/2026). A logo é o que se
+   reconhece primeiro; tocar na marca abre a ficha (contribuição, foto e
+   contatos) embaixo da grade, na largura da seção. */
+.apoio-grade {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
 }
 
-/* Cartão compacto (celular é o uso principal, 14/10/2026): logo pequena à
-   esquerda e identidade à direita; texto e contatos abaixo, sem centralização
-   que gastava altura. */
-.apoio-cartao {
-  border: 1px solid rgba(155, 112, 46, 0.45);
-  border-radius: 12px;
-  background: #fffaf1;
-  padding: 10px 12px;
+.apoio-marca {
+  position: relative;
 
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 7px;
-
-  text-align: left;
-}
-
-.apoio-topo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-
-  min-width: 0;
-}
-
-/* cabeçalho que abre/fecha: sem a seta nativa do <details> */
-summary.apoio-topo {
-  list-style: none;
-
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-}
-
-summary.apoio-topo::-webkit-details-marker {
-  display: none;
-}
-
-summary.apoio-topo::marker {
-  content: "";
-}
-
-/* sinal de abrir: "+" que vira "×" quando o cartão está aberto */
-.apoio-abrir {
   display: grid;
   place-items: center;
 
-  width: 26px;
-  height: 26px;
-  margin-left: auto;
-  flex: none;
-
-  border: 1px solid #c58b2a;
-  border-radius: 50%;
-
-  background: #fff6e4;
-  color: #6a452b;
-
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 1;
-
-  transition: transform 0.15s ease;
-}
-
-details[open] > summary > .apoio-abrir {
-  transform: rotate(45deg);
-}
-
-/* o conteúdo só aparece quando a autoria/visitante abre o cartão */
-.apoio-detalhe {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-
-  margin-top: 7px;
-}
-
-
-.apoio-identidade {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-
-  min-width: 0;
-}
-
-.apoio-logo {
-  width: 72px;
-  height: 72px;
-  flex: none;
-
+  width: 100%;
+  min-height: 84px;
+  padding: 8px;
   box-sizing: border-box;
-  padding: 5px;
+
+  border: 1px solid rgba(155, 112, 46, 0.35);
+  border-radius: 12px;
+
+  background: #fffaf1;
+  cursor: pointer;
+
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background 0.12s ease,
+    border-color 0.12s ease;
+}
+
+.apoio-marca:active {
+  background: #fdf3e0;
+}
+
+.apoio-marca--aberta {
+  border-color: #b8832c;
+  background: #fdf3e0;
+  box-shadow: inset 0 0 0 1px rgba(184, 131, 44, 0.45);
+}
+
+.apoio-marca-logo {
+  display: block;
+
+  max-width: 100%;
+  max-height: 70px;
 
   object-fit: contain;
+}
 
-  border: 1px solid rgba(155, 112, 46, 0.28);
-  border-radius: 10px;
+/* apoiador sem logo: o nome faz o papel da marca */
+.apoio-marca-nome {
+  color: #3a2015;
+  font-family: Georgia, serif;
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+}
 
-  background: #fff;
+/* sinal discreto de que a marca abre a ficha */
+.apoio-marca-mais {
+  position: absolute;
+  top: 4px;
+  right: 5px;
+
+  display: grid;
+  place-items: center;
+
+  width: 17px;
+  height: 17px;
+
+  border: 1px solid rgba(155, 112, 46, 0.4);
+  border-radius: 50%;
+
+  background: #fdf3e0;
+  color: #7d5518;
+
+  font-size: 10.5px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.apoio-ficha {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  margin-top: 2px;
+  padding: 12px;
+
+  border: 1px solid rgba(155, 112, 46, 0.45);
+  border-left: 4px solid #b8832c;
+  border-radius: 12px;
+
+  background: #fffaf1;
+  text-align: left;
+}
+
+.apoio-ficha-nome {
+  font-family: Georgia, serif;
+  font-size: 17px;
+  line-height: 1.25;
+  color: #3a2015;
 }
 
 /* título da seção: PARCERIA, FOMENTO, ACOLHIMENTO… (a participação deixou de
@@ -3186,9 +3185,9 @@ details[open] > summary > .apoio-abrir {
 .apoio-grupo {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 
-  margin-top: 18px;
+  margin-top: 22px;
 }
 
 .apoio-grupo:first-of-type {
@@ -3210,6 +3209,7 @@ details[open] > summary > .apoio-abrir {
   text-transform: uppercase;
 }
 
+.apoio-grupo-titulo::before,
 .apoio-grupo-titulo::after {
   content: "";
 
@@ -3217,14 +3217,6 @@ details[open] > summary > .apoio-abrir {
   height: 1px;
 
   background: rgba(155, 112, 46, 0.35);
-}
-
-.apoio-nome {
-  font-family: Georgia, serif;
-  font-size: 16.5px;
-  font-weight: 700;
-  line-height: 1.28;
-  color: #3a2015;
 }
 
 .apoio-contribuicao {
@@ -3239,24 +3231,37 @@ details[open] > summary > .apoio-abrir {
   align-self: stretch;
 }
 
-/* telas maiores: respira um pouco, sem voltar ao cartão alto */
-@media (min-width: 640px) {
-  .apoio-cartao {
-    padding: 12px 14px;
-    gap: 8px;
+@media (min-width: 560px) {
+  .apoio-grade {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
   }
 
-  .apoio-logo {
-    width: 88px;
-    height: 88px;
+  .apoio-marca {
+    min-height: 96px;
   }
 
-  .apoio-nome {
-    font-size: 18.5px;
+  .apoio-marca-logo {
+    max-height: 80px;
+  }
+}
+
+@media (min-width: 900px) {
+  .apoio-grade {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 14px;
   }
 
-  .apoio-contribuicao {
-    font-size: 14.5px;
+  .apoio-marca {
+    min-height: 104px;
+  }
+
+  .apoio-marca-logo {
+    max-height: 88px;
+  }
+
+  .apoio-ficha-nome {
+    font-size: 18px;
   }
 
   .apoio-grupo-titulo {

@@ -5,6 +5,12 @@
 //
 // O conteúdo é editável no painel, na aba Apoiadores (chave app_config
 // "apoiadores"). O visitante só vê os apoiadores ligados e com nome ou logo.
+//
+// Layout (14/10/2026): grade de MARCAS por seção — a logo é o que se reconhece
+// primeiro. Tocar numa logo abre a ficha (nome, contribuição, foto e contatos)
+// embaixo da grade, na largura toda; tocar de novo fecha.
+import { useState } from "react";
+
 import { useTerritorios } from "../context/useTerritorios";
 import BotoesDaTela from "./BotoesDaTela";
 import {
@@ -13,6 +19,7 @@ import {
   apoiadoresVisiveis,
   lerApoiadores,
   linksDoApoiador,
+  type Apoiador,
 } from "../data/apoiadores";
 import Inline from "./Inline";
 import BotaoContato from "./BotaoContato";
@@ -26,6 +33,51 @@ export default function Apoiadores() {
   // “Parceria”, “Fomento”, “Acolhimento”… são títulos de seção, não etiquetas
   // dentro do cartão: a marca (logo) é o que o visitante reconhece primeiro.
   const grupos = agruparPorTipo(pagina);
+
+  /** id do apoiador cuja ficha está aberta (uma por vez) */
+  const [aberto, setAberto] = useState<string | null>(null);
+
+  /** a ficha que abre ao tocar na logo: nome, contribuição, foto e contatos */
+  function fichaDe(apoiador: Apoiador) {
+    const contatos = linksDoApoiador(apoiador);
+
+    return (
+      <div className="apoio-ficha" id={`apoio-ficha-${apoiador.id}`}>
+        {apoiador.nome && <b className="apoio-ficha-nome">{apoiador.nome}</b>}
+
+        {apoiador.contribuicao && (
+          <p className="apoio-contribuicao">
+            <Inline texto={apoiador.contribuicao} />
+          </p>
+        )}
+
+        {apoiador.foto && (
+          <img
+            className="apoio-foto"
+            src={apoiador.foto}
+            alt={apoiador.nome ? `Foto de ${apoiador.nome}` : "Foto do apoiador"}
+            loading="lazy"
+          />
+        )}
+
+        {contatos.length > 0 && (
+          <div className="apoio-contatos">
+            {contatos.map((contato) => (
+              <a
+                key={contato.url}
+                className="apoio-contato"
+                href={contato.url}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {contato.rotulo}
+              </a>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
 
   return (
     <>
@@ -45,89 +97,56 @@ export default function Apoiadores() {
           experiência, escreva para a autoria.
         </p>
       ) : (
-        grupos.map((grupo) => (
-          <section className="apoio-grupo" key={grupo.tipo || "sem-tipo"}>
-            <h2 className="apoio-grupo-titulo">{grupo.nome}</h2>
+        grupos.map((grupo) => {
+          const abertoNoGrupo = grupo.apoiadores.find((a) => a.id === aberto) ?? null;
 
-            <div className="apoio-lista">
-              {grupo.apoiadores.map((apoiador) => {
-                const contatos = linksDoApoiador(apoiador);
-                const temDetalhe =
-                  !!apoiador.contribuicao || !!apoiador.foto || contatos.length > 0;
+          return (
+            <section className="apoio-grupo" key={grupo.tipo || "sem-tipo"}>
+              <h2 className="apoio-grupo-titulo">{grupo.nome}</h2>
 
-                const cabecalho = (
-                  <>
-                    {apoiador.logo && (
-                      <img
-                        className="apoio-logo"
-                        src={apoiador.logo}
-                        alt={apoiador.nome ? `Logo de ${apoiador.nome}` : "Logo do apoiador"}
-                        loading="lazy"
-                      />
-                    )}
+              <div className="apoio-grade">
+                {grupo.apoiadores.map((apoiador) => {
+                  const contatos = linksDoApoiador(apoiador);
+                  const temFicha =
+                    !!apoiador.contribuicao || !!apoiador.foto || contatos.length > 0;
+                  const estaAberto = aberto === apoiador.id;
 
-                    <span className="apoio-identidade">
-                      {apoiador.nome && <span className="apoio-nome">{apoiador.nome}</span>}
-                    </span>
+                  return (
+                    <button
+                      type="button"
+                      className={`apoio-marca${estaAberto ? " apoio-marca--aberta" : ""}`}
+                      key={apoiador.id}
+                      onClick={() => setAberto(estaAberto ? null : apoiador.id)}
+                      aria-expanded={temFicha ? estaAberto : undefined}
+                      aria-controls={temFicha ? `apoio-ficha-${apoiador.id}` : undefined}
+                    >
+                      {apoiador.logo ? (
+                        <img
+                          className="apoio-marca-logo"
+                          src={apoiador.logo}
+                          alt={apoiador.nome || "Logo do apoiador"}
+                          loading="lazy"
+                        />
+                      ) : (
+                        <span className="apoio-marca-nome">{apoiador.nome}</span>
+                      )}
 
-                    {/* sinal de que há mais conteúdo: vira × quando abre */}
-                    {temDetalhe && (
-                      <span className="apoio-abrir" aria-hidden="true">
-                        +
-                      </span>
-                    )}
-                  </>
-                );
+                      {/* só sinaliza que abre quando há ficha para mostrar */}
+                      {temFicha && (
+                        <span className="apoio-marca-mais" aria-hidden="true">
+                          {estaAberto ? "×" : "+"}
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
 
-                return (
-                  <details className="apoio-cartao" key={apoiador.id}>
-                    {temDetalhe ? (
-                      <summary className="apoio-topo">{cabecalho}</summary>
-                    ) : (
-                      <div className="apoio-topo">{cabecalho}</div>
-                    )}
-
-                    {temDetalhe && (
-                      <div className="apoio-detalhe">
-                        {apoiador.contribuicao && (
-                          <p className="apoio-contribuicao">
-                            <Inline texto={apoiador.contribuicao} />
-                          </p>
-                        )}
-
-                        {/* foto do apoiador ou do espaço: entra quando a autoria enviar uma */}
-                        {apoiador.foto && (
-                          <img
-                            className="apoio-foto"
-                            src={apoiador.foto}
-                            alt={apoiador.nome ? `Foto de ${apoiador.nome}` : "Foto do apoiador"}
-                            loading="lazy"
-                          />
-                        )}
-
-                        {contatos.length > 0 && (
-                          <div className="apoio-contatos">
-                            {contatos.map((contato) => (
-                              <a
-                                key={contato.url}
-                                className="apoio-contato"
-                                href={contato.url}
-                                target="_blank"
-                                rel="noreferrer"
-                              >
-                                {contato.rotulo}
-                              </a>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </details>
-                );
-              })}
-            </div>
-          </section>
-        ))
+              {/* a ficha abre embaixo da grade, na largura da seção */}
+              {abertoNoGrupo && fichaDe(abertoNoGrupo)}
+            </section>
+          );
+        })
       )}
 
       <BotoesDaTela tela="apoiadores" posicao="final" />
