@@ -919,6 +919,27 @@ a, a:visited, a:hover, a:active {
   opacity: 0.68;
 }
 
+/* filete + título da seção abaixo dos botões do topo (14/10/2026) */
+.pagina-secao {
+  margin: 2px 0 12px;
+}
+
+.pagina-secao-filete {
+  height: 1px;
+  border: 0;
+  background: rgba(143, 97, 29, 0.32);
+  margin: 14px 0 12px;
+}
+
+.pagina-secao-titulo {
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #563827;
+  margin: 0;
+}
+
 .home {
   min-height: 100vh;
   background-size: cover;

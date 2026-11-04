@@ -151,6 +151,18 @@ export default function PaginaConteudo({
           territórios, na página A cidade de Vitória) */}
       {depoisDoTitulo}
 
+      {/* filete + título da seção, logo abaixo dos botões do topo
+          (pedido da autoria, 14/10/2026, na página A cidade de Vitória) */}
+      {pagina.secaoTitulo.trim() !== "" && (
+        <div className="pagina-secao">
+          <hr className="pagina-secao-filete" />
+
+          <h2 className="pagina-secao-titulo">
+            <Inline texto={pagina.secaoTitulo} />
+          </h2>
+        </div>
+      )}
+
       {destaque.length === 1 && (
         <Info>
           <div className={classesDestaque}>

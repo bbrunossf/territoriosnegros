@@ -652,6 +652,21 @@ export default function PaginasAdmin() {
         </div>
 
         <label className="admin-campo">
+          <b>Título abaixo dos botões (opcional)</b>
+          <span className="admin-campo-dica">
+            Se preenchido, aparece um filete separando os botões do topo e este
+            título logo abaixo, antes da caixa de abertura. Em branco, nada
+            aparece.
+          </span>
+          <input
+            type="text"
+            value={pagina.secaoTitulo}
+            onChange={(e) => setCampo("secaoTitulo", e.target.value)}
+            placeholder="EX.: VITÓRIA"
+          />
+        </label>
+
+        <label className="admin-campo">
           <b>Bloco destacado de abertura (caixa do topo)</b>
           <span className="admin-campo-dica">
             Caixa em destaque logo abaixo do subtítulo. Vale a mesma marcação dos

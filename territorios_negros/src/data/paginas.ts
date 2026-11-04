@@ -91,6 +91,12 @@ export interface PaginaConteudo {
   tituloEstilo: EstiloTexto;
   /** formatação do subtítulo da página (a linha abaixo do título) */
   subtituloEstilo: EstiloTexto;
+  /**
+   * Título da seção que vem DEPOIS dos botões/atalhos do topo, abaixo de um
+   * filete (14/10/2026, página A cidade de Vitória — "VITÓRIA"). Vazio = nada
+   * aparece, e a página fica exatamente como era.
+   */
+  secaoTitulo: string;
   /** bloco destacado de abertura */
   destaque: string;
   /** formatação do texto da caixa de abertura */
@@ -111,6 +117,7 @@ const VAZIO: PaginaConteudo = {
   subtitulo: "",
   tituloEstilo: ESTILO_PADRAO,
   subtituloEstilo: ESTILO_PADRAO,
+  secaoTitulo: "",
   destaque: "",
   destaqueEstilo: ESTILO_PADRAO,
   blocos: [],
@@ -231,6 +238,8 @@ export const VITORIA_PADRAO: PaginaConteudo = {
   ...VAZIO,
   titulo: "A cidade de Vitória",
   subtitulo: "Espírito Santo - ES",
+  // filete + "VITÓRIA" abaixo dos dois botões, antes da caixa de abertura
+  secaoTitulo: "VITÓRIA",
   destaque:
     "Vitória é a capital do Espírito Santo e uma **cidade-ilha**: seu núcleo histórico " +
     "ocupa uma ilha na Baía de Vitória, cercada por manguezais, morros e pelo continente. " +
@@ -580,6 +589,7 @@ export function normalizarPagina(
     subtitulo: textoDe(v.subtitulo, padrao.subtitulo),
     tituloEstilo: normalizarEstilo(v.tituloEstilo),
     subtituloEstilo: normalizarEstilo(v.subtituloEstilo),
+    secaoTitulo: textoDe(v.secaoTitulo, padrao.secaoTitulo),
     destaque: textoDe(v.destaque, padrao.destaque),
     destaqueEstilo: normalizarEstilo(v.destaqueEstilo),
     blocos: normalizarBlocos(v.blocos, padrao.blocos),
