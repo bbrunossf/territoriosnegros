@@ -10,9 +10,11 @@ import BotoesDaTela from "./BotoesDaTela";
 import {
   CHAVE_APOIADORES,
   apoiadoresVisiveis,
+  documentoPublico,
   lerApoiadores,
   linksDoApoiador,
   nomeDoTipo,
+  rotuloDoDocumento,
 } from "../data/apoiadores";
 import Inline from "./Inline";
 import BotaoContato from "./BotaoContato";
@@ -65,6 +67,14 @@ export default function Apoiadores() {
               {apoiador.contribuicao && (
                 <p className="apoio-contribuicao">
                   <Inline texto={apoiador.contribuicao} />
+                </p>
+              )}
+
+              {/* CNPJ/CPF só aparece quando a autoria libera no cadastro */}
+              {documentoPublico(apoiador) && (
+                <p className="apoio-documento">
+                  <span>{rotuloDoDocumento(apoiador.documento)}</span>{" "}
+                  {documentoPublico(apoiador)}
                 </p>
               )}
 

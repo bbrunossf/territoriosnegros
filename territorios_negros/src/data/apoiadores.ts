@@ -47,6 +47,11 @@ export interface Apoiador {
   // ── dados do cadastro (ficam SÓ no painel, não vão para o app) ───────
   /** CNPJ ou CPF de quem apoia (documento do convênio/fomento) */
   documento: string;
+  /**
+   * Mostrar o CNPJ/CPF no cartão do app. Desligado por padrão: só se liga quando
+   * o próprio apoiador pedir/autorizar.
+   */
+  documentoVisivel: boolean;
   endereco: string;
   /** telefones fixos e celulares, como a autoria quiser separar */
   telefones: string;
@@ -119,6 +124,7 @@ export function novoApoiador(): Apoiador {
     site: "",
     youtube: "",
     documento: "",
+    documentoVisivel: false,
     endereco: "",
     telefones: "",
     visivel: true,
@@ -152,6 +158,8 @@ export function lerApoiadores(valor: unknown): PaginaApoiadores {
         site: texto(a.site),
         youtube: texto(a.youtube),
         documento: texto(a.documento),
+        // privado por padrão: só aparece no app quando a autoria ligar
+        documentoVisivel: a.documentoVisivel === true,
         endereco: texto(a.endereco),
         telefones: texto(a.telefones),
         // só fica escondido se a autoria esconder de propósito
@@ -280,4 +288,22 @@ export function linksDoApoiador(apoiador: Apoiador): { rotulo: string; url: stri
 /** Quantos apoiadores o visitante vê (usado no resumo do painel). */
 export function quantosVisiveis(pagina: PaginaApoiadores): number {
   return apoiadoresVisiveis(pagina).length;
+}
+
+/** “CNPJ”, “CPF” ou “CNPJ/CPF”, conforme a quantidade de dígitos digitada. */
+export function rotuloDoDocumento(documento: string): string {
+  const digitos = documento.replace(/\D/g, "");
+
+  if (digitos.length === 14) return "CNPJ";
+  if (digitos.length === 11) return "CPF";
+
+  return "CNPJ/CPF";
+}
+
+/**
+ * O documento que o visitante pode ver: vazio por padrão. Só sai quando a
+ * autoria liga “mostrar” no cadastro daquele apoiador (pedido dele).
+ */
+export function documentoPublico(apoiador: Apoiador): string {
+  return apoiador.documentoVisivel && apoiador.documento ? apoiador.documento : "";
 }

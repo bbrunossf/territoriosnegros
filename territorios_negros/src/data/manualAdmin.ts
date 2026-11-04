@@ -208,7 +208,7 @@ export const MANUAL_PADRAO: SecaoManual[] = [
       "**Foto (quando necessário)** — foto do apoiador, da equipe ou do espaço; sai no cartão, embaixo do texto.",
       "**Contribuição** — uma frase curta: apoio à divulgação, acolhimento da visita, material educativo, transporte etc.",
       "**Contato que aparece no app** — cada campo preenchido vira um botão no cartão: WhatsApp (basta o número com DDD), Instagram (só o @perfil), Site e YouTube.",
-      "**Dados do cadastro (não aparecem no app)** — CNPJ ou CPF, endereço e telefones: ficam guardados no painel para convênio, recibo e prestação de contas. O visitante não vê.",
+      "**Dados do cadastro (não aparecem no app)** — CNPJ ou CPF, endereço e telefones: ficam guardados no painel para convênio, recibo e prestação de contas. O visitante não vê. **Exceção:** o CNPJ/CPF pode aparecer no cartão se você marcar **Mostrar o CNPJ/CPF no cartão do app** — é desmarcado por padrão e só se liga quando o próprio apoiador pedir ou autorizar.",
       "**Link** — aceita o endereço completo, `instagram.com/perfil` ou só **@perfil**; o app completa e chama o botão de Instagram.",
       "**Aparecendo no app** — desmarcado, o cadastro fica guardado e o visitante não vê. É item por item, como nas fotos de apoio: dá para preparar tudo e ligar na hora de publicar.",
       "**remover** apaga o apoiador da lista. Nada vai ao ar sem **Salvar alterações**; **Descartar mudanças** volta ao que está publicado.",

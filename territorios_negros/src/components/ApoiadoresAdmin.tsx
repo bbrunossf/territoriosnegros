@@ -405,6 +405,22 @@ export default function ApoiadoresAdmin() {
               </label>
             </div>
 
+            <label className="apoio-admin-liga">
+              <input
+                type="checkbox"
+                checked={apoiador.documentoVisivel}
+                disabled={!apoiador.documento}
+                onChange={(e) => mudar(apoiador.id, "documentoVisivel", e.target.checked)}
+              />
+              <span>
+                <b>Mostrar o CNPJ/CPF no cartão do app</b> — desmarcado (padrão), o documento
+                fica guardado só aqui no painel.{" "}
+                {apoiador.documento
+                  ? "Marque apenas quando o apoiador pedir ou autorizar."
+                  : "Preencha o documento acima para poder liberar."}
+              </span>
+            </label>
+
             <label className="admin-campo">
               <b>Endereço</b>
               <span className="admin-campo-dica">
