@@ -17,6 +17,7 @@ import "../styles/marcos.css";
 import "../styles/personalidades.css";
 
 import { useTerritorios } from "../context/useTerritorios";
+import { enderecoDoTerritorio } from "../utils/catalogo";
 import {
   CHAVE_PERSONALIDADES,
   capaVisivel,
@@ -43,7 +44,7 @@ import { chaveDaPersonalidade } from "../data/marcos";
 
 export default function PersonalidadePagina({ dados }: { dados?: Personalidade }) {
   const { slug } = useParams();
-  const { config, territorios } = useTerritorios();
+  const { config, territorios, roteiros } = useTerritorios();
 
   // qual seção de texto está aberta — uma só, como nos tópicos de Marcos e
   // Conexões. Tocar no título abre; tocar de novo fecha; abrir outra recolhe.
@@ -188,7 +189,9 @@ export default function PersonalidadePagina({ dados }: { dados?: Personalidade }
                   <h3>
                     <Link
                       className="personalidade-vinculo-nome"
-                      to={`/territorio/${vinculo.territorioId}`}
+                      /* território que está em rota ativa abre dentro do percurso;
+                         sem rota, abre a página do território (14/10/2026) */
+                      to={enderecoDoTerritorio(vinculo.territorioId, roteiros, territorios)}
                     >
                       {territorio.nome}
                     </Link>

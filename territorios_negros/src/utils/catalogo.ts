@@ -93,6 +93,36 @@ export function pontosVisiveis(
     .filter((t): t is Territorio => !!t && t.ativo !== false);
 }
 
+/**
+ * Endereço de um território para o visitante (14/10/2026, pedido da autoria).
+ *
+ * Se o território faz parte de alguma rota ativa, o link abre o território
+ * DENTRO do percurso (`/percurso/{rota}/{indice}`) — o visitante chega pela
+ * visita guiada, com a ordem e o contexto da rota. Só quando ele não está em
+ * nenhuma rota ativa o link cai na página do território (`/territorio/{id}`).
+ *
+ * O índice é o da lista que o percurso realmente mostra (`pontosVisiveis`):
+ * território desativado sai da lista e não desloca o número dos outros.
+ */
+export function enderecoDoTerritorio(
+  territorioId: string,
+  roteiros: Roteiro[],
+  territorios: TerritoriosMap
+): string {
+  const rota = roteiros
+    .filter((r) => r.ativo !== false)
+    .map((r) => ({ id: r.id, pontos: pontosVisiveis(r.pontos, territorios) }))
+    .find(({ pontos }) => pontos.some((t) => t.id === territorioId));
+
+  if (rota) {
+    const indice = rota.pontos.findIndex((t) => t.id === territorioId);
+
+    if (indice >= 0) return `/percurso/${rota.id}/${indice}`;
+  }
+
+  return `/territorio/${territorioId}`;
+}
+
 /** Gera o id (slug) a partir de um nome digitado no painel. */
 export function gerarSlug(nome: string): string {
   return nome
