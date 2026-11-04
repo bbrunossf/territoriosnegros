@@ -60,6 +60,16 @@
   border-top: 1px dashed rgba(197, 139, 42, 0.5);
 }
 
+/* marca, na lista, o botão que leva para a própria tela (não aparece nela) */
+.botoes-telas .botoes-telas-propria {
+  flex-basis: 100%;
+
+  color: #7d5518;
+  font-size: 12px;
+  font-style: italic;
+  line-height: 1.35;
+}
+
 .botoes-telas .botoes-telas-local h4 {
   margin: 0 0 6px;
 

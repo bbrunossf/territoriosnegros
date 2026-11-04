@@ -146,6 +146,12 @@ export default function BotoesPorTelaAdmin({
         <div className="botoes-telas-tela" key={tela.id}>
           <h3 className="botoes-telas-nome">{tela.nome}</h3>
           <p className="botoes-telas-onde-tela">{tela.onde}</p>
+          {CATALOGO_DE_NAVEGACAO.some((b) => b.id === tela.id) && (
+            <p className="botoes-telas-aviso">
+              O botão que leva para esta mesma tela não aparece aqui: o visitante já está nela.
+              Ele continua valendo nas outras telas.
+            </p>
+          )}
           {tela.aviso && <p className="botoes-telas-aviso">{tela.aviso}</p>}
 
           {tela.slots.map((posicao) => {
@@ -172,6 +178,15 @@ export default function BotoesPorTelaAdmin({
                       </b>
 
                       <span className="botoes-telas-onde">→ {entrada?.destino}</span>
+
+                      {/* o botão da própria tela não aparece para o visitante:
+                          ele já está nela. O painel avisa para não parecer
+                          que o ajuste não pegou (14/10/2026). */}
+                      {id === tela.id && (
+                        <span className="botoes-telas-propria">
+                          não aparece nesta tela (é a própria)
+                        </span>
+                      )}
 
                       <button
                         type="button"
