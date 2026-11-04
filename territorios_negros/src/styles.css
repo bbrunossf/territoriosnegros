@@ -3337,7 +3337,21 @@ a, a:visited, a:hover, a:active {
 
 .apoio-admin-acoes {
   display: flex;
+  flex-wrap: wrap;
   gap: 6px;
+
+  min-width: 0;
+}
+
+/* no celular as ações ocupam a linha toda: três por fileira, sem sobra */
+@media (max-width: 720px) {
+  .apoio-admin-acoes {
+    flex: 1 1 100%;
+  }
+
+  .apoio-admin-acoes > button {
+    flex: 1 1 calc((100% - 12px) / 3);
+  }
 }
 
 .apoio-admin-previa {
