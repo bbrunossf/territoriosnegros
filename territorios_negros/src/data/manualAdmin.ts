@@ -192,6 +192,7 @@ export const MANUAL_PADRAO: SecaoManual[] = [
       "**Rotas** — as imagens de **mapa** de cada rota (as que aparecem na página da rota, abaixo do mapa interativo). A **logo da rota** não entra aqui: ela é uma imagem única, sem liga/desliga — para tirá-la do ar use o botão **Remover logo**, na aba Rotas.",
       "O link **abrir**, ao lado de cada mídia, mostra o arquivo original em outra aba, para você conferir do que se trata.",
       "**habilitar tudo / desabilitar tudo** (no alto desta aba) — alcança de uma vez as fotos das páginas, as fotos e os vídeos de apoio de **todos os territórios** e os **mapas de todas as rotas**. Marca item por item, como os botões de cada grupo: depois você ajusta um só, sem estragar os outros. Nada é apagado — desligar só tira da vista do visitante. É o botão para preparar o guia: desligue tudo e ligue só o que entra no roteiro do dia.",
+      "**fixar (14/10/2026):** cada mídia tem um botão **fixar** ao lado do Habilitado/Desabilitado. Fixa, ela **não sai no *desabilitar todas*** — nem no do grupo, nem no *desabilitar tudo*. É para as imagens que precisam estar no app em qualquer passeio: o mapa do projeto, a marca do apoio, a foto do território que abre o roteiro. O botão vira **fixa ✓**, dá para **soltar** a qualquer momento, e o resumo do grupo passa a contar as fixas. Fixar também deixa a mídia habilitada — não existe “fixa e escondida”.",
       "**atualizar lista** recarrega o que está gravado — útil se você mexeu em outro aparelho.",
     ],
   },

@@ -4138,16 +4138,62 @@ p.foto-credito {
   cursor: default;
 }
 
+/* Botão "fixar" de cada mídia (14/10/2026): a fixa não sai no
+   "desabilitar todas". Discreto ao lado do Habilitado/Desabilitado. */
+.midias-fixar {
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+
+  min-height: 42px;
+  padding: 8px 10px;
+
+  border: 1px dashed rgba(59, 36, 22, 0.45);
+  border-radius: 9px;
+
+  background: none;
+  color: inherit;
+
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.midias-fixar:hover {
+  border-color: #b8832c;
+}
+
+.midias-fixar.presa {
+  border-style: solid;
+  border-color: #b8832c;
+  background: #fdf3e0;
+  color: #6a452b;
+}
+
+.midias-fixar:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
 /* no celular o botão desce para baixo do texto (sobra largura para a legenda) */
 @media (max-width: 520px) {
   .midias-item {
     grid-template-columns: 56px 1fr;
   }
 
-  .midias-btn {
+  .midias-item-acoes {
     grid-column: 1 / -1;
-    width: 100%;
   }
+
+  .midias-item-acoes > .midias-btn {
+    flex: 1 1 auto;
+  }
+}
+
+/* os dois botões da mídia ficam juntos na terceira coluna */
+.midias-item-acoes {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 /* ══════════════════════════════════════════════════════════════════

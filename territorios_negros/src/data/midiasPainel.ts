@@ -30,6 +30,8 @@ export interface ItemMidiaPainel {
   /** onde a mídia aparece: "seção O centro histórico" (página) ou "foto 3" */
   onde: string;
   visivel: boolean;
+  /** fixa: o "Desabilitar todas" do painel não a alcança (14/10/2026) */
+  fixo: boolean;
 }
 
 export interface GrupoMidias {
@@ -58,7 +60,7 @@ function legenda(
 }
 
 function itensDasFotos(
-  fotos: { url: string; legenda?: string; visivel?: boolean }[] | undefined,
+  fotos: { url: string; legenda?: string; visivel?: boolean; fixo?: boolean }[] | undefined,
   onde: string,
   rotulo: "foto" | "mapa" = "foto"
 ): ItemMidiaPainel[] {
@@ -70,11 +72,12 @@ function itensDasFotos(
       legenda: legenda(foto.legenda, i, rotulo),
       onde,
       visivel: estaVisivel(foto),
+      fixo: foto.fixo === true,
     }));
 }
 
 function itensDosVideos(
-  videos: { url: string; legenda?: string; visivel?: boolean }[] | undefined
+  videos: { url: string; legenda?: string; visivel?: boolean; fixo?: boolean }[] | undefined
 ): ItemMidiaPainel[] {
   return (videos ?? [])
     .filter((video) => !!video?.url)
@@ -84,6 +87,7 @@ function itensDosVideos(
       legenda: legenda(video.legenda, i, "vídeo"),
       onde: "vídeo de apoio",
       visivel: estaVisivel(video),
+      fixo: video.fixo === true,
     }));
 }
 
@@ -181,7 +185,11 @@ export function resumoDoGrupo(grupo: GrupoMidias): string {
     return grupo.origem === "rota" ? "sem mapa" : "sem foto nem vídeo de apoio";
   }
 
-  return partes.join(" · ");
+  const fixas = [...grupo.fotos, ...grupo.videos].filter((item) => item.fixo).length;
+
+  return (
+    partes.join(" · ") + (fixas > 0 ? ` · ${fixas} fixa${fixas > 1 ? "s" : ""}` : "")
+  );
 }
 
 /**

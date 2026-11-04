@@ -25,6 +25,8 @@ export interface ImagemBloco {
   credito?: string;
   /** false = a autoria bloqueou: os visitantes não veem esta imagem */
   visivel?: boolean;
+  /** true = imagem FIXA: o “Desabilitar todas” não a alcança (14/10/2026) */
+  fixo?: boolean;
 }
 
 export interface BlocoConteudo {
@@ -147,6 +149,10 @@ export function imagensVisiveis(imagens: ImagemBloco[] | undefined): ImagemBloco
  * Liga ou desliga de uma vez todas as imagens de todas as seções de uma página
  * (equivalente ao "liberar/bloquear fotos de apoio" dos territórios). Devolve
  * uma página nova, sem mexer na original.
+ *
+ * Imagem FIXA (`fixo: true`) não é alcançada pelo "desabilitar todas": ela
+ * continua visível — é o que a autoria pediu em 14/10/2026 para as imagens que
+ * precisam estar no app em qualquer passeio.
  */
 export function definirVisibilidadeDeTodasAsImagens(
   pagina: PaginaConteudo,
@@ -156,7 +162,26 @@ export function definirVisibilidadeDeTodasAsImagens(
     ...pagina,
     blocos: pagina.blocos.map((bloco) => ({
       ...bloco,
-      imagens: bloco.imagens.map((imagem) => ({ ...imagem, visivel })),
+      imagens: bloco.imagens.map((imagem) =>
+        imagem.fixo === true && !visivel ? { ...imagem, visivel: true } : { ...imagem, visivel }
+      ),
+    })),
+  };
+}
+
+/** Marca/desmarca uma imagem como FIXA (não sai no "desabilitar todas"). */
+export function definirFixaDeImagem(
+  pagina: PaginaConteudo,
+  url: string,
+  fixo: boolean
+): PaginaConteudo {
+  return {
+    ...pagina,
+    blocos: pagina.blocos.map((bloco) => ({
+      ...bloco,
+      imagens: bloco.imagens.map((imagem) =>
+        imagem.url === url ? { ...imagem, fixo, ...(fixo ? { visivel: true } : {}) } : imagem
+      ),
     })),
   };
 }

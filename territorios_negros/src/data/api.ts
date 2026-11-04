@@ -205,6 +205,42 @@ export async function definirVisibilidadeMidia(
 }
 
 /**
+ * Marca/desmarca UMA foto ou UM vídeo como FIXO, gravando na hora.
+ *
+ * Fixo = o “Desabilitar todas” do painel não alcança o item (serve para as
+ * imagens que precisam estar no app em qualquer passeio). Ao fixar, o item
+ * também fica visível — não faz sentido “fixa e escondida”.
+ * Devolve false quando a mídia ainda não está no banco (precisa salvar antes).
+ */
+export async function definirFixaMidia(
+  id: string,
+  campo: "fotos" | "videos",
+  url: string,
+  fixo: boolean
+): Promise<boolean> {
+  const linha = await fetchTerritorioBruto(id);
+  const bruto = linha?.[campo];
+
+  const lista = Array.isArray(bruto)
+    ? bruto.map((item) => ({ ...(item as Record<string, unknown>) }))
+    : [];
+
+  const alvo = lista.findIndex((item) => item.url === url);
+  if (alvo < 0) return false;
+
+  lista[alvo] = { ...lista[alvo], fixo, ...(fixo ? { visivel: true } : {}) };
+
+  const { data, error } = await supabase
+    .from("territorios")
+    .update({ [campo]: lista })
+    .eq("id", id)
+    .select("id");
+
+  exigirLinhas(data as { id: string }[] | null, error, `fixar mídia (${campo})`);
+  return true;
+}
+
+/**
  * Habilita/desabilita TODAS as fotos (ou todos os vídeos) de apoio de uma vez,
  * gravando na hora — é o botão "todas" do painel e da lista de territórios.
  *
@@ -225,13 +261,20 @@ export async function definirVisibilidadeTodasMidias(
     ? bruto.map((item) => ({ ...(item as Record<string, unknown>) }))
     : [];
 
-  const atualizada = lista.map((item) =>
-    typeof item.url === "string" && item.url ? { ...item, visivel } : item
-  );
+  const atualizada = lista.map((item) => {
+    if (typeof item.url !== "string" || !item.url) return item;
+
+    // mídia FIXA fica de fora do "desabilitar todas" (14/10/2026)
+    if (item.fixo === true && !visivel) return { ...item, visivel: true };
+
+    return { ...item, visivel };
+  });
+
+  const algumaFixaVisivel = atualizada.some((item) => item.fixo === true && item.visivel === true);
 
   const patch: Record<string, unknown> = {
     [campo]: atualizada,
-    [campo === "fotos" ? "fotos_liberadas" : "videos_liberados"]: visivel,
+    [campo === "fotos" ? "fotos_liberadas" : "videos_liberados"]: visivel || algumaFixaVisivel,
   };
 
   const { data, error } = await supabase
@@ -285,6 +328,41 @@ export async function definirVisibilidadeMapaDaRota(
   return true;
 }
 
+/** Marca/desmarca UM mapa de rota como FIXO (não sai no "desabilitar todas"). */
+export async function definirFixaMapaDaRota(
+  id: string,
+  url: string,
+  fixo: boolean
+): Promise<boolean> {
+  const { data: linha, error: erroLeitura } = await supabase
+    .from("roteiros")
+    .select("mapas")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (erroLeitura) throw erroLeitura;
+
+  const bruto = (linha as { mapas?: unknown } | null)?.mapas;
+
+  const lista = Array.isArray(bruto)
+    ? bruto.map((item) => ({ ...(item as Record<string, unknown>) }))
+    : [];
+
+  const alvo = lista.findIndex((item) => item.url === url);
+  if (alvo < 0) return false;
+
+  lista[alvo] = { ...lista[alvo], fixo, ...(fixo ? { visivel: true } : {}) };
+
+  const { data, error } = await supabase
+    .from("roteiros")
+    .update({ mapas: lista })
+    .eq("id", id)
+    .select("id");
+
+  exigirLinhas(data as { id: string }[] | null, error, "fixar mapa da rota");
+  return true;
+}
+
 /** Liga/desliga TODOS os mapas de uma rota de uma vez (item por item). */
 export async function definirVisibilidadeTodosOsMapasDaRota(
   id: string,
@@ -304,9 +382,14 @@ export async function definirVisibilidadeTodosOsMapasDaRota(
     ? bruto.map((item) => ({ ...(item as Record<string, unknown>) }))
     : [];
 
-  const atualizada = lista.map((item) =>
-    typeof item.url === "string" && item.url ? { ...item, visivel } : item
-  );
+  const atualizada = lista.map((item) => {
+    if (typeof item.url !== "string" || !item.url) return item;
+
+    // mapa FIXO fica de fora do "desabilitar todas" (14/10/2026)
+    if (item.fixo === true && !visivel) return { ...item, visivel: true };
+
+    return { ...item, visivel };
+  });
 
   const { data, error } = await supabase
     .from("roteiros")

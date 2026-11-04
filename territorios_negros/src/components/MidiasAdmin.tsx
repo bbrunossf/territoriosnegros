@@ -17,6 +17,8 @@ import { Link } from "react-router-dom";
 
 import { useTerritorios } from "../context/useTerritorios";
 import {
+  definirFixaMapaDaRota,
+  definirFixaMidia,
   definirVisibilidadeMapaDaRota,
   definirVisibilidadeMidia,
   definirVisibilidadeTodasMidias,
@@ -25,6 +27,7 @@ import {
 } from "../data/api";
 import {
   PAGINAS_DO_APP,
+  definirFixaDeImagem,
   definirVisibilidadeDeImagem,
   definirVisibilidadeDeTodasAsImagens,
   normalizarPagina,
@@ -159,11 +162,67 @@ export default function MidiasAdmin() {
     }
   }
 
+  /**
+   * Fixa/solta UMA mídia. Fixa = o “desabilitar todas” (do grupo, do bloco e
+   * o "tudo") não a alcança: é para as imagens que precisam estar no app em
+   * qualquer passeio. Grava na hora, como o habilitar/desabilitar.
+   */
+  async function alternarFixa(grupo: GrupoMidias, item: ItemMidiaPainel) {
+    const novo = !item.fixo;
+    const id = `${idDoItem(grupo, item)}|fixa`;
+
+    setErro("");
+    setOk("");
+    setGravando(id);
+
+    try {
+      if (grupo.origem === "territorio") {
+        const gravou = await definirFixaMidia(grupo.chave, coluna(item.tipo), item.url, novo);
+
+        if (!gravou) {
+          setErro(
+            `${nomeDoItem(grupo, item)} ainda não está publicada: salve o território antes de fixá-la.`
+          );
+          return;
+        }
+      } else if (grupo.origem === "rota") {
+        const gravou = await definirFixaMapaDaRota(grupo.chave, item.url, novo);
+
+        if (!gravou) {
+          setErro(`${nomeDoItem(grupo, item)} ainda não está publicado: salve a rota antes de fixá-lo.`);
+          return;
+        }
+      } else {
+        const { pagina } = paginaAtual(grupo.chave);
+        await salvarConfig(grupo.chave, definirFixaDeImagem(pagina, item.url, novo));
+      }
+
+      await recarregar();
+      setOk(
+        novo
+          ? `${nomeDoItem(grupo, item)} agora é fixa: “desabilitar todas” não tira mais do app (gravado).`
+          : `${nomeDoItem(grupo, item)} voltou a obedecer ao “desabilitar todas” (gravado).`
+      );
+    } catch (e) {
+      console.error(e);
+      setErro(e instanceof Error ? e.message : "Falha ao fixar a mídia.");
+    } finally {
+      setGravando(null);
+    }
+  }
+
   /** Liga/desliga TODAS as fotos (ou vídeos, ou mapas) de um grupo, item por item. */
   async function alternarTodas(grupo: GrupoMidias, tipo: TipoDeMidia, visivel: boolean) {
     const id = `${grupo.chave}|todas|${tipo}`;
     const plural =
       grupo.origem === "rota" ? "mapas" : tipo === "foto" ? "fotos" : "vídeos";
+
+    // mídias marcadas como fixas continuam no ar quando o botão desabilita
+    const fixas = (tipo === "foto" ? grupo.fotos : grupo.videos).filter((i) => i.fixo).length;
+    const sufixoFixa =
+      !visivel && fixas > 0
+        ? ` · ${fixas} fixa${fixas > 1 ? "s" : ""} mantida${fixas > 1 ? "s" : ""}`
+        : "";
 
     setErro("");
     setOk("");
@@ -174,13 +233,13 @@ export default function MidiasAdmin() {
         const marcadas = await definirVisibilidadeTodasMidias(grupo.chave, coluna(tipo), visivel);
         await recarregar();
         setOk(
-          `${marcadas} ${plural} de ${grupo.nome} ${visivel ? "habilitadas" : "desabilitadas"} (gravado).`
+          `${marcadas} ${plural} de ${grupo.nome} ${visivel ? "habilitadas" : "desabilitadas"} (gravado).${sufixoFixa}`
         );
       } else if (grupo.origem === "rota") {
         const marcados = await definirVisibilidadeTodosOsMapasDaRota(grupo.chave, visivel);
         await recarregar();
         setOk(
-          `${marcados} ${plural} de ${grupo.nome} ${visivel ? "habilitados" : "desabilitados"} (gravado).`
+          `${marcados} ${plural} de ${grupo.nome} ${visivel ? "habilitados" : "desabilitados"} (gravado).${sufixoFixa}`
         );
       } else {
         const { pagina } = paginaAtual(grupo.chave);
@@ -189,7 +248,7 @@ export default function MidiasAdmin() {
           definirVisibilidadeDeTodasAsImagens(pagina, visivel)
         );
         await recarregar();
-        setOk(`Todas as fotos de ${grupo.nome} ${visivel ? "habilitadas" : "desabilitadas"} (gravado).`);
+        setOk(`Todas as fotos de ${grupo.nome} ${visivel ? "habilitadas" : "desabilitadas"} (gravado).${sufixoFixa}`);
       }
     } catch (e) {
       console.error(e);
@@ -237,7 +296,8 @@ export default function MidiasAdmin() {
         `Tudo ${visivel ? "habilitado" : "desabilitado"} (gravado): ` +
           `${tudo.fotos} ${tudo.fotos === 1 ? "foto/mapa" : "fotos/mapas"} e ` +
           `${tudo.videos} ${tudo.videos === 1 ? "vídeo" : "vídeos"}, ` +
-          `em ${tudo.operacoes.length} ${tudo.operacoes.length === 1 ? "grupo" : "grupos"}.`
+          `em ${tudo.operacoes.length} ${tudo.operacoes.length === 1 ? "grupo" : "grupos"}.` +
+          (visivel ? "" : " As mídias marcadas como fixas continuaram no ar.")
       );
     } catch (e) {
       console.error(e);
@@ -355,14 +415,32 @@ export default function MidiasAdmin() {
                           </a>
                         </div>
 
-                        <button
-                          type="button"
-                          className={`midias-btn ${item.visivel ? "ligado" : "desligado"}`}
-                          onClick={() => alternar(grupo, item)}
-                          disabled={salvando}
-                        >
-                          {salvando ? "gravando..." : item.visivel ? "Habilitado" : "Desabilitado"}
-                        </button>
+                        <span className="midias-item-acoes">
+                          <button
+                            type="button"
+                            className={`midias-btn ${item.visivel ? "ligado" : "desligado"}`}
+                            onClick={() => alternar(grupo, item)}
+                            disabled={salvando}
+                          >
+                            {salvando ? "gravando..." : item.visivel ? "Habilitado" : "Desabilitado"}
+                          </button>
+
+                          {/* fixa: o “desabilitar todas” não alcança esta mídia */}
+                          <button
+                            type="button"
+                            className={`midias-fixar${item.fixo ? " presa" : ""}`}
+                            onClick={() => alternarFixa(grupo, item)}
+                            disabled={gravando === `${id}|fixa`}
+                            aria-pressed={item.fixo}
+                            title={
+                              item.fixo
+                                ? "Soltar: volta a obedecer ao “desabilitar todas”"
+                                : "Fixar: o “desabilitar todas” não tira esta mídia do app"
+                            }
+                          >
+                            {item.fixo ? "fixa ✓" : "fixar"}
+                          </button>
+                        </span>
                       </div>
                     );
                   })}
@@ -415,7 +493,8 @@ export default function MidiasAdmin() {
           {tudo.operacoes.length === 1 ? "grupo" : "grupos"}: as fotos de cada <b>página</b>, as
           fotos e os vídeos de apoio de cada <b>território</b> e os mapas de cada <b>rota</b>.
           Marca item por item — é o que o app lê — e <b>nada é apagado</b>: desligar só tira da
-          vista do visitante.
+          vista do visitante. As mídias marcadas como <b>fixas</b> ficam de fora do{" "}
+          <b>desabilitar tudo</b>.
         </p>
       </div>
 

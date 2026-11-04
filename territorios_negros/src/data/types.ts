@@ -23,6 +23,12 @@ export interface FotoTerritorio {
    * das rotas. Ausente = habilitada.
    */
   visivel?: boolean;
+  /**
+   * true = foto FIXA (14/10/2026): o “Desabilitar todas” do painel não a
+   * alcança. Serve para as imagens que precisam estar no app em qualquer
+   * passeio; tirar da fixa é um toque no próprio item.
+   */
+  fixo?: boolean;
 }
 
 /**
@@ -39,6 +45,8 @@ export interface VideoTerritorio {
   link?: boolean;
   /** false = desabilitado para os visitantes (item por item); ausente = habilitado */
   visivel?: boolean;
+  /** true = vídeo FIXO: o “Desabilitar todas” não o alcança (14/10/2026) */
+  fixo?: boolean;
 }
 
 export interface Territorio {
