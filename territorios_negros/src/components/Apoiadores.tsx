@@ -43,11 +43,12 @@ export default function Apoiadores() {
         </p>
       ) : (
         <div className="apoio-lista">
-          {lista.map((apoiador) => (
-            <div className="apoio-cartao" key={apoiador.id}>
-              {/* topo compacto: logo pequena à esquerda, participação e nome à
-                  direita — no celular o cartão tem de caber em pouca altura */}
-              <div className="apoio-topo">
+          {lista.map((apoiador) => {
+            const contatos = linksDoApoiador(apoiador);
+            const temDetalhe = !!apoiador.contribuicao || !!apoiador.foto || contatos.length > 0;
+
+            const cabecalho = (
+              <>
                 {apoiador.logo && (
                   <img
                     className="apoio-logo"
@@ -57,50 +58,71 @@ export default function Apoiadores() {
                   />
                 )}
 
-                <div className="apoio-identidade">
+                <span className="apoio-identidade">
                   {/* a participação vem antes: é o que diferencia um patrocínio
                       de um acolhimento */}
                   {nomeDoTipo(apoiador.tipo) && (
                     <span className="apoio-tipo">{nomeDoTipo(apoiador.tipo)}</span>
                   )}
 
-                  {apoiador.nome && <b className="apoio-nome">{apoiador.nome}</b>}
-                </div>
-              </div>
+                  {apoiador.nome && <span className="apoio-nome">{apoiador.nome}</span>}
+                </span>
 
-              {apoiador.contribuicao && (
-                <p className="apoio-contribuicao">
-                  <Inline texto={apoiador.contribuicao} />
-                </p>
-              )}
+                {/* sinal de que há mais conteúdo: vira × quando abre */}
+                {temDetalhe && (
+                  <span className="apoio-abrir" aria-hidden="true">
+                    +
+                  </span>
+                )}
+              </>
+            );
 
-              {/* foto do apoiador ou do espaço: entra quando a autoria enviar uma */}
-              {apoiador.foto && (
-                <img
-                  className="apoio-foto"
-                  src={apoiador.foto}
-                  alt={apoiador.nome ? `Foto de ${apoiador.nome}` : "Foto do apoiador"}
-                  loading="lazy"
-                />
-              )}
+            return (
+              <details className="apoio-cartao" key={apoiador.id}>
+                {temDetalhe ? (
+                  <summary className="apoio-topo">{cabecalho}</summary>
+                ) : (
+                  <div className="apoio-topo">{cabecalho}</div>
+                )}
 
-              {linksDoApoiador(apoiador).length > 0 && (
-                <div className="apoio-contatos">
-                  {linksDoApoiador(apoiador).map((contato) => (
-                    <a
-                      key={contato.url}
-                      className="apoio-contato"
-                      href={contato.url}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      {contato.rotulo}
-                    </a>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
+                {temDetalhe && (
+                  <div className="apoio-detalhe">
+                    {apoiador.contribuicao && (
+                      <p className="apoio-contribuicao">
+                        <Inline texto={apoiador.contribuicao} />
+                      </p>
+                    )}
+
+                    {/* foto do apoiador ou do espaço: entra quando a autoria enviar uma */}
+                    {apoiador.foto && (
+                      <img
+                        className="apoio-foto"
+                        src={apoiador.foto}
+                        alt={apoiador.nome ? `Foto de ${apoiador.nome}` : "Foto do apoiador"}
+                        loading="lazy"
+                      />
+                    )}
+
+                    {contatos.length > 0 && (
+                      <div className="apoio-contatos">
+                        {contatos.map((contato) => (
+                          <a
+                            key={contato.url}
+                            className="apoio-contato"
+                            href={contato.url}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {contato.rotulo}
+                          </a>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </details>
+            );
+          })}
         </div>
       )}
 
