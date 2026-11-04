@@ -617,6 +617,47 @@ export async function excluirMensagem(id: string): Promise<void> {
 
 // ─────────────────────────────────────────────────── FOTOS E VÍDEOS (storage)
 
+/**
+ * Reduz a imagem antes de subir. Celular é o uso principal do app e uma logo de
+ * 1 MB demora segundos para aparecer (o visitante vê um quadrado vazio até
+ * carregar). Reconverte para WebP mantendo transparência e limita o maior lado.
+ * Qualquer falha devolve o arquivo original — o upload nunca quebra por causa
+ * disso.
+ */
+async function reduzirImagem(file: File, maiorLado = 1600, qualidade = 0.85): Promise<File> {
+  const redutivel =
+    file.type.startsWith("image/") && file.type !== "image/svg+xml" && file.type !== "image/gif";
+
+  if (!redutivel || file.size <= 400 * 1024) return file;
+
+  try {
+    const bitmap = await createImageBitmap(file);
+    const escala = Math.min(1, maiorLado / Math.max(bitmap.width, bitmap.height));
+
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.max(1, Math.round(bitmap.width * escala));
+    canvas.height = Math.max(1, Math.round(bitmap.height * escala));
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return file;
+
+    ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    bitmap.close?.();
+
+    const blob = await new Promise<Blob | null>((resolve) =>
+      canvas.toBlob(resolve, "image/webp", qualidade)
+    );
+
+    // se o WebP não compensar, fica o original
+    if (!blob || blob.size >= file.size) return file;
+
+    const nome = `${file.name.replace(/\.[^.]+$/, "")}.webp`;
+    return new File([blob], nome, { type: "image/webp" });
+  } catch {
+    return file;
+  }
+}
+
 export async function uploadFoto(
   id: string,
   file: File,
@@ -630,13 +671,16 @@ export async function uploadFoto(
     | "personalidades"
     | "videos" = "territorios"
 ): Promise<string> {
-  const extensao = file.name.split(".").pop() ?? "jpg";
+  // logo é exibida em ~100px: 600px já cobre tela retina com folga
+  const enviado = pasta === "videos" ? file : await reduzirImagem(file, pasta === "apoiadores" ? 600 : 1600);
+
+  const extensao = enviado.name.split(".").pop() ?? "jpg";
   const nomeArquivo = `${id}-${Date.now()}-${Math.random()
     .toString(36)
     .slice(2, 7)}.${extensao}`;
   const caminho = `${pasta}/${nomeArquivo}`;
 
-  const { error } = await supabase.storage.from(BUCKET).upload(caminho, file, {
+  const { error } = await supabase.storage.from(BUCKET).upload(caminho, enviado, {
     upsert: false,
   });
 

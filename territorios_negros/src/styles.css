@@ -3077,8 +3077,9 @@ a, a:visited, a:hover, a:active {
    reconhece primeiro; tocar na marca abre a ficha (contribuição, foto e
    contatos) embaixo da grade, na largura da seção. */
 .apoio-grade {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 10px;
 }
 
@@ -3088,7 +3089,8 @@ a, a:visited, a:hover, a:active {
   display: grid;
   place-items: center;
 
-  width: 100%;
+  flex: 0 1 calc((100% - 20px) / 3);
+  min-width: 96px;
   min-height: 84px;
   padding: 8px;
   box-sizing: border-box;
@@ -3233,11 +3235,11 @@ a, a:visited, a:hover, a:active {
 
 @media (min-width: 560px) {
   .apoio-grade {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 12px;
   }
 
   .apoio-marca {
+    flex-basis: calc((100% - 36px) / 4);
     min-height: 96px;
   }
 
@@ -3248,11 +3250,11 @@ a, a:visited, a:hover, a:active {
 
 @media (min-width: 900px) {
   .apoio-grade {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 14px;
   }
 
   .apoio-marca {
+    flex-basis: calc((100% - 56px) / 5);
     min-height: 104px;
   }
 
