@@ -4163,10 +4163,20 @@ p.foto-credito {
 }
 
 .midias-fixar.presa {
-  border-style: solid;
-  border-color: #b8832c;
-  background: #fdf3e0;
-  color: #6a452b;
+  border: 1px solid #8f611d;
+
+  background: #b8832c;
+  color: #130b08;
+
+  font-weight: 900;
+  letter-spacing: 0.03em;
+}
+
+/* a linha inteira marca a mídia fixa (não dá para confundir com as soltas) */
+.midias-item.fixada {
+  padding-left: 8px;
+  border-left: 3px solid #b8832c;
+  background: rgba(184, 131, 44, 0.07);
 }
 
 .midias-fixar:disabled {

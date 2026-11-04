@@ -77,6 +77,13 @@ export default function MidiasAdmin() {
   const [ok, setOk] = useState("");
   const [erro, setErro] = useState("");
 
+  /**
+   * Estado do "fixar" logo depois do clique. O banco volta pelo `recarregar()`,
+   * mas isso depende de releitura; aqui o botão reflete a ação na hora (e é
+   * revertido se a gravação falhar).
+   */
+  const [fixasLocais, setFixasLocais] = useState<Record<string, boolean>>({});
+
   const paginas = useMemo(() => gruposDasPaginas(config), [config]);
   const todosOsTerritorios = useMemo(
     () => gruposDeTodosOsTerritorios(territorios),
@@ -168,12 +175,17 @@ export default function MidiasAdmin() {
    * qualquer passeio. Grava na hora, como o habilitar/desabilitar.
    */
   async function alternarFixa(grupo: GrupoMidias, item: ItemMidiaPainel) {
-    const novo = !item.fixo;
-    const id = `${idDoItem(grupo, item)}|fixa`;
+    const chaveItem = idDoItem(grupo, item);
+    // parte do que está NA TELA (pode ter sido mudado no clique anterior)
+    const atual = fixasLocais[chaveItem] ?? item.fixo;
+    const novo = !atual;
+    const id = `${chaveItem}|fixa`;
 
     setErro("");
     setOk("");
     setGravando(id);
+    // reflete no botão já no clique; desfeito se a gravação falhar
+    setFixasLocais((mapa) => ({ ...mapa, [chaveItem]: novo }));
 
     try {
       if (grupo.origem === "territorio") {
@@ -205,6 +217,7 @@ export default function MidiasAdmin() {
       );
     } catch (e) {
       console.error(e);
+      setFixasLocais((mapa) => ({ ...mapa, [chaveItem]: !novo }));
       setErro(e instanceof Error ? e.message : "Falha ao fixar a mídia.");
     } finally {
       setGravando(null);
@@ -394,9 +407,10 @@ export default function MidiasAdmin() {
                   {itens.map((item) => {
                     const id = idDoItem(grupo, item);
                     const salvando = gravando === id;
+                    const fixa = fixasLocais[id] ?? item.fixo;
 
                     return (
-                      <div className="midias-item" key={id}>
+                      <div className={`midias-item${fixa ? " fixada" : ""}`} key={id}>
                         {item.tipo === "foto" ? (
                           <img className="midias-thumb" src={item.url} alt="" loading="lazy" />
                         ) : (
@@ -428,17 +442,17 @@ export default function MidiasAdmin() {
                           {/* fixa: o “desabilitar todas” não alcança esta mídia */}
                           <button
                             type="button"
-                            className={`midias-fixar${item.fixo ? " presa" : ""}`}
+                            className={`midias-fixar${fixa ? " presa" : ""}`}
                             onClick={() => alternarFixa(grupo, item)}
                             disabled={gravando === `${id}|fixa`}
-                            aria-pressed={item.fixo}
+                            aria-pressed={fixa}
                             title={
-                              item.fixo
+                              fixa
                                 ? "Soltar: volta a obedecer ao “desabilitar todas”"
                                 : "Fixar: o “desabilitar todas” não tira esta mídia do app"
                             }
                           >
-                            {item.fixo ? "fixa ✓" : "fixar"}
+                            {fixa ? "FIXA ✓" : "fixar"}
                           </button>
                         </span>
                       </div>

@@ -495,6 +495,8 @@ function normalizarImagens(valor: unknown): ImagemBloco[] {
         credito: textoDe(o.credito, ""),
         // por padrão a imagem aparece; só fica oculta se a autoria bloquear
         visivel: o.visivel !== false,
+        // precisa sobreviver à normalização, senão o "fixar" some ao recarregar
+        fixo: o.fixo === true,
       };
     })
     .filter((i) => i.url);
