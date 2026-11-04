@@ -21,16 +21,36 @@ export interface Apoiador {
   nome: string;
   /** endereço da logo (enviada no painel) — uso combinado com quem apoia */
   logo: string;
+  /** foto do apoiador ou do espaço (opcional; aparece no cartão quando existe) */
+  foto: string;
   /** uma frase curta: apoio à divulgação, acolhimento da visita, material, transporte… */
   contribuicao: string;
   /**
    * a participação combinada (ver TIPOS_DE_APOIO): realização, parceria, apoio,
-   * patrocínio ou acolhimento. Vazio = ainda não definida (o cartão sai sem
-   * etiqueta).
+   * patrocínio, fomento ou acolhimento. Vazio = ainda não definida (o cartão sai
+   * sem etiqueta).
    */
   tipo: string;
-  /** site ou Instagram oficial (opcional) */
+
+  /** link antigo (site ou Instagram). Continua valendo para cadastro já feito. */
   link: string;
+
+  // ── contato que o visitante vê (viram botões no cartão) ──────────────
+  /** número com DDD; o app monta o wa.me */
+  whatsapp: string;
+  /** @perfil ou o endereço completo */
+  instagram: string;
+  site: string;
+  /** canal ou vídeo do YouTube */
+  youtube: string;
+
+  // ── dados do cadastro (ficam SÓ no painel, não vão para o app) ───────
+  /** CNPJ ou CPF de quem apoia (documento do convênio/fomento) */
+  documento: string;
+  endereco: string;
+  /** telefones fixos e celulares, como a autoria quiser separar */
+  telefones: string;
+
   /** aparece para o visitante? */
   visivel: boolean;
 }
@@ -46,6 +66,12 @@ export const TIPOS_DE_APOIO: { valor: string; nome: string; explicacao: string }
   { valor: "parceria", nome: "Parceria", explicacao: "quem caminha junto, com ação conjunta" },
   { valor: "apoio", nome: "Apoio", explicacao: "quem contribui sem vínculo de patrocínio" },
   { valor: "patrocinio", nome: "Patrocínio", explicacao: "quem custeia ou financia parte do projeto" },
+  {
+    valor: "fomento",
+    nome: "Fomento",
+    explicacao:
+      "recurso público de fomento — por exemplo, o da Secretaria de Turismo que sustenta parte do projeto",
+  },
   {
     valor: "acolhimento",
     nome: "Acolhimento",
@@ -84,9 +110,17 @@ export function novoApoiador(): Apoiador {
     id: `apoiador-${Date.now().toString(36)}-${contador}`,
     nome: "",
     logo: "",
+    foto: "",
     contribuicao: "",
     tipo: "",
     link: "",
+    whatsapp: "",
+    instagram: "",
+    site: "",
+    youtube: "",
+    documento: "",
+    endereco: "",
+    telefones: "",
     visivel: true,
   };
 }
@@ -109,9 +143,17 @@ export function lerApoiadores(valor: unknown): PaginaApoiadores {
         id: texto(a.id) || `apoiador-${i + 1}`,
         nome: texto(a.nome),
         logo: texto(a.logo),
+        foto: texto(a.foto),
         contribuicao: texto(a.contribuicao),
         tipo: tipoValido(a.tipo),
         link: texto(a.link),
+        whatsapp: texto(a.whatsapp),
+        instagram: texto(a.instagram),
+        site: texto(a.site),
+        youtube: texto(a.youtube),
+        documento: texto(a.documento),
+        endereco: texto(a.endereco),
+        telefones: texto(a.telefones),
         // só fica escondido se a autoria esconder de propósito
         visivel: a.visivel !== false,
       };
@@ -126,7 +168,7 @@ export function lerApoiadores(valor: unknown): PaginaApoiadores {
 
 /** O que o visitante vê: visível e com nome ou logo (cadastro vazio não entra). */
 export function apoiadoresVisiveis(pagina: PaginaApoiadores): Apoiador[] {
-  return pagina.lista.filter((a) => a.visivel && (!!a.nome || !!a.logo));
+  return pagina.lista.filter((a) => a.visivel && (!!a.nome || !!a.logo || !!a.foto));
 }
 
 /** “Instituto X — apoio à divulgação”: resumo curto para a lista do painel. */
@@ -157,22 +199,82 @@ export function nomeDoTipo(valor: unknown): string {
   return TIPOS_DE_APOIO.find((t) => t.valor === tipo)?.nome ?? "";
 }
 
-/** Endereço pronto para o link funcionar (completa o https quando falta). */
+/**
+ * Endereço pronto para o link funcionar. Além de completar o “https://”, entende
+ * o que a autoria costuma digitar: **@perfil** ou só o nome do perfil viram
+ * Instagram (foi o caso do apoiador cadastrado com “@…” que não abria — 14/10/2026).
+ */
 export function linkUtilizavel(url: string): string {
   const limpo = url.trim();
   if (!limpo) return "";
 
-  return /^https?:\/\//i.test(limpo) ? limpo : `https://${limpo}`;
+  if (/^https?:\/\//i.test(limpo)) return limpo;
+
+  // @perfil → perfil do Instagram
+  if (limpo.startsWith("@")) return `https://instagram.com/${limpo.slice(1)}`;
+
+  // perfil colado sem @ e sem domínio (ex.: "institutoexemplo")
+  if (!limpo.includes(" ") && !limpo.includes(".") && /^[\w.]{2,40}$/.test(limpo)) {
+    return `https://instagram.com/${limpo}`;
+  }
+
+  return `https://${limpo}`;
 }
 
-/** Como o botão do link se chama: Instagram, Site ou “Abrir link”. */
+/** Número de WhatsApp → link wa.me (aceita máscara, +55 e link pronto). */
+export function whatsappUtilizavel(numero: string): string {
+  const limpo = numero.trim();
+  if (!limpo) return "";
+
+  if (/^https?:\/\//i.test(limpo)) return limpo;
+
+  const digitos = limpo.replace(/\D/g, "");
+  if (!digitos) return "";
+
+  // 10 ou 11 dígitos = DDD + número, sem o código do país
+  const comPais = digitos.length <= 11 ? `55${digitos}` : digitos;
+
+  return `https://wa.me/${comPais}`;
+}
+
+/** Como o botão do link se chama: Instagram, Site, YouTube, WhatsApp… */
 export function rotuloDoLink(url: string): string {
   const alvo = url.toLowerCase();
 
   if (alvo.includes("instagram.com")) return "Instagram";
+  if (alvo.includes("youtube.com") || alvo.includes("youtu.be")) return "YouTube";
+  if (alvo.includes("wa.me") || alvo.includes("whatsapp.com")) return "WhatsApp";
   if (/^https?:\/\//.test(alvo)) return "Site";
 
   return "Abrir link";
+}
+
+/**
+ * Os contatos que o cartão do apoiador mostra, na ordem em que aparecem.
+ * O campo antigo (`link`) continua valendo — nada do que já foi cadastrado se
+ * perde — e o mesmo endereço não aparece duas vezes.
+ */
+export function linksDoApoiador(apoiador: Apoiador): { rotulo: string; url: string }[] {
+  const candidatos: { rotulo: string; url: string }[] = [
+    { rotulo: "WhatsApp", url: whatsappUtilizavel(apoiador.whatsapp) },
+    { rotulo: "Instagram", url: linkUtilizavel(apoiador.instagram) },
+    { rotulo: "Site", url: apoiador.site ? linkUtilizavel(apoiador.site) : "" },
+    { rotulo: "YouTube", url: linkUtilizavel(apoiador.youtube) },
+    { rotulo: rotuloDoLink(apoiador.link), url: linkUtilizavel(apoiador.link) },
+  ];
+
+  const vistos = new Set<string>();
+
+  return candidatos.filter((item) => {
+    if (!item.url) return false;
+
+    // o mesmo perfil digitado em dois campos vira um botão só
+    const chave = item.url.replace(/\/+$/, "").toLowerCase();
+    if (vistos.has(chave)) return false;
+
+    vistos.add(chave);
+    return true;
+  });
 }
 
 /** Quantos apoiadores o visitante vê (usado no resumo do painel). */

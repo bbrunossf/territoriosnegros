@@ -3131,6 +3131,50 @@ a, a:visited, a:hover, a:active {
   align-self: stretch;
 }
 
+/* foto do apoiador ou do espaço, dentro do cartão */
+.apoio-foto {
+  width: 100%;
+  max-width: 420px;
+
+  margin-top: 2px;
+
+  border: 1px solid rgba(155, 112, 46, 0.35);
+  border-radius: 10px;
+
+  object-fit: cover;
+}
+
+/* contatos: WhatsApp, Instagram, Site, YouTube — botões pequenos lado a lado */
+.apoio-contatos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+
+  width: 100%;
+
+  margin-top: 4px;
+}
+
+.apoio-contato {
+  padding: 7px 12px;
+
+  border: 1px solid #c58b2a;
+  border-radius: 999px;
+
+  background: #fff6e4;
+
+  color: #6a452b;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+}
+
+.apoio-contato:active {
+  background: #f2e0c2;
+}
+
 /* Painel: cartões da aba Apoiadores */
 .apoio-admin-item {
   border: 1px solid #e2d3bd;

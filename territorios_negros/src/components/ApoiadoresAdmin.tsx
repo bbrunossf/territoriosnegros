@@ -37,6 +37,7 @@ export default function ApoiadoresAdmin() {
   const [erro, setErro] = useState("");
   const [salvando, setSalvando] = useState(false);
   const [enviandoLogo, setEnviandoLogo] = useState<string | null>(null);
+  const [enviandoFoto, setEnviandoFoto] = useState<string | null>(null);
 
   useEffect(() => {
     let ativo = true;
@@ -118,6 +119,25 @@ export default function ApoiadoresAdmin() {
     }
   }
 
+  async function enviarFoto(id: string, file: File | null) {
+    if (!file) return;
+
+    setOk("");
+    setErro("");
+    setEnviandoFoto(id);
+
+    try {
+      const url = await uploadFoto(id, file, "apoiadores");
+      mudar(id, "foto", url);
+      setOk('Foto enviada. Clique em "Salvar alterações" para publicar no app.');
+    } catch (e) {
+      console.error(e);
+      setErro(e instanceof Error ? e.message : "Falha ao enviar a foto.");
+    } finally {
+      setEnviandoFoto(null);
+    }
+  }
+
   async function salvar(e: React.FormEvent) {
     e.preventDefault();
 
@@ -186,7 +206,8 @@ export default function ApoiadoresAdmin() {
 
         <p className="admin-ajuda">
           Cada apoiador vira um cartão na página: <b>logo</b>, <b>nome</b>, uma frase sobre a{" "}
-          <b>contribuição</b> e, se houver, o <b>link</b> oficial (site ou Instagram). A ordem aqui é
+          <b>contribuição</b> e os <b>contatos</b> que você preencher (WhatsApp, Instagram, Site,
+          YouTube). CNPJ/CPF, endereço e telefones ficam só aqui no painel. A ordem desta lista é
           a ordem na página.
         </p>
 
@@ -280,15 +301,120 @@ export default function ApoiadoresAdmin() {
             </label>
 
             <label className="admin-campo">
-              <b>Link (site ou Instagram)</b>
+              <b>Site ou Instagram (link)</b>
               <span className="admin-campo-dica">
-                Opcional. Pode colar sem o “https://” que o app completa. Vira um botão no cartão.
+                Opcional. Aceita o endereço completo, <b>instagram.com/perfil</b> ou só{" "}
+                <b>@perfil</b> — o app completa o resto. Se preferir, use os campos de contato
+                abaixo.
               </span>
               <input
                 type="text"
-                placeholder="Ex: instagram.com/institutoexemplo"
+                placeholder="Ex: @institutoexemplo ou institutoexemplo.com.br"
                 value={apoiador.link}
                 onChange={(e) => mudar(apoiador.id, "link", e.target.value)}
+              />
+            </label>
+
+            <h4 className="admin-form-secao">Contato que aparece no app</h4>
+
+            <p className="admin-campo-dica">
+              Cada campo preenchido vira um botão no cartão do apoiador. Deixe em branco o que
+              não quiser mostrar.
+            </p>
+
+            <div className="admin-form-grid">
+              <label className="admin-campo">
+                <b>WhatsApp</b>
+                <span className="admin-campo-dica">
+                  Com DDD. Pode digitar com parênteses e traço — o app monta o link.
+                </span>
+                <input
+                  type="text"
+                  placeholder="Ex: (27) 99999-0000"
+                  value={apoiador.whatsapp}
+                  onChange={(e) => mudar(apoiador.id, "whatsapp", e.target.value)}
+                />
+              </label>
+
+              <label className="admin-campo">
+                <b>Instagram</b>
+                <span className="admin-campo-dica">
+                  Só o perfil, com ou sem @. Ex.: @institutoexemplo
+                </span>
+                <input
+                  type="text"
+                  placeholder="Ex: @institutoexemplo"
+                  value={apoiador.instagram}
+                  onChange={(e) => mudar(apoiador.id, "instagram", e.target.value)}
+                />
+              </label>
+
+              <label className="admin-campo">
+                <b>Site</b>
+                <span className="admin-campo-dica">Endereço do site, sem precisar do https://</span>
+                <input
+                  type="text"
+                  placeholder="Ex: institutoexemplo.org.br"
+                  value={apoiador.site}
+                  onChange={(e) => mudar(apoiador.id, "site", e.target.value)}
+                />
+              </label>
+
+              <label className="admin-campo">
+                <b>YouTube</b>
+                <span className="admin-campo-dica">Canal ou vídeo do apoiador</span>
+                <input
+                  type="text"
+                  placeholder="Ex: youtube.com/@institutoexemplo"
+                  value={apoiador.youtube}
+                  onChange={(e) => mudar(apoiador.id, "youtube", e.target.value)}
+                />
+              </label>
+            </div>
+
+            <h4 className="admin-form-secao">Dados do cadastro (não aparecem no app)</h4>
+
+            <p className="admin-campo-dica">
+              Ficam guardados aqui, no painel, para convênio, recibo e prestação de contas. O
+              visitante não vê CNPJ/CPF, endereço nem telefones.
+            </p>
+
+            <div className="admin-form-grid">
+              <label className="admin-campo">
+                <b>CNPJ ou CPF</b>
+                <span className="admin-campo-dica">Documento de quem apoia (pessoa ou instituição)</span>
+                <input
+                  type="text"
+                  placeholder="Ex: 00.000.000/0000-00"
+                  value={apoiador.documento}
+                  onChange={(e) => mudar(apoiador.id, "documento", e.target.value)}
+                />
+              </label>
+
+              <label className="admin-campo">
+                <b>Telefones</b>
+                <span className="admin-campo-dica">
+                  Fixo e celular, como quiser separar. Não aparece no app.
+                </span>
+                <input
+                  type="text"
+                  placeholder="Ex: (27) 3333-0000 · (27) 99999-0000"
+                  value={apoiador.telefones}
+                  onChange={(e) => mudar(apoiador.id, "telefones", e.target.value)}
+                />
+              </label>
+            </div>
+
+            <label className="admin-campo">
+              <b>Endereço</b>
+              <span className="admin-campo-dica">
+                Rua, número, bairro, cidade e CEP. Uso interno do cadastro.
+              </span>
+              <input
+                type="text"
+                placeholder="Ex: Rua Exemplo, 100 — Centro, Vitória/ES — 29000-000"
+                value={apoiador.endereco}
+                onChange={(e) => mudar(apoiador.id, "endereco", e.target.value)}
               />
             </label>
 
@@ -322,6 +448,41 @@ export default function ApoiadoresAdmin() {
               {apoiador.logo && (
                 <div className="apoio-admin-previa">
                   <img src={apoiador.logo} alt="" />
+                  <span className="admin-campo-dica">prévia</span>
+                </div>
+              )}
+            </div>
+
+            <div className="admin-form-upload">
+              <label className="admin-campo">
+                <b>Foto (quando necessário)</b>
+                <span className="admin-campo-dica">
+                  Foto do apoiador, da equipe ou do espaço. Aparece no cartão, embaixo do texto.
+                </span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  disabled={enviandoFoto === apoiador.id}
+                  onChange={(e) => enviarFoto(apoiador.id, e.target.files?.[0] ?? null)}
+                />
+              </label>
+
+              <label className="admin-campo">
+                <b>Endereço da foto</b>
+                <span className="admin-campo-dica">
+                  Preenchido sozinho quando você envia o arquivo. Também aceita um endereço colado.
+                </span>
+                <input
+                  type="text"
+                  placeholder="Ex: https://…/foto.jpg"
+                  value={apoiador.foto}
+                  onChange={(e) => mudar(apoiador.id, "foto", e.target.value)}
+                />
+              </label>
+
+              {apoiador.foto && (
+                <div className="apoio-admin-previa">
+                  <img src={apoiador.foto} alt="" />
                   <span className="admin-campo-dica">prévia</span>
                 </div>
               )}

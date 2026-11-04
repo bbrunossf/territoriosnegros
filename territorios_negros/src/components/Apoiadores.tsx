@@ -11,9 +11,8 @@ import {
   CHAVE_APOIADORES,
   apoiadoresVisiveis,
   lerApoiadores,
-  linkUtilizavel,
+  linksDoApoiador,
   nomeDoTipo,
-  rotuloDoLink,
 } from "../data/apoiadores";
 import Inline from "./Inline";
 import BotaoContato from "./BotaoContato";
@@ -69,15 +68,30 @@ export default function Apoiadores() {
                 </p>
               )}
 
-              {linkUtilizavel(apoiador.link) && (
-                <a
-                  className="btn pagina-botao apoio-link"
-                  href={linkUtilizavel(apoiador.link)}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {rotuloDoLink(apoiador.link)}
-                </a>
+              {/* foto do apoiador ou do espaço: entra quando a autoria enviar uma */}
+              {apoiador.foto && (
+                <img
+                  className="apoio-foto"
+                  src={apoiador.foto}
+                  alt={apoiador.nome ? `Foto de ${apoiador.nome}` : "Foto do apoiador"}
+                  loading="lazy"
+                />
+              )}
+
+              {linksDoApoiador(apoiador).length > 0 && (
+                <div className="apoio-contatos">
+                  {linksDoApoiador(apoiador).map((contato) => (
+                    <a
+                      key={contato.url}
+                      className="apoio-contato"
+                      href={contato.url}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {contato.rotulo}
+                    </a>
+                  ))}
+                </div>
               )}
             </div>
           ))}
