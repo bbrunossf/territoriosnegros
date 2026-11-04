@@ -39,6 +39,9 @@ export default function ApoiadoresAdmin() {
   const [enviandoLogo, setEnviandoLogo] = useState<string | null>(null);
   const [enviandoFoto, setEnviandoFoto] = useState<string | null>(null);
 
+  /** id do apoiador aguardando confirmação para ser apagado de vez */
+  const [confirmandoRemover, setConfirmandoRemover] = useState<string | null>(null);
+
   useEffect(() => {
     let ativo = true;
 
@@ -73,6 +76,7 @@ export default function ApoiadoresAdmin() {
   function remover(id: string) {
     setOk("");
     setErro("");
+    setConfirmandoRemover(null);
     setLista((atual) => atual.filter((a) => a.id !== id));
   }
 
@@ -166,6 +170,13 @@ export default function ApoiadoresAdmin() {
       <p className="admin-ajuda">
         Nesta lista: <b>{lista.length}</b> {lista.length === 1 ? "cadastro" : "cadastros"} e{" "}
         <b>{visiveis}</b> {visiveis === 1 ? "aparecendo" : "aparecendo"} para o visitante.
+        {lista.length - visiveis > 0 && (
+          <>
+            {" "}
+            <b>{lista.length - visiveis}</b> {lista.length - visiveis === 1 ? "oculto" : "ocultos"}
+            — guardados aqui, fora do app.
+          </>
+        )}
       </p>
 
       {ok && <p className="admin-ok">{ok}</p>}
@@ -218,13 +229,38 @@ export default function ApoiadoresAdmin() {
         )}
 
         {lista.map((apoiador, i) => (
-          <div className="apoio-admin-item" key={apoiador.id}>
+          <div
+            className={`apoio-admin-item${apoiador.visivel ? "" : " apoio-admin-item--oculto"}`}
+            key={apoiador.id}
+          >
             <div className="apoio-admin-topo">
-              <b>
+              <b className="apoio-admin-titulo">
                 {i + 1}. {resumoDoApoiador(apoiador)}
+
+                {/* o estado aparece no topo do cartão: é o que a autoria procura
+                    para tirar do ar sem apagar o cadastro */}
+                <span
+                  className={`apoio-admin-estado${
+                    apoiador.visivel ? " apoio-admin-estado--dentro" : " apoio-admin-estado--fora"
+                  }`}
+                >
+                  {apoiador.visivel ? "aparecendo" : "oculto"}
+                </span>
               </b>
 
               <span className="apoio-admin-acoes">
+                <button
+                  type="button"
+                  className="midias-acao"
+                  onClick={() => mudar(apoiador.id, "visivel", !apoiador.visivel)}
+                  title={
+                    apoiador.visivel
+                      ? "Tirar do app sem apagar o cadastro"
+                      : "Voltar a mostrar no app"
+                  }
+                >
+                  {apoiador.visivel ? "ocultar" : "exibir"}
+                </button>
                 <button
                   type="button"
                   className="midias-acao"
@@ -244,12 +280,48 @@ export default function ApoiadoresAdmin() {
                 <button
                   type="button"
                   className="midias-acao"
-                  onClick={() => remover(apoiador.id)}
+                  onClick={() => setConfirmandoRemover(apoiador.id)}
                 >
-                  remover
+                  apagar
                 </button>
               </span>
             </div>
+
+            {confirmandoRemover === apoiador.id && (
+              <div className="admin-confirmacao">
+                <p>
+                  <b>Apagar “{apoiador.nome || "este apoiador"}” de vez?</b> Os dados saem da
+                  lista e, depois de salvar, não dá para recuperar. Se a ideia é só tirar do ar
+                  agora (o apoio pode ser renovado), use <b>ocultar</b>: o cadastro fica
+                  guardado inteiro.
+                </p>
+
+                <div className="admin-form-botoes">
+                  <button type="button" className="btn" onClick={() => remover(apoiador.id)}>
+                    sim, apagar de vez
+                  </button>
+
+                  <button
+                    type="button"
+                    className="outline"
+                    onClick={() => {
+                      setConfirmandoRemover(null);
+                      mudar(apoiador.id, "visivel", false);
+                    }}
+                  >
+                    não — só ocultar
+                  </button>
+
+                  <button
+                    type="button"
+                    className="outline"
+                    onClick={() => setConfirmandoRemover(null)}
+                  >
+                    cancelar
+                  </button>
+                </div>
+              </div>
+            )}
 
             <div className="admin-form-grid">
               <label className="admin-campo">
@@ -482,8 +554,8 @@ export default function ApoiadoresAdmin() {
                 onChange={(e) => mudar(apoiador.id, "visivel", e.target.checked)}
               />
               <span>
-                <b>Aparecendo no app</b> — desmarque para guardar o cadastro sem mostrar ao
-                visitante.
+                <b>Aparecendo no app</b> — desmarcado, o cartão sai da página e o cadastro
+                continua guardado aqui, inteiro, para quando o apoio for renovado.
               </span>
             </label>
           </div>

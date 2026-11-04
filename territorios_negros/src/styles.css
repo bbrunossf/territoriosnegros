@@ -3226,6 +3226,47 @@ a, a:visited, a:hover, a:active {
   font-size: 14px;
 }
 
+/* Estado do apoiador no topo do cartão (14/10/2026): exibir/ocultar sem apagar */
+.apoio-admin-titulo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.apoio-admin-estado {
+  padding: 2px 8px;
+
+  border-radius: 999px;
+
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.apoio-admin-estado--dentro {
+  border: 1px solid #d8b169;
+  background: #fdf3e0;
+  color: #7d5518;
+}
+
+.apoio-admin-estado--fora {
+  border: 1px dashed #b9a48c;
+  background: #efe7db;
+  color: #7a6650;
+}
+
+/* cartão oculto: continua na lista, mas se lê como "fora do ar" */
+.apoio-admin-item--oculto {
+  border-style: dashed;
+  background: #f8f2e7;
+}
+
+.apoio-admin-item--oculto .apoio-admin-titulo {
+  color: #6b5a48;
+}
+
 /* Caixa "habilitar tudo / desabilitar tudo", no alto da aba Fotos e vídeos. */
 .midias-tudo {
   border: 1px solid #8f611d;
