@@ -193,7 +193,8 @@ export const MANUAL_PADRAO: SecaoManual[] = [
       "O link **abrir**, ao lado de cada mídia, mostra o arquivo original em outra aba, para você conferir do que se trata.",
       "**habilitar tudo / desabilitar tudo** (no alto desta aba) — alcança de uma vez as fotos das páginas, as fotos e os vídeos de apoio de **todos os territórios** e os **mapas de todas as rotas**. Marca item por item, como os botões de cada grupo: depois você ajusta um só, sem estragar os outros. Nada é apagado — desligar só tira da vista do visitante. É o botão para preparar o guia: desligue tudo e ligue só o que entra no roteiro do dia.",
       "**fixar (14/10/2026):** cada mídia tem um botão **fixar** ao lado do Habilitado/Desabilitado. Fixa, ela **não sai no *desabilitar todas*** — nem no do grupo, nem no *desabilitar tudo*. É para as imagens que precisam estar no app em qualquer passeio: o mapa do projeto, a marca do apoio, a foto do território que abre o roteiro. O botão vira **fixa ✓**, dá para **soltar** a qualquer momento, e o resumo do grupo passa a contar as fixas. Fixar também deixa a mídia habilitada — não existe “fixa e escondida”.",
-      "**atualizar lista** recarrega o que está gravado — útil se você mexeu em outro aparelho.",
+      "**atualizar lista** recarrega o que está gravado aqui no painel — útil se você mexeu em outro aparelho.",
+      "**No app, sem recarregar (14/10/2026):** o app que o visitante já está usando reconsulta o banco a cada **20 segundos** e na hora em que a aba volta a ficar visível (quando ele volta do WhatsApp, por exemplo). Então a foto desligada **some sozinha** em até 20 s e a que você religou **reaparece** no mesmo tempo, sem ninguém apertar F5. Se a conexão falhar, o app segue com o que já tinha na tela — não fica em branco.",
     ],
   },
   {
