@@ -375,51 +375,9 @@ export default function ApoiadoresAdmin() {
             <h4 className="admin-form-secao">Dados do cadastro (não aparecem no app)</h4>
 
             <p className="admin-campo-dica">
-              Ficam guardados aqui, no painel, para convênio, recibo e prestação de contas. O
-              visitante não vê CNPJ/CPF, endereço nem telefones.
+              Endereço e telefones ficam guardados aqui, no painel. O visitante não vê. Não há
+              campo de CPF/CNPJ: o documento não é guardado neste cadastro.
             </p>
-
-            <div className="admin-form-grid">
-              <label className="admin-campo">
-                <b>CNPJ ou CPF</b>
-                <span className="admin-campo-dica">Documento de quem apoia (pessoa ou instituição)</span>
-                <input
-                  type="text"
-                  placeholder="Ex: 00.000.000/0000-00"
-                  value={apoiador.documento}
-                  onChange={(e) => mudar(apoiador.id, "documento", e.target.value)}
-                />
-              </label>
-
-              <label className="admin-campo">
-                <b>Telefones</b>
-                <span className="admin-campo-dica">
-                  Fixo e celular, como quiser separar. Não aparece no app.
-                </span>
-                <input
-                  type="text"
-                  placeholder="Ex: (27) 3333-0000 · (27) 99999-0000"
-                  value={apoiador.telefones}
-                  onChange={(e) => mudar(apoiador.id, "telefones", e.target.value)}
-                />
-              </label>
-            </div>
-
-            <label className="apoio-admin-liga">
-              <input
-                type="checkbox"
-                checked={apoiador.documentoVisivel}
-                disabled={!apoiador.documento}
-                onChange={(e) => mudar(apoiador.id, "documentoVisivel", e.target.checked)}
-              />
-              <span>
-                <b>Mostrar o CNPJ/CPF no cartão do app</b> — desmarcado (padrão), o documento
-                fica guardado só aqui no painel.{" "}
-                {apoiador.documento
-                  ? "Marque apenas quando o apoiador pedir ou autorizar."
-                  : "Preencha o documento acima para poder liberar."}
-              </span>
-            </label>
 
             <label className="admin-campo">
               <b>Endereço</b>
@@ -431,6 +389,19 @@ export default function ApoiadoresAdmin() {
                 placeholder="Ex: Rua Exemplo, 100 — Centro, Vitória/ES — 29000-000"
                 value={apoiador.endereco}
                 onChange={(e) => mudar(apoiador.id, "endereco", e.target.value)}
+              />
+            </label>
+
+            <label className="admin-campo">
+              <b>Telefones</b>
+              <span className="admin-campo-dica">
+                Fixo e celular, como quiser separar. Não aparece no app.
+              </span>
+              <input
+                type="text"
+                placeholder="Ex: (27) 3333-0000 · (27) 99999-0000"
+                value={apoiador.telefones}
+                onChange={(e) => mudar(apoiador.id, "telefones", e.target.value)}
               />
             </label>
 
