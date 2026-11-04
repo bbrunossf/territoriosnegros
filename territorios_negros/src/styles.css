@@ -932,9 +932,9 @@ a, a:visited, a:hover, a:active {
 }
 
 .pagina-secao-titulo {
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 900;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: #563827;
   margin: 0;
