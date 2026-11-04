@@ -3374,6 +3374,32 @@ a, a:visited, a:hover, a:active {
   flex-wrap: wrap;
 }
 
+/* miniatura da logo na lista do painel: reconhecer o apoiador sem abrir */
+.apoio-admin-thumb {
+  width: 40px;
+  height: 40px;
+  flex: none;
+
+  box-sizing: border-box;
+  padding: 2px;
+
+  object-fit: contain;
+
+  border: 1px solid #e2d3bd;
+  border-radius: 8px;
+
+  background: #fff;
+}
+
+.apoio-admin-titulo > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+
+  min-width: 0;
+}
+
 .apoio-admin-estado {
   padding: 2px 8px;
 

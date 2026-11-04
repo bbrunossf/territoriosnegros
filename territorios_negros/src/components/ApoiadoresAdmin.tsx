@@ -42,6 +42,13 @@ export default function ApoiadoresAdmin() {
   /** id do apoiador aguardando confirmação para ser apagado de vez */
   const [confirmandoRemover, setConfirmandoRemover] = useState<string | null>(null);
 
+  /**
+   * apoiador com a ficha aberta para edição (14/10/2026). A lista fica em
+   * formato de lista — nome, estado e ações — e os campos só aparecem no que
+   * a autoria abrir, como no painel de territórios. Um por vez.
+   */
+  const [editando, setEditando] = useState<string | null>(null);
+
   useEffect(() => {
     let ativo = true;
 
@@ -70,7 +77,12 @@ export default function ApoiadoresAdmin() {
   function adicionar() {
     setOk("");
     setErro("");
-    setLista((atual) => [...atual, novoApoiador()]);
+
+    const novo = novoApoiador();
+
+    setLista((atual) => [...atual, novo]);
+    // cadastro novo abre já aberto, senão a autoria não acha o que preencher
+    setEditando(novo.id);
   }
 
   /**
@@ -280,20 +292,35 @@ export default function ApoiadoresAdmin() {
           >
             <div className="apoio-admin-topo">
               <b className="apoio-admin-titulo">
-                {i + 1}. {resumoDoApoiador(apoiador)}
+                {apoiador.logo && (
+                  <img className="apoio-admin-thumb" src={apoiador.logo} alt="" loading="lazy" />
+                )}
 
-                {/* o estado aparece no topo do cartão: é o que a autoria procura
-                    para tirar do ar sem apagar o cadastro */}
-                <span
-                  className={`apoio-admin-estado${
-                    apoiador.visivel ? " apoio-admin-estado--dentro" : " apoio-admin-estado--fora"
-                  }`}
-                >
-                  {apoiador.visivel ? "aparecendo" : "oculto"}
+                <span>
+                  {i + 1}. {resumoDoApoiador(apoiador)}
+
+                  {/* o estado aparece no topo do cartão: é o que a autoria procura
+                      para tirar do ar sem apagar o cadastro */}
+                  <span
+                    className={`apoio-admin-estado${
+                      apoiador.visivel ? " apoio-admin-estado--dentro" : " apoio-admin-estado--fora"
+                    }`}
+                  >
+                    {apoiador.visivel ? "aparecendo" : "oculto"}
+                  </span>
                 </span>
               </b>
 
               <span className="apoio-admin-acoes">
+                <button
+                  type="button"
+                  className="midias-acao"
+                  onClick={() => setEditando(editando === apoiador.id ? null : apoiador.id)}
+                  aria-expanded={editando === apoiador.id}
+                >
+                  {editando === apoiador.id ? "fechar" : "editar"}
+                </button>
+
                 <button
                   type="button"
                   className="midias-acao"
@@ -368,241 +395,245 @@ export default function ApoiadoresAdmin() {
               </div>
             )}
 
-            <div className="admin-form-grid">
-              <label className="admin-campo">
-                <b>Nome *</b>
-                <span className="admin-campo-dica">
-                  Nome da instituição, empresa, coletivo ou pessoa.
-                </span>
-                <input
-                  type="text"
-                  placeholder="Ex: Instituto Cultural Exemplo"
-                  value={apoiador.nome}
-                  onChange={(e) => mudar(apoiador.id, "nome", e.target.value)}
-                />
-              </label>
+            {editando === apoiador.id && (
+              <>
+                    <div className="admin-form-grid">
+                  <label className="admin-campo">
+                    <b>Nome *</b>
+                    <span className="admin-campo-dica">
+                      Nome da instituição, empresa, coletivo ou pessoa.
+                    </span>
+                    <input
+                      type="text"
+                      placeholder="Ex: Instituto Cultural Exemplo"
+                      value={apoiador.nome}
+                      onChange={(e) => mudar(apoiador.id, "nome", e.target.value)}
+                    />
+                  </label>
 
-              <label className="admin-campo">
-                <b>Participação</b>
-                <span className="admin-campo-dica">
-                  O que foi combinado com quem apoia. Aparece como etiqueta no alto do cartão; sem
-                  escolha, o cartão sai sem etiqueta.
-                </span>
-                <select
-                  value={apoiador.tipo}
-                  onChange={(e) => mudar(apoiador.id, "tipo", e.target.value)}
-                >
-                  <option value="">— ainda não defini —</option>
+                  <label className="admin-campo">
+                    <b>Participação</b>
+                    <span className="admin-campo-dica">
+                      O que foi combinado com quem apoia. Aparece como etiqueta no alto do cartão; sem
+                      escolha, o cartão sai sem etiqueta.
+                    </span>
+                    <select
+                      value={apoiador.tipo}
+                      onChange={(e) => mudar(apoiador.id, "tipo", e.target.value)}
+                    >
+                      <option value="">— ainda não defini —</option>
 
-                  {TIPOS_DE_APOIO.map((tipo) => (
-                    <option key={tipo.valor} value={tipo.valor}>
-                      {tipo.nome} — {tipo.explicacao}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            </div>
-
-            <label className="admin-campo">
-              <b>Contribuição</b>
-              <span className="admin-campo-dica">
-                Uma frase curta: apoio à divulgação, acolhimento da visita, material educativo,
-                transporte etc.
-              </span>
-              <textarea
-                rows={2}
-                placeholder="Ex: Acolhimento da visita guiada e apoio à divulgação."
-                value={apoiador.contribuicao}
-                onChange={(e) => mudar(apoiador.id, "contribuicao", e.target.value)}
-              />
-            </label>
-
-            <label className="admin-campo">
-              <b>Site ou Instagram (link)</b>
-              <span className="admin-campo-dica">
-                Opcional. Aceita o endereço completo, <b>instagram.com/perfil</b> ou só{" "}
-                <b>@perfil</b> — o app completa o resto. Se preferir, use os campos de contato
-                abaixo.
-              </span>
-              <input
-                type="text"
-                placeholder="Ex: @institutoexemplo ou institutoexemplo.com.br"
-                value={apoiador.link}
-                onChange={(e) => mudar(apoiador.id, "link", e.target.value)}
-              />
-            </label>
-
-            <h4 className="admin-form-secao">Contato que aparece no app</h4>
-
-            <p className="admin-campo-dica">
-              Cada campo preenchido vira um botão no cartão do apoiador. Deixe em branco o que
-              não quiser mostrar.
-            </p>
-
-            <div className="admin-form-grid">
-              <label className="admin-campo">
-                <b>WhatsApp</b>
-                <span className="admin-campo-dica">
-                  Com DDD. Pode digitar com parênteses e traço — o app monta o link.
-                </span>
-                <input
-                  type="text"
-                  placeholder="Ex: (27) 99999-0000"
-                  value={apoiador.whatsapp}
-                  onChange={(e) => mudar(apoiador.id, "whatsapp", e.target.value)}
-                />
-              </label>
-
-              <label className="admin-campo">
-                <b>Instagram</b>
-                <span className="admin-campo-dica">
-                  Só o perfil, com ou sem @. Ex.: @institutoexemplo
-                </span>
-                <input
-                  type="text"
-                  placeholder="Ex: @institutoexemplo"
-                  value={apoiador.instagram}
-                  onChange={(e) => mudar(apoiador.id, "instagram", e.target.value)}
-                />
-              </label>
-
-              <label className="admin-campo">
-                <b>Site</b>
-                <span className="admin-campo-dica">Endereço do site, sem precisar do https://</span>
-                <input
-                  type="text"
-                  placeholder="Ex: institutoexemplo.org.br"
-                  value={apoiador.site}
-                  onChange={(e) => mudar(apoiador.id, "site", e.target.value)}
-                />
-              </label>
-
-              <label className="admin-campo">
-                <b>YouTube</b>
-                <span className="admin-campo-dica">Canal ou vídeo do apoiador</span>
-                <input
-                  type="text"
-                  placeholder="Ex: youtube.com/@institutoexemplo"
-                  value={apoiador.youtube}
-                  onChange={(e) => mudar(apoiador.id, "youtube", e.target.value)}
-                />
-              </label>
-            </div>
-
-            <h4 className="admin-form-secao">Dados do cadastro (não aparecem no app)</h4>
-
-            <p className="admin-campo-dica">
-              Endereço e telefones ficam guardados aqui, no painel. O visitante não vê. Não há
-              campo de CPF/CNPJ: o documento não é guardado neste cadastro.
-            </p>
-
-            <label className="admin-campo">
-              <b>Endereço</b>
-              <span className="admin-campo-dica">
-                Rua, número, bairro, cidade e CEP. Uso interno do cadastro.
-              </span>
-              <input
-                type="text"
-                placeholder="Ex: Rua Exemplo, 100 — Centro, Vitória/ES — 29000-000"
-                value={apoiador.endereco}
-                onChange={(e) => mudar(apoiador.id, "endereco", e.target.value)}
-              />
-            </label>
-
-            <label className="admin-campo">
-              <b>Telefones</b>
-              <span className="admin-campo-dica">
-                Fixo e celular, como quiser separar. Não aparece no app.
-              </span>
-              <input
-                type="text"
-                placeholder="Ex: (27) 3333-0000 · (27) 99999-0000"
-                value={apoiador.telefones}
-                onChange={(e) => mudar(apoiador.id, "telefones", e.target.value)}
-              />
-            </label>
-
-            <div className="admin-form-upload">
-              <label className="admin-campo">
-                <b>Logo ou imagem</b>
-                <span className="admin-campo-dica">
-                  Use com autorização de quem apoia. Se for só um endereço, cole abaixo.
-                </span>
-                <input
-                  type="file"
-                  accept="image/*"
-                  disabled={enviandoLogo === apoiador.id}
-                  onChange={(e) => enviarLogo(apoiador.id, e.target.files?.[0] ?? null)}
-                />
-              </label>
-
-              <label className="admin-campo">
-                <b>Endereço da logo</b>
-                <span className="admin-campo-dica">
-                  Preenchido sozinho quando você envia o arquivo. Também aceita um endereço colado.
-                </span>
-                <input
-                  type="text"
-                  placeholder="Ex: https://…/logo.png"
-                  value={apoiador.logo}
-                  onChange={(e) => mudar(apoiador.id, "logo", e.target.value)}
-                />
-              </label>
-
-              {apoiador.logo && (
-                <div className="apoio-admin-previa">
-                  <img src={apoiador.logo} alt="" />
-                  <span className="admin-campo-dica">prévia</span>
+                      {TIPOS_DE_APOIO.map((tipo) => (
+                        <option key={tipo.valor} value={tipo.valor}>
+                          {tipo.nome} — {tipo.explicacao}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
                 </div>
-              )}
-            </div>
 
-            <div className="admin-form-upload">
-              <label className="admin-campo">
-                <b>Foto (quando necessário)</b>
-                <span className="admin-campo-dica">
-                  Foto do apoiador, da equipe ou do espaço. Aparece no cartão, embaixo do texto.
-                </span>
-                <input
-                  type="file"
-                  accept="image/*"
-                  disabled={enviandoFoto === apoiador.id}
-                  onChange={(e) => enviarFoto(apoiador.id, e.target.files?.[0] ?? null)}
-                />
-              </label>
+                <label className="admin-campo">
+                  <b>Contribuição</b>
+                  <span className="admin-campo-dica">
+                    Uma frase curta: apoio à divulgação, acolhimento da visita, material educativo,
+                    transporte etc.
+                  </span>
+                  <textarea
+                    rows={2}
+                    placeholder="Ex: Acolhimento da visita guiada e apoio à divulgação."
+                    value={apoiador.contribuicao}
+                    onChange={(e) => mudar(apoiador.id, "contribuicao", e.target.value)}
+                  />
+                </label>
 
-              <label className="admin-campo">
-                <b>Endereço da foto</b>
-                <span className="admin-campo-dica">
-                  Preenchido sozinho quando você envia o arquivo. Também aceita um endereço colado.
-                </span>
-                <input
-                  type="text"
-                  placeholder="Ex: https://…/foto.jpg"
-                  value={apoiador.foto}
-                  onChange={(e) => mudar(apoiador.id, "foto", e.target.value)}
-                />
-              </label>
+                <label className="admin-campo">
+                  <b>Site ou Instagram (link)</b>
+                  <span className="admin-campo-dica">
+                    Opcional. Aceita o endereço completo, <b>instagram.com/perfil</b> ou só{" "}
+                    <b>@perfil</b> — o app completa o resto. Se preferir, use os campos de contato
+                    abaixo.
+                  </span>
+                  <input
+                    type="text"
+                    placeholder="Ex: @institutoexemplo ou institutoexemplo.com.br"
+                    value={apoiador.link}
+                    onChange={(e) => mudar(apoiador.id, "link", e.target.value)}
+                  />
+                </label>
 
-              {apoiador.foto && (
-                <div className="apoio-admin-previa">
-                  <img src={apoiador.foto} alt="" />
-                  <span className="admin-campo-dica">prévia</span>
+                <h4 className="admin-form-secao">Contato que aparece no app</h4>
+
+                <p className="admin-campo-dica">
+                  Cada campo preenchido vira um botão no cartão do apoiador. Deixe em branco o que
+                  não quiser mostrar.
+                </p>
+
+                <div className="admin-form-grid">
+                  <label className="admin-campo">
+                    <b>WhatsApp</b>
+                    <span className="admin-campo-dica">
+                      Com DDD. Pode digitar com parênteses e traço — o app monta o link.
+                    </span>
+                    <input
+                      type="text"
+                      placeholder="Ex: (27) 99999-0000"
+                      value={apoiador.whatsapp}
+                      onChange={(e) => mudar(apoiador.id, "whatsapp", e.target.value)}
+                    />
+                  </label>
+
+                  <label className="admin-campo">
+                    <b>Instagram</b>
+                    <span className="admin-campo-dica">
+                      Só o perfil, com ou sem @. Ex.: @institutoexemplo
+                    </span>
+                    <input
+                      type="text"
+                      placeholder="Ex: @institutoexemplo"
+                      value={apoiador.instagram}
+                      onChange={(e) => mudar(apoiador.id, "instagram", e.target.value)}
+                    />
+                  </label>
+
+                  <label className="admin-campo">
+                    <b>Site</b>
+                    <span className="admin-campo-dica">Endereço do site, sem precisar do https://</span>
+                    <input
+                      type="text"
+                      placeholder="Ex: institutoexemplo.org.br"
+                      value={apoiador.site}
+                      onChange={(e) => mudar(apoiador.id, "site", e.target.value)}
+                    />
+                  </label>
+
+                  <label className="admin-campo">
+                    <b>YouTube</b>
+                    <span className="admin-campo-dica">Canal ou vídeo do apoiador</span>
+                    <input
+                      type="text"
+                      placeholder="Ex: youtube.com/@institutoexemplo"
+                      value={apoiador.youtube}
+                      onChange={(e) => mudar(apoiador.id, "youtube", e.target.value)}
+                    />
+                  </label>
                 </div>
-              )}
-            </div>
 
-            <label className="apoio-admin-liga">
-              <input
-                type="checkbox"
-                checked={apoiador.visivel}
-                onChange={() => alternarVisivel(apoiador.id)}
-              />
-              <span>
-                <b>Aparecendo no app</b> (grava na hora) — desmarcado, o cartão sai da página e o
-                cadastro continua guardado aqui, inteiro, para quando o apoio for renovado.
-              </span>
-            </label>
+                <h4 className="admin-form-secao">Dados do cadastro (não aparecem no app)</h4>
+
+                <p className="admin-campo-dica">
+                  Endereço e telefones ficam guardados aqui, no painel. O visitante não vê. Não há
+                  campo de CPF/CNPJ: o documento não é guardado neste cadastro.
+                </p>
+
+                <label className="admin-campo">
+                  <b>Endereço</b>
+                  <span className="admin-campo-dica">
+                    Rua, número, bairro, cidade e CEP. Uso interno do cadastro.
+                  </span>
+                  <input
+                    type="text"
+                    placeholder="Ex: Rua Exemplo, 100 — Centro, Vitória/ES — 29000-000"
+                    value={apoiador.endereco}
+                    onChange={(e) => mudar(apoiador.id, "endereco", e.target.value)}
+                  />
+                </label>
+
+                <label className="admin-campo">
+                  <b>Telefones</b>
+                  <span className="admin-campo-dica">
+                    Fixo e celular, como quiser separar. Não aparece no app.
+                  </span>
+                  <input
+                    type="text"
+                    placeholder="Ex: (27) 3333-0000 · (27) 99999-0000"
+                    value={apoiador.telefones}
+                    onChange={(e) => mudar(apoiador.id, "telefones", e.target.value)}
+                  />
+                </label>
+
+                <div className="admin-form-upload">
+                  <label className="admin-campo">
+                    <b>Logo ou imagem</b>
+                    <span className="admin-campo-dica">
+                      Use com autorização de quem apoia. Se for só um endereço, cole abaixo.
+                    </span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      disabled={enviandoLogo === apoiador.id}
+                      onChange={(e) => enviarLogo(apoiador.id, e.target.files?.[0] ?? null)}
+                    />
+                  </label>
+
+                  <label className="admin-campo">
+                    <b>Endereço da logo</b>
+                    <span className="admin-campo-dica">
+                      Preenchido sozinho quando você envia o arquivo. Também aceita um endereço colado.
+                    </span>
+                    <input
+                      type="text"
+                      placeholder="Ex: https://…/logo.png"
+                      value={apoiador.logo}
+                      onChange={(e) => mudar(apoiador.id, "logo", e.target.value)}
+                    />
+                  </label>
+
+                  {apoiador.logo && (
+                    <div className="apoio-admin-previa">
+                      <img src={apoiador.logo} alt="" />
+                      <span className="admin-campo-dica">prévia</span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="admin-form-upload">
+                  <label className="admin-campo">
+                    <b>Foto (quando necessário)</b>
+                    <span className="admin-campo-dica">
+                      Foto do apoiador, da equipe ou do espaço. Aparece no cartão, embaixo do texto.
+                    </span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      disabled={enviandoFoto === apoiador.id}
+                      onChange={(e) => enviarFoto(apoiador.id, e.target.files?.[0] ?? null)}
+                    />
+                  </label>
+
+                  <label className="admin-campo">
+                    <b>Endereço da foto</b>
+                    <span className="admin-campo-dica">
+                      Preenchido sozinho quando você envia o arquivo. Também aceita um endereço colado.
+                    </span>
+                    <input
+                      type="text"
+                      placeholder="Ex: https://…/foto.jpg"
+                      value={apoiador.foto}
+                      onChange={(e) => mudar(apoiador.id, "foto", e.target.value)}
+                    />
+                  </label>
+
+                  {apoiador.foto && (
+                    <div className="apoio-admin-previa">
+                      <img src={apoiador.foto} alt="" />
+                      <span className="admin-campo-dica">prévia</span>
+                    </div>
+                  )}
+                </div>
+
+                <label className="apoio-admin-liga">
+                  <input
+                    type="checkbox"
+                    checked={apoiador.visivel}
+                    onChange={() => alternarVisivel(apoiador.id)}
+                  />
+                  <span>
+                    <b>Aparecendo no app</b> (grava na hora) — desmarcado, o cartão sai da página e o
+                    cadastro continua guardado aqui, inteiro, para quando o apoio for renovado.
+                  </span>
+                </label>
+              </>
+            )}
           </div>
         ))}
 

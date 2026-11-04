@@ -214,6 +214,7 @@ export const MANUAL_PADRAO: SecaoManual[] = [
       "**Link** — aceita o endereço completo, `instagram.com/perfil` ou só **@perfil**; o app completa e chama o botão de Instagram.",
       "**Aparecendo no app** — desmarcado, o cadastro fica guardado e o visitante não vê. É item por item, como nas fotos de apoio: dá para preparar tudo e ligar na hora de publicar.",
       "**Exibir e ocultar (14/10/2026):** cada cartão mostra o estado no topo — **aparecendo** ou **oculto** — e tem o botão **ocultar**/**exibir**, que **grava na hora**: o cartão sai (ou volta) ao app no clique, sem passar pelo “Salvar alterações”. Ocultar **não apaga**: nome, logo, contatos e foto continuam guardados para quando o apoio for renovado. **apagar** é definitivo e o painel avisa, oferecendo “não — só ocultar”.",
+      "**Editar (14/10/2026):** a lista fica recolhida — miniatura da logo, nome, participação e o estado — e os campos só abrem no botão **editar**, um apoiador por vez, como no painel de territórios. **fechar** recolhe sem perder nada, e “Adicionar apoiador” já abre o cadastro novo.",
       "**apagar** remove o apoiador da lista de vez (só confirme se o cadastro não vai ser usado de novo). Nada vai ao ar sem **Salvar alterações**; **Descartar mudanças** volta ao que está publicado.",
     ],
   },
