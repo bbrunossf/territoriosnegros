@@ -151,7 +151,7 @@ export default function Apoiadores() {
 
       <BotoesDaTela tela="apoiadores" posicao="final" />
 
-      <BotaoContato tela="apoiadores" />
+      <BotaoContato tela="apoiadores" discreto />
     </>
   );
 }

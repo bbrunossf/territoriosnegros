@@ -14,11 +14,14 @@ import {
 export default function BotaoContato({
   tela,
   botoes,
+  discreto = false,
 }: {
   /** qual tela está pedindo o botão (ver TELAS_BOTAO) */
   tela: string;
   /** botões que a página já tem, para não repetir o mesmo convite */
   botoes?: { url?: string }[];
+  /** telas em que outra coisa é o assunto (ex.: Apoiadores): botão vazado */
+  discreto?: boolean;
 }) {
   const { config } = useTerritorios();
 
@@ -28,7 +31,7 @@ export default function BotaoContato({
   const { texto } = normalizarBotaoContato(config.botao_contato);
 
   return (
-    <div className="pagina-botoes botao-contato">
+    <div className={`pagina-botoes botao-contato${discreto ? " botao-contato--discreto" : ""}`}>
       <Link className="outline pagina-botao" to="/contato">
         {texto}
       </Link>

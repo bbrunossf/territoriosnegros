@@ -3089,10 +3089,10 @@ a, a:visited, a:hover, a:active {
   display: grid;
   place-items: center;
 
-  flex: 0 1 calc((100% - 20px) / 3);
-  min-width: 96px;
-  min-height: 84px;
-  padding: 8px;
+  flex: 0 1 calc((100% - 10px) / 2);
+  min-width: 120px;
+  min-height: 148px;
+  padding: 6px;
   box-sizing: border-box;
 
   border: 1px solid rgba(155, 112, 46, 0.35);
@@ -3120,8 +3120,9 @@ a, a:visited, a:hover, a:active {
 .apoio-marca-logo {
   display: block;
 
+  width: 100%;
   max-width: 100%;
-  max-height: 70px;
+  max-height: 136px;
 
   object-fit: contain;
 }
@@ -3239,12 +3240,12 @@ a, a:visited, a:hover, a:active {
   }
 
   .apoio-marca {
-    flex-basis: calc((100% - 36px) / 4);
-    min-height: 96px;
+    flex-basis: calc((100% - 24px) / 3);
+    min-height: 150px;
   }
 
   .apoio-marca-logo {
-    max-height: 80px;
+    max-height: 138px;
   }
 }
 
@@ -3254,12 +3255,12 @@ a, a:visited, a:hover, a:active {
   }
 
   .apoio-marca {
-    flex-basis: calc((100% - 56px) / 5);
-    min-height: 104px;
+    flex-basis: calc((100% - 42px) / 4);
+    min-height: 160px;
   }
 
   .apoio-marca-logo {
-    max-height: 88px;
+    max-height: 148px;
   }
 
   .apoio-ficha-nome {
@@ -3798,6 +3799,25 @@ p.foto-credito {
 /* o botão entra depois dos botões próprios da página, com respiro */
 .botao-contato {
   margin-top: 26px;
+}
+
+/* Na página de Apoiadores o assunto são as MARCAS: o convite de mensagem
+   continua por último e de largura total, mas em estilo secundário (vazado),
+   para não vencer as logos na leitura da tela (14/10/2026). */
+.botao-contato--discreto .pagina-botao {
+  background: transparent;
+
+  border: 1.5px solid rgba(143, 97, 29, 0.7);
+
+  color: #7d5518;
+  font-size: 15px;
+  font-weight: 700;
+
+  box-shadow: none;
+}
+
+.botao-contato--discreto .pagina-botao:active {
+  background: rgba(184, 131, 44, 0.14);
 }
 
 /* lista de telas com caixinha de marcar no painel */
