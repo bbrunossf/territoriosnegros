@@ -2,7 +2,7 @@
 // Carrega territórios, rotas, categorias e configurações do Supabase de uma vez
 // e distribui para o app. O hook de acesso vive em useTerritorios.ts.
 
-import { useCallback, useEffect, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import {
   fetchCategorias,
   fetchConfig,
@@ -22,7 +22,15 @@ export function TerritoriosProvider({ children }: { children: ReactNode }) {
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState<string | null>(null);
 
+  /** assinatura do último conteúdo aplicado — evita redesenhar o app à toa */
+  const assinatura = useRef("");
+  /** true enquanto uma recarga está em curso (não dispara outra em cima) */
+  const recarregando = useRef(false);
+
   const recarregar = useCallback(async () => {
+    if (recarregando.current) return;
+    recarregando.current = true;
+
     try {
       const [t, r, c, cfg] = await Promise.all([
         fetchTerritorios(),
@@ -30,6 +38,18 @@ export function TerritoriosProvider({ children }: { children: ReactNode }) {
         fetchCategorias(),
         fetchConfig(),
       ]);
+
+      // Nada mudou desde a última leitura (o caso de 9 em cada 10 atualizações
+      // automáticas): não troca os objetos, para não redesenhar a tela nem
+      // sacudir o que o visitante está fazendo.
+      const nova = JSON.stringify([t, r, c, cfg]);
+
+      if (nova === assinatura.current) {
+        setErro(null);
+        return;
+      }
+
+      assinatura.current = nova;
 
       setTerritorios(t);
       setTodosRoteiros(r);
@@ -39,6 +59,8 @@ export function TerritoriosProvider({ children }: { children: ReactNode }) {
     } catch (e) {
       console.error(e);
       setErro(e instanceof Error ? e.message : "Falha ao carregar os dados.");
+    } finally {
+      recarregando.current = false;
     }
   }, []);
 
@@ -52,6 +74,50 @@ export function TerritoriosProvider({ children }: { children: ReactNode }) {
 
     return () => {
       ativo = false;
+    };
+  }, [recarregar]);
+
+  /**
+   * Atualização automática (14/10/2026).
+   *
+   * Quando a autoria desligava uma foto no painel, o visitante que já estava
+   * com o app aberto continuava vendo a imagem até recarregar a página — e,
+   * ao religar, precisava recarregar de novo para ela voltar. Agora o app
+   * reconsulta o banco a cada 20 s enquanto está na tela, e na hora em que a
+   * aba volta a ficar visível (trocar de app no celular, voltar para a aba).
+   *
+   * No painel (/admin, /login) não roda: lá há edição em andamento e a
+   * releitura apagaria o que está sendo digitado.
+   */
+  const ultimaAtualizacao = useRef(0);
+
+  useEffect(() => {
+    const noPainel = () =>
+      window.location.pathname.startsWith("/admin") ||
+      window.location.pathname.startsWith("/login");
+
+    const atualizar = (comFolga = false) => {
+      if (document.visibilityState !== "visible" || noPainel()) return;
+
+      // o "focus" dispara a cada clique na janela: não vale consultar de novo
+      // se acabamos de consultar
+      const espera = comFolga ? 8000 : 0;
+      if (Date.now() - ultimaAtualizacao.current < espera) return;
+
+      ultimaAtualizacao.current = Date.now();
+      void recarregar();
+    };
+
+    const aoVoltar = () => atualizar(true);
+    const intervalo = window.setInterval(() => atualizar(), 20000);
+
+    document.addEventListener("visibilitychange", aoVoltar);
+    window.addEventListener("focus", aoVoltar);
+
+    return () => {
+      window.clearInterval(intervalo);
+      document.removeEventListener("visibilitychange", aoVoltar);
+      window.removeEventListener("focus", aoVoltar);
     };
   }, [recarregar]);
 
