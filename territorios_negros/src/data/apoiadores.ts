@@ -260,7 +260,7 @@ export function linksDoApoiador(apoiador: Apoiador): { rotulo: string; url: stri
     { rotulo: "Instagram", url: linkUtilizavel(apoiador.instagram) },
     { rotulo: "Site", url: apoiador.site ? linkUtilizavel(apoiador.site) : "" },
     { rotulo: "YouTube", url: linkUtilizavel(apoiador.youtube) },
-    { rotulo: rotuloDoLink(apoiador.link), url: linkUtilizavel(apoiador.link) },
+    { rotulo: rotuloDoLink(linkUtilizavel(apoiador.link)), url: linkUtilizavel(apoiador.link) },
   ];
 
   const vistos = new Set<string>();
