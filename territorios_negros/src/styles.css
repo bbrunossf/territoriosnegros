@@ -3166,12 +3166,12 @@ details[open] > summary > .apoio-abrir {
 }
 
 .apoio-logo {
-  width: 54px;
-  height: 54px;
+  width: 72px;
+  height: 72px;
   flex: none;
 
   box-sizing: border-box;
-  padding: 4px;
+  padding: 5px;
 
   object-fit: contain;
 
@@ -3181,27 +3181,49 @@ details[open] > summary > .apoio-abrir {
   background: #fff;
 }
 
-/* etiqueta da participação (Realização, Patrocínio, Apoio…), no alto do cartão */
-.apoio-tipo {
-  align-self: flex-start;
+/* título da seção: PARCERIA, FOMENTO, ACOLHIMENTO… (a participação deixou de
+   ser etiqueta dentro do cartão — 14/10/2026) */
+.apoio-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 
-  padding: 2px 8px;
-  border-radius: 999px;
+  margin-top: 18px;
+}
 
-  background: #b8832c;
-  color: #130b08;
+.apoio-grupo:first-of-type {
+  margin-top: 10px;
+}
 
-  font-size: 10.5px;
+.apoio-grupo-titulo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  margin: 0;
+
+  color: #7d5518;
+  font-size: 12.5px;
   font-weight: 900;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.14em;
+  line-height: 1.2;
   text-transform: uppercase;
+}
+
+.apoio-grupo-titulo::after {
+  content: "";
+
+  flex: 1;
+  height: 1px;
+
+  background: rgba(155, 112, 46, 0.35);
 }
 
 .apoio-nome {
   font-family: Georgia, serif;
-  font-size: 15.5px;
+  font-size: 16.5px;
   font-weight: 700;
-  line-height: 1.25;
+  line-height: 1.28;
   color: #3a2015;
 }
 
@@ -3225,16 +3247,20 @@ details[open] > summary > .apoio-abrir {
   }
 
   .apoio-logo {
-    width: 64px;
-    height: 64px;
+    width: 88px;
+    height: 88px;
   }
 
   .apoio-nome {
-    font-size: 17px;
+    font-size: 18.5px;
   }
 
   .apoio-contribuicao {
     font-size: 14.5px;
+  }
+
+  .apoio-grupo-titulo {
+    font-size: 13px;
   }
 }
 

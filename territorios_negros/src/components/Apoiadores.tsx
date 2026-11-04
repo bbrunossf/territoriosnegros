@@ -9,10 +9,10 @@ import { useTerritorios } from "../context/useTerritorios";
 import BotoesDaTela from "./BotoesDaTela";
 import {
   CHAVE_APOIADORES,
+  agruparPorTipo,
   apoiadoresVisiveis,
   lerApoiadores,
   linksDoApoiador,
-  nomeDoTipo,
 } from "../data/apoiadores";
 import Inline from "./Inline";
 import BotaoContato from "./BotaoContato";
@@ -23,6 +23,9 @@ export default function Apoiadores() {
 
   const pagina = lerApoiadores(config[CHAVE_APOIADORES]);
   const lista = apoiadoresVisiveis(pagina);
+  // “Parceria”, “Fomento”, “Acolhimento”… são títulos de seção, não etiquetas
+  // dentro do cartão: a marca (logo) é o que o visitante reconhece primeiro.
+  const grupos = agruparPorTipo(pagina);
 
   return (
     <>
@@ -42,88 +45,89 @@ export default function Apoiadores() {
           experiência, escreva para a autoria.
         </p>
       ) : (
-        <div className="apoio-lista">
-          {lista.map((apoiador) => {
-            const contatos = linksDoApoiador(apoiador);
-            const temDetalhe = !!apoiador.contribuicao || !!apoiador.foto || contatos.length > 0;
+        grupos.map((grupo) => (
+          <section className="apoio-grupo" key={grupo.tipo || "sem-tipo"}>
+            <h2 className="apoio-grupo-titulo">{grupo.nome}</h2>
 
-            const cabecalho = (
-              <>
-                {apoiador.logo && (
-                  <img
-                    className="apoio-logo"
-                    src={apoiador.logo}
-                    alt={apoiador.nome ? `Logo de ${apoiador.nome}` : "Logo do apoiador"}
-                    loading="lazy"
-                  />
-                )}
+            <div className="apoio-lista">
+              {grupo.apoiadores.map((apoiador) => {
+                const contatos = linksDoApoiador(apoiador);
+                const temDetalhe =
+                  !!apoiador.contribuicao || !!apoiador.foto || contatos.length > 0;
 
-                <span className="apoio-identidade">
-                  {/* a participação vem antes: é o que diferencia um patrocínio
-                      de um acolhimento */}
-                  {nomeDoTipo(apoiador.tipo) && (
-                    <span className="apoio-tipo">{nomeDoTipo(apoiador.tipo)}</span>
-                  )}
-
-                  {apoiador.nome && <span className="apoio-nome">{apoiador.nome}</span>}
-                </span>
-
-                {/* sinal de que há mais conteúdo: vira × quando abre */}
-                {temDetalhe && (
-                  <span className="apoio-abrir" aria-hidden="true">
-                    +
-                  </span>
-                )}
-              </>
-            );
-
-            return (
-              <details className="apoio-cartao" key={apoiador.id}>
-                {temDetalhe ? (
-                  <summary className="apoio-topo">{cabecalho}</summary>
-                ) : (
-                  <div className="apoio-topo">{cabecalho}</div>
-                )}
-
-                {temDetalhe && (
-                  <div className="apoio-detalhe">
-                    {apoiador.contribuicao && (
-                      <p className="apoio-contribuicao">
-                        <Inline texto={apoiador.contribuicao} />
-                      </p>
-                    )}
-
-                    {/* foto do apoiador ou do espaço: entra quando a autoria enviar uma */}
-                    {apoiador.foto && (
+                const cabecalho = (
+                  <>
+                    {apoiador.logo && (
                       <img
-                        className="apoio-foto"
-                        src={apoiador.foto}
-                        alt={apoiador.nome ? `Foto de ${apoiador.nome}` : "Foto do apoiador"}
+                        className="apoio-logo"
+                        src={apoiador.logo}
+                        alt={apoiador.nome ? `Logo de ${apoiador.nome}` : "Logo do apoiador"}
                         loading="lazy"
                       />
                     )}
 
-                    {contatos.length > 0 && (
-                      <div className="apoio-contatos">
-                        {contatos.map((contato) => (
-                          <a
-                            key={contato.url}
-                            className="apoio-contato"
-                            href={contato.url}
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            {contato.rotulo}
-                          </a>
-                        ))}
+                    <span className="apoio-identidade">
+                      {apoiador.nome && <span className="apoio-nome">{apoiador.nome}</span>}
+                    </span>
+
+                    {/* sinal de que há mais conteúdo: vira × quando abre */}
+                    {temDetalhe && (
+                      <span className="apoio-abrir" aria-hidden="true">
+                        +
+                      </span>
+                    )}
+                  </>
+                );
+
+                return (
+                  <details className="apoio-cartao" key={apoiador.id}>
+                    {temDetalhe ? (
+                      <summary className="apoio-topo">{cabecalho}</summary>
+                    ) : (
+                      <div className="apoio-topo">{cabecalho}</div>
+                    )}
+
+                    {temDetalhe && (
+                      <div className="apoio-detalhe">
+                        {apoiador.contribuicao && (
+                          <p className="apoio-contribuicao">
+                            <Inline texto={apoiador.contribuicao} />
+                          </p>
+                        )}
+
+                        {/* foto do apoiador ou do espaço: entra quando a autoria enviar uma */}
+                        {apoiador.foto && (
+                          <img
+                            className="apoio-foto"
+                            src={apoiador.foto}
+                            alt={apoiador.nome ? `Foto de ${apoiador.nome}` : "Foto do apoiador"}
+                            loading="lazy"
+                          />
+                        )}
+
+                        {contatos.length > 0 && (
+                          <div className="apoio-contatos">
+                            {contatos.map((contato) => (
+                              <a
+                                key={contato.url}
+                                className="apoio-contato"
+                                href={contato.url}
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                {contato.rotulo}
+                              </a>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     )}
-                  </div>
-                )}
-              </details>
-            );
-          })}
-        </div>
+                  </details>
+                );
+              })}
+            </div>
+          </section>
+        ))
       )}
 
       <BotoesDaTela tela="apoiadores" posicao="final" />

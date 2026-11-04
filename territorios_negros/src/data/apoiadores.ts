@@ -171,6 +171,42 @@ export function apoiadoresVisiveis(pagina: PaginaApoiadores): Apoiador[] {
   return pagina.lista.filter((a) => a.visivel && (!!a.nome || !!a.logo || !!a.foto));
 }
 
+export interface GrupoDeApoio {
+  /** "parceria", "fomento"… — "" é o grupo de quem ainda não teve a participação definida */
+  tipo: string;
+  /** o título da seção: "Parceria", "Fomento"… */
+  nome: string;
+  apoiadores: Apoiador[];
+}
+
+/**
+ * Agrupa o que o visitante vê pela participação combinada, na ordem de
+ * TIPOS_DE_APOIO (Realização → Parceria → Apoio → Patrocínio → Fomento →
+ * Acolhimento). Assim “Parceria” deixa de ser etiqueta dentro de cada cartão e
+ * vira o título da seção — é o que a autoria pediu em 14/10/2026.
+ * Quem está sem participação definida vai para o fim, sob “Apoiadores”.
+ */
+export function agruparPorTipo(pagina: PaginaApoiadores): GrupoDeApoio[] {
+  const visiveis = apoiadoresVisiveis(pagina);
+  const grupos: GrupoDeApoio[] = [];
+
+  for (const tipo of TIPOS_DE_APOIO) {
+    const doTipo = visiveis.filter((a) => a.tipo === tipo.valor);
+
+    if (doTipo.length > 0) {
+      grupos.push({ tipo: tipo.valor, nome: tipo.nome, apoiadores: doTipo });
+    }
+  }
+
+  const semTipo = visiveis.filter((a) => !TIPOS_DE_APOIO.some((t) => t.valor === a.tipo));
+
+  if (semTipo.length > 0) {
+    grupos.push({ tipo: "", nome: "Apoiadores", apoiadores: semTipo });
+  }
+
+  return grupos;
+}
+
 /** “Instituto X — apoio à divulgação”: resumo curto para a lista do painel. */
 export function resumoDoApoiador(apoiador: Apoiador): string {
   const nome = apoiador.nome || "sem nome ainda";
