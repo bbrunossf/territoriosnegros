@@ -91,9 +91,20 @@ type Props = {
   posicao?: "topo" | "final";
   /** botões criados pela autoria em Páginas, para outros endereços */
   extras?: BotaoConteudo[];
+  /**
+   * Filete de separação junto do grupo (14/10/2026, lista de personalidades):
+   * "antes" separa o conteúdo acima dos botões; "depois" separa os botões do
+   * que vem abaixo. Só aparece quando há botões de verdade — sem botões, nada.
+   */
+  filete?: "antes" | "depois";
 };
 
-export default function BotoesDaTela({ tela, posicao = "final", extras = [] }: Props) {
+export default function BotoesDaTela({
+  tela,
+  posicao = "final",
+  extras = [],
+  filete,
+}: Props) {
   const { config } = useTerritorios();
 
   const destinoDaTela = DESTINO_DA_TELA[tela] ?? "";
@@ -132,21 +143,27 @@ export default function BotoesDaTela({ tela, posicao = "final", extras = [] }: P
   // que o botão faz antes da leitura e a faixa não disputa espaço com o conteúdo —
   // vale no topo e no fim das páginas.
   return (
-    <div className="pagina-botoes pagina-botoes--acoes">
-      {ids.map((id) => (
-        <Botao key={id} id={id} />
-      ))}
+    <>
+      {filete === "antes" && <hr className="botoes-divisor" />}
 
-      {extrasFiltrados.map((b, i) => (
-        <Link
-          key={`${b.url}-${i}`}
-          className={b.estilo === "outline" ? "outline pagina-botao" : "btn pagina-botao"}
-          to={b.url}
-        >
-          <IconeDeBotao id="link" />
-          {rotuloDeBotaoDaPagina(config, b.url ?? "", b.texto?.trim() || nomes[b.url] || b.url)}
-        </Link>
-      ))}
-    </div>
+      <div className="pagina-botoes pagina-botoes--acoes">
+        {ids.map((id) => (
+          <Botao key={id} id={id} />
+        ))}
+
+        {extrasFiltrados.map((b, i) => (
+          <Link
+            key={`${b.url}-${i}`}
+            className={b.estilo === "outline" ? "outline pagina-botao" : "btn pagina-botao"}
+            to={b.url}
+          >
+            <IconeDeBotao id="link" />
+            {rotuloDeBotaoDaPagina(config, b.url ?? "", b.texto?.trim() || nomes[b.url] || b.url)}
+          </Link>
+        ))}
+      </div>
+
+      {filete === "depois" && <hr className="botoes-divisor" />}
+    </>
   );
 }

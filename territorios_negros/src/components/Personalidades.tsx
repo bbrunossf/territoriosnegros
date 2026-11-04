@@ -59,8 +59,9 @@ export default function Personalidades() {
     <div className="personalidades">
       <PageTitle title={pagina.titulo} subtitle={pagina.subtitulo || undefined} />
 
-      {/* botões que a autoria escolheu para o topo (aba Botões, "Em cada tela") */}
-      <BotoesDaTela tela="personalidades" posicao="topo" />
+      {/* botões que a autoria escolheu para o topo (aba Botões, "Em cada tela");
+          o filete separa esses botões do "Escolha pelo nome" */}
+      <BotoesDaTela tela="personalidades" posicao="topo" filete="depois" />
 
       {/* Em vez do campo de busca: a lista suspensa com TODAS as personalidades
           publicadas, em ordem alfabética. O território vinculado não aparece
@@ -106,7 +107,7 @@ export default function Personalidades() {
         ))}
       </div>
 
-      <BotoesDaTela tela="personalidades" posicao="final" />
+      <BotoesDaTela tela="personalidades" posicao="final" filete="antes" />
     </div>
   );
 }

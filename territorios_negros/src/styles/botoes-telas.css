@@ -52,6 +52,15 @@
   line-height: 1.45;
 }
 
+/* filete que separa um grupo de botões do que vem antes/depois dele
+   (14/10/2026, lista de personalidades) */
+.botoes-divisor {
+  height: 1px;
+  border: 0;
+  background: rgba(143, 97, 29, 0.32);
+  margin: 16px 0;
+}
+
 .botoes-telas .botoes-telas-local {
   margin-top: 12px;
 
