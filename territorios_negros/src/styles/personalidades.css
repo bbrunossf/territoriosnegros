@@ -5,7 +5,10 @@
  */
 
 .personalidades {
-  padding: 18px 16px 90px;
+  /* o respiro de baixo vinha dobrado: 90 px aqui + 112 px do conteúdo — os
+     botões do fim ficavam flutuando longe da barra (autoria, 14/10/2026). O
+     conteúdo já reserva o espaço da barra fixa. */
+  padding: 18px 16px 6px;
 }
 
 .personalidades-busca {
@@ -277,7 +280,7 @@
 /* ── página de cada personalidade ─────────────────────────────────── */
 
 .personalidade {
-  padding: 18px 16px 90px;
+  padding: 18px 16px 6px;
 }
 
 .personalidade-hero {
