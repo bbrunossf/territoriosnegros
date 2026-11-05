@@ -13,13 +13,14 @@ export default function Fim() {
   const navegar = useNavigate();
   const { state } = useLocation();
 
-  // De qual rota a pessoa veio? O percurso manda o id ao concluir; sem isso,
-  // vale a única rota ativa (15/10/2026). Com mais de uma rota ativa e sem
-  // origem, oferecemos a lista de rotas em vez de adivinhar.
+  // De qual rota a pessoa veio? Só o percurso manda isso, ao concluir o último
+  // território (15/10/2026). Quem chega aqui pela lista de Territórios ou por um
+  // link direto NÃO percorreu rota nenhuma — e então o bloco de rota não aparece
+  // (a autoria viu a tela oferecer "continuar na rota" sem ter seguido rota).
   const ativas = roteirosVisiveis(roteiros);
   const rotaId = (state as { rotaId?: string } | null)?.rotaId;
 
-  const rota = ativas.find((r) => r.id === rotaId) ?? (ativas.length === 1 ? ativas[0] : null);
+  const rota = ativas.find((r) => r.id === rotaId) ?? null;
 
   const pontos = rota ? pontosVisiveis(rota.pontos, territorios) : [];
 
@@ -58,22 +59,6 @@ export default function Fim() {
       </div>
     ) : null;
 
-  /** Sem uma rota identificada, pelo menos o caminho de volta para as rotas ativas. */
-  const voltarAsRotas =
-    !rota && ativas.length > 1 ? (
-      <div className="fim-rota">
-        <p className="fim-rota-titulo">Continuar em uma rota</p>
-
-        <div className="fim-rota-lista">
-          {ativas.map((r) => (
-            <Link key={r.id} className="fim-rota-inicio" to={`/percurso/${r.id}`}>
-              ← {r.nome}
-            </Link>
-          ))}
-        </div>
-      </div>
-    ) : null;
-
   return (
     <>
       {/* botões que a autoria escolheu para o topo desta tela (menu Botões) */}
@@ -85,7 +70,7 @@ export default function Fim() {
         /* antes do "Enviar uma mensagem", como nas outras telas */
         antesDosBotoes={
           <>
-            {continuarNaRota ?? voltarAsRotas}
+            {continuarNaRota}
 
             <BotoesDaTela tela="fim" posicao="final" />
           </>
