@@ -24,7 +24,13 @@ import {
   uploadFoto,
   uploadVideo,
 } from "../data/api";
-import type { Categoria, FotoTerritorio, Territorio, VideoTerritorio } from "../data/types";
+import type {
+  Categoria,
+  FotoTerritorio,
+  Territorio,
+  TerritoriosMap,
+  VideoTerritorio,
+} from "../data/types";
 import PlayerVideo from "../components/PlayerVideo";
 import EditorDeMarcos from "../components/EditorDeMarcos";
 import { chaveDoTerritorio } from "../data/marcos";
@@ -35,7 +41,7 @@ import {
 } from "../data/titulosDeLista";
 
 import { useTerritorios } from "../context/useTerritorios";
-import { gerarSlug } from "../utils/catalogo";
+import { gerarSlug, idsDasRotasAtivas } from "../utils/catalogo";
 import { formatarDataHoraBR, idadeTexto } from "../utils/data";
 import {
   alinharTodos,
@@ -135,7 +141,7 @@ const FORM_VAZIO = {
 const CHAVE_LISTA = "lista_territorios";
 
 export default function TerritoriosAdmin() {
-  const { config, recarregar } = useTerritorios();
+  const { config, recarregar, roteiros } = useTerritorios();
 
   const [territorios, setTerritorios] = useState<Territorio[]>([]);
   const [categorias, setCategorias] = useState<Categoria[]>([]);
@@ -977,6 +983,26 @@ export default function TerritoriosAdmin() {
   const fotosHabilitadas = habilitadasEm(fotos);
   const videosHabilitados = habilitadasEm(videos);
 
+  // ── Rotas ativas × territórios (14/10/2026) ─────────────────────────────
+  //
+  // Com qualquer rota ativa, a lista do app mostra só os territórios dela(s).
+  // Um território habilitado fora da rota não aparece para o visitante — e o
+  // painel precisa dizer isso, senão parece que o app quebrou (relato: a Rua
+  // Treze de Maio foi habilitada e apareceu no meio do guia).
+  const mapaDeTerritorios: TerritoriosMap = {};
+  for (const territorio of territorios) mapaDeTerritorios[territorio.id] = territorio;
+
+  const temRotaAtiva = roteiros.length > 0;
+  const idsNaRota = idsDasRotasAtivas(roteiros, mapaDeTerritorios);
+
+  const foraDasRotas = temRotaAtiva
+    ? territorios.filter((t) => t.ativo !== false && !idsNaRota.has(t.id))
+    : [];
+
+  /** O cadastro aberto (ou um novo) está fora de todas as rotas ativas? */
+  const cadastroForaDaRota =
+    temRotaAtiva && form.ativo && (!editando || !idsNaRota.has(editando));
+
   function nomeCategoria(id: string | null) {
     if (!id) return "— sem categoria —";
     return categorias.find((c) => c.id === id)?.nome ?? id;
@@ -998,6 +1024,28 @@ export default function TerritoriosAdmin() {
 
       {ok && <p className="admin-ok">{ok}</p>}
       {erro && <p className="admin-erro">{erro}</p>}
+
+      {/* Aviso fixo da regra das rotas: com rota ativa, território habilitado
+          fora dela não entra na lista do app (14/10/2026). */}
+      {temRotaAtiva && foraDasRotas.length > 0 && (
+        <p className="admin-aviso-rota">
+          <b>
+            {foraDasRotas.length} território(s) habilitado(s) fora das rotas ativas:{" "}
+            {foraDasRotas.map((t) => t.nome).join(", ")}.
+          </b>{" "}
+          Enquanto houver rota ativa, eles <b>não aparecem na lista de Territórios</b>{" "}
+          para o visitante. Para exibi-los, inclua-os em alguma rota (aba Rotas) — ou
+          desative todas as rotas, e a lista volta a mostrar todos os habilitados.
+        </p>
+      )}
+
+      {!temRotaAtiva && (
+        <p className="admin-aviso-rota admin-aviso-rota--leve">
+          Hoje <b>não há rota ativa</b>: a lista de Territórios mostra todos os
+          territórios habilitados, sem filtro de rota. Ao ativar uma rota, só os
+          territórios dela continuam aparecendo.
+        </p>
+      )}
 
       {/* ─── Título da página (é da página Territórios, não de um território) ─── */}
       <section>
@@ -1169,6 +1217,17 @@ export default function TerritoriosAdmin() {
             </span>
           </span>
         </label>
+
+        {/* Alerta na hora de habilitar: com rota ativa, território fora dela não
+            aparece no app mesmo marcado (14/10/2026, pedido da autoria). */}
+        {cadastroForaDaRota && (
+          <p className="admin-aviso-rota">
+            <b>Atenção:</b> este território <b>não está em nenhuma rota ativa</b>.
+            Marcado como visível, ele continua <b>fora da lista do app</b> enquanto
+            houver rota ativa — habilitar não basta. Inclua-o na rota (aba Rotas)
+            para que o visitante o encontre.
+          </p>
+        )}
 
         {estaEditando && (
           <>

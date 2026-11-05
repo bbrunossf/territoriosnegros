@@ -94,6 +94,53 @@ export function pontosVisiveis(
 }
 
 /**
+ * Ids dos territórios que o visitante encontra em alguma rota ativa.
+ * Sai da mesma lista que o percurso numera (`pontosVisiveis`), então território
+ * desabilitado não conta.
+ */
+export function idsDasRotasAtivas(
+  roteiros: Roteiro[],
+  territorios: TerritoriosMap
+): Set<string> {
+  const ids = new Set<string>();
+
+  for (const rota of roteirosVisiveis(roteiros)) {
+    for (const territorio of pontosVisiveis(rota.pontos, territorios)) {
+      ids.add(territorio.id);
+    }
+  }
+
+  return ids;
+}
+
+/**
+ * Territórios que a lista de Territórios mostra (14/10/2026, relato da autoria:
+ * um território habilitado fora da rota apareceu no meio do guia).
+ *
+ * Regra: havendo QUALQUER rota ativa, só entram os territórios dela(s) — o guia
+ * não pode misturar pontos que a visita não percorre. Sem rota ativa, todos os
+ * habilitados aparecem, livres.
+ */
+export function territoriosNoAr(
+  territorios: TerritoriosMap,
+  roteiros: Roteiro[]
+): TerritoriosMap {
+  const temRotaAtiva = roteirosVisiveis(roteiros).length > 0;
+  const ids = temRotaAtiva ? idsDasRotasAtivas(roteiros, territorios) : null;
+
+  const saida: TerritoriosMap = {};
+
+  for (const [id, territorio] of Object.entries(territorios)) {
+    if (territorio.ativo === false) continue;
+    if (ids && !ids.has(id)) continue;
+
+    saida[id] = territorio;
+  }
+
+  return saida;
+}
+
+/**
  * Endereço de um território para o visitante (14/10/2026, pedido da autoria).
  *
  * Se o território faz parte de alguma rota ativa, o link abre o território

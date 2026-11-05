@@ -2151,6 +2151,29 @@ a, a:visited, a:hover, a:active {
   margin: 0;
 }
 
+/* Aviso da regra das rotas (14/10/2026): território habilitado que não está em
+   rota ativa não aparece no app. Âmbar, para ler antes de estranhar o silêncio. */
+.admin-aviso-rota {
+  margin: 14px 0 0;
+  padding: 11px 13px;
+
+  border: 1px solid #d9b45f;
+  border-left: 4px solid #b8832c;
+  border-radius: 10px;
+
+  background: #fdf1d4;
+  color: #4a2d1c;
+
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.admin-aviso-rota--leve {
+  border-color: #e3cf9f;
+  border-left-color: #c9a86a;
+  background: #fbf4e2;
+}
+
 .admin-campo,
 .admin-check {
   display: flex;

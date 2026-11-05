@@ -1,7 +1,7 @@
 //Territorios.tsx
 import { useNavigate } from "react-router-dom";
 import { useTerritorios } from "../context/useTerritorios";
-import { agruparPorCategoria } from "../utils/catalogo";
+import { agruparPorCategoria, territoriosNoAr } from "../utils/catalogo";
 
 import PageTitle from "../components/PageTitle";
 import SectionHeader from "../components/SectionHeader";
@@ -11,14 +11,18 @@ import { LISTA_TERRITORIOS_PADRAO, normalizarTituloDeLista } from "../data/titul
 
 export default function Territorios() {
   const navigate = useNavigate();
-  const { territorios, categorias, carregando, config } = useTerritorios();
+  const { territorios, categorias, carregando, config, roteiros } = useTerritorios();
 
   // título e subtítulo desta página vêm do painel (aba Territórios)
   const titulo = normalizarTituloDeLista(config.lista_territorios, LISTA_TERRITORIOS_PADRAO);
 
   // Os grupos agora vêm do banco (tabela "categorias"), não mais fixos no código:
   // território novo entra na lista assim que recebe uma categoria no painel.
-  const grupos = agruparPorCategoria(territorios, categorias);
+  //
+  // Havendo rota ativa, só entram os territórios dela(s) (14/10/2026): um
+  // território habilitado que não está em rota nenhuma não pode aparecer numa
+  // visita guiada. Sem rota ativa, a lista mostra todos os habilitados.
+  const grupos = agruparPorCategoria(territoriosNoAr(territorios, roteiros), categorias);
 
   return (
     <>
