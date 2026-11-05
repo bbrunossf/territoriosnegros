@@ -112,7 +112,10 @@ export default function Territorio() {
 
   const proximo = () => {
     if (indice < lista.length - 1) irPara(indice + 1);
-    else navigate("/fim");
+    else
+      navigate("/fim", {
+        state: dentroDeRota ? { rotaId } : null,
+      });
   };
 
   const voltar = () => {

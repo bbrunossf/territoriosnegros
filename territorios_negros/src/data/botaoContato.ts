@@ -98,3 +98,14 @@ export function jaTemBotaoDeContato(
 ): boolean {
   return jaTemBotao(botoes, "/contato");
 }
+
+/**
+ * O endereço é o do formulário de contato? (15/10/2026)
+ *
+ * Serve para o "Enviar uma mensagem" sair SEMPRE igual: um botão de página que
+ * aponte para /contato é retirado da grade de botões e quem desenha é o
+ * BotaoContato — largura cheia, caixa única e o texto configurado no painel.
+ */
+export function ehDestinoDeContato(url?: string): boolean {
+  return (url ?? "").replace(/\/+$/, "") === "/contato";
+}

@@ -3103,6 +3103,82 @@ a, a:visited, a:hover, a:active {
   flex: 0 0 auto;
 }
 
+/* Fim do percurso: continuar na rota ou ir direto a um território dela
+   (pedido da autoria, 15/10/2026) */
+.fim-rota {
+  margin: 20px 0 4px;
+  padding: 14px;
+
+  border: 1px solid rgba(197, 139, 42, 0.45);
+  border-radius: 12px;
+  background: rgba(197, 139, 42, 0.07);
+}
+
+.fim-rota-titulo {
+  margin: 0;
+
+  color: #7d5518;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.fim-rota-nome {
+  margin: 4px 0 12px;
+
+  color: #4a2d1c;
+  font-family: Georgia, serif;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.fim-rota-inicio {
+  display: block;
+  padding: 12px 14px;
+
+  border: 1px solid #c58b2a;
+  border-radius: 10px;
+  background: #fff8ea;
+
+  color: #4a2d1c;
+  font-weight: 700;
+  text-decoration: none;
+  text-align: center;
+}
+
+.fim-rota-escolha {
+  display: grid;
+  gap: 6px;
+
+  margin-top: 12px;
+}
+
+.fim-rota-escolha span {
+  color: #7d5518;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.fim-rota-escolha select {
+  width: 100%;
+  padding: 11px 12px;
+
+  border: 1px solid rgba(197, 139, 42, 0.6);
+  border-radius: 10px;
+  background: #fffdf8;
+
+  color: #4a2d1c;
+  font-size: 15px;
+}
+
+.fim-rota-lista {
+  display: grid;
+  gap: 8px;
+
+  margin-top: 10px;
+}
+
 .pagina-botoes {
   display: grid;
   gap: 10px;

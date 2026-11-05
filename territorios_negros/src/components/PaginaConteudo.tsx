@@ -11,6 +11,7 @@ import FotoAmpliavel from "../components/FotoAmpliavel";
 import { imagensVisiveis, classesEstilo } from "../data/paginas";
 import type { BotaoConteudo, PaginaConteudo } from "../data/paginas";
 import { rotuloDeBotaoDaPagina } from "../data/botoesPorTela";
+import { ehDestinoDeContato } from "../data/botaoContato";
 import { iconeDoEndereco } from "../utils/iconeDoEndereco";
 import IconeDeBotao from "./IconeDeBotao";
 import { useTerritorios } from "../context/useTerritorios";
@@ -111,7 +112,9 @@ export default function PaginaConteudo({
    * catálogo (a Base teórica, as Rotas, o Início…) recebe o NOME do catálogo —
    * o mesmo que aparece nas outras telas; o resto perde o "Ir para" do começo.
    */
-  const botoesComNomePadrao = pagina.botoes.map((b) => ({
+  const botoesSemContato = pagina.botoes.filter((b) => !ehDestinoDeContato(b.url));
+
+  const botoesComNomePadrao = botoesSemContato.map((b) => ({
     ...b,
     texto: rotuloDeBotaoDaPagina(config, b.url, b.texto),
   }));
@@ -287,7 +290,7 @@ export default function PaginaConteudo({
 
       {depoisDosBotoes}
 
-      {tela && <BotaoContato tela={tela} botoes={pagina.botoes} />}
+      {tela && <BotaoContato tela={tela} botoes={botoesSemContato} />}
 
       {depoisDoContato}
     </>
