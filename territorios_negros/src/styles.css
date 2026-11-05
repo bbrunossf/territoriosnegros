@@ -911,6 +911,28 @@ a, a:visited, a:hover, a:active {
   letter-spacing: 0.45px;
 }
 
+/* Voltar/Próximo no fim da ficha do território (14/10/2026), antes de
+   "Enviar uma mensagem": mesma dupla da barra do topo. */
+.territorio-acoes-fim {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+
+  margin: 18px 0 10px;
+}
+
+.territorio-acoes-fim button {
+  width: 100%;
+  min-height: 46px;
+}
+
+/* no celular estreito os dois continuam lado a lado, com rótulo curto */
+@media (max-width: 340px) {
+  .territorio-acoes-fim {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Categoria do território na ficha (14/10/2026): caixa alta, corpo menor que a
    localização (16 px), com o símbolo da categoria ao lado. */
 .territorio-topbar .territorio-categoria {

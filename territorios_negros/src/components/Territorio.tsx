@@ -308,6 +308,22 @@ export default function Territorio() {
 
       <BotoesDaTela tela="territorio" posicao="final" />
 
+      {/* Navegação entre territórios também no FIM da página (14/10/2026):
+          a autoria percorreu a rota e sentiu falta de "Voltar/Próximo" aqui,
+          logo antes de "Enviar uma mensagem" — os mesmos botões e destinos da
+          barra presa no topo, sem precisar rolar de volta. */}
+      {lista.length > 1 && (
+        <div className="territorio-acoes-fim">
+          <button className="outline" onClick={voltar}>
+            ← Voltar
+          </button>
+
+          <button className="btn" onClick={proximo}>
+            Próximo →
+          </button>
+        </div>
+      )}
+
       <BotaoContato tela="territorio" />
       </>
     );
