@@ -368,6 +368,13 @@ a, a:visited, a:hover, a:active {
 /* Slogan da rota (campo do painel "Slogan"): frase de abertura logo abaixo do
    nome. Fica em itálico e um pouco maior que o subtítulo (que traz início e
    conclusão do percurso), para ler como frase, não como informação de logística. */
+/* "Informações" da rota: o título usa a MESMA cor do texto que ele abre
+   (14/10/2026 — o preto do título de tópico pesava mais que o conteúdo). */
+.percurso-info .marco-titulo,
+.percurso-info .marco-titulo-texto {
+  color: #4a2d1c;
+}
+
 .roteiro-slogan,
 .percurso-slogan {
   margin: 7px 0 0;

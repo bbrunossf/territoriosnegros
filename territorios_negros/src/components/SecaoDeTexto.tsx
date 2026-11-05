@@ -22,6 +22,7 @@ export default function SecaoDeTexto({
   children,
   aberto,
   aoAlternar,
+  classe,
 }: {
   icone?: string;
   titulo: string;
@@ -30,6 +31,8 @@ export default function SecaoDeTexto({
   children?: ReactNode;
   aberto: boolean;
   aoAlternar: () => void;
+  /** classe extra na seção, para a tela ajustar a cor do título (14/10/2026) */
+  classe?: string;
 }) {
   const caixa = useRef<HTMLElement | null>(null);
 
@@ -45,7 +48,7 @@ export default function SecaoDeTexto({
   if (texto.trim() === "" && !children) return null;
 
   return (
-    <section className="marco" ref={caixa}>
+    <section className={classe ? `marco ${classe}` : "marco"} ref={caixa}>
       <button
         type="button"
         className="marco-titulo marco-titulo-clicavel"

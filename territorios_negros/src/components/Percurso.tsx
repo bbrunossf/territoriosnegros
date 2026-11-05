@@ -61,7 +61,8 @@ export default function Percurso() {
       {(slogan || roteiro.subtitulo) && (
         <SecaoDeTexto
           icone="●"
-          titulo="Informações do passeio"
+          titulo="Informações"
+          classe="percurso-info"
           aberto={infoAberta}
           aoAlternar={() => setInfoAberta((v) => !v)}
         >
