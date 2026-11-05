@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTerritorios } from "../context/useTerritorios";
 import { pontosVisiveis } from "../utils/catalogo";
@@ -9,11 +10,20 @@ import BotaoContato from "../components/BotaoContato";
 import BotoesDaTela from "../components/BotoesDaTela";
 import FotoAmpliavel from "../components/FotoAmpliavel";
 import Inline from "../components/Inline";
+import SecaoDeTexto from "../components/SecaoDeTexto";
 
 export default function Percurso() {
   const { rotaId } = useParams<{ rotaId: string }>();
   const navigate = useNavigate();
   const { territorios, roteiros, inscricaoUrl, config } = useTerritorios();
+
+  /**
+   * Informações do passeio (slogan, início/conclusão, credenciamento) começam
+   * RECOLHIDAS (pedido da autoria, 14/10/2026): ao abrir a rota o visitante vê
+   * o título, a logo e já os primeiros territórios — antes, esse bloco empurrava
+   * a lista inteira para fora da tela. Abre e fecha pelo próprio título.
+   */
+  const [infoAberta, setInfoAberta] = useState(false);
 
   const roteiro = roteiros.find((r) => r.id === rotaId) || roteiros[0];
 
@@ -46,21 +56,32 @@ export default function Percurso() {
         />
       )}
 
-      {/* Slogan da rota: frase de abertura, entre a logo e o início/conclusão. */}
-      {slogan && (
-        <div className="percurso-slogan">
-          {paragrafosDe(slogan).map((paragrafo, i) => (
-            <p key={i}>
-              <Inline texto={paragrafo} />
-            </p>
-          ))}
-        </div>
-      )}
+      {/* Informações do passeio: recolhidas por padrão, para a lista de
+          territórios aparecer na primeira tela. Abre pelo título. */}
+      {(slogan || roteiro.subtitulo) && (
+        <SecaoDeTexto
+          icone="●"
+          titulo="Informações do passeio"
+          aberto={infoAberta}
+          aoAlternar={() => setInfoAberta((v) => !v)}
+        >
+          {/* Slogan da rota: frase de abertura, entre a logo e o início/conclusão. */}
+          {slogan && (
+            <div className="percurso-slogan">
+              {paragrafosDe(slogan).map((paragrafo, i) => (
+                <p key={i}>
+                  <Inline texto={paragrafo} />
+                </p>
+              ))}
+            </div>
+          )}
 
-      {roteiro.subtitulo && (
-        <p className="page-subtitle">
-          <Inline texto={roteiro.subtitulo} />
-        </p>
+          {roteiro.subtitulo && (
+            <p className="page-subtitle">
+              <Inline texto={roteiro.subtitulo} />
+            </p>
+          )}
+        </SecaoDeTexto>
       )}
 
       <div className="page-line" />
