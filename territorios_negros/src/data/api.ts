@@ -752,10 +752,17 @@ export async function uploadFoto(
     | "capa"
     | "apoiadores"
     | "personalidades"
+    | "categorias"
     | "videos" = "territorios"
 ): Promise<string> {
   // logo é exibida em ~100px: 600px já cobre tela retina com folga
-  const enviado = pasta === "videos" ? file : await reduzirImagem(file, pasta === "apoiadores" ? 600 : 1600);
+  const enviado =
+    pasta === "videos"
+      ? file
+      : await reduzirImagem(
+          file,
+          pasta === "apoiadores" || pasta === "categorias" ? 600 : 1600
+        );
 
   const extensao = enviado.name.split(".").pop() ?? "jpg";
   const nomeArquivo = `${id}-${Date.now()}-${Math.random()

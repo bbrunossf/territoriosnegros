@@ -939,6 +939,16 @@ a, a:visited, a:hover, a:active {
   height: 13px;
 }
 
+/* símbolo enviado no painel para a categoria: mesma altura do ícone vetorial */
+.territorio-categoria-simbolo,
+.section-header-simbolo {
+  width: 14px;
+  height: 14px;
+
+  object-fit: contain;
+  vertical-align: -2px;
+}
+
 .page-subtitle {
   font-size: 14.5px;
   color: #563827;
@@ -2200,6 +2210,11 @@ a, a:visited, a:hover, a:active {
   border-color: #e3cf9f;
   border-left-color: #c9a86a;
   background: #fbf4e2;
+}
+
+/* atalho curto para outra guia do painel (ex.: Categorias, na aba Territórios) */
+.admin-atalho {
+  margin: 0 0 10px;
 }
 
 .admin-campo,
@@ -3682,6 +3697,68 @@ a, a:visited, a:hover, a:active {
 
 .admin-confirmacao .admin-form-botoes {
   margin: 0;
+}
+
+/* Símbolo da categoria (14/10/2026): prévia ao lado do seletor de arquivo */
+.admin-simbolo-linha {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+
+  margin-top: 8px;
+}
+
+.admin-simbolo-previa {
+  width: 52px;
+  height: 52px;
+
+  padding: 4px;
+
+  border: 1px solid #e0cba1;
+  border-radius: 10px;
+  background: #fffdf8;
+
+  object-fit: contain;
+}
+
+.admin-simbolo-previa--vazia {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #a58a5f;
+}
+
+/* o input de arquivo fica escondido; o rótulo é o botão */
+.admin-botao-arquivo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+}
+
+.admin-botao-arquivo input {
+  display: none;
+}
+
+.admin-categoria-nome {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.admin-categoria-simbolo {
+  width: 20px;
+  height: 20px;
+
+  object-fit: contain;
+}
+
+.admin-categoria-simbolo--vazio {
+  color: #a58a5f;
+  text-align: center;
 }
 
 .admin-bloco {

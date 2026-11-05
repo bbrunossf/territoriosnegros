@@ -41,6 +41,7 @@ import {
 } from "../data/titulosDeLista";
 
 import { useTerritorios } from "../context/useTerritorios";
+import { Link } from "react-router-dom";
 import { gerarSlug, idsDasRotasAtivas } from "../utils/catalogo";
 import { formatarDataHoraBR, idadeTexto } from "../utils/data";
 import {
@@ -1011,6 +1012,14 @@ export default function TerritoriosAdmin() {
   return (
     <div>
       <h1>Territórios</h1>
+
+      {/* Categorias moram na guia própria (Páginas › Categorias) desde 02/10/2026;
+          a autoria não as achava de lá — este atalho leva direto (14/10/2026). */}
+      <p className="admin-ajuda admin-atalho">
+        As categorias que agrupam esta lista (e o símbolo de cada uma) ficam em{" "}
+        <Link to="/admin/categorias">Páginas › Categorias</Link> — lá você cria,
+        edita, exclui e envia a imagem da categoria.
+      </p>
 
       <p className="admin-ajuda">
         Tudo que é <b>mostrar ou esconder</b> grava na hora, e vale igual para o

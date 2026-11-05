@@ -24,6 +24,7 @@ import {
 } from "../data/personalidades";
 
 import { calcularIdade } from "../utils/data";
+import { simboloDaCategoria } from "../utils/simbolosCategoria";
 
 export default function Territorio() {
   const { rotaId, indice: indiceStr, id } = useParams();
@@ -134,6 +135,9 @@ export default function Territorio() {
   /** categoria do território — a mesma que agrupa a lista de Territórios */
   const categoria = categorias.find((c) => c.id === territorio.categoria) ?? null;
 
+  /** imagem da categoria enviada no painel (fica em app_config) */
+  const simboloCategoria = categoria ? simboloDaCategoria(config, categoria.id) : null;
+
   return (
       <>
         {/* botões que a autoria escolheu para o topo desta ficha (menu Botões) */}
@@ -154,7 +158,16 @@ export default function Territorio() {
           {categoria && (
             <p className="territorio-categoria">
               <span className="territorio-categoria-icone" aria-hidden="true">
-                <IconeDeCategoria id={iconeDaCategoria(categoria.nome)} />
+                {simboloCategoria ? (
+                  <img
+                    src={simboloCategoria}
+                    alt=""
+                    className="territorio-categoria-simbolo"
+                    loading="lazy"
+                  />
+                ) : (
+                  <IconeDeCategoria id={iconeDaCategoria(categoria.nome)} />
+                )}
               </span>
               {categoria.nome}
             </p>

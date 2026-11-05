@@ -38,6 +38,8 @@ export function ordenarTerritorios(
 export interface GrupoTerritorios {
   id: string;
   titulo: string;
+  /** imagem da categoria, quando a autoria enviou uma no painel */
+  simbolo?: string | null;
   territorios: Territorio[];
 }
 

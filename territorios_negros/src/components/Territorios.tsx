@@ -2,6 +2,7 @@
 import { useNavigate } from "react-router-dom";
 import { useTerritorios } from "../context/useTerritorios";
 import { agruparPorCategoria, territoriosNoAr } from "../utils/catalogo";
+import { simboloDaCategoria } from "../utils/simbolosCategoria";
 
 import PageTitle from "../components/PageTitle";
 import SectionHeader from "../components/SectionHeader";
@@ -43,7 +44,7 @@ export default function Territorios() {
 
         return grupos.map((g) => (
           <section key={g.id}>
-            <SectionHeader title={g.titulo} />
+            <SectionHeader title={g.titulo} simbolo={simboloDaCategoria(config, g.id)} />
 
             {g.territorios.map((t) => {
               const alternado = indice++ % 2 === 1;
