@@ -61,6 +61,17 @@
   margin: 16px 0;
 }
 
+/* versão grossa: separa o fim de uma lista dos botões de ação sem se confundir
+   com os filetes finos dos títulos de seção (Apoiadores, 14/10/2026) */
+.botoes-divisor--grossa {
+  height: 3px;
+
+  border-radius: 2px;
+  background: rgba(143, 97, 29, 0.55);
+
+  margin: 24px 0 18px;
+}
+
 .botoes-telas .botoes-telas-local {
   margin-top: 12px;
 

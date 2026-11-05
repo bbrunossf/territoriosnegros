@@ -95,8 +95,11 @@ type Props = {
    * Filete de separação junto do grupo (14/10/2026, lista de personalidades):
    * "antes" separa o conteúdo acima dos botões; "depois" separa os botões do
    * que vem abaixo. Só aparece quando há botões de verdade — sem botões, nada.
+   *
+   * `-forte` usa uma linha mais espessa, para não se confundir com os filetes
+   * finos dos títulos de seção (usado na página de Apoiadores, 14/10/2026).
    */
-  filete?: "antes" | "depois";
+  filete?: "antes" | "depois" | "antes-forte" | "depois-forte";
 };
 
 export default function BotoesDaTela({
@@ -144,7 +147,15 @@ export default function BotoesDaTela({
   // vale no topo e no fim das páginas.
   return (
     <>
-      {filete === "antes" && <hr className="botoes-divisor" />}
+      {(filete === "antes" || filete === "antes-forte") && (
+        <hr
+          className={
+            filete === "antes-forte"
+              ? "botoes-divisor botoes-divisor--grossa"
+              : "botoes-divisor"
+          }
+        />
+      )}
 
       <div className="pagina-botoes pagina-botoes--acoes">
         {ids.map((id) => (
@@ -163,7 +174,16 @@ export default function BotoesDaTela({
         ))}
       </div>
 
-      {filete === "depois" && <hr className="botoes-divisor" />}
+      {(filete === "depois" || filete === "depois-forte") && (
+        <hr
+          className={
+            filete === "depois-forte"
+              ? "botoes-divisor botoes-divisor--grossa"
+              : "botoes-divisor"
+          }
+        />
+      )}
+
     </>
   );
 }

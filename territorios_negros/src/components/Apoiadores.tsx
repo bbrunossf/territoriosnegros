@@ -149,7 +149,7 @@ export default function Apoiadores() {
         })
       )}
 
-      <BotoesDaTela tela="apoiadores" posicao="final" />
+      <BotoesDaTela tela="apoiadores" posicao="final" filete="antes-forte" />
 
       <BotaoContato tela="apoiadores" discreto />
     </>
