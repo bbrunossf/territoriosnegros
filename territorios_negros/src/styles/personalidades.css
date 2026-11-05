@@ -202,20 +202,38 @@
   margin: 0 0 24px;
 }
 
-/* botões da página da personalidade: mesma caixa das outras telas, com respiro
-   maior entre eles e as seções (pedido da autoria, 02/10/2026) */
+/* botões da página da personalidade: mesma caixa das outras telas */
 .personalidade-topo {
-  margin: 0 0 34px;
+  /* colados no título da página (pedido da autoria, 14/10/2026) */
+  margin: 0;
+}
+
+/* dentro do invólucro o grupo não carrega o respiro dos blocos do fim */
+.personalidade-topo .pagina-botoes {
+  margin-top: 0;
+}
+
+/* sem botões no topo, o invólucro não ocupa espaço nem puxa o fio */
+.personalidade-topo:empty {
+  display: none;
+}
+
+/* fio entre a navegação do topo e as informações da personalidade (14/10/2026) */
+.personalidade-divisor {
+  height: 1px;
+
+  border: 0;
+  background: rgba(143, 97, 29, 0.32);
+
+  margin: 22px 0 24px;
+}
+
+.personalidade-topo:empty + .personalidade-divisor {
+  display: none;
 }
 
 .personalidade > .pagina-botoes {
   margin-top: 36px;
-}
-
-/* O botão do TOPO abre a página: não leva o respiro dos blocos do fim — era
-   ele que deixava um vão grande entre a barra e o botão (autoria, 14/10/2026). */
-.personalidade > .personalidade-topo {
-  margin-top: 0;
 }
 
 .personalidade-links {

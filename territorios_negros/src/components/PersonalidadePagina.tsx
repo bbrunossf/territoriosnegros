@@ -86,7 +86,15 @@ export default function PersonalidadePagina({ dados }: { dados?: Personalidade }
           tela e o painel dizia que não havia botões no topo. O caminho de volta
           continua no menu e na barra de navegação; para ter o botão no topo,
           basta escolher "Personalidades" no painel. */}
-      <BotoesDaTela tela="personalidade" posicao="topo" />
+      <div className="personalidade-topo">
+        <BotoesDaTela tela="personalidade" posicao="topo" />
+      </div>
+
+      {/* fio entre os botões do topo e as informações da personalidade
+          (14/10/2026): a autoria pediu espaço e uma linha separando a navegação
+          do retrato + nome. Sem botões no topo, o fio também não aparece
+          (`:empty` na regra de CSS). */}
+      <hr className="personalidade-divisor" />
 
       <div className="personalidade-hero">
         {capa ? (
