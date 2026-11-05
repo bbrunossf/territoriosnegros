@@ -386,10 +386,12 @@ export const FIM_PADRAO: PaginaConteudo = {
   destaque:
     "A cidade não termina aqui. Os territórios negros permanecem — visíveis ou não. " +
     "Continue observando.",
-  botoes: [
-    { texto: "Escolher outro roteiro", url: "/roteiros", estilo: "btn" },
-    { texto: "Enviar uma mensagem para a autoria", url: "/contato", estilo: "outline" },
-  ],
+  // Esta tela nasce SEM botões de página (15/10/2026): antes vinha um "Escolher
+  // outro roteiro" fixo que aparecia como "Rotas" no fim da tela mesmo com o
+  // botão desligado no painel Botões. Agora TODOS os botões desta tela vêm do
+  // painel — os do topo (Territórios, Rotas…) e os do fim — e o contato é o
+  // "Enviar uma mensagem" automático.
+  botoes: [],
   classe: "fim",
 };
 
