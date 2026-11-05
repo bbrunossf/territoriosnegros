@@ -13,6 +13,8 @@ import BotaoContato from "../components/BotaoContato";
 import BotoesDaTela from "../components/BotoesDaTela";
 import MarcosConexoes from "../components/MarcosConexoes";
 import { chaveDoTerritorio } from "../data/marcos";
+import IconeDeCategoria from "../components/IconeDeCategoria";
+import { iconeDaCategoria } from "../utils/iconeDaCategoria";
 import {
   CHAVE_PERSONALIDADES,
   lerPersonalidades,
@@ -26,7 +28,7 @@ import { calcularIdade } from "../utils/data";
 export default function Territorio() {
   const { rotaId, indice: indiceStr, id } = useParams();
   const navigate = useNavigate();
-  const { territorios, roteiros, ordemTerritoriosVisual, config } = useTerritorios();
+  const { territorios, roteiros, ordemTerritoriosVisual, config, categorias } = useTerritorios();
 
   const dentroDeRota = !!rotaId && rotaId !== "todos";
 
@@ -129,6 +131,9 @@ export default function Territorio() {
     territorio.fotos?.find((f) => f.url === territorio.imagem)?.credito ||
     "";
 
+  /** categoria do território — a mesma que agrupa a lista de Territórios */
+  const categoria = categorias.find((c) => c.id === territorio.categoria) ?? null;
+
   return (
       <>
         {/* botões que a autoria escolheu para o topo desta ficha (menu Botões) */}
@@ -142,6 +147,18 @@ export default function Territorio() {
           <h1 className="page-title">
             {territorio.nome}
           </h1>
+
+          {/* Categoria do território (14/10/2026): a mesma do título da seção na
+              lista de Territórios — nome em caixa alta e símbolo, em corpo menor
+              que a localização, logo acima dela. */}
+          {categoria && (
+            <p className="territorio-categoria">
+              <span className="territorio-categoria-icone" aria-hidden="true">
+                <IconeDeCategoria id={iconeDaCategoria(categoria.nome)} />
+              </span>
+              {categoria.nome}
+            </p>
+          )}
 
           <p className="page-subtitle">
             {territorio.local}
