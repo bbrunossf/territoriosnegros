@@ -3,7 +3,8 @@
 // componentes e hooks no mesmo módulo.
 
 import { createContext } from "react";
-import type { Categoria, ProximoTour, Roteiro, TerritoriosMap } from "../data/types";
+import type { Categoria, Roteiro, TerritoriosMap } from "../data/types";
+import type { Inscricoes, Tour } from "../data/tours";
 
 export interface DadosContextType {
   /** todos os territórios (inclusive os desativados, o painel usa) */
@@ -15,7 +16,13 @@ export interface DadosContextType {
   categorias: Categoria[];
   config: Record<string, unknown>;
   /** aviso de próximo tour pronto para exibir (ou null) */
-  proximoTour: ProximoTour | null;
+  proximoTour: Tour | null;
+  /** agenda completa de tours (inclusive os que já passaram, o painel usa) */
+  tours: Tour[];
+  /** tours no ar agora, do mais próximo para o mais distante */
+  toursEmCartaz: Tour[];
+  /** regras dos botões de inscrição e o aviso de inscrições encerradas */
+  inscricoes: Inscricoes;
   /** link da ficha de inscrição (geral) */
   inscricaoUrl: string;
   /** ids dos territórios visíveis, na ordem definida no painel */
@@ -32,6 +39,9 @@ export const DadosCtx = createContext<DadosContextType>({
   categorias: [],
   config: {},
   proximoTour: null,
+  tours: [],
+  toursEmCartaz: [],
+  inscricoes: { cartao: true, ficha: true, encerradas: false, aviso: "Inscrições encerradas" },
   inscricaoUrl: "",
   ordemTerritoriosVisual: [],
   carregando: true,

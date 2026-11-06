@@ -73,6 +73,7 @@ createRoot(document.getElementById('root')!).render(
               <Route path="territorios" element={<Territorios />} />
               <Route path="territorio/:id" element={<Territorio />} />
               <Route path="evento" element={<ProximoEvento />} />
+              <Route path="evento/:tourId" element={<ProximoEvento />} />
               {/* a ficha de inscrição abre dentro do app, com caminho de volta
                   (pedido da autoria, 14/10/2026) */}
               <Route path="evento/ficha" element={<FichaInscricao />} />

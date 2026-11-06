@@ -8,8 +8,8 @@ import {
   fetchConfig,
   fetchRoteiros,
   fetchTerritorios,
-  normalizarProximoTour,
 } from "../data/api";
+import { CHAVE_INSCRICOES, CHAVE_TOURS, lerTours, normalizarInscricoes, toursNoAr } from "../data/tours";
 import type { Categoria, Roteiro, TerritoriosMap } from "../data/types";
 import { ordenarTerritorios, roteirosVisiveis } from "../utils/catalogo";
 import { DadosCtx } from "./dadosContext";
@@ -121,11 +121,14 @@ export function TerritoriosProvider({ children }: { children: ReactNode }) {
     };
   }, [recarregar]);
 
-  const proximoTourBruto = normalizarProximoTour(config.proximo_tour);
-  const proximoTour = proximoTourBruto?.ativo ? proximoTourBruto : null;
+  const tours = lerTours(config[CHAVE_TOURS], config.proximo_tour);
+  const toursEmCartaz = toursNoAr(tours);
+  const proximoTour = toursEmCartaz[0] ?? null;
+
+  const inscricoes = normalizarInscricoes(config[CHAVE_INSCRICOES]);
 
   const inscricaoGeral = typeof config.inscricao_url === "string" ? config.inscricao_url : "";
-  const inscricaoUrl = inscricaoGeral || proximoTourBruto?.inscricaoUrl || "";
+  const inscricaoUrl = inscricaoGeral || proximoTour?.inscricaoUrl || "";
 
   return (
     <DadosCtx.Provider
@@ -136,6 +139,9 @@ export function TerritoriosProvider({ children }: { children: ReactNode }) {
         categorias,
         config,
         proximoTour,
+        tours,
+        toursEmCartaz,
+        inscricoes,
         inscricaoUrl,
         ordemTerritoriosVisual: ordenarTerritorios(territorios, categorias).map((t) => t.id),
         carregando,

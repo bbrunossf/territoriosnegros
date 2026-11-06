@@ -1,38 +1,54 @@
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 import { formatarDataBR } from "../utils/data";
 import { useTerritorios } from "../context/useTerritorios";
 import { normalizarTextosIniciais } from "../data/telaInicial";
+import { tourPorId, toursNoAr } from "../data/tours";
 import BotaoContato from "./BotaoContato";
 import BotoesDaTela from "./BotoesDaTela";
 
 /**
  * Página do próximo evento: informações do tour e a ficha de inscrição.
  * Chega-se a ela tocando no título do evento na tela inicial.
+ *
+ * 15/10/2026: a agenda aceita mais de um tour. `/evento` mostra o mais próximo;
+ * `/evento/{id}` abre um tour específico da agenda, e os demais aparecem
+ * listados no fim da página.
  */
 export default function ProximoEvento() {
-  const { proximoTour, roteiros, inscricaoUrl, config } = useTerritorios();
+  const { tourId } = useParams();
+  const { proximoTour, toursEmCartaz, roteiros, inscricaoUrl, config, inscricoes } =
+    useTerritorios();
+
+  // tour pedido pela URL (agenda com vários) ou o mais próximo
+  const daUrl = tourPorId(toursNoAr(toursEmCartaz), tourId);
+  const tour = daUrl ?? (tourId ? null : proximoTour);
 
   // a faixa do topo é a mesma da tela inicial (editada na aba Página inicial)
   const textos = normalizarTextosIniciais(config.tela_inicial);
 
-  const inscricao = proximoTour?.inscricaoUrl || inscricaoUrl;
+  const inscricao = tour?.inscricaoUrl || inscricaoUrl;
 
   // logo: a própria do evento; se não houver, a da rota vinculada
-  const rota = roteiros.find((r) => r.id === proximoTour?.rotaId);
-  const logo = proximoTour?.logo || rota?.logo || "";
-  const paragrafos = (proximoTour?.info ?? "")
+  const rota = roteiros.find((r) => r.id === tour?.rotaId);
+  const logo = tour?.logo || rota?.logo || "";
+  const paragrafos = (tour?.info ?? "")
     .split(/\n+/)
     .map((p) => p.trim())
     .filter(Boolean);
 
-  if (!proximoTour) {
+  /** os outros tours da agenda, para quem quiser ver as outras datas */
+  const outros = toursEmCartaz.filter((t) => t.id !== tour?.id);
+
+  if (!tour) {
     return (
       <>
         <h1 className="page-title">Próximo evento</h1>
 
         <p className="aviso-vazio">
-          Nenhum evento agendado no momento. Acompanhe por aqui as próximas datas.
+          {tourId
+            ? "Este evento não está mais na agenda — pode ter sido desmarcado ou já aconteceu."
+            : "Nenhum evento agendado no momento. Acompanhe por aqui as próximas datas."}
         </p>
 
         <Link className="outline roteiro-btn" to="/roteiros">
@@ -49,27 +65,27 @@ export default function ProximoEvento() {
 
       <p className="evento-selo">{textos.selo}</p>
 
-      <h1 className="page-title evento-titulo">{proximoTour.texto || "Próximo tour"}</h1>
+      <h1 className="page-title evento-titulo">{tour.texto || "Próximo tour"}</h1>
 
       {logo && (
         <img
           src={logo}
-          alt={`Logo ${proximoTour.texto || "do evento"}`}
+          alt={`Logo ${tour.texto || "do evento"}`}
           className="percurso-logo"
         />
       )}
 
       <div className="evento-dados">
-        {(proximoTour.data || proximoTour.hora) && (
+        {(tour.data || tour.hora) && (
           <p className="evento-dado">
-            <b>Data:</b> {formatarDataBR(proximoTour.data)}
-            {proximoTour.hora ? ` às ${proximoTour.hora}` : ""}
+            <b>Data:</b> {formatarDataBR(tour.data)}
+            {tour.hora ? ` às ${tour.hora}` : ""}
           </p>
         )}
 
-        {proximoTour.local && (
+        {tour.local && (
           <p className="evento-dado">
-            <b>Local:</b> {proximoTour.local}
+            <b>Local:</b> {tour.local}
           </p>
         )}
       </div>
@@ -88,32 +104,39 @@ export default function ProximoEvento() {
         </p>
       )}
 
-      {/* A ficha de inscrição tem botão SEMPRE no modo usuário — mesmo sem link
-          salvo o visitante vê onde ela vai ficar (pedido da autoria, 14/10/2026:
-          "mesmo que eu nao tenha anexado o link … deve ser um botão similar ao
-          botao ver percurso. E quando eu criar a ficha de inscrição ao clicar
-          será levado a ficha"). Sem link, o botão fica apagado e não leva a
-          lugar nenhum; com link, abre a ficha DENTRO do app (/evento/ficha),
-          com o caminho de volta logo abaixo — a autoria observou que abrir em
-          outra guia deixa o visitante sem saber como voltar. */}
-      <div className="pagina-botoes">
-        {inscricao ? (
-          <Link to="/evento/ficha" className="botao-secundario pagina-botao">
-            Abrir a ficha de inscrição
-          </Link>
-        ) : (
-          <span className="botao-secundario pagina-botao botao-sem-link" aria-disabled="true">
-            Abrir a ficha de inscrição
-          </span>
-        )}
-      </div>
+      {/* Ficha de inscrição: a autoria liga e desliga este botão no painel
+          (Página inicial › Inscrições) e pode marcar as inscrições como
+          encerradas, sem apagar o link (15/10/2026). Encerradas, o convite vira
+          aviso. Com o botão desligado, o bloco não aparece. */}
+      {inscricoes.ficha && (
+        <>
+          {inscricoes.encerradas ? (
+            <p className="evento-encerrado">{inscricoes.aviso}</p>
+          ) : (
+            <div className="pagina-botoes">
+              {inscricao ? (
+                <Link to="/evento/ficha" className="botao-secundario pagina-botao">
+                  Abrir a ficha de inscrição
+                </Link>
+              ) : (
+                <span
+                  className="botao-secundario pagina-botao botao-sem-link"
+                  aria-disabled="true"
+                >
+                  Abrir a ficha de inscrição
+                </span>
+              )}
+            </div>
+          )}
 
-      {inscricao ? (
-        <p className="evento-ajuda">
-          A ficha abre aqui dentro do app: você preenche e envia sem sair dele.
-        </p>
-      ) : (
-        <p className="evento-ajuda">A ficha de inscrição ainda não está disponível.</p>
+          {!inscricoes.encerradas && (
+            <p className="evento-ajuda">
+              {inscricao
+                ? "A ficha abre aqui dentro do app: você preenche e envia sem sair dele."
+                : "A ficha de inscrição ainda não está disponível."}
+            </p>
+          )}
+        </>
       )}
 
       {rota && (
@@ -123,6 +146,25 @@ export default function ProximoEvento() {
           <Link className="botao-secundario pagina-botao" to={`/percurso/${rota.id}`}>
             ver a rota completa ›
           </Link>
+        </div>
+      )}
+
+      {/* agenda com mais de um tour: as outras datas ficam a um toque */}
+      {outros.length > 0 && (
+        <div className="evento-agenda">
+          <p className="evento-agenda-titulo">Outros tours agendados</p>
+
+          <ul className="evento-agenda-lista">
+            {outros.map((t) => (
+              <li key={t.id}>
+                <Link to={`/evento/${t.id}`}>
+                  <b>{t.texto || "Tour"}</b>
+                  {t.data && <span> — {formatarDataBR(t.data)}</span>}
+                  {t.hora && <span> às {t.hora}</span>}
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
 

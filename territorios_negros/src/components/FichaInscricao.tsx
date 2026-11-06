@@ -11,11 +11,27 @@ import BotoesDaTela from "./BotoesDaTela";
  *  Os rótulos (título e os dois botões de volta) são editáveis no painel, na aba
  *  Página inicial, seção "Tela da ficha de inscrição". */
 export default function FichaInscricao() {
-  const { proximoTour, inscricaoUrl, config } = useTerritorios();
+  const { proximoTour, inscricaoUrl, config, inscricoes } = useTerritorios();
 
   const inscricao = proximoTour?.inscricaoUrl || inscricaoUrl;
   const dentro = urlParaIncorporar(inscricao);
   const textos = textosDaFicha(config.ficha_textos);
+
+  // inscrições encerradas (15/10/2026): quem chegar por um link antigo vê o
+  // aviso, e não uma ficha que não vale mais
+  if (inscricoes.encerradas) {
+    return (
+      <section className="ficha">
+        <h1 className="page-title ficha-titulo">{textos.titulo}</h1>
+
+        <p className="evento-encerrado">{inscricoes.aviso}</p>
+
+        <p className="ficha-ajuda">
+          <Link to="/evento">Voltar para as informações do evento</Link>
+        </p>
+      </section>
+    );
+  }
 
   return (
     <section className="ficha">
