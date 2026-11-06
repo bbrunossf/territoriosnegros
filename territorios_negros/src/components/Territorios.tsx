@@ -1,7 +1,13 @@
 //Territorios.tsx
 import { useNavigate } from "react-router-dom";
 import { useTerritorios } from "../context/useTerritorios";
-import { agruparPorCategoria, ordemNaRota, rotaDaOrdemDaLista, territoriosDaRota, territoriosNoAr } from "../utils/catalogo";
+import {
+  agruparPorCategoria,
+  pontosVisiveis,
+  rotaDaOrdemDaLista,
+  territoriosNoAr,
+  type GrupoTerritorios,
+} from "../utils/catalogo";
 import { simboloDaCategoria } from "../utils/simbolosCategoria";
 
 import PageTitle from "../components/PageTitle";
@@ -19,21 +25,21 @@ export default function Territorios() {
 
   // Os grupos agora vêm do banco (tabela "categorias"), não mais fixos no código:
   // território novo entra na lista assim que recebe uma categoria no painel.
-  //
-  // Havendo rota ativa, só entram os territórios dela(s) (14/10/2026): um
-  // território habilitado que não está em rota nenhuma não pode aparecer numa
-  // visita guiada. Sem rota ativa, a lista mostra todos os habilitados.
-  // Com rota ativa, a lista mostra EXATAMENTE os territórios habilitados na rota
-  // escolhida no painel (15/10/2026) — nada de somar outras rotas ativas. A
-  // ordem dentro de cada categoria é a mesma da visita. Sem rota ativa, entram
-  // todos os habilitados, agrupados só pelas categorias.
+  // Com rota ativa, a lista é UMA só, exatamente na ordem da rota escolhida no
+  // painel — sem cabeçalhos de categoria (15/10/2026, ajuste da autoria: os
+  // territórios voltavam agrupados por categoria e a ordem da visita se perdia).
+  // Sem rota ativa, aí sim: todos os habilitados agrupados pelas categorias.
   const rotaDaPagina = rotaDaOrdemDaLista(roteiros, config.rota_principal as string | undefined);
 
-  const grupos = agruparPorCategoria(
-    rotaDaPagina ? territoriosDaRota(rotaDaPagina, territorios) : territoriosNoAr(territorios, []),
-    categorias,
-    ordemNaRota(rotaDaPagina, territorios)
-  );
+  const grupos: GrupoTerritorios[] = rotaDaPagina
+    ? (() => {
+        const pontos = pontosVisiveis(rotaDaPagina.pontos, territorios);
+
+        return pontos.length > 0
+          ? [{ id: "rota", titulo: "", simbolo: null, territorios: pontos }]
+          : [];
+      })()
+    : agruparPorCategoria(territoriosNoAr(territorios, []), categorias);
 
   return (
     <>
@@ -54,7 +60,11 @@ export default function Territorios() {
 
         return grupos.map((g) => (
           <section key={g.id}>
-            <SectionHeader title={g.titulo} simbolo={simboloDaCategoria(config, g.id)} />
+            {/* sem título quando a lista é a própria rota: nada de cabeçalho de
+                categoria entre os territórios, só a sequência da visita */}
+            {g.titulo !== "" && (
+              <SectionHeader title={g.titulo} simbolo={simboloDaCategoria(config, g.id)} />
+            )}
 
             {g.territorios.map((t) => {
               const alternado = indice++ % 2 === 1;
