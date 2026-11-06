@@ -42,7 +42,11 @@ import {
 
 import { useTerritorios } from "../context/useTerritorios";
 import { Link } from "react-router-dom";
-import { gerarSlug, idsDasRotasAtivas } from "../utils/catalogo";
+import {
+  gerarSlug,
+  pontosVisiveis,
+  rotaDaOrdemDaLista,
+} from "../utils/catalogo";
 import { formatarDataHoraBR, idadeTexto } from "../utils/data";
 import {
   alinharTodos,
@@ -993,8 +997,16 @@ export default function TerritoriosAdmin() {
   const mapaDeTerritorios: TerritoriosMap = {};
   for (const territorio of territorios) mapaDeTerritorios[territorio.id] = territorio;
 
-  const temRotaAtiva = roteiros.length > 0;
-  const idsNaRota = idsDasRotasAtivas(roteiros, mapaDeTerritorios);
+  // A lista de Territórios segue UMA rota: a escolhida no painel (aba Rotas,
+  // coluna "Página Territórios"). Com ela ativa, o app mostra exatamente os
+  // territórios habilitados nela — não a soma das rotas ativas (15/10/2026).
+  const rotaDaPagina = rotaDaOrdemDaLista(roteiros, config.rota_principal as string | undefined);
+
+  const temRotaAtiva = !!rotaDaPagina;
+
+  const idsNaRota = new Set(
+    rotaDaPagina ? pontosVisiveis(rotaDaPagina.pontos, mapaDeTerritorios).map((t) => t.id) : []
+  );
 
   const foraDasRotas = temRotaAtiva
     ? territorios.filter((t) => t.ativo !== false && !idsNaRota.has(t.id))
@@ -1039,20 +1051,21 @@ export default function TerritoriosAdmin() {
       {temRotaAtiva && foraDasRotas.length > 0 && (
         <p className="admin-aviso-rota">
           <b>
-            {foraDasRotas.length} território(s) habilitado(s) fora das rotas ativas:{" "}
-            {foraDasRotas.map((t) => t.nome).join(", ")}.
+            {foraDasRotas.length} território(s) habilitado(s) fora da rota “
+            {rotaDaPagina?.nome}”: {foraDasRotas.map((t) => t.nome).join(", ")}.
           </b>{" "}
-          Enquanto houver rota ativa, eles <b>não aparecem na lista de Territórios</b>{" "}
-          para o visitante. Para exibi-los, inclua-os em alguma rota (aba Rotas) — ou
-          desative todas as rotas, e a lista volta a mostrar todos os habilitados.
+          Enquanto essa rota estiver ativa, eles <b>não aparecem na lista de Territórios</b>{" "}
+          para o visitante. Para exibi-los, inclua-os nessa rota (aba Rotas) — ou
+          desative as rotas, e a lista volta a mostrar todos os habilitados.
         </p>
       )}
 
       {!temRotaAtiva && (
         <p className="admin-aviso-rota admin-aviso-rota--leve">
           Hoje <b>não há rota ativa</b>: a lista de Territórios mostra todos os
-          territórios habilitados, sem filtro de rota. Ao ativar uma rota, só os
-          territórios dela continuam aparecendo.
+          territórios habilitados, agrupados só pelas categorias. Ao ativar uma
+          rota, a lista passa a mostrar exatamente os territórios dela, na ordem
+          da visita.
         </p>
       )}
 
@@ -1231,10 +1244,10 @@ export default function TerritoriosAdmin() {
             aparece no app mesmo marcado (14/10/2026, pedido da autoria). */}
         {cadastroForaDaRota && (
           <p className="admin-aviso-rota">
-            <b>Atenção:</b> este território <b>não está em nenhuma rota ativa</b>.
-            Marcado como visível, ele continua <b>fora da lista do app</b> enquanto
-            houver rota ativa — habilitar não basta. Inclua-o na rota (aba Rotas)
-            para que o visitante o encontre.
+            <b>Atenção:</b> este território <b>não está na rota “{rotaDaPagina?.nome}”</b>,
+            que é a rota da página Territórios. Marcado como visível, ele continua{" "}
+            <b>fora da lista do app</b> enquanto essa rota estiver ativa — habilitar
+            não basta. Inclua-o na rota (aba Rotas) para que o visitante o encontre.
           </p>
         )}
 

@@ -194,13 +194,30 @@ export function enderecoDoTerritorio(
 }
 
 /**
- * Rota que manda na ORDEM da lista de Territórios (15/10/2026, pedido da autoria:
- * a lista agrupava por categoria, mas não seguia a sequência da rota).
- *
- * - havendo rotas ativas, vale a marcada no painel como principal;
- * - se nenhuma estiver marcada (ou a marcada foi desativada), vale a primeira
- *   rota ativa na ordem do painel;
- * - sem rota ativa, não há ordem de rota — a lista fica só pelas categorias.
+ * Territórios que a lista de Territórios mostra quando há rota ativa
+ * (15/10/2026, ajuste da autoria: "a página deve exibir exatamente os
+ * territórios habilitados na rota"). É só a rota escolhida no painel — não a
+ * união de todas as rotas ativas.
+ */
+export function territoriosDaRota(
+  rota: Roteiro | null,
+  territorios: TerritoriosMap
+): TerritoriosMap {
+  const saida: TerritoriosMap = {};
+
+  if (!rota) return saida;
+
+  for (const territorio of pontosVisiveis(rota.pontos, territorios)) {
+    saida[territorio.id] = territorio;
+  }
+
+  return saida;
+}
+
+/**
+ * Rota que manda na lista de Territórios (15/10/2026): a escolhida no painel
+ * (coluna "Página Territórios", em app_config `rota_principal`). Sem escolha,
+ * vale a primeira rota ativa na ordem do painel; sem rota ativa, nenhuma.
  */
 export function rotaDaOrdemDaLista(
   roteiros: Roteiro[],

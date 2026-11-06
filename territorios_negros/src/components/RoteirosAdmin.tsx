@@ -24,7 +24,7 @@ import {
   lerSlogans,
   type SlogansDeRota,
 } from "../data/slogansRota";
-import { gerarSlug } from "../utils/catalogo";
+import { gerarSlug, roteirosVisiveis } from "../utils/catalogo";
 import { formatarDataHoraBR } from "../utils/data";
 import { legendaDoArquivo } from "../utils/legendas";
 import {
@@ -85,8 +85,9 @@ export default function RoteirosAdmin() {
   // slogan de cada rota (gravado em app_config, chave "roteiros_slogans")
   const [slogans, setSlogans] = useState<SlogansDeRota>({});
 
-  // rota principal (app_config, chave "rota_principal"): com mais de uma rota
-  // ativa, é ela que dá a ORDEM da lista de Territórios (15/10/2026)
+  // rota da página Territórios (app_config, chave "rota_principal"): com mais de
+  // uma rota ativa, é ela que define QUAIS territórios a lista mostra e em que
+  // ordem (15/10/2026)
   const [rotaPrincipal, setRotaPrincipal] = useState("");
 
   // título e subtítulo da página Rotas (app_config, chave "lista_roteiros"),
@@ -431,8 +432,9 @@ export default function RoteirosAdmin() {
   }
 
   /**
-   * Marca/desmarca a rota principal (grava na hora, em app_config).
-   * Com mais de uma rota ativa, é ela que dá a ordem da lista de Territórios.
+   * Marca/desmarca a rota que a página Territórios segue (grava na hora, em
+   * app_config). Com ela ativa, a lista mostra exatamente os territórios dela,
+   * na ordem da visita.
    */
   async function definirPrincipal(id: string) {
     setErro("");
@@ -445,12 +447,12 @@ export default function RoteirosAdmin() {
       setRotaPrincipal(novo);
       setOk(
         novo
-          ? "Rota principal definida: a lista de Territórios segue a ordem dela."
-          : "Sem rota principal: a lista de Territórios usa a primeira rota ativa."
+          ? "A página Territórios passa a mostrar os territórios desta rota, na ordem dela."
+          : "Sem rota escolhida: a página Territórios usa a primeira rota ativa."
       );
     } catch (e) {
       console.error(e);
-      setErro(e instanceof Error ? e.message : "Falha ao gravar a rota principal.");
+      setErro(e instanceof Error ? e.message : "Falha ao gravar a rota da página Territórios.");
     }
   }
 
@@ -966,11 +968,37 @@ export default function RoteirosAdmin() {
 
       {/* ─── Tabela ─── */}
         <p className="admin-ajuda">
-          Com <b>mais de uma rota ativa</b>, a ordem dos territórios na página{" "}
-          <b>Territórios</b> segue a <b>rota principal</b> (coluna “Ordem da lista”).
-          Cada categoria continua sendo um grupo; dentro dela, os territórios
-          aparecem na sequência da rota. Com uma só rota ativa, é ela que manda.
-          Sem rota ativa, a lista fica só pela ordem das categorias.
+          <b>Qual rota a página Territórios segue.</b> Havendo rota ativa, a lista
+          de Territórios mostra <b>exatamente os territórios da rota marcada aqui</b>{" "}
+          (coluna “Página Territórios”), dentro das suas categorias e na ordem da
+          visita. Sem nenhuma marcada, vale a primeira rota ativa. Sem rota ativa,
+          a lista mostra todos os territórios habilitados, só pelas categorias.
+        </p>
+
+        <p className="admin-ajuda">
+          {(() => {
+            const ativas = roteirosVisiveis(roteiros);
+            const daLista = ativas.find((r) => r.id === rotaPrincipal) ?? ativas[0] ?? null;
+
+            if (!daLista) {
+              return (
+                <>
+                  Hoje <b>não há rota ativa</b>: a página Territórios mostra todos os
+                  territórios habilitados, agrupados só pelas categorias.
+                </>
+              );
+            }
+
+            return (
+              <>
+                Hoje a página <b>Territórios</b> segue{" "}
+                <b>{daLista.nome}</b>
+                {rotaPrincipal === daLista.id
+                  ? " (escolhida abaixo)."
+                  : " — nenhuma foi escolhida, então vale a primeira rota ativa."}
+              </>
+            );
+          })()}
         </p>
 
         <div className="admin-tabela-rolagem">
@@ -980,7 +1008,7 @@ export default function RoteirosAdmin() {
             <th>Nome</th>
             <th>Nível</th>
             <th>Territórios</th>
-            <th>Ordem da lista</th>
+            <th>Página Territórios</th>
             <th>Logo</th>
             <th>Mapas</th>
             <th>Visível (grava na hora)</th>
@@ -1004,11 +1032,11 @@ export default function RoteirosAdmin() {
                   onClick={() => definirPrincipal(r.id)}
                   title={
                     rotaPrincipal === r.id
-                      ? "Clique para deixar de ser a rota principal"
-                      : "Usar a ordem desta rota na página Territórios"
+                      ? "Clique para deixar de usar esta rota na página Territórios"
+                      : "Mostrar os territórios desta rota na página Territórios"
                   }
                 >
-                  {rotaPrincipal === r.id ? "principal ✓" : "definir"}
+                  {rotaPrincipal === r.id ? "em uso ✓" : "usar nesta página"}
                 </button>
               </td>
               <td>{r.logo ? "sim" : "não"}</td>

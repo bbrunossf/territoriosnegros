@@ -1,7 +1,7 @@
 //Territorios.tsx
 import { useNavigate } from "react-router-dom";
 import { useTerritorios } from "../context/useTerritorios";
-import { agruparPorCategoria, ordemNaRota, rotaDaOrdemDaLista, territoriosNoAr } from "../utils/catalogo";
+import { agruparPorCategoria, ordemNaRota, rotaDaOrdemDaLista, territoriosDaRota, territoriosNoAr } from "../utils/catalogo";
 import { simboloDaCategoria } from "../utils/simbolosCategoria";
 
 import PageTitle from "../components/PageTitle";
@@ -23,16 +23,16 @@ export default function Territorios() {
   // Havendo rota ativa, só entram os territórios dela(s) (14/10/2026): um
   // território habilitado que não está em rota nenhuma não pode aparecer numa
   // visita guiada. Sem rota ativa, a lista mostra todos os habilitados.
-  // Dentro de cada categoria, a ordem é a da ROTA (15/10/2026, relato de quem
-  // visitou: a lista agrupava por categoria mas embaralhava a sequência da
-  // visita). Vale a rota marcada como principal no painel; sem marcação, a
-  // primeira rota ativa. Sem rota ativa, fica só pela ordem das categorias.
-  const rotaDaOrdem = rotaDaOrdemDaLista(roteiros, config.rota_principal as string | undefined);
+  // Com rota ativa, a lista mostra EXATAMENTE os territórios habilitados na rota
+  // escolhida no painel (15/10/2026) — nada de somar outras rotas ativas. A
+  // ordem dentro de cada categoria é a mesma da visita. Sem rota ativa, entram
+  // todos os habilitados, agrupados só pelas categorias.
+  const rotaDaPagina = rotaDaOrdemDaLista(roteiros, config.rota_principal as string | undefined);
 
   const grupos = agruparPorCategoria(
-    territoriosNoAr(territorios, roteiros),
+    rotaDaPagina ? territoriosDaRota(rotaDaPagina, territorios) : territoriosNoAr(territorios, []),
     categorias,
-    ordemNaRota(rotaDaOrdem, territorios)
+    ordemNaRota(rotaDaPagina, territorios)
   );
 
   return (
