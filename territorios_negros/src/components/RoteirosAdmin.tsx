@@ -85,6 +85,10 @@ export default function RoteirosAdmin() {
   // slogan de cada rota (gravado em app_config, chave "roteiros_slogans")
   const [slogans, setSlogans] = useState<SlogansDeRota>({});
 
+  // rota principal (app_config, chave "rota_principal"): com mais de uma rota
+  // ativa, é ela que dá a ORDEM da lista de Territórios (15/10/2026)
+  const [rotaPrincipal, setRotaPrincipal] = useState("");
+
   // título e subtítulo da página Rotas (app_config, chave "lista_roteiros"),
   // com botão de salvar próprio: não é dado de uma rota, é da página
   const [tituloPagina, setTituloPagina] = useState<TituloDeLista>(LISTA_ROTAS_PADRAO);
@@ -115,6 +119,7 @@ export default function RoteirosAdmin() {
       setTerritorios(ts);
       setSlogans(lerSlogans(cfg[CHAVE_SLOGANS]));
       setTituloPagina(normalizarTituloDeLista(cfg[CHAVE_LISTA], LISTA_ROTAS_PADRAO));
+      setRotaPrincipal(typeof cfg.rota_principal === "string" ? cfg.rota_principal : "");
     } catch (e) {
       console.error(e);
       setErro(e instanceof Error ? e.message : "Falha ao carregar as rotas.");
@@ -136,6 +141,7 @@ export default function RoteirosAdmin() {
         setTerritorios(ts);
         setSlogans(lerSlogans(cfg[CHAVE_SLOGANS]));
         setTituloPagina(normalizarTituloDeLista(cfg[CHAVE_LISTA], LISTA_ROTAS_PADRAO));
+        setRotaPrincipal(typeof cfg.rota_principal === "string" ? cfg.rota_principal : "");
       } catch (e) {
         console.error(e);
         if (ativo) {
@@ -421,6 +427,30 @@ export default function RoteirosAdmin() {
     } catch (e) {
       console.error(e);
       setErro(e instanceof Error ? explicarErro(e.message) : "Falha ao alterar a visibilidade.");
+    }
+  }
+
+  /**
+   * Marca/desmarca a rota principal (grava na hora, em app_config).
+   * Com mais de uma rota ativa, é ela que dá a ordem da lista de Territórios.
+   */
+  async function definirPrincipal(id: string) {
+    setErro("");
+    setOk("");
+
+    const novo = rotaPrincipal === id ? "" : id;
+
+    try {
+      await salvarConfig("rota_principal", novo);
+      setRotaPrincipal(novo);
+      setOk(
+        novo
+          ? "Rota principal definida: a lista de Territórios segue a ordem dela."
+          : "Sem rota principal: a lista de Territórios usa a primeira rota ativa."
+      );
+    } catch (e) {
+      console.error(e);
+      setErro(e instanceof Error ? e.message : "Falha ao gravar a rota principal.");
     }
   }
 
@@ -935,6 +965,14 @@ export default function RoteirosAdmin() {
       </form>
 
       {/* ─── Tabela ─── */}
+        <p className="admin-ajuda">
+          Com <b>mais de uma rota ativa</b>, a ordem dos territórios na página{" "}
+          <b>Territórios</b> segue a <b>rota principal</b> (coluna “Ordem da lista”).
+          Cada categoria continua sendo um grupo; dentro dela, os territórios
+          aparecem na sequência da rota. Com uma só rota ativa, é ela que manda.
+          Sem rota ativa, a lista fica só pela ordem das categorias.
+        </p>
+
         <div className="admin-tabela-rolagem">
           <table className="admin-table">
         <thead>
@@ -942,6 +980,7 @@ export default function RoteirosAdmin() {
             <th>Nome</th>
             <th>Nível</th>
             <th>Territórios</th>
+            <th>Ordem da lista</th>
             <th>Logo</th>
             <th>Mapas</th>
             <th>Visível (grava na hora)</th>
@@ -959,6 +998,19 @@ export default function RoteirosAdmin() {
               </td>
               <td>{r.nivel}</td>
               <td>{r.pontos?.length ?? 0}</td>
+              <td>
+                <button
+                  className={rotaPrincipal === r.id ? "btn" : "outline"}
+                  onClick={() => definirPrincipal(r.id)}
+                  title={
+                    rotaPrincipal === r.id
+                      ? "Clique para deixar de ser a rota principal"
+                      : "Usar a ordem desta rota na página Territórios"
+                  }
+                >
+                  {rotaPrincipal === r.id ? "principal ✓" : "definir"}
+                </button>
+              </td>
               <td>{r.logo ? "sim" : "não"}</td>
               <td>{r.mapas?.length ?? 0}</td>
               <td>
@@ -995,7 +1047,7 @@ export default function RoteirosAdmin() {
 
           {roteiros.length === 0 && (
             <tr>
-              <td colSpan={7} style={{ textAlign: "center", padding: 24 }}>
+              <td colSpan={8} style={{ textAlign: "center", padding: 24 }}>
                 Nenhuma rota cadastrada.
               </td>
             </tr>

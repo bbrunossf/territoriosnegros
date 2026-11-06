@@ -43,18 +43,39 @@ export interface GrupoTerritorios {
   territorios: Territorio[];
 }
 
-/** Agrupa os territórios visíveis por categoria, na ordem definida no painel. */
+/** Agrupa os territórios visíveis por categoria, na ordem definida no painel.
+ *
+ *  `ordemNaRota` (15/10/2026, pedido da autoria): quando a lista vem de uma rota
+ *  ativa, dentro de CADA categoria os territórios seguem a ordem de visitação —
+ *  é a sequência que o visitante percorre, não a ordem solta do cadastro. Sem
+ *  rota ativa, o mapa vem vazio e vale a ordem de antes (categoria › ordem › nome).
+ */
 export function agruparPorCategoria(
   territorios: TerritoriosMap,
-  categorias: Categoria[]
+  categorias: Categoria[],
+  ordemNaRota?: Map<string, number>
 ): GrupoTerritorios[] {
   const visiveis = ordenarTerritorios(territorios, categorias);
+
+  /** dentro do grupo: posição na rota primeiro; depois ordem e nome */
+  const naOrdemDaRota = (lista: Territorio[]): Territorio[] => {
+    if (!ordemNaRota || ordemNaRota.size === 0) return lista;
+
+    return [...lista].sort((a, b) => {
+      const ia = ordemNaRota.get(a.id) ?? Number.MAX_SAFE_INTEGER;
+      const ib = ordemNaRota.get(b.id) ?? Number.MAX_SAFE_INTEGER;
+
+      return (
+        ia - ib || (a.ordem ?? 0) - (b.ordem ?? 0) || a.nome.localeCompare(b.nome, "pt-BR")
+      );
+    });
+  };
 
   const grupos: GrupoTerritorios[] = ordenarCategorias(categorias)
     .map((c) => ({
       id: c.id,
       titulo: c.nome,
-      territorios: visiveis.filter((t) => t.categoria === c.id),
+      territorios: naOrdemDaRota(visiveis.filter((t) => t.categoria === c.id)),
     }))
     .filter((g) => g.territorios.length > 0);
 
@@ -66,7 +87,7 @@ export function agruparPorCategoria(
     grupos.push({
       id: "sem-categoria",
       titulo: "Outros territórios",
-      territorios: semCategoria,
+      territorios: naOrdemDaRota(semCategoria),
     });
   }
 
@@ -170,6 +191,46 @@ export function enderecoDoTerritorio(
   }
 
   return `/territorio/${territorioId}`;
+}
+
+/**
+ * Rota que manda na ORDEM da lista de Territórios (15/10/2026, pedido da autoria:
+ * a lista agrupava por categoria, mas não seguia a sequência da rota).
+ *
+ * - havendo rotas ativas, vale a marcada no painel como principal;
+ * - se nenhuma estiver marcada (ou a marcada foi desativada), vale a primeira
+ *   rota ativa na ordem do painel;
+ * - sem rota ativa, não há ordem de rota — a lista fica só pelas categorias.
+ */
+export function rotaDaOrdemDaLista(
+  roteiros: Roteiro[],
+  rotaPrincipalId?: string | null
+): Roteiro | null {
+  const ativas = roteirosVisiveis(roteiros);
+
+  if (ativas.length === 0) return null;
+
+  if (rotaPrincipalId) {
+    const principal = ativas.find((r) => r.id === rotaPrincipalId);
+
+    if (principal) return principal;
+  }
+
+  return ativas[0];
+}
+
+/** Posição de cada território na rota (id → índice), para ordenar a lista. */
+export function ordemNaRota(
+  rota: Roteiro | null,
+  territorios: TerritoriosMap
+): Map<string, number> {
+  const ordem = new Map<string, number>();
+
+  if (!rota) return ordem;
+
+  pontosVisiveis(rota.pontos, territorios).forEach((t, i) => ordem.set(t.id, i));
+
+  return ordem;
 }
 
 /** Gera o id (slug) a partir de um nome digitado no painel. */
