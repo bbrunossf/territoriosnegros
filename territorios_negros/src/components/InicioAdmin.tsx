@@ -492,126 +492,6 @@ export default function InicioAdmin() {
         </div>
       </form>
 
-      <h2>Agenda</h2>
-
-      <p className="admin-ajuda">
-        O app mostra o <b>próximo tour confirmado</b> (a data mais próxima de hoje).
-        Tours com data passada saem do ar automaticamente; para tirar um tour do ar
-        antes da data, use <b>desligar</b> — o cadastro continua aqui.
-      </p>
-
-      <div className="admin-tabela-rolagem">
-        <table className="admin-table">
-          <thead>
-            <tr>
-              <th>Tour</th>
-              <th>Data</th>
-              <th>Situação</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {[...tours]
-              .sort((a, b) => (a.data || "9999").localeCompare(b.data || "9999"))
-              .map((t) => (
-                <tr key={t.id} className={t.ativo ? "" : "admin-linha-inativa"}>
-                  <td>
-                    <b>{t.texto || "(sem título)"}</b>
-                    <br />
-                    <small>{t.id}</small>
-                  </td>
-                  <td>
-                    {t.data ? formatarDataBR(t.data) : "sem data"}
-                    {t.hora ? ` · ${t.hora}` : ""}
-                  </td>
-                  <td>
-                    {!t.ativo
-                      ? "desligado"
-                      : tourVencido(t)
-                        ? "data passada (fora do ar)"
-                        : "no app"}
-                  </td>
-                  <td className="admin-acoes">
-                    <button
-                      className="outline"
-                      onClick={() => {
-                        setEditandoId(t.id);
-                        setTour({
-                          ativo: t.ativo,
-                          texto: t.texto,
-                          data: t.data,
-                          hora: t.hora,
-                          local: t.local,
-                          info: t.info,
-                          rotaId: t.rotaId,
-                          logo: t.logo,
-                          inscricaoUrl: t.inscricaoUrl,
-                        });
-                        setConfirmandoExcluir(null);
-                        setOk("");
-                        setErro("");
-                      }}
-                      title="Editar"
-                    >
-                      ✏️ editar
-                    </button>
-
-                    <button
-                      className={t.ativo ? "outline" : "btn"}
-                      onClick={() => alternarTour(t.id)}
-                      title={t.ativo ? "Tirar do app" : "Colocar no app"}
-                    >
-                      {t.ativo ? "desligar" : "ligar"}
-                    </button>
-
-                    <button
-                      className="outline"
-                      onClick={() => setConfirmandoExcluir(t.id)}
-                      title="Excluir"
-                    >
-                      🗑️ excluir
-                    </button>
-                  </td>
-                </tr>
-              ))}
-
-            {tours.length === 0 && (
-              <tr>
-                <td colSpan={4} style={{ textAlign: "center", padding: 24 }}>
-                  Nenhum tour na agenda. Preencha o formulário acima e clique em
-                  “Adicionar tour à agenda”.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      {/* confirmação na própria tela: window.confirm é bloqueado no navegador */}
-      {confirmandoExcluir && (
-        <div className="admin-confirmacao">
-          <p>
-            <b>Excluir este tour da agenda?</b> Esta ação não pode ser desfeita. Se a
-            intenção é só tirá-lo do app por enquanto, use <b>desligar</b>.
-          </p>
-
-          <div className="admin-form-botoes">
-            <button type="button" className="btn" onClick={() => excluirTour(confirmandoExcluir)}>
-              Excluir mesmo assim
-            </button>
-
-            <button
-              type="button"
-              className="outline"
-              onClick={() => setConfirmandoExcluir(null)}
-            >
-              Cancelar
-            </button>
-          </div>
-        </div>
-      )}
-
       {/* ─── Inscrições ─── */}
       <form className="admin-form" onSubmit={salvar}>
         <h2>Inscrições</h2>
@@ -870,6 +750,126 @@ export default function InicioAdmin() {
           </button>
         </div>
       </form>
+      <h2>Agenda</h2>
+
+      <p className="admin-ajuda">
+        O app mostra o <b>próximo tour confirmado</b> (a data mais próxima de hoje).
+        Tours com data passada saem do ar automaticamente; para tirar um tour do ar
+        antes da data, use <b>desligar</b> — o cadastro continua aqui.
+      </p>
+
+      <div className="admin-tabela-rolagem">
+        <table className="admin-table">
+          <thead>
+            <tr>
+              <th>Tour</th>
+              <th>Data</th>
+              <th>Situação</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {[...tours]
+              .sort((a, b) => (a.data || "9999").localeCompare(b.data || "9999"))
+              .map((t) => (
+                <tr key={t.id} className={t.ativo ? "" : "admin-linha-inativa"}>
+                  <td>
+                    <b>{t.texto || "(sem título)"}</b>
+                    <br />
+                    <small>{t.id}</small>
+                  </td>
+                  <td>
+                    {t.data ? formatarDataBR(t.data) : "sem data"}
+                    {t.hora ? ` · ${t.hora}` : ""}
+                  </td>
+                  <td>
+                    {!t.ativo
+                      ? "desligado"
+                      : tourVencido(t)
+                        ? "data passada (fora do ar)"
+                        : "no app"}
+                  </td>
+                  <td className="admin-acoes">
+                    <button
+                      className="outline"
+                      onClick={() => {
+                        setEditandoId(t.id);
+                        setTour({
+                          ativo: t.ativo,
+                          texto: t.texto,
+                          data: t.data,
+                          hora: t.hora,
+                          local: t.local,
+                          info: t.info,
+                          rotaId: t.rotaId,
+                          logo: t.logo,
+                          inscricaoUrl: t.inscricaoUrl,
+                        });
+                        setConfirmandoExcluir(null);
+                        setOk("");
+                        setErro("");
+                      }}
+                      title="Editar"
+                    >
+                      ✏️ editar
+                    </button>
+
+                    <button
+                      className={t.ativo ? "outline" : "btn"}
+                      onClick={() => alternarTour(t.id)}
+                      title={t.ativo ? "Tirar do app" : "Colocar no app"}
+                    >
+                      {t.ativo ? "desligar" : "ligar"}
+                    </button>
+
+                    <button
+                      className="outline"
+                      onClick={() => setConfirmandoExcluir(t.id)}
+                      title="Excluir"
+                    >
+                      🗑️ excluir
+                    </button>
+                  </td>
+                </tr>
+              ))}
+
+            {tours.length === 0 && (
+              <tr>
+                <td colSpan={4} style={{ textAlign: "center", padding: 24 }}>
+                  Nenhum tour na agenda. Preencha o formulário acima e clique em
+                  “Adicionar tour à agenda”.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {/* confirmação na própria tela: window.confirm é bloqueado no navegador */}
+      {confirmandoExcluir && (
+        <div className="admin-confirmacao">
+          <p>
+            <b>Excluir este tour da agenda?</b> Esta ação não pode ser desfeita. Se a
+            intenção é só tirá-lo do app por enquanto, use <b>desligar</b>.
+          </p>
+
+          <div className="admin-form-botoes">
+            <button type="button" className="btn" onClick={() => excluirTour(confirmandoExcluir)}>
+              Excluir mesmo assim
+            </button>
+
+            <button
+              type="button"
+              className="outline"
+              onClick={() => setConfirmandoExcluir(null)}
+            >
+              Cancelar
+            </button>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
