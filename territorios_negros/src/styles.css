@@ -3179,6 +3179,25 @@ a, a:visited, a:hover, a:active {
   margin-top: 10px;
 }
 
+/* ── Lista de Territórios × botões (15/10/2026) ─────────────────────
+   A autoria viu a Igreja do Rosário colada nos botões de cima. A lista ganhou
+   invólucro próprio e, quando há botões antes ou depois dela, um filete com
+   respiro separa os dois — sem filete solto quando não há botões. */
+.pagina-botoes + .territorios-lista {
+  margin-top: 16px;
+  padding-top: 16px;
+
+  border-top: 1px solid rgba(143, 97, 29, 0.32);
+}
+
+.territorios-lista + .pagina-botoes,
+.territorios-lista + .aviso-vazio + .pagina-botoes {
+  margin-top: 26px;
+  padding-top: 18px;
+
+  border-top: 1px solid rgba(143, 97, 29, 0.32);
+}
+
 .pagina-botoes {
   display: grid;
   gap: 10px;

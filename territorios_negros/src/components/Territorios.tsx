@@ -54,50 +54,52 @@ export default function Territorios() {
           Apoiadores (ordem pedida em 02/10/2026). */}
       <BotoesDaTela tela="territorios" posicao="topo" />
 
-      {(() => {
-        // contador contínuo: a alternância de fundo não reinicia em cada grupo
-        let indice = 0;
+      <div className="territorios-lista">
+        {(() => {
+          // contador contínuo: a alternância de fundo não reinicia em cada grupo
+          let indice = 0;
 
-        return grupos.map((g) => (
-          <section key={g.id}>
-            {/* sem título quando a lista é a própria rota: nada de cabeçalho de
-                categoria entre os territórios, só a sequência da visita */}
-            {g.titulo !== "" && (
-              <SectionHeader title={g.titulo} simbolo={simboloDaCategoria(config, g.id)} />
-            )}
+          return grupos.map((g) => (
+            <section key={g.id}>
+              {/* sem título quando a lista é a própria rota: nada de cabeçalho de
+                  categoria entre os territórios, só a sequência da visita */}
+              {g.titulo !== "" && (
+                <SectionHeader title={g.titulo} simbolo={simboloDaCategoria(config, g.id)} />
+              )}
 
-            {g.territorios.map((t) => {
-              const alternado = indice++ % 2 === 1;
+              {g.territorios.map((t) => {
+                const alternado = indice++ % 2 === 1;
 
-              return (
-                <button
-                  key={t.id}
-                  className={`territorios-item${alternado ? " territorios-item--alternado" : ""}`}
-                  onClick={() => navigate(`/territorio/${t.id}`)}
-                >
-                  {t.imagem ? (
-                    /* moldura com fundo creme (passe-partout) e a foto INTEIRA
-                       dentro — as verticais não são mais cortadas */
-                    <span className="territorios-thumb">
-                      <img src={t.imagem} alt="" className="territorios-thumb-foto" />
+                return (
+                  <button
+                    key={t.id}
+                    className={`territorios-item${alternado ? " territorios-item--alternado" : ""}`}
+                    onClick={() => navigate(`/territorio/${t.id}`)}
+                  >
+                    {t.imagem ? (
+                      /* moldura com fundo creme (passe-partout) e a foto INTEIRA
+                         dentro — as verticais não são mais cortadas */
+                      <span className="territorios-thumb">
+                        <img src={t.imagem} alt="" className="territorios-thumb-foto" />
+                      </span>
+                    ) : (
+                      <span className="territorios-thumb territorios-thumb-vazia">●</span>
+                    )}
+
+                    <span>
+                      <b className="territorios-nome">{t.nome}</b>
+                      <br />
+                      <small className="territorios-palavra">{t.palavra}</small>
                     </span>
-                  ) : (
-                    <span className="territorios-thumb territorios-thumb-vazia">●</span>
-                  )}
 
-                  <span>
-                    <b className="territorios-nome">{t.nome}</b>
-                    <br />
-                    <small className="territorios-palavra">{t.palavra}</small>
-                  </span>
-
-                  <b className="territorios-arrow">›</b>
-                </button>
-              );
-            })}
-          </section>
-        ));
-      })()}
+                    <b className="territorios-arrow">›</b>
+                  </button>
+                );
+              })}
+            </section>
+          ));
+        })()}
+      </div>
 
       {!carregando && grupos.length === 0 && (
         <p className="aviso-vazio">
