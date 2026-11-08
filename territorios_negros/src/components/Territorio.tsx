@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTerritorios } from "../context/useTerritorios";
-import { pontosVisiveis } from "../utils/catalogo";
+import { pontosVisiveis, rotaDaOrdemDaLista } from "../utils/catalogo";
 import { somenteVisiveis } from "../utils/visibilidade";
 
 import FichaTerritorio from "../components/FichaTerritorio";
@@ -49,9 +49,18 @@ export default function Territorio() {
 
   // Lista de territórios do contexto atual (uma rota ou "todos"),
   // sempre só com os que estão habilitados no painel.
+  //
+  // Chegando pela página Territórios, a sequência é a MESMA que o visitante
+  // acabou de ver na lista: a rota que manda na lista (painel › Rotas › "Página
+  // Territórios"), e não mais a ordem avulsa do painel. Era esse desencontro
+  // que fazia a Igreja do Rosário abrir como "2 de 7" (15/10/2026).
+  const rotaDaLista = rotaDaOrdemDaLista(roteiros, config.rota_principal as string | undefined);
+
   const lista = dentroDeRota
     ? pontosVisiveis(roteiros.find((r) => r.id === rotaId)?.pontos, territorios)
-    : ordemTerritoriosVisual.map((tid) => territorios[tid]).filter(Boolean);
+    : rotaDaLista
+      ? pontosVisiveis(rotaDaLista.pontos, territorios)
+      : ordemTerritoriosVisual.map((tid) => territorios[tid]).filter(Boolean);
 
   if (dentroDeRota && !roteiros.find((r) => r.id === rotaId)) {
     return <p>Rota não encontrada.</p>;
