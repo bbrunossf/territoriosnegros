@@ -135,6 +135,39 @@
   word-break: break-word;
 }
 
+/* vários links no mesmo tópico (15/10/2026): cada um numa linha, com o rótulo
+   escrito pela autoria; o endereço cru só aparece quando não há rótulo */
+.marco-links {
+  margin: 6px 0 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.marco-links li + li {
+  margin-top: 4px;
+}
+
+.marco-link {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 6px;
+
+  color: #8f611d;
+  font-size: 0.92rem;
+  font-weight: 600;
+  line-height: 1.35;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+
+  word-break: break-word;
+}
+
+.marco-link-seta {
+  font-weight: 700;
+  text-decoration: none;
+}
+
 /* linha de exibição do cadastro (habilitar/desabilitar todos desta página) */
 .marcos-editor-exibicao {
   align-items: center;
@@ -363,4 +396,40 @@
 /* ── a seção no app do visitante ──────────────────────────────────────────
    Não há nenhum controle dentro do app: exibir/ocultar e permitir a expansão
    ficam no painel (guia "Marcos e Conexões"). */
+
+/* ── cadastro dos links do tópico (painel) ──────────────────────────────── */
+.marco-editor-links {
+  margin-top: 12px;
+}
+
+.marco-editor-link {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr auto;
+  gap: 8px;
+  align-items: center;
+
+  margin-top: 8px;
+}
+
+.marco-editor-link input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 620px) {
+  .marco-editor-link {
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "rotulo remover"
+      "url url";
+  }
+
+  .marco-editor-link-rotulo {
+    grid-area: rotulo;
+  }
+
+  .marco-editor-link-url {
+    grid-area: url;
+  }
+}
 

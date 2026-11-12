@@ -28,6 +28,7 @@ import { trazerParaVista } from "../utils/rolagem";
 import {
   TITULO_MARCOS,
   explicacoesPublicas,
+  linksDoMarco,
   marcoExibivel,
   marcosDaPagina,
   marcosVisiveis,
@@ -42,26 +43,54 @@ export type PersonalidadeLigada = {
   relacao: string;
 };
 
-/** Uma linha de fonte: link quando tem endereço, texto quando não tem. */
+/** Uma linha de fonte: texto da referência e, quando houver, os endereços. */
 function FonteDoMarco({ marco }: { marco: Marco }) {
-  const rotulo = marco.fonte.trim() || marco.fonteUrl.trim();
+  const links = linksDoMarco(marco);
+  const referencia = marco.fonte.trim();
 
-  if (!rotulo) return null;
+  if (!referencia && links.length === 0) return null;
 
-  const endereco = marco.fonteUrl.trim();
+  const antigo = links.length === 1 && links[0].rotulo === "";
 
   return (
-    <p className="marco-fonte">
-      <span className="marco-fonte-rotulo">Fonte: </span>
+    <>
+      {referencia && (
+        <p className="marco-fonte">
+          <span className="marco-fonte-rotulo">Fonte: </span>
 
-      {endereco ? (
-        <a href={endereco} target="_blank" rel="noreferrer">
-          {rotulo}
-        </a>
-      ) : (
-        rotulo
+          {/* tópico antigo, com um link só: o texto da fonte continua sendo o
+              próprio link, como era antes */}
+          {antigo ? (
+            <a href={links[0].url} target="_blank" rel="noreferrer">
+              {referencia}
+            </a>
+          ) : (
+            referencia
+          )}
+        </p>
       )}
-    </p>
+
+      {/* vários endereços no mesmo tópico (15/10/2026): cada um com o seu
+          rótulo, um embaixo do outro. No tópico antigo, de um link só, o
+          próprio texto da fonte já é o link — não repete a linha. */}
+      {!antigo && links.length > 0 && (
+        <ul className="marco-links">
+          {links.map((link, i) => (
+            <li key={`${link.url}-${i}`}>
+              <a className="marco-link" href={link.url} target="_blank" rel="noreferrer">
+                <span className="marco-link-seta" aria-hidden="true">
+                  ↗
+                </span>
+
+                <span className="marco-link-texto">
+                  {link.rotulo.trim() || link.url}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
+    </>
   );
 }
 

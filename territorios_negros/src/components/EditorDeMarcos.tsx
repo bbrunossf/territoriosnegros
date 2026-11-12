@@ -11,11 +11,13 @@ import { salvarConfig } from "../data/api";
 import { useTerritorios } from "../context/useTerritorios";
 import {
   CHAVE_MARCOS,
+  linksDoMarco,
   marcoExibivel,
   marcoPreenchido,
   mover,
   novoMarco,
   normalizarMarcos,
+  type LinkDoMarco,
   type Marco,
 } from "../data/marcos";
 
@@ -109,6 +111,23 @@ export default function EditorDeMarcos({
   function mexer(de: number, para: number) {
     setTopicos((lista) => mover(lista, de, para));
     setPendente(true);
+  }
+
+  /**
+   * Os links do tópico como a tela mostra: os cadastrados agora ou, no tópico
+   * antigo, o único `fonteUrl`. Escrever aqui assume o comando dos links e
+   * aposenta o campo antigo (sem apagar o resto do tópico).
+   */
+  function linksDe(marco: Marco): LinkDoMarco[] {
+    return linksDoMarco(marco);
+  }
+
+  function mudarLinks(indice: number, links: LinkDoMarco[]) {
+    setTopicos((lista) =>
+      lista.map((m, i) => (i === indice ? { ...m, links, fonteUrl: "" } : m))
+    );
+    setPendente(true);
+    setOk("");
   }
 
   async function salvar() {
@@ -340,17 +359,72 @@ export default function EditorDeMarcos({
                 aoMudar={(texto) => mudar(i, "fonte", texto)}
               />
             </label>
+          </div>
 
-            <label className="admin-campo">
-              <b>Link da fonte (opcional)</b>
-              <span className="admin-dica">endereço na internet, quando existir</span>
-              <input
-                type="text"
-                value={marco.fonteUrl}
-                placeholder="Ex: https://…"
-                onChange={(e) => mudar(i, "fonteUrl", e.target.value)}
-              />
-            </label>
+          {/* Vários links no mesmo tópico (pedido da autoria, 15/10/2026): em
+              Arte e Cultura, um endereço para as exposições permanentes e outro
+              para a programação, sem criar um tópico para cada. */}
+          <div className="admin-campo marco-editor-links">
+            <b>Links (opcional)</b>
+            <span className="admin-dica">
+              Quantos quiser, no mesmo tópico. O <b>rótulo</b> é o que o visitante lê; o
+              endereço abre em outra aba. Tópico antigo, com um link só, aparece aqui como
+              a primeira linha.
+            </span>
+
+            {linksDe(marco).map((link, j) => (
+              <div className="marco-editor-link" key={j}>
+                <input
+                  type="text"
+                  className="marco-editor-link-rotulo"
+                  placeholder="Rótulo (ex: Exposições permanentes)"
+                  value={link.rotulo}
+                  onChange={(e) =>
+                    mudarLinks(
+                      i,
+                      linksDe(marco).map((l, k) => (k === j ? { ...l, rotulo: e.target.value } : l))
+                    )
+                  }
+                />
+
+                <input
+                  type="text"
+                  className="marco-editor-link-url"
+                  placeholder="Ex: https://…"
+                  value={link.url}
+                  onChange={(e) =>
+                    mudarLinks(
+                      i,
+                      linksDe(marco).map((l, k) => (k === j ? { ...l, url: e.target.value } : l))
+                    )
+                  }
+                />
+
+                <button
+                  type="button"
+                  className="outline"
+                  title="remover este link"
+                  onClick={() =>
+                    mudarLinks(
+                      i,
+                      linksDe(marco).filter((_l, k) => k !== j)
+                    )
+                  }
+                >
+                  ✕
+                </button>
+              </div>
+            ))}
+
+            <div>
+              <button
+                type="button"
+                className="outline"
+                onClick={() => mudarLinks(i, [...linksDe(marco), { rotulo: "", url: "" }])}
+              >
+                + Adicionar link
+              </button>
+            </div>
           </div>
         </div>
       ))}

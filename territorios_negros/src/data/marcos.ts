@@ -24,14 +24,26 @@ export interface Marco {
   explicacao: string;
   /** referência em texto (livro, documento, acervo, relato) */
   fonte: string;
-  /** link da fonte, quando houver */
+  /** link da fonte, quando houver (campo antigo, de quando só cabia um) */
   fonteUrl: string;
+  /**
+   * Vários endereços no mesmo tópico (pedido da autoria, 15/10/2026): em Arte e
+   * Cultura, por exemplo, um link para as exposições permanentes e outro para a
+   * programação, sem precisar criar um tópico para cada.
+   */
+  links?: LinkDoMarco[];
   /**
    * Habilitado/desabilitado no painel, como as fotos e os vídeos: desabilitado,
    * o tópico não aparece no app (o conteúdo continua guardado). Ausente = vale
    * como habilitado, para não esconder nada do que já estava cadastrado.
    */
   visivel?: boolean;
+}
+
+/** Um endereço dentro do tópico: o rótulo é o que o visitante lê. */
+export interface LinkDoMarco {
+  rotulo: string;
+  url: string;
 }
 
 /** Todos os marcos do app, por chave de página. */
@@ -109,8 +121,39 @@ export function novoMarco(): Marco {
     explicacao: "",
     fonte: "",
     fonteUrl: "",
+    links: [],
     visivel: true,
   };
+}
+
+/** Lê a lista de links de um tópico, tolerando lixo. */
+export function normalizarLinks(valor: unknown): LinkDoMarco[] {
+  if (!Array.isArray(valor)) return [];
+
+  return valor
+    .filter((item) => !!item && typeof item === "object")
+    .map((item) => {
+      const bruto = item as Record<string, unknown>;
+
+      return { rotulo: texto(bruto.rotulo), url: texto(bruto.url) };
+    })
+    .filter((link) => link.url.trim() !== "");
+}
+
+/**
+ * Os endereços de um tópico, já resolvidos para a tela.
+ * Tópico antigo (um link só) continua funcionando: o `fonteUrl` vira um link.
+ */
+export function linksDoMarco(marco: Marco | undefined): LinkDoMarco[] {
+  if (!marco) return [];
+
+  const proprios = normalizarLinks(marco.links);
+
+  if (proprios.length > 0) return proprios;
+
+  const antigo = (marco.fonteUrl ?? "").trim();
+
+  return antigo ? [{ rotulo: "", url: antigo }] : [];
 }
 
 /** O tópico aparece no app? Desabilitado no painel = não aparece. */
@@ -138,6 +181,7 @@ export function normalizarMarcos(valor: unknown): MarcosDoApp {
           explicacao: texto(bruto.explicacao),
           fonte: texto(bruto.fonte),
           fonteUrl: texto(bruto.fonteUrl),
+          links: normalizarLinks(bruto.links),
           // ausente = habilitado (nada do que já existe é escondido sozinho)
           visivel: bruto.visivel !== false,
         };
