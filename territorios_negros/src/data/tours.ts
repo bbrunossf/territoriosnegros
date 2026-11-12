@@ -22,6 +22,8 @@ export const CHAVE_INSCRICOES = "inscricoes";
 
 /** Regras de exibição dos botões de inscrição (app_config.inscricoes) */
 export interface Inscricoes {
+  /** mostra o cartão do próximo evento na tela inicial */
+  mostrar: boolean;
   /** mostra o botão dentro do cartão do tour, na tela inicial */
   cartao: boolean;
   /** mostra o botão "Abrir a ficha de inscrição" na página do evento */
@@ -33,6 +35,7 @@ export interface Inscricoes {
 }
 
 export const INSCRICOES_PADRAO: Inscricoes = {
+  mostrar: true,
   cartao: true,
   ficha: true,
   encerradas: false,
@@ -50,6 +53,7 @@ export function normalizarInscricoes(valor: unknown): Inscricoes {
   const v = valor as Record<string, unknown>;
 
   return {
+    mostrar: v.mostrar !== false,
     cartao: v.cartao !== false,
     ficha: v.ficha !== false,
     encerradas: v.encerradas === true,

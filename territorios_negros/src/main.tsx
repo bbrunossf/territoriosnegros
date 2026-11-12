@@ -21,6 +21,7 @@ import TerritoriosAdmin from "./components/TerritoriosAdmin";
 import RoteirosAdmin from "./components/RoteirosAdmin";
 import CategoriasAdmin from "./components/CategoriasAdmin";
 import InicioAdmin from "./components/InicioAdmin";
+import EventosAdmin from "./components/EventosAdmin";
 import PaginasAdmin from "./components/PaginasAdmin";
 import MensagensAdmin from "./components/MensagensAdmin";
 import AcessosAdmin from "./components/AcessosAdmin";
@@ -95,6 +96,7 @@ createRoot(document.getElementById('root')!).render(
               <Route path="roteiros" element={<RoteirosAdmin />} />
               <Route path="categorias" element={<CategoriasAdmin />} />
               <Route path="inicio" element={<InicioAdmin />} />
+              <Route path="eventos" element={<EventosAdmin />} />
               <Route path="paginas" element={<PaginasAdmin />} />
               <Route path="apoiadores" element={<ApoiadoresAdmin />} />
               <Route path="menu-mais" element={<MenuMaisAdmin />} />

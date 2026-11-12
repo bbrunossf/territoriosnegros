@@ -28,7 +28,7 @@ export default function Home() {
       <div className="home-bottom">
         {capa.credito && <p className="home-capa-credito">{capa.credito}</p>}
 
-        {proximoTour && (
+        {inscricoes.mostrar && proximoTour && (
           <div className="home-tour">
             <p className="home-tour-selo">{textos.selo}</p>
 

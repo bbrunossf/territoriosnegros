@@ -24,6 +24,9 @@ export interface GuiaDoPainel {
 /** As guias da aba "Páginas", na ordem pedida pela autoria. */
 export const GUIAS_DO_PAINEL: GuiaDoPainel[] = [
   { id: "inicio", rotulo: "Página Inicial", rota: "/admin/inicio" },
+  // a agenda ganhou tela própria em 15/10/2026 (pedido da autoria): editar as
+  // datas no meio dos textos da capa confundia.
+  { id: "eventos", rotulo: "Próximos eventos", rota: "/admin/eventos" },
   { id: "conceito", rotulo: "Conceito", rota: "/admin/paginas?p=conceito" },
   { id: "vitoria", rotulo: "Vitória", rota: "/admin/paginas?p=vitoria" },
   { id: "presenca-negra", rotulo: "Presença Negra", rota: "/admin/paginas?p=presenca-negra" },

@@ -4,6 +4,7 @@
 
 import { createContext } from "react";
 import type { Categoria, Roteiro, TerritoriosMap } from "../data/types";
+import { INSCRICOES_PADRAO } from "../data/tours";
 import type { Inscricoes, Tour } from "../data/tours";
 
 export interface DadosContextType {
@@ -41,7 +42,7 @@ export const DadosCtx = createContext<DadosContextType>({
   proximoTour: null,
   tours: [],
   toursEmCartaz: [],
-  inscricoes: { cartao: true, ficha: true, encerradas: false, aviso: "Inscrições encerradas" },
+  inscricoes: INSCRICOES_PADRAO,
   inscricaoUrl: "",
   ordemTerritoriosVisual: [],
   carregando: true,
