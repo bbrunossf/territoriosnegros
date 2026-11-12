@@ -470,14 +470,14 @@
    vista enquanto a ficha rola. Só aparece quando o visitante veio de algum
    lugar — link direto não ganha botão. */
 .personalidade-volta {
-  position: fixed;
-  top: 12px;
-  left: 12px;
+  position: sticky;
+  top: 70px;
   z-index: 40;
 
-  display: inline-flex;
-  align-items: center;
+  display: flex;
+  width: fit-content;
 
+  margin: 0 0 14px;
   padding: 9px 15px;
 
   border: 1px solid rgba(143, 97, 29, 0.55);
@@ -493,11 +493,6 @@
   line-height: 1;
   text-decoration: none;
   white-space: nowrap;
-}
-
-/* respiro no alto da ficha para o botão não cobrir o primeiro bloco */
-.personalidade--volta {
-  padding-top: 58px;
 }
 
 .personalidade .marco-fonte {
