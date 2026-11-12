@@ -364,3 +364,18 @@
    Não há nenhum controle dentro do app: exibir/ocultar e permitir a expansão
    ficam no painel (guia "Marcos e Conexões"). */
 
+/* aviso dos endereços que sobraram do cadastro com vários links */
+.marco-editor-sobras {
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.marco-editor-sobras ul {
+  margin: 6px 0;
+  padding-left: 18px;
+}
+
+.marco-editor-sobras li {
+  word-break: break-all;
+}
+

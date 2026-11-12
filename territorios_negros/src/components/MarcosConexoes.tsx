@@ -58,12 +58,14 @@ function FonteDoMarco({ marco }: { marco: Marco }) {
     <p className="marco-fonte">
       <span className="marco-fonte-rotulo">Fonte: </span>
 
+      {/* a referência aceita a mesma marcação do painel (**negrito**, *itálico*):
+          antes os asteriscos apareciam crus na tela (15/10/2026) */}
       {endereco ? (
         <a href={endereco} target="_blank" rel="noreferrer">
-          {rotulo}
+          <Inline texto={rotulo} />
         </a>
       ) : (
-        rotulo
+        <Inline texto={rotulo} />
       )}
     </p>
   );

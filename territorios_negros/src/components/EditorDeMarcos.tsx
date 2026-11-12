@@ -16,6 +16,7 @@ import {
   mover,
   novoMarco,
   normalizarMarcos,
+  type LinkDoMarco,
   type Marco,
 } from "../data/marcos";
 
@@ -76,6 +77,13 @@ export default function EditorDeMarcos({
     () => normalizarMarcos(config[CHAVE_MARCOS])[chaveDaPagina] ?? []
   );
   const [pendente, setPendente] = useState(false);
+  /**
+   * Endereços que sobraram do período em que o cadastro aceitou vários links
+   * (15/10/2026). O primeiro já vai para o campo único; os demais ficam listados
+   * aqui, à vista, para a autoria decidir o que fazer com eles — e somem do
+   * banco no próximo "Salvar".
+   */
+  const [sobras, setSobras] = useState<Record<string, LinkDoMarco[]>>({});
   const [salvando, setSalvando] = useState(false);
   const [ok, setOk] = useState("");
   const [erro, setErro] = useState("");
@@ -97,6 +105,16 @@ export default function EditorDeMarcos({
       }));
 
       setTopicos(daPagina);
+
+      const restantes: Record<string, LinkDoMarco[]> = {};
+
+      for (const m of todos[chaveDaPagina] ?? []) {
+        const extras = (m.links ?? []).filter((l) => l.url.trim() !== "").slice(1);
+
+        if (extras.length > 0) restantes[m.id] = extras;
+      }
+
+      setSobras(restantes);
       setPendente(false);
       setOk("");
       setErro("");
@@ -125,9 +143,17 @@ export default function EditorDeMarcos({
     try {
       const todos = normalizarMarcos(config[CHAVE_MARCOS]);
 
-      // grava a chave desta página e preserva as outras como estão
-      await salvarConfig(CHAVE_MARCOS, { ...todos, [chaveDaPagina]: topicos });
+      // grava a chave desta página e preserva as outras como estão; o campo
+      // antigo de vários links sai do registro (o cadastro tem um link só)
+      const limpos = topicos.map((m) => {
+        const copia: Marco = { ...m };
+        delete copia.links;
+        return copia;
+      });
+
+      await salvarConfig(CHAVE_MARCOS, { ...todos, [chaveDaPagina]: limpos });
       await recarregar();
+      setSobras({});
 
       setPendente(false);
       setOk("Marcos e Conexões publicado. Aparece no app assim que a página é recarregada.");
@@ -359,6 +385,26 @@ export default function EditorDeMarcos({
               />
             </label>
           </div>
+
+          {/* Sobras do período em que o tópico aceitou vários links: ficam à
+              vista para a autoria copiar o que quiser, e saem do registro no
+              próximo "Salvar" (15/10/2026). */}
+          {(sobras[marco.id] ?? []).length > 0 && (
+            <div className="admin-aviso marco-editor-sobras">
+              <b>Este tópico guardou mais de um link</b> de quando o cadastro aceitava
+              vários. O campo acima ficou com o primeiro; estes não aparecem no app:
+              <ul>
+                {(sobras[marco.id] ?? []).map((link, k) => (
+                  <li key={k}>
+                    {link.rotulo.trim() ? `${link.rotulo.trim()} — ` : ""}
+                    {link.url}
+                  </li>
+                ))}
+              </ul>
+              Se quiser mantê-los, escreva no texto da referência acima. Ao salvar, eles são
+              retirados do registro.
+            </div>
+          )}
         </div>
       ))}
 
