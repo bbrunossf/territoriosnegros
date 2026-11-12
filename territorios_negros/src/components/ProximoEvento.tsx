@@ -78,7 +78,11 @@ export default function ProximoEvento() {
           destaque o evento do fundo da página, como o cartão da tela
           inicial. Só emoldura — nenhum texto novo entra aqui. */}
       <section className="evento-cartao">
-        <p className="evento-selo">{textos.selo}</p>
+        {/* o selo “próximo evento disponível” só vale para o evento mais
+            próximo; num evento futuro da agenda ele seria falso */}
+        {tour.id === proximoTour?.id && (
+          <p className="evento-selo">{textos.selo}</p>
+        )}
 
         <h1 className="page-title evento-titulo">{tour.texto || "Próximo tour"}</h1>
 
