@@ -78,12 +78,8 @@ export default function ProximoEvento() {
           Sem rota vinculada, aparece só a logo do evento, como antes. */}
       {rota ? (
         <article className="roteiro-card evento-rota">
-          {(tour.logo || rota.logo) && (
-            <img
-              src={tour.logo || rota.logo}
-              alt={`Logo ${rota.nome}`}
-              className="roteiro-logo"
-            />
+          {logo && (
+            <img src={logo} alt={`Logo ${rota.nome}`} className="roteiro-logo" />
           )}
 
           <div className="roteiro-header">
@@ -100,11 +96,11 @@ export default function ProximoEvento() {
                 </div>
               )}
 
-              {rota.subtitulo && (
+              {rota.subtitulo ? (
                 <p className="roteiro-subtitle">
-                  <Inline texto={rota.subtitulo} />
+                  <Inline texto={rota.subtitulo ?? ""} />
                 </p>
-              )}
+              ) : null}
             </div>
           </div>
         </article>
