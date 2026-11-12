@@ -117,54 +117,59 @@ export default function ProximoEvento() {
             Rota: <b>{rota.nome}</b>
           </p>
         )}
+
+        {/* Informações do evento (pedido da autoria, 15/10/2026): tudo o que é
+            informação fica DENTRO do quadro — as linhas do campo "Informações
+            sobre o evento" e o aviso de inscrições encerradas. Ficam fora só os
+            botões (ficha, rota, contato), que levam a outra tela. */}
+        {paragrafos.length > 0 ? (
+          <div className="evento-info">
+            {paragrafos.map((p, i) => (
+              <p key={i}>{p}</p>
+            ))}
+          </div>
+        ) : (
+          <p className="admin-ajuda">
+            As informações completas deste tour serão publicadas aqui em breve.
+          </p>
+        )}
+
+        {inscricoes.encerradas && (
+          <p className="evento-encerrado">{inscricoes.aviso}</p>
+        )}
       </section>
-
-      <div className="page-line" />
-
-      {paragrafos.length > 0 ? (
-        <div className="evento-info">
-          {paragrafos.map((p, i) => (
-            <p key={i}>{p}</p>
-          ))}
-        </div>
-      ) : (
-        <p className="admin-ajuda">
-          As informações completas deste tour serão publicadas aqui em breve.
-        </p>
-      )}
 
       {/* Ficha de inscrição: a autoria liga e desliga este botão no painel
           (Página inicial › Inscrições) e pode marcar as inscrições como
           encerradas, sem apagar o link (15/10/2026). Encerradas, o aviso entra
           no lugar do botão — e aparece mesmo com o botão desligado, porque é
           informação, não convite. */}
-      {inscricoes.encerradas ? (
-        <p className="evento-encerrado">{inscricoes.aviso}</p>
-      ) : (
-        inscricoes.ficha && (
-          <>
-            <div className="pagina-botoes">
-              {inscricao ? (
-                <Link to="/evento/ficha" className="botao-secundario pagina-botao">
-                  Abrir a ficha de inscrição
-                </Link>
-              ) : (
-                <span
-                  className="botao-secundario pagina-botao botao-sem-link"
-                  aria-disabled="true"
-                >
-                  Abrir a ficha de inscrição
-                </span>
-              )}
-            </div>
+      {/* Botão da ficha: só quando as inscrições estão abertas e a autoria
+          deixou o botão ligado no painel. Encerradas, o aviso já subiu para a
+          moldura do evento. */}
+      {!inscricoes.encerradas && inscricoes.ficha && (
+        <>
+          <div className="pagina-botoes">
+            {inscricao ? (
+              <Link to="/evento/ficha" className="botao-secundario pagina-botao">
+                Abrir a ficha de inscrição
+              </Link>
+            ) : (
+              <span
+                className="botao-secundario pagina-botao botao-sem-link"
+                aria-disabled="true"
+              >
+                Abrir a ficha de inscrição
+              </span>
+            )}
+          </div>
 
-            <p className="evento-ajuda">
-              {inscricao
-                ? "A ficha abre aqui dentro do app: você preenche e envia sem sair dele."
-                : "A ficha de inscrição ainda não está disponível."}
-            </p>
-          </>
-        )
+          <p className="evento-ajuda">
+            {inscricao
+              ? "A ficha abre aqui dentro do app: você preenche e envia sem sair dele."
+              : "A ficha de inscrição ainda não está disponível."}
+          </p>
+        </>
       )}
 
       {rota && (

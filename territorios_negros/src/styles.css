@@ -2039,6 +2039,17 @@ a, a:visited, a:hover, a:active {
   margin: 12px auto 0;
 }
 
+/* as informações entram na moldura, separadas do cabeçalho por um filete */
+.evento-cartao .evento-info {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(143, 97, 29, 0.3);
+}
+
+.evento-cartao .evento-encerrado {
+  margin: 12px 0 0;
+}
+
 /* aviso de inscrições encerradas na página do evento (15/10/2026): mesmo
    vermelho de alerta do cartão da tela inicial */
 .evento-encerrado {
