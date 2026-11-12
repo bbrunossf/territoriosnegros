@@ -158,6 +158,13 @@ export interface ProximoTour {
   /** logo própria do evento (opcional) */
   logo: string;
   inscricaoUrl: string;
+  /**
+   * Regra de inscrição DESTE evento: "sem" (nada aparece), "abertas",
+   * "encerradas" ou "" (usa a regra do painel — só quando o evento é o próximo
+   * ou tem link próprio). Pedido da autoria em 15/10/2026: um evento novo, sem
+   * inscrição cadastrada, aparecia com o aviso de encerradas do painel.
+   */
+  inscricoes?: "" | "sem" | "abertas" | "encerradas";
 }
 
 

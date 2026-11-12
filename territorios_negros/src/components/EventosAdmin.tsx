@@ -35,6 +35,7 @@ const TOUR_VAZIO = {
   rotaId: "",
   logo: "",
   inscricaoUrl: "",
+  inscricoes: "" as "" | "sem" | "abertas" | "encerradas",
 };
 
 export default function EventosAdmin() {
@@ -339,6 +340,27 @@ export default function EventosAdmin() {
         </label>
 
         <label className="admin-campo">
+          <b>Inscrições deste evento</b>
+          <span className="admin-campo-dica">
+            Cada evento decide o que mostrar sobre inscrição. <b>Sem inscrição</b>{" "}
+            não exibe botão nem aviso — bom para um evento de teste ou para uma data
+            que não tem ficha. <b>Usar a regra do painel</b> vale para o próximo
+            evento da agenda e para quem tem link próprio.
+          </span>
+          <select
+            value={tour.inscricoes}
+            onChange={(e) =>
+              setCampo("inscricoes", e.target.value as "" | "sem" | "abertas" | "encerradas")
+            }
+          >
+            <option value="">Usar a regra do painel (padrão)</option>
+            <option value="sem">Sem inscrição neste evento — não mostrar nada</option>
+            <option value="abertas">Inscrições abertas</option>
+            <option value="encerradas">Inscrições encerradas (mostrar o aviso)</option>
+          </select>
+        </label>
+
+        <label className="admin-campo">
           <b>Rota do evento (opcional)</b>
           <span className="admin-campo-dica">
             Serve para o link “ver a rota completa” na página do evento e, se você não
@@ -427,6 +449,7 @@ export default function EventosAdmin() {
                           rotaId: t.rotaId,
                           logo: t.logo,
                           inscricaoUrl: t.inscricaoUrl,
+                          inscricoes: t.inscricoes ?? "",
                         });
                         setConfirmandoExcluir(null);
                         setOk("");

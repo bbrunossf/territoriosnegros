@@ -39,6 +39,25 @@ export default function ProximoEvento() {
 
   const inscricao = tour?.inscricaoUrl || inscricaoUrl;
 
+  /* Regra de inscrição DESTE evento (15/10/2026). O painel tem uma regra geral
+     (Inscrições), mas cada evento pode dizer a sua: "sem" não mostra nada,
+     "abertas" e "encerradas" valem para ele. Sem regra própria, vale a do
+     painel — e só quando o evento tem a ver com inscrição: é o próximo da
+     agenda ou tem link próprio. Evento novo, sem link e fora do "próximo",
+     não herda o aviso de encerradas. */
+  const regraEvento = tour?.inscricoes ?? "";
+  const ehProximo = !!tour && tour.id === proximoTour?.id;
+  const estadoInscricao =
+    regraEvento === "sem"
+      ? "sem"
+      : regraEvento === "encerradas"
+        ? "encerradas"
+        : regraEvento === "abertas"
+          ? "abertas"
+          : inscricoes.encerradas && (!!tour?.inscricaoUrl || ehProximo)
+            ? "encerradas"
+            : "abertas";
+
   // logo: a própria do evento; se não houver, a da rota vinculada
   const rota = roteiros.find((r) => r.id === tour?.rotaId);
   const logo = tour?.logo || rota?.logo || "";
@@ -80,7 +99,7 @@ export default function ProximoEvento() {
       <section className="evento-cartao">
         {/* o selo “próximo evento disponível” só vale para o evento mais
             próximo; num evento futuro da agenda ele seria falso */}
-        {tour.id === proximoTour?.id && (
+        {ehProximo && (
           <p className="evento-selo">{textos.selo}</p>
         )}
 
@@ -138,7 +157,7 @@ export default function ProximoEvento() {
           </p>
         )}
 
-        {inscricoes.encerradas && (
+        {estadoInscricao === "encerradas" && (
           <p className="evento-encerrado">{inscricoes.aviso}</p>
         )}
       </section>
@@ -151,7 +170,7 @@ export default function ProximoEvento() {
       {/* Botão da ficha: só quando as inscrições estão abertas e a autoria
           deixou o botão ligado no painel. Encerradas, o aviso já subiu para a
           moldura do evento. */}
-      {!inscricoes.encerradas && inscricoes.ficha && (
+      {estadoInscricao === "abertas" && inscricoes.ficha && (
         <>
           <div className="pagina-botoes">
             {inscricao ? (

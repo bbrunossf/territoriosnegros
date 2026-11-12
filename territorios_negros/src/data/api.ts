@@ -936,6 +936,10 @@ export function normalizarProximoTour(valor: unknown): ProximoTour | null {
         : typeof v.inscricaoUrl === "string"
           ? v.inscricaoUrl
           : "",
+    inscricoes:
+      v.inscricoes === "sem" || v.inscricoes === "abertas" || v.inscricoes === "encerradas"
+        ? v.inscricoes
+        : "",
   };
   return tour;
 }
