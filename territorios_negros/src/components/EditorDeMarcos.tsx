@@ -207,8 +207,9 @@ export default function EditorDeMarcos({
 
       <p className="admin-ajuda">
         Tópicos de apoio à sua fala durante os tours, em <b>{onde}</b>. O <b>título</b> aparece
-        para o visitante quando o tópico está habilitado; a <b>explicação</b> e a <b>fonte</b> só
-        aparecem quando <b>Explicações e fontes</b> está liberado no menu <b>Marcos e Conexões</b>.
+        para o visitante quando o tópico está habilitado; a <b>explicação</b>, a <b>fonte</b> e
+        os <b>links</b> só aparecem quando <b>Explicações e fontes</b> está liberado no menu{" "}
+        <b>Marcos e Conexões</b>.
       </p>
 
       {topicos.length > 0 && (
