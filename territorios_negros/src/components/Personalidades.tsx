@@ -135,7 +135,12 @@ export function Cartao({ personalidade }: { personalidade: Personalidade }) {
       : null;
 
   return (
-    <Link className="personalidade-cartao" to={`/personalidade/${personalidade.slug}`}>
+    <Link
+      className="personalidade-cartao"
+      to={`/personalidade/${personalidade.slug}`}
+      // a página da pessoa mostra o caminho de volta para esta lista (15/10/2026)
+      state={{ volta: { rotulo: "a lista de personalidades", url: "/personalidades" } }}
+    >
       <div className="personalidade-cartao-moldura">
         {capa ? (
           <img
