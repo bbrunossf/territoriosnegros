@@ -11,7 +11,6 @@ import { salvarConfig } from "../data/api";
 import { useTerritorios } from "../context/useTerritorios";
 import {
   CHAVE_MARCOS,
-  linksDoMarco,
   marcoExibivel,
   marcoPreenchido,
   mover,
@@ -114,12 +113,23 @@ export default function EditorDeMarcos({
   }
 
   /**
-   * Os links do tópico como a tela mostra: os cadastrados agora ou, no tópico
-   * antigo, o único `fonteUrl`. Escrever aqui assume o comando dos links e
-   * aposenta o campo antigo (sem apagar o resto do tópico).
+   * Os links do tópico como a tela mostra.
+   *
+   * IMPORTANTE: aqui vale a lista CRUA do tópico, sem o filtro de endereço vazio
+   * que existe na leitura do banco. Com o filtro, a linha recém-criada por
+   * "+ Adicionar link" (rótulo e endereço ainda em branco) desaparecia no mesmo
+   * instante — era o que a autoria via: o botão existia e nada abria
+   * (15/10/2026).
    */
   function linksDe(marco: Marco): LinkDoMarco[] {
-    return linksDoMarco(marco);
+    const proprios = Array.isArray(marco.links) ? marco.links : [];
+
+    if (proprios.length > 0) return proprios;
+
+    // tópico do formato antigo: o endereço único vira a primeira linha
+    const antigo = (marco.fonteUrl ?? "").trim();
+
+    return antigo ? [{ rotulo: "", url: antigo }] : [];
   }
 
   function mudarLinks(indice: number, links: LinkDoMarco[]) {
