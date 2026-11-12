@@ -182,18 +182,29 @@ export default function ProximoEvento() {
         </div>
       )}
 
-      {/* agenda com mais de um tour: as outras datas ficam a um toque */}
+      {/* Agenda com mais de um evento (15/10/2026): a autoria pediu que TODO
+          evento cadastrado apareça em quadro próprio, como o evento principal.
+          Antes os demais eram uma lista de linhas soltas, fora do padrão. */}
       {outros.length > 0 && (
         <div className="evento-agenda">
-          <p className="evento-agenda-titulo">Outros tours agendados</p>
+          <p className="evento-agenda-titulo">Outros eventos agendados</p>
 
           <ul className="evento-agenda-lista">
             {outros.map((t) => (
               <li key={t.id}>
-                <Link to={`/evento/${t.id}`}>
-                  <b>{t.texto || "Tour"}</b>
-                  {t.data && <span> — {formatarDataBR(t.data)}</span>}
-                  {t.hora && <span> às {t.hora}</span>}
+                <Link to={`/evento/${t.id}`} className="evento-agenda-cartao">
+                  <b className="evento-agenda-nome">{t.texto || "Evento"}</b>
+
+                  {(t.data || t.hora) && (
+                    <span className="evento-agenda-data">
+                      {formatarDataBR(t.data)}
+                      {t.hora ? ` às ${t.hora}` : ""}
+                    </span>
+                  )}
+
+                  {t.local && (
+                    <span className="evento-agenda-local">{t.local}</span>
+                  )}
                 </Link>
               </li>
             ))}
