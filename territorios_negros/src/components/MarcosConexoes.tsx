@@ -105,7 +105,7 @@ export default function MarcosConexoes({
    * De onde o visitante veio. Vai junto no link da personalidade, e a página
    * dela usa isso para oferecer o caminho de volta (15/10/2026).
    */
-  volta?: { rotulo: string; url: string };
+  volta?: { rotulo: string; nome?: string; url: string };
 }) {
   const { config } = useTerritorios();
   const navegar = useNavigate();

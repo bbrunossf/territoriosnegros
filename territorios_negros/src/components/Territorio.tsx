@@ -333,7 +333,7 @@ export default function Territorio() {
         <MarcosConexoes
           chaveDaPagina={chaveDoTerritorio(territorio.id)}
           personalidades={ligadas}
-          volta={{ rotulo: territorio.nome, url: local.pathname + local.search }}
+          volta={{ rotulo: "Voltar ao Território", nome: territorio.nome, url: local.pathname + local.search }}
         />
 
       <BotoesDaTela tela="territorio" posicao="final" />

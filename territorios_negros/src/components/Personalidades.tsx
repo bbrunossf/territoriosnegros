@@ -51,7 +51,9 @@ export default function Personalidades() {
     if (slug)
       navegar(`/personalidade/${slug}`, {
         // a página da pessoa oferece o caminho de volta para cá (15/10/2026)
-        state: { volta: { rotulo: "a lista de personalidades", url: "/personalidades" } },
+        state: {
+          volta: { rotulo: "Voltar para a Lista", nome: "Personalidades", url: "/personalidades" },
+        },
       });
   };
 
@@ -139,7 +141,9 @@ export function Cartao({ personalidade }: { personalidade: Personalidade }) {
       className="personalidade-cartao"
       to={`/personalidade/${personalidade.slug}`}
       // a página da pessoa mostra o caminho de volta para esta lista (15/10/2026)
-      state={{ volta: { rotulo: "a lista de personalidades", url: "/personalidades" } }}
+      state={{
+        volta: { rotulo: "Voltar para a Lista", nome: "Personalidades", url: "/personalidades" },
+      }}
     >
       <div className="personalidade-cartao-moldura">
         {capa ? (

@@ -466,30 +466,38 @@
   line-height: 1.62;
 }
 
-/* caminho de volta para a página de origem (15/10/2026): discreto, uma linha,
-   no alto da ficha — aparece só quando o visitante veio de algum lugar */
+/* voltar para a página de origem (15/10/2026): botão preso no alto, sempre à
+   vista enquanto a ficha rola. Só aparece quando o visitante veio de algum
+   lugar — link direto não ganha botão. */
 .personalidade-volta {
-  display: flex;
-  align-items: flex-start;
-  gap: 6px;
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 40;
 
-  margin: 0 0 12px;
+  display: inline-flex;
+  align-items: center;
+
+  padding: 9px 15px;
+
+  border: 1px solid rgba(143, 97, 29, 0.55);
+  border-radius: 999px;
+
+  background: #fff8ea;
+  box-shadow: 0 2px 8px rgba(74, 45, 28, 0.18);
 
   color: #7d5518;
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1.35;
-  text-decoration: none;
-}
-
-.personalidade-volta-texto {
-  flex: 1 1 auto;
-  text-align: left;
-}
-
-.personalidade-volta-seta {
-  font-size: 14px;
+  font-size: 12.5px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
   line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+/* respiro no alto da ficha para o botão não cobrir o primeiro bloco */
+.personalidade--volta {
+  padding-top: 58px;
 }
 
 .personalidade .marco-fonte {

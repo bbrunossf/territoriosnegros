@@ -56,8 +56,11 @@ export default function PersonalidadePagina({ dados }: { dados?: Personalidade }
    * Sem origem (link direto, favorito, busca), não há botão: nada de botão
    * fixo que o painel não mandou.
    */
-  const volta = (local.state as { volta?: { rotulo: string; url: string; rolagem?: number } } | null)
-    ?.volta;
+  const volta = (
+    local.state as {
+      volta?: { rotulo: string; nome?: string; url: string; rolagem?: number };
+    } | null
+  )?.volta;
 
   // qual seção de texto está aberta — uma só, como nos tópicos de Marcos e
   // Conexões. Tocar no título abre; tocar de novo fecha; abrir outra recolhe.
@@ -92,16 +95,18 @@ export default function PersonalidadePagina({ dados }: { dados?: Personalidade }
   const territoriosLigados = personalidade.territorios.filter((v) => !!territorios[v.territorioId]);
 
   return (
-    <div className="personalidade">
+    <div className={`personalidade${volta ? " personalidade--volta" : ""}`}>
       {/* Caminho de volta para a página que trouxe o visitante (15/10/2026).
-          Só existe quando há origem — link direto não ganha botão. */}
+          Fica fixo no alto: mesmo rolando a ficha, o visitante continua vendo
+          como voltar ao ponto de onde veio. Só existe quando há origem. */}
       {volta && (
-        <Link className="personalidade-volta" to={volta.url} state={{ rolagem: volta.rolagem }}>
-          <span className="personalidade-volta-seta" aria-hidden="true">
-            ←
-          </span>
-
-          <span className="personalidade-volta-texto">Voltar para {volta.rotulo}</span>
+        <Link
+          className="personalidade-volta"
+          to={volta.url}
+          state={{ rolagem: volta.rolagem }}
+          title={volta.nome ? `${volta.rotulo} — ${volta.nome}` : volta.rotulo}
+        >
+          {volta.rotulo}
         </Link>
       )}
 
