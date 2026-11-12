@@ -920,7 +920,15 @@ export function normalizarProximoTour(valor: unknown): ProximoTour | null {
     hora: typeof v.hora === "string" ? v.hora : "",
     local: typeof v.local === "string" ? v.local : "",
     info: typeof v.info === "string" ? v.info : "",
-    rotaId: typeof v.rota_id === "string" ? v.rota_id : "",
+    // o painel grava `rotaId` (camelCase) e o banco antigo usava `rota_id`:
+    // aceitar os dois — só `rota_id` fazia a rota se perder na leitura e o
+    // cartão da rota nunca aparecer na página do evento (15/10/2026)
+    rotaId:
+      typeof v.rota_id === "string"
+        ? v.rota_id
+        : typeof v.rotaId === "string"
+          ? v.rotaId
+          : "",
     logo: typeof v.logo === "string" ? v.logo : "",
     inscricaoUrl:
       typeof v.inscricao_url === "string"
