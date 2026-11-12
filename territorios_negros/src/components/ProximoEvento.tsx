@@ -74,45 +74,50 @@ export default function ProximoEvento() {
       {/* botões que a autoria escolheu para o topo do evento (menu Botões) */}
       <BotoesDaTela tela="evento" posicao="topo" />
 
-      <p className="evento-selo">{textos.selo}</p>
+      {/* Moldura do evento (15/10/2026): a autoria pediu um quadro que
+          destaque o evento do fundo da página, como o cartão da tela
+          inicial. Só emoldura — nenhum texto novo entra aqui. */}
+      <section className="evento-cartao">
+        <p className="evento-selo">{textos.selo}</p>
 
-      <h1 className="page-title evento-titulo">{tour.texto || "Próximo tour"}</h1>
+        <h1 className="page-title evento-titulo">{tour.texto || "Próximo tour"}</h1>
 
-      <div className="evento-dados">
-        {(tour.data || tour.hora) && (
-          <p className="evento-dado">
-            <b>Data:</b> {formatarDataBR(tour.data)}
-            {tour.hora ? ` às ${tour.hora}` : ""}
-          </p>
+        <div className="evento-dados">
+          {(tour.data || tour.hora) && (
+            <p className="evento-dado">
+              <b>Data:</b> {formatarDataBR(tour.data)}
+              {tour.hora ? ` às ${tour.hora}` : ""}
+            </p>
+          )}
+
+          {tour.local && (
+            <p className="evento-dado">
+              <b>Local:</b> {tour.local}
+            </p>
+          )}
+        </div>
+
+        {/* A rota do evento (15/10/2026). Antes vinha o cartão inteiro da página
+            Rotas — com nome, slogan e o resumo de horários. Isso repetia o título
+            do evento e trazia horários que não estão no formulário do evento, o
+            que confundia a autoria. Agora a página do evento mostra só o que é
+            dela: a logo e, quando o nome da rota é diferente do título do
+            evento, uma linha dizendo a que rota ele pertence. O caminho para a
+            rota continua no botão "ver a rota completa". */}
+        {logo && (
+          <img
+            src={logo}
+            alt={`Logo ${tour.texto || "do evento"}`}
+            className="percurso-logo"
+          />
         )}
 
-        {tour.local && (
-          <p className="evento-dado">
-            <b>Local:</b> {tour.local}
+        {rota && normalizar(rota.nome) !== normalizar(tour.texto || "") && (
+          <p className="evento-rota-nome">
+            Rota: <b>{rota.nome}</b>
           </p>
         )}
-      </div>
-
-      {/* A rota do evento (15/10/2026). Antes vinha o cartão inteiro da página
-          Rotas — com nome, slogan e o resumo de horários. Isso repetia o título
-          do evento e trazia horários que não estão no formulário do evento, o
-          que confundia a autoria. Agora a página do evento mostra só o que é
-          dela: a logo e, quando o nome da rota é diferente do título do
-          evento, uma linha dizendo a que rota ele pertence. O caminho para a
-          rota continua no botão "ver a rota completa". */}
-      {logo && (
-        <img
-          src={logo}
-          alt={`Logo ${tour.texto || "do evento"}`}
-          className="percurso-logo"
-        />
-      )}
-
-      {rota && normalizar(rota.nome) !== normalizar(tour.texto || "") && (
-        <p className="evento-rota-nome">
-          Rota: <b>{rota.nome}</b>
-        </p>
-      )}
+      </section>
 
       <div className="page-line" />
 

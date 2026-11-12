@@ -2011,6 +2011,34 @@ a, a:visited, a:hover, a:active {
   text-transform: uppercase;
 }
 
+/* Moldura do evento (15/10/2026): quadro que destaca o bloco do evento do
+   fundo creme da página — mesma família de cor do cartão da tela inicial. */
+.evento-cartao {
+  margin: 4px 0 10px;
+  padding: 16px 16px 18px;
+
+  border: 1px solid rgba(143, 97, 29, 0.6);
+  border-radius: 16px;
+  background: #f4dfb0;
+  box-shadow: 0 8px 18px rgba(54, 33, 18, 0.16);
+}
+
+.evento-cartao .evento-selo {
+  margin-top: 0;
+}
+
+.evento-cartao .evento-titulo {
+  margin-top: 6px;
+}
+
+.evento-cartao .evento-dados {
+  margin-top: 10px;
+}
+
+.evento-cartao .percurso-logo {
+  margin: 12px auto 0;
+}
+
 /* aviso de inscrições encerradas na página do evento (15/10/2026): mesmo
    vermelho de alerta do cartão da tela inicial */
 .evento-encerrado {
