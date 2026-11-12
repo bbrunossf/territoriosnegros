@@ -1,11 +1,14 @@
 import { Link, useParams } from "react-router-dom";
 
 import { formatarDataBR } from "../utils/data";
+import { paragrafosDe } from "../utils/texto";
+import { sloganDaRota } from "../data/slogansRota";
 import { useTerritorios } from "../context/useTerritorios";
 import { normalizarTextosIniciais } from "../data/telaInicial";
 import { tourPorId, toursNoAr } from "../data/tours";
 import BotaoContato from "./BotaoContato";
 import BotoesDaTela from "./BotoesDaTela";
+import Inline from "./Inline";
 
 /**
  * Página do próximo evento: informações do tour e a ficha de inscrição.
@@ -32,6 +35,9 @@ export default function ProximoEvento() {
   // logo: a própria do evento; se não houver, a da rota vinculada
   const rota = roteiros.find((r) => r.id === tour?.rotaId);
   const logo = tour?.logo || rota?.logo || "";
+
+  // slogan da rota (o mesmo que aparece na página Rotas)
+  const slogan = rota ? sloganDaRota(config, rota.id) : "";
   const paragrafos = (tour?.info ?? "")
     .split(/\n+/)
     .map((p) => p.trim())
@@ -67,12 +73,49 @@ export default function ProximoEvento() {
 
       <h1 className="page-title evento-titulo">{tour.texto || "Próximo tour"}</h1>
 
-      {logo && (
-        <img
-          src={logo}
-          alt={`Logo ${tour.texto || "do evento"}`}
-          className="percurso-logo"
-        />
+      {/* Cartão da rota (pedido da autoria, 15/10/2026): o evento mostra a rota a
+          que pertence com a mesma cara da página Rotas — logo, nome e slogan.
+          Sem rota vinculada, aparece só a logo do evento, como antes. */}
+      {rota ? (
+        <article className="roteiro-card evento-rota">
+          {(tour.logo || rota.logo) && (
+            <img
+              src={tour.logo || rota.logo}
+              alt={`Logo ${rota.nome}`}
+              className="roteiro-logo"
+            />
+          )}
+
+          <div className="roteiro-header">
+            <div>
+              <b className="roteiro-title">{rota.nome}</b>
+
+              {slogan && (
+                <div className="roteiro-slogan">
+                  {paragrafosDe(slogan).map((paragrafo, i) => (
+                    <p key={i}>
+                      <Inline texto={paragrafo} />
+                    </p>
+                  ))}
+                </div>
+              )}
+
+              {rota.subtitulo && (
+                <p className="roteiro-subtitle">
+                  <Inline texto={rota.subtitulo} />
+                </p>
+              )}
+            </div>
+          </div>
+        </article>
+      ) : (
+        logo && (
+          <img
+            src={logo}
+            alt={`Logo ${tour.texto || "do evento"}`}
+            className="percurso-logo"
+          />
+        )
       )}
 
       <div className="evento-dados">

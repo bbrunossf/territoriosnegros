@@ -2069,6 +2069,12 @@ a, a:visited, a:hover, a:active {
   text-decoration: underline;
 }
 
+/* cartão da rota dentro da página do evento: respiro e largura cheia, sem
+   repetir a moldura duas vezes */
+.evento-rota {
+  margin: 6px 0 4px;
+}
+
 .home-tour .home-tour-btn {
   margin-top: 7px;
   background: #fffaf0;
