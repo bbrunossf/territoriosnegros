@@ -100,7 +100,8 @@ export default function PersonalidadePagina({ dados }: { dados?: Personalidade }
           <span className="personalidade-volta-seta" aria-hidden="true">
             ←
           </span>
-          Voltar para {volta.rotulo}
+
+          <span className="personalidade-volta-texto">Voltar para {volta.rotulo}</span>
         </Link>
       )}
 
