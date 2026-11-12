@@ -106,13 +106,14 @@ export default function ProximoEvento() {
 
       {/* Ficha de inscrição: a autoria liga e desliga este botão no painel
           (Página inicial › Inscrições) e pode marcar as inscrições como
-          encerradas, sem apagar o link (15/10/2026). Encerradas, o convite vira
-          aviso. Com o botão desligado, o bloco não aparece. */}
-      {inscricoes.ficha && (
-        <>
-          {inscricoes.encerradas ? (
-            <p className="evento-encerrado">{inscricoes.aviso}</p>
-          ) : (
+          encerradas, sem apagar o link (15/10/2026). Encerradas, o aviso entra
+          no lugar do botão — e aparece mesmo com o botão desligado, porque é
+          informação, não convite. */}
+      {inscricoes.encerradas ? (
+        <p className="evento-encerrado">{inscricoes.aviso}</p>
+      ) : (
+        inscricoes.ficha && (
+          <>
             <div className="pagina-botoes">
               {inscricao ? (
                 <Link to="/evento/ficha" className="botao-secundario pagina-botao">
@@ -127,16 +128,14 @@ export default function ProximoEvento() {
                 </span>
               )}
             </div>
-          )}
 
-          {!inscricoes.encerradas && (
             <p className="evento-ajuda">
               {inscricao
                 ? "A ficha abre aqui dentro do app: você preenche e envia sem sair dele."
                 : "A ficha de inscrição ainda não está disponível."}
             </p>
-          )}
-        </>
+          </>
+        )
       )}
 
       {rota && (
