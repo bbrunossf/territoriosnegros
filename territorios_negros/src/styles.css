@@ -2075,6 +2075,21 @@ a, a:visited, a:hover, a:active {
   margin: 6px 0 4px;
 }
 
+/* linha “Rota: …” na página do evento (só quando o nome da rota difere do
+   título do evento) */
+.evento-rota-nome {
+  margin: 8px 0 0;
+  color: #7d5518;
+  font-size: 12.5px;
+  letter-spacing: 0.02em;
+  text-align: center;
+}
+
+.evento-rota-nome b {
+  color: #2b1a0f;
+  font-weight: 800;
+}
+
 .home-tour .home-tour-btn {
   margin-top: 7px;
   background: #fffaf0;

@@ -1,14 +1,11 @@
 import { Link, useParams } from "react-router-dom";
 
 import { formatarDataBR } from "../utils/data";
-import { paragrafosDe } from "../utils/texto";
-import { sloganDaRota } from "../data/slogansRota";
 import { useTerritorios } from "../context/useTerritorios";
 import { normalizarTextosIniciais } from "../data/telaInicial";
 import { tourPorId, toursNoAr } from "../data/tours";
 import BotaoContato from "./BotaoContato";
 import BotoesDaTela from "./BotoesDaTela";
-import Inline from "./Inline";
 
 /**
  * Página do próximo evento: informações do tour e a ficha de inscrição.
@@ -18,6 +15,16 @@ import Inline from "./Inline";
  * `/evento/{id}` abre um tour específico da agenda, e os demais aparecem
  * listados no fim da página.
  */
+/** compara títulos sem diferenciar acento, caixa nem pontuação */
+function normalizar(texto: string): string {
+  return texto
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-zA-Z0-9]+/g, " ")
+    .trim()
+    .toLowerCase();
+}
+
 export default function ProximoEvento() {
   const { tourId } = useParams();
   const { proximoTour, toursEmCartaz, roteiros, inscricaoUrl, config, inscricoes } =
@@ -36,8 +43,6 @@ export default function ProximoEvento() {
   const rota = roteiros.find((r) => r.id === tour?.rotaId);
   const logo = tour?.logo || rota?.logo || "";
 
-  // slogan da rota (o mesmo que aparece na página Rotas)
-  const slogan = rota ? sloganDaRota(config, rota.id) : "";
   const paragrafos = (tour?.info ?? "")
     .split(/\n+/)
     .map((p) => p.trim())
@@ -88,47 +93,25 @@ export default function ProximoEvento() {
         )}
       </div>
 
-      {/* Cartão da rota (pedido da autoria, 15/10/2026): o evento mostra a rota a
-          que pertence com a mesma cara da página Rotas — logo, nome e slogan.
-          Fica depois da data e do local, para as informações do evento não
-          saírem da primeira tela. Sem rota vinculada, aparece só a logo do
-          evento, como antes. */}
-      {rota ? (
-        <article className="roteiro-card evento-rota">
-          {logo && (
-            <img src={logo} alt={`Logo ${rota.nome}`} className="roteiro-logo" />
-          )}
+      {/* A rota do evento (15/10/2026). Antes vinha o cartão inteiro da página
+          Rotas — com nome, slogan e o resumo de horários. Isso repetia o título
+          do evento e trazia horários que não estão no formulário do evento, o
+          que confundia a autoria. Agora a página do evento mostra só o que é
+          dela: a logo e, quando o nome da rota é diferente do título do
+          evento, uma linha dizendo a que rota ele pertence. O caminho para a
+          rota continua no botão "ver a rota completa". */}
+      {logo && (
+        <img
+          src={logo}
+          alt={`Logo ${tour.texto || "do evento"}`}
+          className="percurso-logo"
+        />
+      )}
 
-          <div className="roteiro-header">
-            <div>
-              <b className="roteiro-title">{rota.nome}</b>
-
-              {slogan && (
-                <div className="roteiro-slogan">
-                  {paragrafosDe(slogan).map((paragrafo, i) => (
-                    <p key={i}>
-                      <Inline texto={paragrafo} />
-                    </p>
-                  ))}
-                </div>
-              )}
-
-              {rota.subtitulo ? (
-                <p className="roteiro-subtitle">
-                  <Inline texto={rota.subtitulo ?? ""} />
-                </p>
-              ) : null}
-            </div>
-          </div>
-        </article>
-      ) : (
-        logo && (
-          <img
-            src={logo}
-            alt={`Logo ${tour.texto || "do evento"}`}
-            className="percurso-logo"
-          />
-        )
+      {rota && normalizar(rota.nome) !== normalizar(tour.texto || "") && (
+        <p className="evento-rota-nome">
+          Rota: <b>{rota.nome}</b>
+        </p>
       )}
 
       <div className="page-line" />
