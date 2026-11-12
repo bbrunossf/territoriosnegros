@@ -1,6 +1,6 @@
 //Territorio.tsx
-import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useTerritorios } from "../context/useTerritorios";
 import { pontosVisiveis, rotaDaOrdemDaLista } from "../utils/catalogo";
 import { somenteVisiveis } from "../utils/visibilidade";
@@ -29,7 +29,21 @@ import { simboloDaCategoria } from "../utils/simbolosCategoria";
 export default function Territorio() {
   const { rotaId, indice: indiceStr, id } = useParams();
   const navigate = useNavigate();
+  const local = useLocation();
   const { territorios, roteiros, ordemTerritoriosVisual, config, categorias } = useTerritorios();
+
+  // Voltando da página de uma personalidade: a posição da rolagem vem junto no
+  // `state` e o visitante retoma o ponto onde estava (15/10/2026).
+  const rolagem = (local.state as { rolagem?: number } | null)?.rolagem;
+
+  useEffect(() => {
+    if (typeof rolagem !== "number") return;
+
+    const voltarAoPonto = () => window.scrollTo(0, rolagem);
+    const t = window.setTimeout(voltarAoPonto, 60);
+
+    return () => window.clearTimeout(t);
+  }, [rolagem]);
 
   const dentroDeRota = !!rotaId && rotaId !== "todos";
 
@@ -316,7 +330,11 @@ export default function Territorio() {
             02/10/2026) — e as personalidades ligadas a este território entram
             aqui como tópicos (14/10/2026). Sem tópico e sem vínculo, não
             aparece nada. */}
-        <MarcosConexoes chaveDaPagina={chaveDoTerritorio(territorio.id)} personalidades={ligadas} />
+        <MarcosConexoes
+          chaveDaPagina={chaveDoTerritorio(territorio.id)}
+          personalidades={ligadas}
+          volta={{ rotulo: territorio.nome, url: local.pathname + local.search }}
+        />
 
       <BotoesDaTela tela="territorio" posicao="final" />
 

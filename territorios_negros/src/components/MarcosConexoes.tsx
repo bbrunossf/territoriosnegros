@@ -19,7 +19,7 @@
 // a página da pessoa, e a seta é "›" (navega) em vez de "▸/▾" (expande).
 
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../styles/marcos.css";
 import Topic from "./Topic";
 import Inline from "./Inline";
@@ -97,11 +97,18 @@ function FonteDoMarco({ marco }: { marco: Marco }) {
 export default function MarcosConexoes({
   chaveDaPagina,
   personalidades = [],
+  volta,
 }: {
   chaveDaPagina: string;
   personalidades?: PersonalidadeLigada[];
+  /**
+   * De onde o visitante veio. Vai junto no link da personalidade, e a página
+   * dela usa isso para oferecer o caminho de volta (15/10/2026).
+   */
+  volta?: { rotulo: string; url: string };
 }) {
   const { config } = useTerritorios();
+  const navegar = useNavigate();
   const marcos = marcosDaPagina(config, chaveDaPagina);
 
   // id do tópico aberto — UM só. Abrir outro recolhe o anterior; tocar no mesmo
@@ -180,7 +187,21 @@ export default function MarcosConexoes({
             outros, e o toque leva à página dela */}
         {personalidades.map((pessoa) => (
           <li key={pessoa.id} className="marco marco-personalidade">
-            <Link className="marco-titulo marco-titulo-clicavel" to={`/personalidade/${pessoa.slug}`}>
+            <Link
+              className="marco-titulo marco-titulo-clicavel"
+              to={`/personalidade/${pessoa.slug}`}
+              onClick={(e) => {
+                // a posição da rolagem vai junto: o botão de voltar da página da
+                // pessoa devolve o visitante ao ponto exato onde ele estava
+                if (!volta) return;
+
+                e.preventDefault();
+
+                navegar(`/personalidade/${pessoa.slug}`, {
+                  state: { volta: { ...volta, rolagem: window.scrollY } },
+                });
+              }}
+            >
               <span className="marco-seta" aria-hidden="true">
                 ›
               </span>

@@ -10,7 +10,7 @@
 //
 // A mesma tela serve ao painel: com `dados` na mão, ela mostra rascunho.
 import { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 
 // as seções de texto usam as classes dos tópicos (.marco/.marco-titulo/.marco-corpo)
 import "../styles/marcos.css";
@@ -44,7 +44,20 @@ import { chaveDaPersonalidade } from "../data/marcos";
 
 export default function PersonalidadePagina({ dados }: { dados?: Personalidade }) {
   const { slug } = useParams();
+  const local = useLocation();
   const { config, territorios, roteiros } = useTerritorios();
+
+  /**
+   * Caminho de volta para a página que trouxe o visitante (15/10/2026): quem
+   * chega pelo tópico da pessoa em Marcos e Conexões, ou pela lista de
+   * personalidades, volta exatamente para onde estava — o território, com a
+   * rolagem preservada pela posição da página, ou a lista.
+   *
+   * Sem origem (link direto, favorito, busca), não há botão: nada de botão
+   * fixo que o painel não mandou.
+   */
+  const volta = (local.state as { volta?: { rotulo: string; url: string; rolagem?: number } } | null)
+    ?.volta;
 
   // qual seção de texto está aberta — uma só, como nos tópicos de Marcos e
   // Conexões. Tocar no título abre; tocar de novo fecha; abrir outra recolhe.
@@ -80,6 +93,17 @@ export default function PersonalidadePagina({ dados }: { dados?: Personalidade }
 
   return (
     <div className="personalidade">
+      {/* Caminho de volta para a página que trouxe o visitante (15/10/2026).
+          Só existe quando há origem — link direto não ganha botão. */}
+      {volta && (
+        <Link className="personalidade-volta" to={volta.url} state={{ rolagem: volta.rolagem }}>
+          <span className="personalidade-volta-seta" aria-hidden="true">
+            ←
+          </span>
+          Voltar para {volta.rotulo}
+        </Link>
+      )}
+
       {/* O topo desta ficha é 100% do painel (menu Botões → Página de uma
           personalidade → no topo da página). O link fixo que existia aqui foi
           removido em 14/10/2026: a autoria via um botão "Personalidades" na

@@ -48,7 +48,11 @@ export default function Personalidades() {
   );
 
   const abrir = (slug: string) => {
-    if (slug) navegar(`/personalidade/${slug}`);
+    if (slug)
+      navegar(`/personalidade/${slug}`, {
+        // a página da pessoa oferece o caminho de volta para cá (15/10/2026)
+        state: { volta: { rotulo: "a lista de personalidades", url: "/personalidades" } },
+      });
   };
 
   // o título e a linha de apresentação desta página são editáveis no painel
