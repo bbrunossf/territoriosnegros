@@ -16,7 +16,6 @@ import {
   mover,
   novoMarco,
   normalizarMarcos,
-  type LinkDoMarco,
   type Marco,
 } from "../data/marcos";
 
@@ -90,7 +89,14 @@ export default function EditorDeMarcos({
 
       const todos = normalizarMarcos(config[CHAVE_MARCOS]);
 
-      setTopicos(todos[chaveDaPagina] ?? []);
+      // tópico que tenha endereços extras guardados (do teste com vários links)
+      // abre com o primeiro já no campo único — nada se perde ao salvar
+      const daPagina = (todos[chaveDaPagina] ?? []).map((m) => ({
+        ...m,
+        fonteUrl: m.fonteUrl || (m.links ?? []).find((l) => l.url.trim() !== "")?.url || "",
+      }));
+
+      setTopicos(daPagina);
       setPendente(false);
       setOk("");
       setErro("");
@@ -110,34 +116,6 @@ export default function EditorDeMarcos({
   function mexer(de: number, para: number) {
     setTopicos((lista) => mover(lista, de, para));
     setPendente(true);
-  }
-
-  /**
-   * Os links do tópico como a tela mostra.
-   *
-   * IMPORTANTE: aqui vale a lista CRUA do tópico, sem o filtro de endereço vazio
-   * que existe na leitura do banco. Com o filtro, a linha recém-criada por
-   * "+ Adicionar link" (rótulo e endereço ainda em branco) desaparecia no mesmo
-   * instante — era o que a autoria via: o botão existia e nada abria
-   * (15/10/2026).
-   */
-  function linksDe(marco: Marco): LinkDoMarco[] {
-    const proprios = Array.isArray(marco.links) ? marco.links : [];
-
-    if (proprios.length > 0) return proprios;
-
-    // tópico do formato antigo: o endereço único vira a primeira linha
-    const antigo = (marco.fonteUrl ?? "").trim();
-
-    return antigo ? [{ rotulo: "", url: antigo }] : [];
-  }
-
-  function mudarLinks(indice: number, links: LinkDoMarco[]) {
-    setTopicos((lista) =>
-      lista.map((m, i) => (i === indice ? { ...m, links, fonteUrl: "" } : m))
-    );
-    setPendente(true);
-    setOk("");
   }
 
   async function salvar() {
@@ -217,9 +195,8 @@ export default function EditorDeMarcos({
 
       <p className="admin-ajuda">
         Tópicos de apoio à sua fala durante os tours, em <b>{onde}</b>. O <b>título</b> aparece
-        para o visitante quando o tópico está habilitado; a <b>explicação</b>, a <b>fonte</b> e
-        os <b>links</b> só aparecem quando <b>Explicações e fontes</b> está liberado no menu{" "}
-        <b>Marcos e Conexões</b>.
+        para o visitante quando o tópico está habilitado; a <b>explicação</b> e a <b>fonte</b> só
+        aparecem quando <b>Explicações e fontes</b> está liberado no menu <b>Marcos e Conexões</b>.
       </p>
 
       {topicos.length > 0 && (
@@ -370,72 +347,17 @@ export default function EditorDeMarcos({
                 aoMudar={(texto) => mudar(i, "fonte", texto)}
               />
             </label>
-          </div>
 
-          {/* Vários links no mesmo tópico (pedido da autoria, 15/10/2026): em
-              Arte e Cultura, um endereço para as exposições permanentes e outro
-              para a programação, sem criar um tópico para cada. */}
-          <div className="admin-campo marco-editor-links">
-            <b>Links (opcional)</b>
-            <span className="admin-dica">
-              Quantos quiser, no mesmo tópico. O <b>rótulo</b> é o que o visitante lê; o
-              endereço abre em outra aba. Tópico antigo, com um link só, aparece aqui como
-              a primeira linha.
-            </span>
-
-            {linksDe(marco).map((link, j) => (
-              <div className="marco-editor-link" key={j}>
-                <input
-                  type="text"
-                  className="marco-editor-link-rotulo"
-                  placeholder="Rótulo (ex: Exposições permanentes)"
-                  value={link.rotulo}
-                  onChange={(e) =>
-                    mudarLinks(
-                      i,
-                      linksDe(marco).map((l, k) => (k === j ? { ...l, rotulo: e.target.value } : l))
-                    )
-                  }
-                />
-
-                <input
-                  type="text"
-                  className="marco-editor-link-url"
-                  placeholder="Ex: https://…"
-                  value={link.url}
-                  onChange={(e) =>
-                    mudarLinks(
-                      i,
-                      linksDe(marco).map((l, k) => (k === j ? { ...l, url: e.target.value } : l))
-                    )
-                  }
-                />
-
-                <button
-                  type="button"
-                  className="outline"
-                  title="remover este link"
-                  onClick={() =>
-                    mudarLinks(
-                      i,
-                      linksDe(marco).filter((_l, k) => k !== j)
-                    )
-                  }
-                >
-                  ✕
-                </button>
-              </div>
-            ))}
-
-            <div>
-              <button
-                type="button"
-                className="outline"
-                onClick={() => mudarLinks(i, [...linksDe(marco), { rotulo: "", url: "" }])}
-              >
-                + Adicionar link
-              </button>
-            </div>
+            <label className="admin-campo">
+              <b>Link da fonte (opcional)</b>
+              <span className="admin-dica">endereço na internet, quando existir</span>
+              <input
+                type="text"
+                value={marco.fonteUrl}
+                placeholder="Ex: https://…"
+                onChange={(e) => mudar(i, "fonteUrl", e.target.value)}
+              />
+            </label>
           </div>
         </div>
       ))}
