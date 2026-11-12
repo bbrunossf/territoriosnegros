@@ -73,9 +73,26 @@ export default function ProximoEvento() {
 
       <h1 className="page-title evento-titulo">{tour.texto || "Próximo tour"}</h1>
 
+      <div className="evento-dados">
+        {(tour.data || tour.hora) && (
+          <p className="evento-dado">
+            <b>Data:</b> {formatarDataBR(tour.data)}
+            {tour.hora ? ` às ${tour.hora}` : ""}
+          </p>
+        )}
+
+        {tour.local && (
+          <p className="evento-dado">
+            <b>Local:</b> {tour.local}
+          </p>
+        )}
+      </div>
+
       {/* Cartão da rota (pedido da autoria, 15/10/2026): o evento mostra a rota a
           que pertence com a mesma cara da página Rotas — logo, nome e slogan.
-          Sem rota vinculada, aparece só a logo do evento, como antes. */}
+          Fica depois da data e do local, para as informações do evento não
+          saírem da primeira tela. Sem rota vinculada, aparece só a logo do
+          evento, como antes. */}
       {rota ? (
         <article className="roteiro-card evento-rota">
           {logo && (
@@ -113,21 +130,6 @@ export default function ProximoEvento() {
           />
         )
       )}
-
-      <div className="evento-dados">
-        {(tour.data || tour.hora) && (
-          <p className="evento-dado">
-            <b>Data:</b> {formatarDataBR(tour.data)}
-            {tour.hora ? ` às ${tour.hora}` : ""}
-          </p>
-        )}
-
-        {tour.local && (
-          <p className="evento-dado">
-            <b>Local:</b> {tour.local}
-          </p>
-        )}
-      </div>
 
       <div className="page-line" />
 
